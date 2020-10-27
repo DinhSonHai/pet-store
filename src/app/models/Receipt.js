@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 
 const ReceiptSchema = new Schema(
   {
-    employee_id: { type: Schema.Types.ObjectId, required: true },
+    employeeId: { type: Schema.Types.ObjectId, ref: 'employee' },
     note: { type: String },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Employee', ReceiptSchema);
+module.exports = mongoose.model('Receipt', ReceiptSchema);
