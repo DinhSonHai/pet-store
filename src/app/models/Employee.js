@@ -1,25 +1,25 @@
 const mongoose = require('mongoose');
+const dayjs = require('dayjs');
+const now = dayjs();
 
 const Schema = mongoose.Schema;
 
-const EmployeeSchema = new Schema(
-  {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, trim: true },
-    password: { type: String, required: true },
-    avatar: { type: String },
-    address: { type: Array },
-    gender: { type: Number, default: 0},
-    dateOfBirth: { type: Date },
-    phoneNumber: { type: String },
-    resetPasswordLink: {
-      data: String,
-      default: '',
-    },
-    role: { type: Number },
-    isWorking: { type: Boolean },
+const EmployeeSchema = new Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, trim: true },
+  password: { type: String, required: true, trim: true },
+  avatar: { type: String },
+  address: [{ value: { type: String, trim: true } }],
+  gender: { type: Number, default: 0 },
+  dateOfBirth: { type: Date },
+  phoneNumber: { type: String, trim: true },
+  resetPasswordLink: {
+    data: String,
+    default: '',
   },
-  { timestamps: true }
-);
+  role: { type: Number, default: 1 },
+  isWorking: { type: Boolean, default: true },
+  created_at: { type: Date, default: now.toISOString() },
+});
 
-module.exports = mongoose.model('Employee', EmployeeSchema);
+module.exports = mongoose.model('employee', EmployeeSchema);

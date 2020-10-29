@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
+const dayjs = require('dayjs');
+const now = dayjs();
 
 const Schema = mongoose.Schema;
 
-const ReceiptSchema = new Schema(
-  {
-    employeeId: { type: Schema.Types.ObjectId, ref: 'employee' },
-    note: { type: String },
-  },
-  { timestamps: true }
-);
+const ReceiptSchema = new Schema({
+  employeeId: { type: Schema.Types.ObjectId, ref: 'employee' },
+  note: { type: String, trim: true },
+  created_at: { type: Date, default: now.toISOString() },
+});
 
-module.exports = mongoose.model('Receipt', ReceiptSchema);
+module.exports = mongoose.model('receipt', ReceiptSchema);
