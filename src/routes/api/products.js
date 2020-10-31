@@ -13,4 +13,9 @@ router.get('/', ProductController.index);
 // @access  Public
 router.get('/:id', ProductController.getById);
 
+// @route   GET api/products/types/:typeId
+// @desc    Get all products by typeId
+// @access  Public
+router.get('/types/:typeId', ProductController.getByTypeId);
+
 module.exports = router;
