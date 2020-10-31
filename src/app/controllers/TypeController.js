@@ -1,4 +1,5 @@
 const Type = require('../models/Type');
+const ObjectId = require('mongoose').Types.ObjectId; 
 
 class TypeController {
   // @route   GET api/types
@@ -24,6 +25,22 @@ class TypeController {
         return res.status(404).json({ msg: 'Type not found'})
       }
       res.json(type);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/types/categories/:categoryId
+  // @desc    Get all types by categoryId
+  // @access  Public
+  async getByCategoryId(req, res, next) {
+    try {
+      const types = await Type.find({ categoryId: new ObjectId(req.params.categoryId) });
+      if (!types) {
+        return res.status(404).json({ msg: 'Types not found'})
+      }
+      res.json(types);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');

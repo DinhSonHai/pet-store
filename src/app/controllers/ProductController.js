@@ -1,5 +1,5 @@
 const Product = require('../models/Product');
-var ObjectId = require('mongoose').Types.ObjectId; 
+const ObjectId = require('mongoose').Types.ObjectId; 
 
 class ProductController {
   // @route   GET api/products

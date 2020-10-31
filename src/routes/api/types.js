@@ -13,4 +13,9 @@ router.get('/', TypeController.index);
 // @access  Public
 router.get('/:id', TypeController.getById);
 
+// @route   GET api/types/categories/:categoryId
+// @desc    Get all types by categoryId
+// @access  Public
+router.get('/categories/:categoryId', TypeController.getByCategoryId);
+
 module.exports = router;
