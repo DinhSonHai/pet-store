@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
+process.env["NODE_CONFIG_DIR"] = __dirname;
 const config = require('config');
 const db = config.get('mongoDBAtlasURI');
-
-const mongoose = require('mongoose');
-const config = require('config');
-const db = config.get('mongoURI');
 
 const connectDB = async () => {
   try {
