@@ -5,16 +5,16 @@ const now = dayjs();
 const Schema = mongoose.Schema;
 
 const ReviewSchema = new Schema({
-  user_id: { type: Schema.Types.ObjectId, ref: 'user' },
-  product_id: { type: Schema.Types.ObjectId, ref: 'product' },
-  star_ratings: { type: Number },
+  userId: { type: Schema.Types.ObjectId, ref: 'user' },
+  productId: { type: Schema.Types.ObjectId, ref: 'product' },
+  starRatings: { type: Number },
   comment: { type: String, trim: true },
-  commented_at: { type: Date, default: now.toISOString() },
-  reply_comment: [
+  commentedAt: { type: Date, default: now.toISOString() },
+  replyComment: [
     {
-      user_reply_id: { type: Schema.Types.ObjectId, ref: 'user' },
-      reply_comment: { type: String, trim: true },
-      reply_commented_at: { type: Date, default: now.toISOString() },
+      userReplyId: { type: Schema.Types.ObjectId, ref: 'user' },
+      replyComment: { type: String, trim: true },
+      replyCommentedAt: { type: Date, default: now.toISOString() },
     },
   ],
 });

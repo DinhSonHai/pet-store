@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 const ReceiptSchema = new Schema({
   employeeId: { type: Schema.Types.ObjectId, ref: 'employee' },
   note: { type: String, trim: true },
-  created_at: { type: Date, default: now.toISOString() },
+  createdAt: { type: Date, default: now.toISOString() },
 });
 
 module.exports = mongoose.model('receipt', ReceiptSchema);

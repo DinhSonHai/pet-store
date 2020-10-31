@@ -18,7 +18,7 @@ const ProductSchema = new Schema({
   status: { type: Number, default: 1 },
   star_ratings: { type: Number, default: 0 },
   type_id: { type: Schema.Types.ObjectId, ref: 'type' },
-  isShow: { type: Boolean, default: false },
+  is_show: { type: Boolean, default: false },
   created_at: { type: Date, default: now.toISOString() },
   modified_at: { type: Date },
 });

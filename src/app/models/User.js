@@ -20,7 +20,7 @@ const UserSchema = new Schema({
     default: '',
   },
   role: { type: Number, default: 2 },
-  created_at: { type: Date, default: now.toISOString() },
+  createdAt: { type: Date, default: now.toISOString() },
 });
 
 module.exports = mongoose.model('user', UserSchema);

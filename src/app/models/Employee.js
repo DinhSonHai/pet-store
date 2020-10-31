@@ -11,7 +11,7 @@ const EmployeeSchema = new Schema({
   avatar: { type: String },
   address: [{ value: { type: String, trim: true } }],
   gender: { type: Number, default: 0 },
-  dateOfBirth: { type: Date },
+  dateOfBirth: { type: Date, default: now.toISOString() },
   phoneNumber: { type: String, trim: true },
   resetPasswordLink: {
     data: String,
@@ -19,7 +19,7 @@ const EmployeeSchema = new Schema({
   },
   role: { type: Number, default: 1 },
   isWorking: { type: Boolean, default: true },
-  created_at: { type: Date, default: now.toISOString() },
+  createdAt: { type: Date, default: now.toISOString() },
 });
 
 module.exports = mongoose.model('employee', EmployeeSchema);
