@@ -8,4 +8,9 @@ const ProductController = require('../../app/controllers/ProductController');
 // @access  Public
 router.get('/', ProductController.index);
 
+// @route   GET api/products/:id
+// @desc    Get product by id
+// @access  Public
+router.get('/:id', ProductController.getById);
+
 module.exports = router;
