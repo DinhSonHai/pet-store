@@ -3,6 +3,7 @@ const path = require('path');
 
 const products = require('./api/products');
 const types = require('./api/types');
+const categories = require('./api/categories');
 
 function route(app) {
   //Products route
@@ -10,6 +11,9 @@ function route(app) {
 
   //Types route
   app.use('/api/types', types);
+
+  //Categories route
+  app.use('/api/categories', categories);
 }
 
 module.exports = route;
