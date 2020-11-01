@@ -8,10 +8,10 @@ class TypeController {
   async index(req, res, next) {
     try {
       const types = await Type.find();
-      res.json(types);
+      return res.json(types);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -24,10 +24,10 @@ class TypeController {
       if (!type) {
         return res.status(404).json({ msg: 'Type not found'})
       }
-      res.json(type);
+      return res.json(type);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -40,10 +40,10 @@ class TypeController {
       if (!types) {
         return res.status(404).json({ msg: 'Types not found'})
       }
-      res.json(types);
+      return res.json(types);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 }

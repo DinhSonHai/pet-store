@@ -11,10 +11,10 @@ class ProductController {
       if (!products) {
         return res.status(404).json({ msg: 'Products not found'})
       }
-      res.json(products);
+      return res.json(products);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -27,10 +27,10 @@ class ProductController {
       if (!product) {
         return res.status(404).json({ msg: 'Product not found'})
       }
-      res.json(product);
+      return res.json(product);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -43,10 +43,10 @@ class ProductController {
       if (!products) {
         return res.status(404).json({ msg: 'Products not found'})
       }
-      res.json(products);
+      return res.json(products);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 }

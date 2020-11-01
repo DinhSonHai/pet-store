@@ -7,10 +7,10 @@ class CategoryController {
   async index(req, res, next) {
     try {
       const categories = await Category.find();
-      res.json(categories);
+      return res.json(categories);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -23,10 +23,10 @@ class CategoryController {
       if (!type) {
         return res.status(404).json({ msg: 'Category not found'})
       }
-      res.json(type);
+      return res.json(type);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 }

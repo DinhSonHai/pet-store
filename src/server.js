@@ -1,4 +1,6 @@
 const express = require('express');
+process.env["NODE_CONFIG_DIR"] = __dirname + '\\config';
+const config = require('config');
 
 const connectDB = require('./config/db');
 const route = require('./routes');
@@ -11,7 +13,7 @@ app.use(express.json());
 //Connect DB
 connectDB();
 
-const PORT = process.env.PORT || 5000;
+const PORT = config.get('PORT') || 5000;
 
 route(app);
 
