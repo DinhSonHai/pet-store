@@ -4,7 +4,10 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "start": "nodemon src/server.js",
+    "start": "node src/server",
+    "server": "nodemon src/server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
