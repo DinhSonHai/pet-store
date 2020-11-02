@@ -14,4 +14,9 @@ router.post('/signup', validateSignUp, AuthController.signUp);
 // @access  Public
 router.post('/activate', AuthController.activate);
 
+// @route   GET api/auth/signin
+// @desc    Sign in
+// @access  Public
+router.post('/signin', validateSignIn, AuthController.signIn);
+
 module.exports = router;

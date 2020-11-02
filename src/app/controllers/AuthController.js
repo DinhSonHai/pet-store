@@ -89,6 +89,9 @@ class AuthController {
     }
   }
 
+  // @route   GET api/auth/activate
+  // @desc    Activate an account
+  // @access  Public
   async activate(req, res) {
     const { token } = req.body;
     try {
@@ -125,6 +128,51 @@ class AuthController {
       return res.json({ msg: 'Tài khoản đã được kích hoạt' });
     } catch(error) {
       return res.status(401).json({ msg: 'Token không hợp lệ' });
+    }
+  }
+
+  // @route   GET api/auth/signin
+  // @desc    Sign in
+  // @access  Public
+  async signIn(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+      //Lấy thông tin user theo email
+      let user = await User.findOne({ email: email });
+      if (!user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }] });
+      }
+      //Kiểm tra mật khẩu
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }] });
+      }
+      //Tạo payload cho token
+      const payload = {
+        user: {
+          _id: user._id,
+        },
+      };
+      //Trả về token
+      jwt.sign(
+        payload,
+        config.get('jwtSignUpSecret'),
+        { expiresIn: '7d' },
+        (err, token) => {
+          if (err) throw err;
+          return res.json({ token });
+        }
+      );
+    } catch (error) {
+      return res.status(500).send('Server error');
     }
   }
 }
