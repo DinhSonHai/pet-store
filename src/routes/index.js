@@ -5,6 +5,7 @@ const products = require('./api/products');
 const types = require('./api/types');
 const categories = require('./api/categories');
 const auth = require('./api/auth');
+const cart = require('./api/cart');
 
 function route(app) {
   //Products route
@@ -18,6 +19,9 @@ function route(app) {
 
   //Auth route
   app.use('/api/auth', auth);
+
+  //Cart route
+  app.use('/api/cart', cart);
 }
 
 module.exports = route;

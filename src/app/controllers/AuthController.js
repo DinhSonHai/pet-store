@@ -164,7 +164,7 @@ class AuthController {
       //Trả về token
       jwt.sign(
         payload,
-        config.get('jwtSignUpSecret'),
+        config.get('jwtSignInSecret'),
         { expiresIn: '7d' },
         (err, token) => {
           if (err) throw err;
