@@ -9,4 +9,9 @@ const { validateSignUp, validateSignIn, validateForgetPassword, validateResetPas
 // @access  Public
 router.post('/signup', validateSignUp, AuthController.signUp);
 
+// @route   GET api/auth/activate
+// @desc    Activate an account
+// @access  Public
+router.post('/activate', AuthController.activate);
+
 module.exports = router;

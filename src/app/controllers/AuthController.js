@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 process.env["NODE_CONFIG_DIR"] = __dirname;
 const config = require('config');
 const nodemailer = require('nodemailer');
+const dayjs = require('dayjs');
 
 const User = require('../models/User');
 
@@ -58,7 +59,7 @@ class AuthController {
 
       const content = `
         <h1>Hãy nhấn vào đường dẫn này để kích hoạt tài khoản của bạn</h1>
-        <p>${config.get('CLIENT_URL')}/users/activate/${token}</p>
+        <p>${config.get('CLIENT_URL')}/auth/activate/${token}</p>
         <hr/>
         <p>Hãy cẩn thận, email này chứa thông tin về tài khoản của bạn</p>
         <p>${config.get('CLIENT_URL')}</p>
@@ -85,6 +86,45 @@ class AuthController {
         });
     } catch (error) {
       return res.status(500).send('Server error');
+    }
+  }
+
+  async activate(req, res) {
+    const { token } = req.body;
+    try {
+      //Xác thực token có hợp lệ không
+      const decoded = jwt.verify(token, config.get('jwtSignUpSecret'));
+      const {           
+        name,
+        email,
+        password,
+        gender, 
+        dateOfBirth, 
+        phoneNumber,} = decoded.user;
+      //Kiểm tra xem tài khoản đã được kích hoạt chưa
+      let user = await User.findOne({ email: email });
+      if (user) {
+        return res.status(400).json({ errors: [{ msg: 'Account already activate' }]});
+      }
+
+      user = new User({
+        name,
+        email,
+        password,
+        gender, 
+        dateOfBirth, 
+        phoneNumber,
+      })
+      //Mã hóa mật khẩu
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+      //Định dạng lại ngày
+      user.dateOfBirth = dayjs(user.dateOfBirth).format();
+      //Lưu tài khoản vào csdl
+      await user.save();
+      return res.json({ msg: 'Tài khoản đã được kích hoạt' });
+    } catch(error) {
+      return res.status(401).json({ msg: 'Token không hợp lệ' });
     }
   }
 }
