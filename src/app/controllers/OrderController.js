@@ -47,11 +47,11 @@ class OrderController {
             },
           });
 
-          const item = cart.map((cartItem, index) => `<li>Sản phẩm ${index + 1}<ul><li>Tên sản phẩm: ${cartItem.productName}</li><li>Số lượng: ${cartItem.quantity}</li><li>Đơn giá mỗi sản phẩm: ${cartItem.price}</li></ul></li>`);
+          const item = cart.map((cartItem, index) => `<li>Sản phẩm ${index + 1}<ul><li>Tên sản phẩm: ${cartItem.productName}</li><li>Số lượng: ${cartItem.quantity}</li><li>Đơn giá mỗi sản phẩm: ${cartItem.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</li></ul></li>`);
     
           const content = `
             <h1>Bạn vừa mua hàng ở Pet store</h1>
-            <p>Tổng giá trị đơn hàng: ${totalMoney}</p>
+            <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
             <p>Đơn hàng của quý khách</p>
             <ul>
               ${item}
