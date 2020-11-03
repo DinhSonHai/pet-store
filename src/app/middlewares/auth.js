@@ -15,7 +15,7 @@ module.exports = function (req, res, next) {
     const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
 
     req.user = decoded.user;
-
+    
     next();
   } catch (err) {
     return res.status(401).json({ msg: 'Token không hợp lệ' });

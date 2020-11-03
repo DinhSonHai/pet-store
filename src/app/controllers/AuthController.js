@@ -117,7 +117,7 @@ class AuthController {
         gender, 
         dateOfBirth, 
         phoneNumber,
-      })
+      });
       //Mã hóa mật khẩu
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
