@@ -1,0 +1,15 @@
+.pets {
+  background-color: #fff;
+}
+.pets__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pets__header-title {
+  font-size: 1.7rem;
+  color: var(--mainstream-color);
+}
+.pets-list img {
+  object-fit: cover;
+}
