@@ -4,9 +4,9 @@ const User = require('../models/User');
 const Cart = require('../models/Cart');
 
 class CartController {
-  // @route   GET api/cart
+  // @route   GET /api/cart
   // @desc    Lấy tất cả sản phẩm trong giỏ hàng của một người dùng
-  // @access  Public
+  // @access  Private
   async index(req, res) {
     // Lấy giỏ hàng
     try {
@@ -20,9 +20,9 @@ class CartController {
     }
   }
 
-  // @route   POST api/cart/add
+  // @route   POST /api/cart
   // @desc    Add product to cart
-  // @access  Public
+  // @access  Private
   async addCart(req, res) {
     // Thêm vào giỏ hàng
     try {
@@ -51,11 +51,10 @@ class CartController {
     }
   }
 
-  // @route   POST api/cart/updateCart
+  // @route   PUT /api/cart
   // @desc    Cập nhật số lượng một hoặc nhiều sản phẩm trong giỏ hàng
-  // @access  Public
+  // @access  Private
   async updateCart(req, res) {
-    // Lấy giỏ hàng
     try {
       let { cart } = req.body;
       cart.forEach(async cartItem => {
@@ -65,9 +64,21 @@ class CartController {
           //new: true sẽ trả về đối tượng đã được cập nhật
           { new: true }
         );
-        console.log(cartItem)
       })
-      return res.json(cart);
+      return res.json({msg: 'Đã cập nhật giỏ hàng'});
+    } catch (error) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   DELETE /api/cart
+  // @desc    Xóa một sản phẩm trong giỏ hàng
+  // @access  Private
+  async deleteCart(req, res) {
+    try {
+      let { _id } = req.body;
+      await Cart.findOneAndRemove({ _id })
+      return res.json({ msg: 'Đã xóa sản phẩm khỏi giỏ hàng'});
     } catch (error) {
       return res.status(500).send('Server Error');
     }
