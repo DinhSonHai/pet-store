@@ -6,6 +6,7 @@ const types = require('./api/types');
 const categories = require('./api/categories');
 const auth = require('./api/auth');
 const cart = require('./api/cart');
+const order = require('./api/order');
 
 function route(app) {
   //Products route
@@ -22,6 +23,9 @@ function route(app) {
 
   //Cart route
   app.use('/api/cart', cart);
+
+  //Order route
+  app.use('/api/order', order);
 }
 
 module.exports = route;

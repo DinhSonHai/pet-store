@@ -8,6 +8,7 @@ const BillSchema = new Schema({
   orderId: { type: Schema.Types.ObjectId, ref: 'order' },
   userId: { type: Schema.Types.ObjectId, ref: 'user' },
   address: { type: String, trim: true },
+  email: { type: String, trim: true },
   totalMoney: { type: Number },
   status: { type: Number },
   note: { type: String, trim: true },
