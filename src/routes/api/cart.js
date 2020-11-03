@@ -14,4 +14,9 @@ router.get('/', auth, CartController.index);
 // @access  Public
 router.post('/addcart', auth, CartController.addCart);
 
+// @route   POST api/cart/updateCart
+// @desc    Cập nhật số lượng một hoặc nhiều sản phẩm trong giỏ hàng
+// @access  Public
+router.post('/updatecart', auth, CartController.updateCart);
+
 module.exports = router;

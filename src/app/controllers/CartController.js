@@ -8,8 +8,6 @@ class CartController {
   // @desc    Lấy tất cả sản phẩm trong giỏ hàng của một người dùng
   // @access  Public
   async index(req, res) {
-    //Lấy token từ header
-    const token = req.header('x-auth-token');
     // Lấy giỏ hàng
     try {
       const cart = await Cart.find({ userId: req.user._id }).populate('productId', [
@@ -26,8 +24,6 @@ class CartController {
   // @desc    Add product to cart
   // @access  Public
   async addCart(req, res) {
-    //Lấy token từ header
-    const token = req.header('x-auth-token');
     // Thêm vào giỏ hàng
     try {
       let { productId, quantity } = req.body;
@@ -50,6 +46,28 @@ class CartController {
         await cart.save();
       }
       return res.json({ msg: 'Thêm vào giỏ hàng thành công'})
+    } catch (error) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   POST api/cart/updateCart
+  // @desc    Cập nhật số lượng một hoặc nhiều sản phẩm trong giỏ hàng
+  // @access  Public
+  async updateCart(req, res) {
+    // Lấy giỏ hàng
+    try {
+      let { cart } = req.body;
+      cart.forEach(async cartItem => {
+        cartItem = await Cart.findOneAndUpdate(
+          { userId: req.user._id, productId: cartItem.productId },
+          { $set: { quantity: cartItem.quantity }},
+          //new: true sẽ trả về đối tượng đã được cập nhật
+          { new: true }
+        );
+        console.log(cartItem)
+      })
+      return res.json(cart);
     } catch (error) {
       return res.status(500).send('Server Error');
     }
