@@ -18,4 +18,9 @@ router.get('/:id', ProductController.getById);
 // @access  Public
 router.get('/types/:typeId', ProductController.getByTypeId);
 
+// @route   POST api/products
+// @desc    Add products
+// @access  Private
+router.post('/', ProductController.add);
+
 module.exports = router;

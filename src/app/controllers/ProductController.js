@@ -49,6 +49,13 @@ class ProductController {
       return res.status(500).send('Server Error');
     }
   }
+
+  // @route   POST api/products
+  // @desc    Add products
+  // @access  Private
+  async add(req, res) {
+    
+  }
 }
 
 module.exports = new ProductController();

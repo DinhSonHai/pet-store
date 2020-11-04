@@ -33,9 +33,10 @@ const menu = (
     </Menu.Item>
   </Menu>
 );
-const Pets = ({ products: { products, loading }, getAllProducts }) => {
+const Pets = ({ data: { products, loading }, getAllProducts }) => {
   useEffect(() => {
     getAllProducts();
+    console.log(loading)
   }, [getAllProducts]);
   return (
     <Content className='pets'>
@@ -100,7 +101,7 @@ Pets.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  products: state.products,
+  data: state.products,
 });
 
 export default connect(mapStateToProps, { getAllProducts })(Pets);
