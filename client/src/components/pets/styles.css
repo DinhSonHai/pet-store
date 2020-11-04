@@ -10,6 +10,27 @@
   font-size: 1.7rem;
   color: var(--mainstream-color);
 }
-.pets-list img {
-  object-fit: cover;
+.ant-card-meta-title {
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+.pets__price {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin: 0;
+}
+.ant-card-body {
+  position: relative;
+}
+.addToCart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  position: absolute;
+  right: 15px;
+  top: -40px;
+  z-index: 999;
 }

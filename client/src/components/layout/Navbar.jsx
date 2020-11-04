@@ -40,16 +40,16 @@ export const Navbar = () => {
         </div>
         <div className='navbar__wrap-actions'>
           <Link className='navbar__wrap-actions--link' to='/'>
-            Home
+            Trang chủ
           </Link>
           <Link className='navbar__wrap-actions--link' to='/about'>
-            About
+            Về chúng tôi
           </Link>
           <Link className='navbar__wrap-actions--link' to='/services'>
-            Services
+            Dịch vụ
           </Link>
-          <Link className='navbar__wrap-actions--link' to='/pet'>
-            Pet
+          <Link className='navbar__wrap-actions--link' to='/pets'>
+            Thú cưng
           </Link>
           <div className='cart'>
             <Link to='cart'>
