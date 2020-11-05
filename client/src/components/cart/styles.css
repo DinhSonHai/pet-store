@@ -8,3 +8,12 @@
 .cartHome ul {
     display: none;
 }
+.cart-total {
+    margin: 1rem auto;
+    font-size: 1.2rem;
+    font-weight: 500;
+    float: right;
+}
+#cart-total {
+    color: var(--mainstream-color);
+}
