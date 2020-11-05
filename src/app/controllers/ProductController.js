@@ -54,7 +54,26 @@ class ProductController {
   // @desc    Add products
   // @access  Private
   async add(req, res) {
-    
+    let { productName, age, gender, color, weight, origin, description, images, price, quantity, typeId } = req.body;
+    try{
+      let product = new Product({
+        productName, 
+        age, 
+        gender, 
+        color, 
+        weight, 
+        origin, 
+        description, 
+        images, 
+        price, 
+        quantity, 
+        typeId
+      });
+      await product.save();
+      return res.json({ msg: 'Tạo sản phẩm thành công' });
+    } catch(error) {
+      return res.status(500).send('Server error');
+    }
   }
 }
 

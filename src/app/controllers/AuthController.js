@@ -7,6 +7,8 @@ const nodemailer = require('nodemailer');
 const dayjs = require('dayjs');
 
 const User = require('../models/User');
+const Employee = require('../models/Employee');
+const Admin = require('../models/Admin');
 
 class AuthController {
   // @route   GET api/auth/signup
@@ -142,11 +144,19 @@ class AuthController {
     const { email, password } = req.body;
     try {
       //Lấy thông tin user theo email
-      let user = await User.findOne({ email: email });
+      let user = await User.findOne({ email });
       if (!user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }] });
+        //Kiểm tra xem có phải nhân viên đăng nhập không
+        user = await Employee.findOne({ email });
+        if(!user) {
+          //Kiểm tra xem có phải nhân viên đăng nhập không
+          user = await Admin.findOne({ email });
+        }
+        if(!user) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }] });
+        }
       }
       //Kiểm tra mật khẩu
       const isMatch = await bcrypt.compare(password, user.password);
