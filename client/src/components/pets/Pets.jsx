@@ -38,6 +38,20 @@ const Pets = ({ data: { products, loading }, getAllProducts }) => {
     getAllProducts();
     console.log(loading)
   }, [getAllProducts]);
+  const addItem = (item) => {
+    let count = document.getElementById('cart__count');
+    let cartCopy = JSON.parse(localStorage.getItem('cart')) || [];
+    let existingItem = cartCopy.find((cartItem) => cartItem._id === item._id);
+    if (existingItem) {
+      existingItem.amount += 1;
+    } else {
+      item.amount = 1;
+      let { _id, amount, productName, images, price } = item;
+      cartCopy.push({ _id, amount, productName, image: images[0], price });
+    }
+    localStorage.setItem('cart', JSON.stringify(cartCopy));
+    count.textContent = cartCopy.length;
+  };
   return (
     <Content className='pets'>
       <section className='container'>
@@ -61,7 +75,7 @@ const Pets = ({ data: { products, loading }, getAllProducts }) => {
                   <Card
                     hoverable
                     cover={
-                      <Link to={product._id}>
+                      <Link to={`/product/${product._id}`}>
                         <img
                           width='100%'
                           height='100%'
@@ -71,7 +85,7 @@ const Pets = ({ data: { products, loading }, getAllProducts }) => {
                       </Link>
                     }
                   >
-                    <Link to={product._id}>
+                    <Link to={`/product/${product._id}`}>
                       <Meta title={product.productName} />
                       <p className='pets__price'>
                         {parseInt(product.price).toLocaleString('vi-VN', {
@@ -81,6 +95,7 @@ const Pets = ({ data: { products, loading }, getAllProducts }) => {
                       </p>
                     </Link>
                     <Button
+                      onClick={() => addItem(product)}
                       className='addToCart'
                       icon={<AddToCart />}
                       type='primary'

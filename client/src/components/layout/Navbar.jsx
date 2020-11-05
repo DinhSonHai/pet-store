@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import { Cart, Mail, Phone, Twitter, Facebook, Instagram } from '../../icons';
@@ -5,6 +6,16 @@ import './styles.css';
 const { Header } = Layout;
 
 export const Navbar = () => {
+  const [check, setCheck] = useState(false);
+  useEffect(() => {
+    let localCart = JSON.parse(localStorage.getItem('cart'));
+    let count = document.getElementById('cart__count');
+    if (localCart) {
+      count.textContent = localCart.length;
+    } else {
+      count.textContent = 0;
+    }
+  }, [check]);
   return (
     <Header className='navbar'>
       <div className='navbar__info'>
@@ -52,10 +63,12 @@ export const Navbar = () => {
             Thú cưng
           </Link>
           <div className='cart'>
-            <Link to='cart'>
+            <Link onClick={() => setCheck(!check)} to='/cart'>
               <Cart />
             </Link>
-            <span className='cart__count'>0</span>
+            <span id='cart__count' className='cart__count'>
+              {0}
+            </span>
           </div>
         </div>
       </section>
