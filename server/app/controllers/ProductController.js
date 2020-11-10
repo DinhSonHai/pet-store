@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 const Product = require('../models/Product');
 const ObjectId = require('mongoose').Types.ObjectId; 
 
@@ -9,11 +11,10 @@ class ProductController {
     try {
       const products = await Product.find();
       if (!products) {
-        return res.status(404).json({ msg: 'Products not found'})
+        return res.status(404).json({ msg: 'Sản phẩm không tồn tại'})
       }
       return res.json(products);
     } catch (err) {
-      console.error(err.message);
       return res.status(500).send('Server Error');
     }
   }
@@ -25,11 +26,10 @@ class ProductController {
     try {
       const product = await Product.findById(req.params.id);
       if (!product) {
-        return res.status(404).json({ msg: 'Product not found'})
+        return res.status(404).json({ msg: 'Sản phẩm không tồn tại'})
       }
       return res.json(product);
     } catch (err) {
-      console.error(err.message);
       return res.status(500).send('Server Error');
     }
   }
@@ -41,7 +41,7 @@ class ProductController {
     try {
       const products = await Product.find({ typeId: new ObjectId(req.params.typeId) });
       if (!products) {
-        return res.status(404).json({ msg: 'Products not found'})
+        return res.status(404).json({ msg: 'Sản phẩm không tồn tại'})
       }
       return res.json(products);
     } catch (err) {
@@ -53,7 +53,13 @@ class ProductController {
   // @route   POST api/products
   // @desc    Add products
   // @access  Private
-  async add(req, res) {
+  async create(req, res) {
+    //Kiểm tra req.body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     let { productName, age, gender, color, weight, origin, description, images, price, quantity, typeId } = req.body;
     try{
       let product = new Product({
@@ -71,6 +77,48 @@ class ProductController {
       });
       await product.save();
       return res.json({ msg: 'Tạo sản phẩm thành công' });
+    } catch(error) {
+      return res.status(500).send('Server error');
+    }
+  }
+
+  // @route   PUT api/products
+  // @desc    Update products
+  // @access  Private
+  async update(req, res) {
+    //Kiểm tra req.body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    let { productName, age, gender, color, weight, origin, description, images, price, quantity, typeId } = req.body;
+    try{
+      let product = await Product.findById(req.params.id);
+      if(!product) {
+        return res.status(404).json({ msg: 'Sản phẩm không tồn tại'})
+      }
+      product = await Product.findOneAndUpdate(
+        { _id: req.params.id },
+        { $set: { productName, age, gender, color, weight, origin, description, images, price, quantity, typeId } },
+        { new: true},
+      );
+      return res.json({ msg: 'Cập nhật sản phẩm thành công' });
+      // let product = new Product({
+      //   productName, 
+      //   age, 
+      //   gender, 
+      //   color, 
+      //   weight, 
+      //   origin, 
+      //   description, 
+      //   images, 
+      //   price, 
+      //   quantity, 
+      //   typeId
+      // });
+      // await product.save();
+      //return res.json({ msg: 'Tạo sản phẩm thành công' });
+      return res.json(product)
     } catch(error) {
       return res.status(500).send('Server error');
     }

@@ -168,9 +168,9 @@ class AuthController {
       //Tạo payload cho token
       const payload = {
         user: {
-          _id: user._id,
+          id: user._id,
         },
-      };
+      };console.log(payload.user.id)
       //Trả về token
       jwt.sign(
         payload,

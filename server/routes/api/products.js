@@ -3,6 +3,7 @@ const router = express.Router();
 
 const ProductController = require('../../app/controllers/ProductController');
 const checkPermission = require('../../app/middlewares/checkPermission');
+const { validateCreateProductInfo, validateUpdateProductInfo } = require('../../helpers/valid');
 
 // @route   GET api/products
 // @desc    Get all products
@@ -20,8 +21,13 @@ router.get('/:id', ProductController.getById);
 router.get('/types/:typeId', ProductController.getByTypeId);
 
 // @route   POST api/products
-// @desc    Add products
+// @desc    Create products
 // @access  Private
-router.post('/', checkPermission, ProductController.add);
+router.post('/', [checkPermission, validateCreateProductInfo], ProductController.create);
+
+// @route   PUT api/products
+// @desc    Update products
+// @access  Private
+router.put('/:id', [checkPermission, validateUpdateProductInfo], ProductController.update);
 
 module.exports = router;

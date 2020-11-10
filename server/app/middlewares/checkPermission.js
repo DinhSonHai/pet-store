@@ -19,7 +19,7 @@ module.exports = function (req, res, next) {
     let user = decoded.user;
 
     const checkAccountExists = async () => { 
-      const check = await Employee.exists({ _id: user._id }) || await Admin.exists({ _id: user._id });  
+      const check = await Employee.exists({ _id: user.id }) || await Admin.exists({ _id: user.id });  
       console.log(check)
   
       if(!check) {
