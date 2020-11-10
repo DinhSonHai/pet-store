@@ -135,6 +135,21 @@ class ProductController {
       return res.status(500).send('Server error');
     }
   }
+
+  // @route   GET api/products/deleted
+  // @desc    Get all products has been soft deleted
+  // @access  Private
+  async getDeletedProduct(req, res) {
+    try {
+      let products = await Product.findDeleted({});
+      if(products.length === 0) {
+        return res.json({ msg: 'Không có sản phẩm nào' })
+      }
+      return res.json(products);
+    } catch(error) {
+      return res.status(500).send('Server error');
+    }
+  }
 }
 
 module.exports = new ProductController();

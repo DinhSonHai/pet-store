@@ -10,6 +10,11 @@ const { validateCreateProductInfo, validateUpdateProductInfo } = require('../../
 // @access  Public
 router.get('/', ProductController.index);
 
+// @route   GET api/products/deleted
+// @desc    Get all products has been soft deleted
+// @access  Private
+router.get('/deleted', checkPermission, ProductController.getDeletedProduct);
+
 // @route   GET api/products/:id
 // @desc    Get product by id
 // @access  Public
