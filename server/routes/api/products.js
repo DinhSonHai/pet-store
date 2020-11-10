@@ -35,4 +35,9 @@ router.put('/:id', [checkPermission, validateUpdateProductInfo], ProductControll
 // @access  Private
 router.delete('/:id', checkPermission, ProductController.softDelete);
 
+// @route   PATCH api/products/:id/restore
+// @desc    Restore products has been soft deleted
+// @access  Private
+router.patch('/:id/restore', checkPermission, ProductController.restore);
+
 module.exports = router;

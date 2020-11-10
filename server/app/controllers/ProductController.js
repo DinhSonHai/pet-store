@@ -123,6 +123,18 @@ class ProductController {
       return res.status(500).send('Server error');
     }
   }
+
+  // @route   PATCH api/products/:id/restore
+  // @desc    Restore products has been soft deleted
+  // @access  Private
+  async restore(req, res) {
+    try {
+      await Product.restore({ _id: req.params.id });
+      return res.json({ msg: 'Khôi phục sản phẩm thành công' });
+    } catch(error) {
+      return res.status(500).send('Server error');
+    }
+  }
 }
 
 module.exports = new ProductController();
