@@ -103,22 +103,22 @@ class ProductController {
         { new: true},
       );
       return res.json({ msg: 'Cập nhật sản phẩm thành công' });
-      // let product = new Product({
-      //   productName, 
-      //   age, 
-      //   gender, 
-      //   color, 
-      //   weight, 
-      //   origin, 
-      //   description, 
-      //   images, 
-      //   price, 
-      //   quantity, 
-      //   typeId
-      // });
-      // await product.save();
-      //return res.json({ msg: 'Tạo sản phẩm thành công' });
-      return res.json(product)
+    } catch(error) {
+      return res.status(500).send('Server error');
+    }
+  }
+
+  // @route   DELETE api/products/:id
+  // @desc    Soft delete products (hide)
+  // @access  Private
+  async softDelete(req, res) {
+    try {
+      let product = await Product.findById(req.params.id);
+      if(!product) {
+        return res.status(404).json({ msg: 'Sản phẩm không tồn tại'})
+      }
+      await Product.delete({ _id: req.params.id });
+      return res.json({ msg: 'Đã xóa sản phẩm thành công' });
     } catch(error) {
       return res.status(500).send('Server error');
     }

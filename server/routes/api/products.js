@@ -25,9 +25,14 @@ router.get('/types/:typeId', ProductController.getByTypeId);
 // @access  Private
 router.post('/', [checkPermission, validateCreateProductInfo], ProductController.create);
 
-// @route   PUT api/products
+// @route   PUT api/products/:id
 // @desc    Update products
 // @access  Private
 router.put('/:id', [checkPermission, validateUpdateProductInfo], ProductController.update);
+
+// @route   DELETE api/products/:id
+// @desc    Soft delete products (hide)
+// @access  Private
+router.delete('/:id', checkPermission, ProductController.softDelete);
 
 module.exports = router;
