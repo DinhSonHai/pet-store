@@ -1,10 +1,12 @@
+/* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
 import { Layout, Button, Table, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import './styles.css';
+
 const { Content } = Layout;
 
-export const CartHome = () => {
+export default function () {
   const [data, setData] = useState([]);
   const [updateCart, setUpdateCart] = useState(false);
   useEffect(() => {
@@ -121,4 +123,4 @@ export const CartHome = () => {
       </section>
     </Content>
   );
-};
+}

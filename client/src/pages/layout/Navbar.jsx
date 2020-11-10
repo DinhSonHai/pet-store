@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
@@ -5,7 +6,7 @@ import { Cart, Mail, Phone, Twitter, Facebook, Instagram } from '../../icons';
 import './styles.css';
 const { Header } = Layout;
 
-export const Navbar = () => {
+export default function () {
   const [check, setCheck] = useState(false);
   useEffect(() => {
     let localCart = JSON.parse(localStorage.getItem('cart'));
@@ -74,4 +75,4 @@ export const Navbar = () => {
       </section>
     </Header>
   );
-};
+}

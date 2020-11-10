@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Navbar } from './components/layout/Navbar';
+import { Navbar } from './pages';
 import { Layout } from 'antd';
-import { Routes } from './components/routing/Routes';
+import { Routes } from './routes';
 
 import { Provider } from 'react-redux';
 import store from './store';

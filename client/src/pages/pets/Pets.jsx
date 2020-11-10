@@ -36,7 +36,6 @@ const menu = (
 const Pets = ({ data: { products, loading }, getAllProducts }) => {
   useEffect(() => {
     getAllProducts();
-    console.log(loading)
   }, [getAllProducts]);
   const addItem = (item) => {
     let count = document.getElementById('cart__count');
