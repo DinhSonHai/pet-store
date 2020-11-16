@@ -1,0 +1,26 @@
+.pet-details {
+  background-color: #fff;
+}
+.pet-details__title {
+  font-size: 1.6rem;
+  color: var(--mainstream-color);
+}
+.pet-details__card-info {
+  .ant-card {
+    box-shadow: 0 0 29px 0 rgba(68, 88, 144, 0.12);
+  }
+  button {
+    top: -20px;
+  }
+}
+.pet-details__wrap {
+  .ant-card-head-title {
+    color: var(--mainstream-color);
+    font-size: 1.2rem;
+  }
+  .ant-card-body {
+    p {
+      font-size: 1rem;
+    }
+  }
+}

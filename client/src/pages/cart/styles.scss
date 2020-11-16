@@ -1,0 +1,19 @@
+.cart {
+  background-color: #fff;
+}
+.cart__title {
+  font-size: 1.7rem;
+  color: var(--mainstream-color);
+}
+.cart ul {
+  display: none;
+}
+.cart__total {
+  margin: 1rem auto;
+  font-size: 1.2rem;
+  font-weight: 500;
+  float: right;
+}
+#cart__total {
+  color: var(--mainstream-color);
+}

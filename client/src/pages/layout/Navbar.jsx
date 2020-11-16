@@ -1,22 +1,52 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
-import { Layout } from 'antd';
+import PropTypes from 'prop-types';
+import { Layout, Menu, Dropdown } from 'antd';
 import { Link } from 'react-router-dom';
-import { Cart, Mail, Phone, Twitter, Facebook, Instagram } from '../../icons';
-import './styles.css';
-const { Header } = Layout;
+import { Mail, Phone, Twitter, Facebook, Instagram } from '../../icons';
+import { CartAction } from '../../components';
+import api from '../../api';
+import { getProductsByType } from '../../redux/actions/products';
+import { connect } from 'react-redux';
+import './styles.scss';
 
-export default function () {
-  const [check, setCheck] = useState(false);
+const { Header } = Layout;
+const { SubMenu } = Menu;
+
+const NavBar = ({ getProductsByType }) => {
+  const [types, setTypes] = useState([]);
+  const [category, setCategory] = useState([]);
   useEffect(() => {
-    let localCart = JSON.parse(localStorage.getItem('cart'));
-    let count = document.getElementById('cart__count');
-    if (localCart) {
-      count.textContent = localCart.length;
-    } else {
-      count.textContent = 0;
-    }
-  }, [check]);
+    const getMenu = async () => {
+      const cat = await api.get('/categories');
+      const ty = await api.get('/types');
+      setCategory(cat.data);
+      setTypes(ty.data);
+    };
+    getMenu();
+  }, []);
+  const menu = (
+    <Menu>
+      {category.map((cat) => {
+        return (
+          <SubMenu key={cat._id} title={cat.categoryName}>
+            {types.map((ty) => {
+              return cat._id === ty.categoryId ? (
+                <Menu.Item key={ty._id}>
+                  <Link
+                    onClick={() => getProductsByType(ty._id)}
+                    to={`/pets/types/${ty._id}`}
+                  >
+                    {ty.typeName}
+                  </Link>
+                </Menu.Item>
+              ) : null;
+            })}
+          </SubMenu>
+        );
+      })}
+    </Menu>
+  );
   return (
     <Header className='navbar'>
       <div className='navbar__info'>
@@ -54,25 +84,24 @@ export default function () {
           <Link className='navbar__wrap-actions--link' to='/'>
             Trang chủ
           </Link>
+          <Dropdown overlay={menu}>
+            <div className='navbar__wrap-actions--link'>Thú cưng</div>
+          </Dropdown>
           <Link className='navbar__wrap-actions--link' to='/about'>
             Về chúng tôi
           </Link>
           <Link className='navbar__wrap-actions--link' to='/services'>
             Dịch vụ
           </Link>
-          <Link className='navbar__wrap-actions--link' to='/pets'>
-            Thú cưng
-          </Link>
-          <div className='cart'>
-            <Link onClick={() => setCheck(!check)} to='/cart'>
-              <Cart />
-            </Link>
-            <span id='cart__count' className='cart__count'>
-              {0}
-            </span>
-          </div>
+          <CartAction />
         </div>
       </section>
     </Header>
   );
-}
+};
+
+NavBar.propTypes = {
+  getProductsByType: PropTypes.func.isRequired,
+};
+
+export default connect(null, { getProductsByType })(NavBar);

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Layout, Button, Table, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
-import './styles.css';
+import './styles.scss';
 
 const { Content } = Layout;
 
@@ -11,7 +11,7 @@ export default function () {
   const [updateCart, setUpdateCart] = useState(false);
   useEffect(() => {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let total_show = document.getElementById('cart-total');
+    let total_show = document.getElementById('cart__total');
     let total_value = cart.reduce((a, b) => a + b.price * b.amount, 0);
     total_show.textContent = parseInt(total_value).toLocaleString('vi-VN', {
       style: 'currency',
@@ -69,9 +69,7 @@ export default function () {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
       key: 'name',
-      render: (item) => (
-        <Link to={`/product/${item._id}`}>{item.productName}</Link>
-      ),
+      render: (item) => <Link to={`/pet/${item._id}`}>{item.productName}</Link>,
     },
     {
       title: 'Đơn giá',
@@ -112,13 +110,13 @@ export default function () {
     },
   ];
   return (
-    <Content className='cartHome'>
+    <Content className='cart'>
       <section className='container'>
-        <h1 className='cart-title'>Your cart</h1>
+        <h1 className='cart__title'>Your cart</h1>
         {/* set loading={true} for table if user loged in */}
         <Table columns={columns} dataSource={data} />
-        <div className='cart-total'>
-          Tổng tiền: <span id='cart-total'>0</span>
+        <div className='cart__total'>
+          Tổng tiền: <span id='cart__total'>0</span>
         </div>
       </section>
     </Content>
