@@ -18,7 +18,7 @@ module.exports = function (req, res, next) {
   //Xác thực token
   try {
     const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
-    req.userId = decoded.user._id;
+    req.userId = decoded.user.id;
     console.log('User');
     next();
   } catch (err) {

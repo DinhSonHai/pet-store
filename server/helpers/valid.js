@@ -50,3 +50,31 @@ module.exports.validateResetPassword = [
     .matches(/\d/)
     .withMessage('Mật khẩu phải bao gồm số'),
 ];
+
+//Create Product
+module.exports.validateCreateProductInfo = [
+  check('productName', 'Vui lòng nhập tên sản phẩm')
+    .notEmpty(),
+  check('price', 'Vui lòng nhập giá sản phẩm')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Gía tiền không hợp lệ'),
+  check('quantity', 'Vui lòng nhập số lượng sản phẩm')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Số lượng không hợp lệ'),
+]
+
+//Update Product
+module.exports.validateUpdateProductInfo = [
+  check('productName', 'Vui lòng nhập tên sản phẩm')
+    .notEmpty(),
+  check('price', 'Vui lòng nhập giá sản phẩm')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Gía tiền không hợp lệ'),
+  check('quantity', 'Vui lòng nhập số lượng sản phẩm')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Số lượng không hợp lệ'),
+]

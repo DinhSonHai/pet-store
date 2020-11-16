@@ -10,7 +10,7 @@ class CartController {
   async index(req, res) {
     // Lấy giỏ hàng
     try {
-      const cart = await Cart.find({ userId: req.user._id }).populate('productId', [
+      const cart = await Cart.find({ userId: req.user.id }).populate('productId', [
         'productName',
         'price'
       ]);
@@ -27,11 +27,11 @@ class CartController {
     // Thêm vào giỏ hàng
     try {
       let { productId, quantity } = req.body;
-      let cart = await Cart.findOne({ userId: req.user._id, productId });
+      let cart = await Cart.findOne({ userId: req.user.id, productId });
       if(cart) {
         quantity += cart.quantity;
         cart = await Cart.findOneAndUpdate(
-          { userId: req.user._id, productId },
+          { userId: req.user.id, productId },
           { $set: { quantity }},
           //new: true sẽ trả về đối tượng đã được cập nhật
           { new: true }
@@ -39,7 +39,7 @@ class CartController {
       }
       else {
         cart = new Cart({
-          userId: req.user._id,
+          userId: req.user.id,
           productId,
           quantity
         });
@@ -59,7 +59,7 @@ class CartController {
       let { cart } = req.body;
       cart.forEach(async cartItem => {
         cartItem = await Cart.findOneAndUpdate(
-          { userId: req.user._id, productId: cartItem.productId },
+          { userId: req.user.id, productId: cartItem.productId },
           { $set: { quantity: cartItem.quantity }},
           //new: true sẽ trả về đối tượng đã được cập nhật
           { new: true }
@@ -76,8 +76,8 @@ class CartController {
   // @access  Private
   async deleteCart(req, res) {
     try {
-      let { _id } = req.body;
-      await Cart.findOneAndRemove({ _id })
+      let { id } = req.body;
+      await Cart.findOneAndRemove({ _id: id })
       return res.json({ msg: 'Đã xóa sản phẩm khỏi giỏ hàng'});
     } catch (error) {
       return res.status(500).send('Server Error');

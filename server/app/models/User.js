@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const dayjs = require('dayjs');
 const now = dayjs();
+const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
 
@@ -21,6 +22,11 @@ const UserSchema = new Schema({
   },
   role: { type: Number, default: 2 },
   createdAt: { type: Date, default: now.toISOString() },
+});
+
+UserSchema.plugin(mongooseDelete, {
+  deletedAt: true,
+  overrideMethods: 'all',
 });
 
 module.exports = mongoose.model('user', UserSchema);

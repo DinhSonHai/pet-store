@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const dayjs = require('dayjs');
 const now = dayjs();
+const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
 
@@ -21,6 +22,11 @@ const ProductSchema = new Schema({
   isShow: { type: Boolean, default: true },
   createdAt: { type: Date, default: now.toISOString() },
   modifiedAt: { type: Date },
+});
+
+ProductSchema.plugin(mongooseDelete, {
+  deletedAt: true,
+  overrideMethods: 'all',
 });
 
 module.exports = mongoose.model('product', ProductSchema);
