@@ -25,6 +25,11 @@ router.get('/:id', ProductController.getById);
 // @access  Public
 router.get('/types/:typeId', ProductController.getByTypeId);
 
+// @route   GET api/products/categories/:categoryId
+// @desc    Get all products by Category
+// @access  Public
+router.get('/categories/:categoryId', ProductController.getByCategoryId);
+
 // @route   POST api/products
 // @desc    Create products
 // @access  Private
