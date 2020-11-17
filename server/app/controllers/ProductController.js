@@ -2,7 +2,7 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/Product');
 const Type = require('../models/Type');
-const ObjectId = require('mongoose').Types.ObjectId; 
+const ObjectId = require('mongoose').Types.ObjectId;
 
 class ProductController {
   // @route   GET api/products
@@ -20,7 +20,6 @@ class ProductController {
       else if(type === 2) {
         const products = await Product.find().sort({ price: 'asc'});
         if (!products) {
-          console.log('Sắp xếp giá thấp đến cao');
           return res.status(404).json({ msg: 'Sản phẩm không tồn tại'});
         }
         return res.json(products);
@@ -30,7 +29,6 @@ class ProductController {
         if (!products) {
           return res.status(404).json({ msg: 'Sản phẩm không tồn tại'});
         }
-        console.log('Sắp xếp giá cao đến thấp');
         return res.json(products);
       }
       const products = await Product.find().sort({ createdAt: 'desc'});
@@ -79,11 +77,14 @@ class ProductController {
   // @access  Public
   async getByCategoryId(req, res, next) {
     try {
+      //Lấy tất cả loại theo danh mục sản phẩm
       const types = await Type.find({ categoryId: new ObjectId(req.params.categoryId) }).select('_id');
       if (!types) {
         return res.status(404).json({ msg: 'Sản phẩm không tồn tại'});
       }
+      //Lấy ra _id từ Type object
       const ids = types.map(type => type['_id']);
+      //Lấy tất cả sản phẩm theo danh sách loại sản phẩm
       const products = await Product.find().where('typeId').in(ids);
       if (!products) {
         return res.status(404).json({ msg: 'Sản phẩm không tồn tại'});
