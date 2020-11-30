@@ -11,7 +11,7 @@ const Employee = require('../models/Employee');
 const Admin = require('../models/Admin');
 
 class AuthController {
-  // @route   GET api/auth/signup
+  // @route   POST api/auth/signup
   // @desc    Sign up an account
   // @access  Public
   async signUp(req, res) {
@@ -91,7 +91,7 @@ class AuthController {
     }
   }
 
-  // @route   GET api/auth/activate
+  // @route   POST api/auth/activate
   // @desc    Activate an account
   // @access  Public
   async activate(req, res) {
@@ -133,7 +133,7 @@ class AuthController {
     }
   }
 
-  // @route   GET api/auth/signin
+  // @route   POST api/auth/signin
   // @desc    Sign in
   // @access  Public
   async signIn(req, res) {
@@ -170,7 +170,7 @@ class AuthController {
         user: {
           id: user._id,
         },
-      };console.log(payload.user.id)
+      };
       //Trả về token
       jwt.sign(
         payload,
@@ -181,6 +181,128 @@ class AuthController {
           return res.json({ token });
         }
       );
+    } catch (error) {
+      return res.status(500).send('Server error');
+    }
+  }
+
+  // @route   POST api/auth/forgetpassword
+  // @desc    Forget password
+  // @access  Public
+  async forgotPassword(req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { email } = req.body;
+    try {
+      //Kiểm tra tài khoản có tồn tại hay không
+      let user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(400).json({
+          errors: [{ msg: 'Không tìm thấy tài khoản khớp với email của bạn' }],
+        });
+      }
+
+      const payload = {
+        user: {
+          id: user._id,
+        },
+      };
+
+      const token = jwt.sign(payload, config.get('jwtResetPasswordSecret'), {
+        expiresIn: '7d' 
+      });
+
+      await user.updateOne({
+        resetPasswordLink: token,
+      });
+
+      //Gửi link đặt lại mật khẩu đến email
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: config.get('NODEMAILER_EMAIL'),
+          pass: config.get('NODEMAILER_PASSWORD'),
+        },
+      });
+
+      const content = `
+        <h1>Hãy nhấn vào đường dẫn này để đặt lại mật khẩu cho tài khoản của bạn</h1>
+        <p>${config.get('CLIENT_URL')}/auth/resetpassword/${token}</p>
+        <hr/>
+        <p>Hãy cẩn thận, email này chứa thông tin về tài khoản của bạn</p>
+        <p>${config.get('CLIENT_URL')}</p>
+      `;
+
+      //step 2
+      const mailOptions = {
+        from: config.get('NODEMAILER_EMAIL'),
+        to: email,
+        subject: 'Thông báo đặt lại mật khẩu cho tài khoản',
+        html: content,
+      };
+
+      //step 3
+      transporter
+        .sendMail(mailOptions)
+        .then(() => {
+          return res.json({ message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để đặt lại mật khẩu cho tài khoản` });
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            error: err,
+          });
+        });
+    } catch (error) {
+      return res.status(500).send('Server error');
+    }
+  }
+
+  // @route   POST api/auth/resetpassword
+  // @desc    Reset password
+  // @access  Public
+  async resetPassword(req, res, next) {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { password, resetPasswordLink } = req.body;
+
+    try {
+      jwt.verify(resetPasswordLink, config.get('jwtResetPasswordSecret'), (err, decoded) => {
+        if (err) {
+          if (err) {
+            return res.status(400).json({
+              errors: [{ msg: 'Token không hợp lệ, vui lòng quay lại trang quên mật khẩu' }]
+            });
+          }
+        }
+      });
+      //Kiểm tra tài khoản được thay đổi mật khẩu
+      let user = await User.findOne({ resetPasswordLink });
+      //Kiểm tra có tài khoản nào cần được đặt lại mật khẩu không
+      if(!user) {
+        return res.status(400).json({
+          errors: [{ msg: 'Lỗi server' }]
+        });
+      }
+      //Cập nhật lại tài khoản đã hoàn thành đặt lại mật khẩu
+      const updatedField = {
+        resetPasswordLink: '',
+      };
+      //Mã hóa mật khẩu
+      const salt = await bcrypt.genSalt(10);
+      updatedField.password = await bcrypt.hash(password, salt);
+      //Cập nhật tài khoản
+      user = await User.findOneAndUpdate(
+        { resetPasswordLink },
+        { $set: updatedField },
+        { new: true }
+      );
+      return res.json({ msg: 'Mật khẩu của bạn đã được thay đổi' });
     } catch (error) {
       return res.status(500).send('Server error');
     }

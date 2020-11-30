@@ -35,7 +35,7 @@ module.exports.validateSignIn = [
 ];
 
 //Forget password
-module.exports.validateForgetPassword = [
+module.exports.validateForgotPassword = [
   check('email', 'Vui lòng nhập email hợp lệ').isEmail(),
 ];
 
@@ -49,6 +49,8 @@ module.exports.validateResetPassword = [
     .withMessage('Độ dài của mật khẩu phải nằm trong khoảng từ 6 đến 32 ký tự')
     .matches(/\d/)
     .withMessage('Mật khẩu phải bao gồm số'),
+  check('resetPasswordLink', 'Thiếu thông tin, lỗi server')
+    .notEmpty()
 ];
 
 //Create Product
