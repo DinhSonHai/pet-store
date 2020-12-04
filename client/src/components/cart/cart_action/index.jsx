@@ -1,7 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
-import { Cart } from '../../icons';
+import { Cart } from '../../../icons';
 import { Link } from 'react-router-dom';
+import './styles.scss';
 export default () => {
   const [check, setCheck] = useState(false);
   useEffect(() => {

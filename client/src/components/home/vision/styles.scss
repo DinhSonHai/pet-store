@@ -1,0 +1,24 @@
+.vision {
+  background-color: var(--white-color);
+  &__wrap.container {
+    margin: 0 auto;
+    padding: 2rem;
+    max-width: 1230px;
+  }
+  .ant-card {
+    box-shadow: 0 0 29px 0 rgba(68, 88, 144, 0.12);
+    border-radius: 8px;
+    text-align: center;
+    height: 100%;
+  }
+  &__title {
+    font-weight: bold;
+    color: var(--dark-second-color);
+  }
+  &__desc {
+    text-align: justify;
+  }
+  p {
+    font-size: 1rem;
+  }
+}

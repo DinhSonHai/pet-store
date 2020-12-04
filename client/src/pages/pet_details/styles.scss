@@ -1,26 +1,42 @@
 .pet-details {
-  background-color: #fff;
-}
-.pet-details__title {
-  font-size: 1.6rem;
-  color: var(--mainstream-color);
-}
-.pet-details__card-info {
-  .ant-card {
-    box-shadow: 0 0 29px 0 rgba(68, 88, 144, 0.12);
+  background-color: var(--white-color);
+  .ant-card-head {
+    border-bottom: 1px solid var(--thirdstream-color);
   }
-  button {
-    top: -20px;
+  .addToCart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    position: absolute;
+    right: 20px;
+    top: 45px;
+    z-index: 1;
   }
-}
-.pet-details__wrap {
-  .ant-card-head-title {
+  &__title {
+    font-size: 1.6rem;
     color: var(--mainstream-color);
-    font-size: 1.2rem;
   }
-  .ant-card-body {
-    p {
-      font-size: 1rem;
+  &__card-info {
+    .ant-card {
+      box-shadow: 3px 5px 1px 1px var(--mainstream-color);
+      border: 1px solid var(--mainstream-color);
+    }
+    button {
+      top: -20px;
+    }
+  }
+  &__wrap {
+    .ant-card-head-title {
+      color: var(--mainstream-color);
+      font-size: 1.2rem;
+    }
+    .ant-card-body {
+      p {
+        font-size: 1rem;
+      }
     }
   }
 }

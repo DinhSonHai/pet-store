@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-process.env["NODE_CONFIG_DIR"] = __dirname;
+process.env['NODE_CONFIG_DIR'] = __dirname;
 const config = require('config');
 const nodemailer = require('nodemailer');
 const dayjs = require('dayjs');
@@ -21,15 +21,22 @@ class AuthController {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, gender, dateOfBirth, phoneNumber } = req.body;
+    const {
+      name,
+      email,
+      password,
+      gender,
+      dateOfBirth,
+      phoneNumber,
+    } = req.body;
 
     try {
       // Kiểm tra xem người dùng đã tồn tại chưa
-      let user = await User.find({ email });
-      if (!user) {
+      let user = await User.findOne({ email });
+      if (user) {
         return res
-        .status(400)
-        .json({ errors: [{ msg: 'Địa chỉ email này đã được đăng ký' }] });
+          .status(400)
+          .json({ errors: [{ msg: 'Địa chỉ email này đã được đăng ký' }] });
       }
 
       const payload = {
@@ -37,18 +44,16 @@ class AuthController {
           name,
           email,
           password,
-          gender, 
-          dateOfBirth, 
+          gender,
+          dateOfBirth,
           phoneNumber,
         },
       };
 
       //Generate token
-      const token = jwt.sign(
-        payload,
-        config.get('jwtSignUpSecret'),
-        { expiresIn: '7d' }
-      );
+      const token = jwt.sign(payload, config.get('jwtSignUpSecret'), {
+        expiresIn: '7d',
+      });
 
       //Gửi link kích hoạt tài khoản đến email
       const transporter = nodemailer.createTransport({
@@ -79,7 +84,9 @@ class AuthController {
       transporter
         .sendMail(mailOptions)
         .then(() => {
-          return res.json({ message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để kích hoạt tài khoản` });
+          return res.json({
+            message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để kích hoạt tài khoản`,
+          });
         })
         .catch((err) => {
           return res.status(400).json({
@@ -91,7 +98,7 @@ class AuthController {
     }
   }
 
-  // @route   GET api/auth/activate
+  // @route   POST api/auth/activate
   // @desc    Activate an account
   // @access  Public
   async activate(req, res) {
@@ -99,25 +106,28 @@ class AuthController {
     try {
       //Xác thực token có hợp lệ không
       const decoded = jwt.verify(token, config.get('jwtSignUpSecret'));
-      const {           
+      const {
         name,
         email,
         password,
-        gender, 
-        dateOfBirth, 
-        phoneNumber,} = decoded.user;
+        gender,
+        dateOfBirth,
+        phoneNumber,
+      } = decoded.user;
       //Kiểm tra xem tài khoản đã được kích hoạt chưa
       let user = await User.findOne({ email: email });
       if (user) {
-        return res.status(400).json({ errors: [{ msg: 'Account already activate' }]});
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Tài khoản đã được kích hoạt' }] });
       }
 
       user = new User({
         name,
         email,
         password,
-        gender, 
-        dateOfBirth, 
+        gender,
+        dateOfBirth,
         phoneNumber,
       });
       //Mã hóa mật khẩu
@@ -127,9 +137,9 @@ class AuthController {
       user.dateOfBirth = dayjs(user.dateOfBirth).format();
       //Lưu tài khoản vào csdl
       await user.save();
-      return res.json({ msg: 'Tài khoản đã được kích hoạt' });
-    } catch(error) {
-      return res.status(401).json({ msg: 'Token không hợp lệ' });
+      return res.json({ message: 'Kích hoạt tài khoản thành công' });
+    } catch (error) {
+      return res.status(401).json({ errors: [{ msg: 'Token không hợp lệ' }] });
     }
   }
 
@@ -146,31 +156,36 @@ class AuthController {
       //Lấy thông tin user theo email
       let user = await User.findOne({ email });
       if (!user) {
-        //Kiểm tra xem có phải nhân viên đăng nhập không
-        user = await Employee.findOne({ email });
-        if(!user) {
-          //Kiểm tra xem có phải nhân viên đăng nhập không
-          user = await Admin.findOne({ email });
-        }
-        if(!user) {
-          return res
-            .status(400)
-            .json({ errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }] });
-        }
+        return res.status(400).json({
+          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ' }],
+        });
       }
+      // if (!user) {
+      //   //Kiểm tra xem có phải nhân viên đăng nhập không
+      //   user = await Employee.findOne({ email });
+      //   if (!user) {
+      //     //Kiểm tra xem có phải nhân viên đăng nhập không
+      //     user = await Admin.findOne({ email });
+      //   }
+      //   if (!user) {
+      //     return res.status(400).json({
+      //       errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }],
+      //     });
+      //   }
+      // }
       //Kiểm tra mật khẩu
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }] });
+        return res.status(400).json({
+          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ' }],
+        });
       }
       //Tạo payload cho token
       const payload = {
         user: {
           id: user._id,
         },
-      };console.log(payload.user.id)
+      };
       //Trả về token
       jwt.sign(
         payload,

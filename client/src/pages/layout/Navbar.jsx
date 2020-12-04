@@ -1,9 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Menu, Dropdown } from 'antd';
+import { Layout, Menu, Dropdown, Input } from 'antd';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, Twitter, Facebook, Instagram } from '../../icons';
 import { CartAction } from '../../components';
 import api from '../../api';
 import { getProductsByType } from '../../redux/actions/products';
@@ -12,6 +11,7 @@ import './styles.scss';
 
 const { Header } = Layout;
 const { SubMenu } = Menu;
+const { Search } = Input;
 
 const NavBar = ({ getProductsByType }) => {
   const [types, setTypes] = useState([]);
@@ -34,6 +34,7 @@ const NavBar = ({ getProductsByType }) => {
               return cat._id === ty.categoryId ? (
                 <Menu.Item key={ty._id}>
                   <Link
+                    className='type__title'
                     onClick={() => getProductsByType(ty._id)}
                     to={`/pets/types/${ty._id}`}
                   >
@@ -47,56 +48,54 @@ const NavBar = ({ getProductsByType }) => {
       })}
     </Menu>
   );
+  const onSearch = (value) => {
+    console.log(value);
+  };
   return (
-    <Header className='navbar'>
-      <div className='navbar__info'>
-        <div className='navbar__info-wrap'>
-          <div className='navbar__info-contact'>
-            <div className='navbar__info-contact--mail'>
-              <Mail />
-              <span>ducdao0906@gmail.com</span>
+    <section className='navbar'>
+      <Header className='navbar'>
+        <div className='navbar__info'>
+          <div className='navbar__info-wrap'>
+            <div className='navbar__info-contact'>
+              <div className='logo'>
+                <Link to='/'>
+                  <h1>PetStore.</h1>
+                </Link>
+              </div>
+              <div className='navbar__search'>
+                <Search
+                  placeholder='Nhập thú cưng cần tìm...'
+                  onSearch={onSearch}
+                  enterButton
+                />
+              </div>
             </div>
-            <div className='navbar__info-contact--phone'>
-              <Phone />
-              <span> + 385-639-830</span>
+
+            <div className='navbar__info-social'>
+              {/* <Link to='/signin'>Đăng nhập</Link>
+              <Link to='/signup'>Đăng kí</Link> */}
+              <CartAction />
             </div>
           </div>
-          <div className='navbar__info-social'>
-            <a href='/'>
-              <Twitter />
-            </a>
-            <a href='/'>
-              <Facebook />
-            </a>
-            <a href='/'>
-              <Instagram />
-            </a>
+        </div>
+        <section className='navbar__wrap'>
+          <div className='navbar__wrap-actions'>
+            <Link className='navbar__wrap-actions--link' to='/'>
+              Trang chủ
+            </Link>
+            <Dropdown overlay={menu}>
+              <div className='navbar__wrap-actions--link'>Thú cưng</div>
+            </Dropdown>
+            <Link className='navbar__wrap-actions--link' to='/about'>
+              Về chúng tôi
+            </Link>
+            <Link className='navbar__wrap-actions--link' to='/services'>
+              Dịch vụ
+            </Link>
           </div>
-        </div>
-      </div>
-      <section className='navbar__wrap'>
-        <div className='logo'>
-          <Link to='/'>
-            <h1>PetStore</h1>
-          </Link>
-        </div>
-        <div className='navbar__wrap-actions'>
-          <Link className='navbar__wrap-actions--link' to='/'>
-            Trang chủ
-          </Link>
-          <Dropdown overlay={menu}>
-            <div className='navbar__wrap-actions--link'>Thú cưng</div>
-          </Dropdown>
-          <Link className='navbar__wrap-actions--link' to='/about'>
-            Về chúng tôi
-          </Link>
-          <Link className='navbar__wrap-actions--link' to='/services'>
-            Dịch vụ
-          </Link>
-          <CartAction />
-        </div>
-      </section>
-    </Header>
+        </section>
+      </Header>
+    </section>
   );
 };
 

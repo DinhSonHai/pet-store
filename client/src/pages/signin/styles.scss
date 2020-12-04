@@ -1,0 +1,18 @@
+.login {
+  background-color: var(--white-color);
+  &__content {
+    text-align: center;
+    padding: 2rem;
+  }
+  &__title {
+    font-size: 1.8rem;
+    color: var(--mainstream-color);
+  }
+  .ant-row {
+    justify-content: center;
+    align-items: center;
+  }
+  .ant-card {
+    box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.15);
+  }
+}

@@ -1,0 +1,17 @@
+.signup {
+  background-color: var(--white-color);
+  &__content {
+    padding: 2rem;
+  }
+  &__title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: var(--mainstream-color);
+  }
+  .ant-row {
+    justify-content: center;
+  }
+  .ant-card {
+    box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.15);
+  }
+}
