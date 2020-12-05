@@ -10,6 +10,9 @@ const { Option } = Select;
 const Signup = ({ register }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const onFinish = async (values) => {
+    if (localStorage.token) {
+      return window.location.reload(false);
+    }
     const { name, email, phone, password, gender } = values;
     setIsProcessing(true);
     await register({
@@ -180,4 +183,7 @@ const Signup = ({ register }) => {
 Signup.propTypes = {
   register: PropTypes.func.isRequired,
 };
-export default connect(null, { register })(Signup);
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps, { register })(Signup);

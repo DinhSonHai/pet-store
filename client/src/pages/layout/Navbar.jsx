@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Menu, Dropdown, Input } from 'antd';
 import { Link } from 'react-router-dom';
-import { CartAction } from '../../components';
+import { CartAction, UserNav } from '../../components';
 import api from '../../api';
 import { getProductsByType } from '../../redux/actions/products';
 import { connect } from 'react-redux';
@@ -13,7 +13,10 @@ const { Header } = Layout;
 const { SubMenu } = Menu;
 const { Search } = Input;
 
-const NavBar = ({ getProductsByType }) => {
+const NavBar = ({
+  getProductsByType,
+  auth: { isAuthenticated, user, loading },
+}) => {
   const [types, setTypes] = useState([]);
   const [category, setCategory] = useState([]);
   useEffect(() => {
@@ -35,7 +38,7 @@ const NavBar = ({ getProductsByType }) => {
                 <Menu.Item key={ty._id}>
                   <Link
                     className='type__title'
-                    onClick={() => getProductsByType(ty._id)}
+                    onClick={async () => await getProductsByType(ty._id)}
                     to={`/pets/types/${ty._id}`}
                   >
                     {ty.typeName}
@@ -70,10 +73,17 @@ const NavBar = ({ getProductsByType }) => {
                 />
               </div>
             </div>
-
             <div className='navbar__info-social'>
-              {/* <Link to='/signin'>Đăng nhập</Link>
-              <Link to='/signup'>Đăng kí</Link> */}
+              {loading ? null : !isAuthenticated ? (
+                <Fragment>
+                  <Link to='/signin'>Đăng nhập</Link>
+                  <Link to='/signup'>Đăng kí</Link>
+                </Fragment>
+              ) : (
+                <div className='navbar__user'>
+                  {!user ? null : <UserNav user={user} />}
+                </div>
+              )}
               <CartAction />
             </div>
           </div>
@@ -102,5 +112,7 @@ const NavBar = ({ getProductsByType }) => {
 NavBar.propTypes = {
   getProductsByType: PropTypes.func.isRequired,
 };
-
-export default connect(null, { getProductsByType })(NavBar);
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps, { getProductsByType })(NavBar);

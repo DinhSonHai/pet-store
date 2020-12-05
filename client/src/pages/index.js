@@ -6,4 +6,5 @@ export { default as Home } from './home/Home';
 export { default as Footer } from './layout/Footer';
 export { default as Signin } from './signin/Signin';
 export { default as Signup } from './signup/Signup';
-export { default as Activate } from './activate_account/Activate';
+export { default as Activate } from './activate/Activate';
+export { default as SignOut } from './layout/SignOut';

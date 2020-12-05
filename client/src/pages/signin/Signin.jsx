@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Form, Input, Button, Checkbox, Card, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -7,12 +8,18 @@ import PropTypes from 'prop-types';
 import './styles.scss';
 
 const Signin = ({ login, history }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
   const onFinish = async (values) => {
+    if (localStorage.token) {
+      return window.location.reload(false);
+    }
     const { email, password } = values;
+    setIsProcessing(true);
     const res = await login(email, password);
     if (res) {
       return history.push('/');
     }
+    setIsProcessing(false);
   };
   return (
     <section className='login'>
@@ -77,6 +84,7 @@ const Signin = ({ login, history }) => {
 
                   <Form.Item>
                     <Button
+                      loading={isProcessing}
                       type='primary'
                       htmlType='submit'
                       className='login-form-button'
@@ -97,4 +105,7 @@ const Signin = ({ login, history }) => {
 Signin.propType = {
   login: PropTypes.func.isRequired,
 };
-export default connect(null, { login })(Signin);
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps, { login })(Signin);

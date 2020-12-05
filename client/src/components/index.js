@@ -7,3 +7,4 @@ export { default as Services } from './home/services';
 export { default as Customer } from './home/customer_review';
 export { default as Experience } from './home/experience';
 export { default as Category } from './home/categories';
+export { default as UserNav } from './auth/user_nav';

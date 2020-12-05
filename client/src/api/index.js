@@ -1,6 +1,6 @@
 import axios from 'axios';
-// import store from '../store';
-// import { LOGOUT, CLEAR_PROFILE, CLEAR_NOTIFCATIONS } from '../actions/types';
+import store from '../store';
+import { LOGOUT, CLEAR_PROFILE } from '../redux/types';
 
 const api = axios.create({
   baseURL: '/api',
@@ -19,8 +19,8 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response.status === 401) {
-      //   store.dispatch({ type: LOGOUT });
-      //   store.dispatch({ type: CLEAR_PROFILE });
+      store.dispatch({ type: LOGOUT });
+      store.dispatch({ type: CLEAR_PROFILE });
       //   store.dispatch({ type: CLEAR_NOTIFCATIONS });
     }
     return Promise.reject(err);

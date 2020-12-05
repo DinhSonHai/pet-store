@@ -11,7 +11,7 @@ const Employee = require('../models/Employee');
 const Admin = require('../models/Admin');
 
 class AuthController {
-  // @route   GET api/auth/signup
+  // @route   POST api/auth/signup
   // @desc    Sign up an account
   // @access  Public
   async signUp(req, res) {
@@ -143,7 +143,7 @@ class AuthController {
     }
   }
 
-  // @route   GET api/auth/signin
+  // @route   POST api/auth/signin
   // @desc    Sign in
   // @access  Public
   async signIn(req, res) {
@@ -198,6 +198,25 @@ class AuthController {
       );
     } catch (error) {
       return res.status(500).send('Server error');
+    }
+  }
+  // @route   GET api/auth/user
+  // @desc    Get user data
+  // @access  Private
+  async getUserData(req, res) {
+    try {
+      const user = await User.findById(req.user.id).select([
+        '-password',
+        '-resetPasswordLink',
+      ]);
+      if (!user) {
+        return res.status(404).json({
+          errors: [{ msg: 'Người dùng không tồn tại' }],
+        });
+      }
+      return res.json(user);
+    } catch (error) {
+      return res.status(500).send('Server Error');
     }
   }
 }

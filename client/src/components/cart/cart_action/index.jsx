@@ -18,10 +18,10 @@ export default () => {
     <div className='navbar__wrap-actions--cart'>
       <Link onClick={() => setCheck(!check)} to='/cart'>
         <Cart />
+        <span id='cart__count' className='cart__count'>
+          {0}
+        </span>
       </Link>
-      <span id='cart__count' className='cart__count'>
-        {0}
-      </span>
     </div>
   );
 };
