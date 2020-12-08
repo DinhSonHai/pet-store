@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Navbar, Footer } from './pages';
 import { Routes } from './routes';
 
-import { Layout } from 'antd';
-
 import { Provider } from 'react-redux';
 import store from './store';
 import setAuthToken from './auth/setAuthToken';
@@ -30,13 +28,11 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <Layout>
-          <Navbar />
-          <Switch>
-            <Route component={Routes} />
-          </Switch>
-          <Footer />
-        </Layout>
+        <Navbar />
+        <Switch>
+          <Route component={Routes} />
+        </Switch>
+        <Footer />
       </Router>
     </Provider>
   );

@@ -1,4 +1,3 @@
-import { Layout } from 'antd';
 import {
   Banner,
   Vision,
@@ -11,11 +10,9 @@ import {
 } from '../../components';
 import './styles.scss';
 
-const { Content } = Layout;
-
 function Home(props) {
   return (
-    <Content className='home'>
+    <section className='home'>
       <Banner />
       <Vision />
       <AboutUs />
@@ -24,7 +21,7 @@ function Home(props) {
       <Services />
       <Customer />
       <Experience />
-    </Content>
+    </section>
   );
 }
 

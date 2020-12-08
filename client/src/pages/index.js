@@ -8,3 +8,4 @@ export { default as Signin } from './signin/Signin';
 export { default as Signup } from './signup/Signup';
 export { default as Activate } from './activate/Activate';
 export { default as SignOut } from './layout/SignOut';
+export { default as Forget } from './forget/Forget';

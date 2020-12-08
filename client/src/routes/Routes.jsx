@@ -10,6 +10,7 @@ import {
   Signup,
   Activate,
   SignOut,
+  Forget,
 } from '../pages';
 
 export default function () {
@@ -23,6 +24,7 @@ export default function () {
       <AuthRoute exact path='/signup' component={Signup} />
       <PrivateRoute exact path='/signout' component={SignOut} />
       <AuthRoute exact path='/auth/activate/:token' component={Activate} />
+      <AuthRoute exact path='/forget' component={Forget} />
     </Switch>
   );
 }

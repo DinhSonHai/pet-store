@@ -77,7 +77,7 @@ const Signin = ({ login, history }) => {
                       <Checkbox>Ghi nhớ tôi</Checkbox>
                     </Form.Item>
 
-                    <Link className='login-form-forgot' to='/forgot'>
+                    <Link className='login-form-forgot' to='/forget'>
                       Quên mật khẩu?
                     </Link>
                   </Form.Item>
