@@ -276,7 +276,7 @@ class AuthController {
         if (err) {
           if (err) {
             return res.status(400).json({
-              errors: [{ msg: 'Token không hợp lệ, vui lòng quay lại trang quên mật khẩu' }]
+              error: 'Token không hợp lệ, vui lòng quay lại trang quên mật khẩu'
             });
           }
         }
@@ -286,7 +286,7 @@ class AuthController {
       //Kiểm tra có tài khoản nào cần được đặt lại mật khẩu không
       if(!user) {
         return res.status(400).json({
-          errors: [{ msg: 'Lỗi server' }]
+          error: 'Lỗi server'
         });
       }
       //Cập nhật lại tài khoản đã hoàn thành đặt lại mật khẩu
