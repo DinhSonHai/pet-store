@@ -23,6 +23,11 @@ export default ({ user }) => {
               Đơn hàng
             </Link>
           </li>
+          <li>
+            <Link className='navbar__user--action-link-item' to='/wishlist'>
+              Ưa thích
+            </Link>
+          </li>
           <div className='navbar__separate'></div>
           <li>
             <Link className='navbar__user--action-link-item' to='/signout'>

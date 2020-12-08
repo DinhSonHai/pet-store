@@ -2,9 +2,12 @@
 import { useState } from 'react';
 import { Form, Input, Button, Card, Row, Col } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { forgotPassword } from '../../redux/actions/auth';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import './styles.scss';
 
-export default ({}) => {
+const Forgot = ({ forgotPassword }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const onFinish = async (values) => {
     if (localStorage.token) {
@@ -12,7 +15,7 @@ export default ({}) => {
     }
     const { email } = values;
     setIsProcessing(true);
-
+    await forgotPassword({ email });
     setIsProcessing(false);
   };
   return (
@@ -70,3 +73,7 @@ export default ({}) => {
     </section>
   );
 };
+Forgot.propType = {
+  forgotPassword: PropTypes.func.isRequired,
+};
+export default connect(null, { forgotPassword })(Forgot);

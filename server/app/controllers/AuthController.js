@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 process.env['NODE_CONFIG_DIR'] = __dirname;
 const config = require('config');
@@ -11,6 +12,26 @@ const Employee = require('../models/Employee');
 const Admin = require('../models/Admin');
 
 class AuthController {
+  // @route   GET api/auth/user
+  // @desc    Get user data
+  // @access  Private
+  async getUserData(req, res) {
+    try {
+      const user = await User.findById(req.user.id).select([
+        '-password',
+        '-resetPasswordLink',
+      ]);
+      if (!user) {
+        return res.status(404).json({
+          errors: [{ msg: 'Người dùng không tồn tại' }],
+        });
+      }
+      return res.json(user);
+    } catch (error) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   POST api/auth/signup
   // @desc    Sign up an account
   // @access  Public
@@ -52,7 +73,7 @@ class AuthController {
 
       //Generate token
       const token = jwt.sign(payload, config.get('jwtSignUpSecret'), {
-        expiresIn: '7d',
+        expiresIn: '1d',
       });
 
       //Gửi link kích hoạt tài khoản đến email
@@ -119,7 +140,7 @@ class AuthController {
       if (user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: 'Tài khoản đã được kích hoạt' }] });
+          .json({ errors: [{ msg: 'Tài khoản đã được kích hoạt!' }] });
       }
 
       user = new User({
@@ -137,9 +158,16 @@ class AuthController {
       user.dateOfBirth = dayjs(user.dateOfBirth).format();
       //Lưu tài khoản vào csdl
       await user.save();
-      return res.json({ message: 'Kích hoạt tài khoản thành công' });
+      return res.json({ message: 'Kích hoạt tài khoản thành công!' });
     } catch (error) {
-      return res.status(401).json({ errors: [{ msg: 'Token không hợp lệ' }] });
+      return res.status(401).json({
+        errors: [
+          {
+            msg:
+              'Link kích hoạt tài khoản đã hết hạn, vui lòng thực hiện lại thao tác.',
+          },
+        ],
+      });
     }
   }
 
@@ -157,7 +185,7 @@ class AuthController {
       let user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({
-          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ' }],
+          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
         });
       }
       // if (!user) {
@@ -177,7 +205,7 @@ class AuthController {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res.status(400).json({
-          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ' }],
+          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
         });
       }
       //Tạo payload cho token
@@ -201,28 +229,8 @@ class AuthController {
     }
   }
 
-  // @route   GET api/auth/user
-  // @desc    Get user data
-  // @access  Private
-  async getUserData(req, res) {
-    try {
-      const user = await User.findById(req.user.id).select([
-        '-password',
-        '-resetPasswordLink',
-      ]);
-      if (!user) {
-        return res.status(404).json({
-          errors: [{ msg: 'Người dùng không tồn tại' }],
-        });
-      }
-      return res.json(user);
-    } catch (error) {
-        return res.status(500).send('Server Error'); 
-    }
-  }
-
-  // @route   POST api/auth/forgetpassword
-  // @desc    Forget password
+  // @route   PUT api/auth/forgetpassword
+  // @desc    Send request for reset pwd
   // @access  Public
   async forgotPassword(req, res, next) {
     const errors = validationResult(req);
@@ -239,7 +247,6 @@ class AuthController {
           errors: [{ msg: 'Không tìm thấy tài khoản khớp với email của bạn' }],
         });
       }
-
       const payload = {
         user: {
           id: user._id,
@@ -247,7 +254,7 @@ class AuthController {
       };
 
       const token = jwt.sign(payload, config.get('jwtResetPasswordSecret'), {
-        expiresIn: '7d' 
+        expiresIn: '1d',
       });
 
       await user.updateOne({
@@ -283,11 +290,13 @@ class AuthController {
       transporter
         .sendMail(mailOptions)
         .then(() => {
-          return res.json({ message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để đặt lại mật khẩu cho tài khoản` });
+          return res.json({
+            message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để đặt lại mật khẩu cho tài khoản`,
+          });
         })
         .catch((err) => {
           return res.status(400).json({
-            error: err,
+            errors: [{ msg: err.message }],
           });
         });
     } catch (error) {
@@ -295,49 +304,77 @@ class AuthController {
     }
   }
 
-  // @route   POST api/auth/resetpassword
+  // @route   PUT api/auth/resetpassword
   // @desc    Reset password
   // @access  Public
   async resetPassword(req, res, next) {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     const { password, resetPasswordLink } = req.body;
-
     try {
-      jwt.verify(resetPasswordLink, config.get('jwtResetPasswordSecret'), (err, decoded) => {
-        if (err) {
+      let user_id;
+      jwt.verify(
+        resetPasswordLink,
+        config.get('jwtResetPasswordSecret'),
+        (err, decoded) => {
+          user_id = decoded.user.id;
           if (err) {
             return res.status(400).json({
-              error: 'Token không hợp lệ, vui lòng quay lại trang quên mật khẩu'
+              errors: [
+                {
+                  msg:
+                    'Link reset hết hạn, vui lòng quay lại trang quên mật khẩu và thực hiện lại thao tác.',
+                },
+              ],
             });
           }
         }
-      });
+      );
       //Kiểm tra tài khoản được thay đổi mật khẩu
-      let user = await User.findOne({ resetPasswordLink });
+      let user = await User.findById(user_id);
       //Kiểm tra có tài khoản nào cần được đặt lại mật khẩu không
-      if(!user) {
+      if (!user.resetPasswordLink) {
         return res.status(400).json({
-          error: 'Lỗi server'
+          errors: [
+            {
+              msg:
+                'Link reset đã được sử dụng, vui lòng quay lại trang quên mật khẩu và thực hiện lại thao tác.',
+            },
+          ],
         });
       }
-      //Cập nhật lại tài khoản đã hoàn thành đặt lại mật khẩu
-      const updatedField = {
+      if (user.resetPasswordLink !== resetPasswordLink) {
+        return res.status(400).json({
+          errors: [
+            {
+              msg:
+                'Token không hợp lệ!, vui lòng quay lại trang quên mật khẩu và thực hiện lại thao tác.',
+            },
+          ],
+        });
+      }
+      const salt = await bcrypt.genSalt(10);
+
+      const hashPassword = await bcrypt.hash(password, salt);
+      const updatedFields = {
+        password: hashPassword,
         resetPasswordLink: '',
       };
-      //Mã hóa mật khẩu
-      const salt = await bcrypt.genSalt(10);
-      updatedField.password = await bcrypt.hash(password, salt);
-      //Cập nhật tài khoản
-      user = await User.findOneAndUpdate(
-        { resetPasswordLink },
-        { $set: updatedField },
-        { new: true }
-      );
-      return res.json({ msg: 'Mật khẩu của bạn đã được thay đổi' });
+
+      user = _.extend(user, updatedFields);
+
+      user.save((err, result) => {
+        if (err) {
+          return res.status(400).json({
+            errors: [{ msg: 'Xảy ra lỗi khi reset password, hãy thử lại!' }],
+          });
+        }
+        return res.json({
+          message: `Reset password thành công!, bạn có thể đăng nhập với mật khẩu mới.`,
+        });
+      });
     } catch (error) {
       return res.status(500).send('Server error');
     }

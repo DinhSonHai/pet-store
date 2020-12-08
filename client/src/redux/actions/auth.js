@@ -82,3 +82,47 @@ export const login = (email, password) => async (dispatch) => {
     }
   }
 };
+
+// Send request for reset pwd
+export const forgotPassword = (email) => async (dispatch) => {
+  try {
+    const res = await api.put('/auth/forgotpassword', email);
+    notification.open({
+      message: 'Thành công!',
+      description: res.data.message,
+    });
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
+
+// Send request for reset pwd
+export const resetPassword = (data) => async (dispatch) => {
+  try {
+    const res = await api.put('/auth/resetpassword', data);
+    notification.open({
+      message: 'Thành công!',
+      description: res.data.message,
+    });
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
