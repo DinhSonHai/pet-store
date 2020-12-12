@@ -1,5 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { USER_LOADED, LOGIN_SUCCESS, AUTH_ERROR, LOGOUT } from '../types';
+import {
+  USER_LOADED,
+  LOGIN_SUCCESS,
+  AUTH_ERROR,
+  LOGOUT,
+  UPDATE_USER,
+} from '../types';
 
 const initialState = {
   token: localStorage.getItem('token'),
@@ -11,6 +17,7 @@ const initialState = {
 export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
+    case UPDATE_USER:
     case USER_LOADED:
       return {
         ...state,

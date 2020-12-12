@@ -1,0 +1,25 @@
+.profile {
+  color: var(--dark-second-color);
+  &__info {
+    display: flex;
+    align-items: center;
+  }
+  &__desc,
+  &__username {
+    margin: 0;
+  }
+  &__desc {
+    font-size: 0.85rem;
+  }
+  &__username {
+    font-weight: 600;
+  }
+  &__avt {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 0.25rem;
+    margin: 0.25rem;
+  }
+}

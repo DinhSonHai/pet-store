@@ -12,6 +12,8 @@ import {
   SignOut,
   Forgot,
   Reset,
+  ProfileUser,
+  ProfileAddress,
 } from '../pages';
 
 export default function () {
@@ -27,6 +29,8 @@ export default function () {
       <AuthRoute exact path='/auth/activate/:token' component={Activate} />
       <AuthRoute exact path='/forget' component={Forgot} />
       <AuthRoute exact path='/auth/resetpassword/:token' component={Reset} />
+      <PrivateRoute exact path='/profile' component={ProfileUser} />
+      <PrivateRoute exact path='/profile/address' component={ProfileAddress} />
     </Switch>
   );
 }

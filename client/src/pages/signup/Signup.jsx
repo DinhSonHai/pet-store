@@ -13,7 +13,7 @@ const Signup = ({ register }) => {
     if (localStorage.token) {
       return window.location.reload(false);
     }
-    const { name, email, phone, password, gender } = values;
+    const { name, email, phone, password, gender, dateOfBirth } = values;
     setIsProcessing(true);
     await register({
       name,
@@ -21,10 +21,9 @@ const Signup = ({ register }) => {
       phoneNumber: phone,
       password,
       gender,
-      dateOfBirth: values['dateOfBirth'].toISOString(),
+      dateOfBirth: new Date(dateOfBirth).toISOString(),
     });
     setIsProcessing(false);
-    console.log(values);
   };
   const tailFormItemLayout = {
     wrapperCol: {
@@ -136,6 +135,7 @@ const Signup = ({ register }) => {
                   <Form.Item
                     name='gender'
                     label='Giới tính'
+                    initialValue={0}
                     rules={[
                       {
                         required: true,
@@ -143,10 +143,10 @@ const Signup = ({ register }) => {
                       },
                     ]}
                   >
-                    <Select allowClear>
-                      <Option value={0}>male</Option>
-                      <Option value={1}>female</Option>
-                      <Option value={2}>other</Option>
+                    <Select>
+                      <Option value={0}>Nam</Option>
+                      <Option value={1}>Nữ</Option>
+                      <Option value={2}>Khác</Option>
                     </Select>
                   </Form.Item>
                   <Form.Item
@@ -159,7 +159,7 @@ const Signup = ({ register }) => {
                     ]}
                     label='Ngày sinh'
                   >
-                    <DatePicker />
+                    <DatePicker allowClear={false} format='DD/MM/YYYY' />
                   </Form.Item>
                   <Form.Item {...tailFormItemLayout}>
                     <Button

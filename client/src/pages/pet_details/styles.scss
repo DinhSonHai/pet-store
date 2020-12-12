@@ -1,8 +1,5 @@
 .pet-details {
   background-color: var(--white-color);
-  .ant-card-head {
-    border-bottom: 1px solid var(--thirdstream-color);
-  }
   .addToCart {
     display: flex;
     align-items: center;
@@ -21,8 +18,7 @@
   }
   &__card-info {
     .ant-card {
-      box-shadow: 3px 5px 1px 1px var(--mainstream-color);
-      border: 1px solid var(--mainstream-color);
+      box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.15);
     }
     button {
       top: -20px;

@@ -1,10 +1,11 @@
 .login {
   background-color: var(--white-color);
   &__content {
-    text-align: center;
+    // text-align: center;
     padding: 2rem;
   }
   &__title {
+    text-align: center;
     font-size: 1.8rem;
     color: var(--mainstream-color);
   }

@@ -11,6 +11,7 @@ import './styles.scss';
 
 import { getProductById } from '../../redux/actions/products';
 import { addItem } from '../../utils/cart';
+import { Loader } from '../../components';
 import { connect } from 'react-redux';
 
 const PetDetails = ({ getProductById, match, data }) => {
@@ -33,8 +34,8 @@ const PetDetails = ({ getProductById, match, data }) => {
       <div className='container'>
         <h1 className='pet-details__title'>Chi tiết</h1>
         <div className='pet-details__content'>
-          {loading ? (
-            <h1>Loading...</h1>
+          {loading || !data ? (
+            <Loader />
           ) : (
             <div className='pet-details__wrap'>
               <Row gutter={[16, 16]}>

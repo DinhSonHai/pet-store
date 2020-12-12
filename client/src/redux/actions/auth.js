@@ -1,5 +1,5 @@
 import api from '../../api';
-import { LOGIN_SUCCESS, USER_LOADED, AUTH_ERROR } from '../types';
+import { LOGIN_SUCCESS, USER_LOADED, AUTH_ERROR, UPDATE_USER } from '../types';
 import { notification } from 'antd';
 
 // Load User
@@ -113,6 +113,104 @@ export const resetPassword = (data) => async (dispatch) => {
       message: 'Thành công!',
       description: res.data.message,
     });
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
+
+// update user info
+export const updateUserInfo = (data) => async (dispatch) => {
+  try {
+    const res = await api.put('/auth/update_user', data);
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+    loadUser();
+    notification.open({
+      message: 'Thành công!',
+      description: 'Cập nhật thông tin thành công!',
+    });
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
+
+// Add address for user
+export const AddAdress = (data) => async (dispatch) => {
+  try {
+    const res = await api.put('/auth/add_address', data);
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+    loadUser();
+    return true;
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
+
+// Remove address for user
+export const RemoveAdress = (address_id) => async (dispatch) => {
+  try {
+    const res = await api.put('/auth/remove_address', { address_id });
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+    loadUser();
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
+
+// Update address for user
+export const UpdateAdress = (data) => async (dispatch) => {
+  try {
+    const res = await api.put('/auth/update_address', data);
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+    loadUser();
+    return true;
   } catch (err) {
     const errors = err.response.data.errors;
 

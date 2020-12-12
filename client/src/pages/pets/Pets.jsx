@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { getProductsByType } from '../../redux/actions/products';
@@ -14,24 +14,28 @@ import {
 } from '@ant-design/icons';
 import { AddToCart } from '../../icons';
 import { addItem } from '../../utils/cart';
+import { Loader } from '../../components';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import './styles.scss';
 const { Meta } = Card;
 
-const Pets = ({
-  data: { products, loading },
-  getProductsByType,
-  match,
-  location,
-}) => {
+const Pets = ({ data: { products }, getProductsByType, match, location }) => {
   let filter = queryString.parse(location.search).sort;
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (filter) {
-      getProductsByType(match.params.id, filter);
-    } else {
-      getProductsByType(match.params.id);
+    async function getData() {
+      if (filter) {
+        setLoading(true);
+        await getProductsByType(match.params.id, filter);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      await getProductsByType(match.params.id);
+      setLoading(false);
     }
+    getData();
   }, [getProductsByType, match.params.id, filter]);
   const menu = (
     <Menu>
@@ -86,8 +90,8 @@ const Pets = ({
         </div>
         <div className='pets-list'>
           <Row gutter={[16, 16]}>
-            {loading ? (
-              <h1>Loading...</h1>
+            {loading || !products ? (
+              <Loader />
             ) : (
               products.map((product) => (
                 <Col key={product._id} xs={24} sm={12} md={8} lg={6}>

@@ -6,3 +6,5 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
 export const CLEAR_PROFILE = 'CLEAR_PROFILE';
 export const AUTH_ERROR = 'AUTH_ERROR';
+export const MANAGE_FOOTER = 'MANAGE_FOOTER';
+export const UPDATE_USER = 'UPDATE_USER';

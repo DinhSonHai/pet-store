@@ -72,7 +72,7 @@ const Signin = ({ login, history }) => {
                       placeholder='Mật khẩu'
                     />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item style={{ textAlign: 'center' }}>
                     <Form.Item name='remember' valuePropName='checked' noStyle>
                       <Checkbox>Ghi nhớ tôi</Checkbox>
                     </Form.Item>
@@ -82,7 +82,7 @@ const Signin = ({ login, history }) => {
                     </Link>
                   </Form.Item>
 
-                  <Form.Item>
+                  <Form.Item style={{ textAlign: 'center' }}>
                     <Button
                       loading={isProcessing}
                       type='primary'

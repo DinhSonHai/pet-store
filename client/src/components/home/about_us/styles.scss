@@ -37,6 +37,7 @@
     padding: 0 1rem 1rem 1rem;
     margin: auto;
     font-weight: 500;
+    color: var(--dark-second-color) !important;
   }
   &_header {
     font-size: 1.4rem;
@@ -60,10 +61,10 @@
       margin-left: 1rem;
       &--title {
         font-weight: 600;
-        color: var(--dark-second-color);
       }
       &--desc,
       &--title {
+        color: var(--dark-second-color);
         font-size: 1rem;
         margin-bottom: 0.65rem;
       }

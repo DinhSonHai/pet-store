@@ -79,7 +79,7 @@ const Reset = ({ resetPassword, match }) => {
                   >
                     <Input.Password />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item style={{ textAlign: 'center' }}>
                     <Button
                       loading={isProcessing}
                       type='primary'

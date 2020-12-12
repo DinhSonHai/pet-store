@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const dayjs = require('dayjs');
 const now = dayjs();
 const mongooseDelete = require('mongoose-delete');
+const bcrypt = require('bcryptjs');
 
 const Schema = mongoose.Schema;
 
@@ -14,10 +15,20 @@ const UserSchema = new Schema({
     default:
       'https://firebasestorage.googleapis.com/v0/b/pet-store-ed9d7.appspot.com/o/avatar_03.jpg?alt=media&token=c79e47f3-f578-475a-aba2-ac8cce7cee39',
   },
-  address: [{ value: { type: String, trim: true } }],
+  address: [
+    {
+      id: { type: mongoose.Schema.ObjectId },
+      value: { type: String, trim: true },
+      isDefault: { type: Boolean, default: false },
+      p_id: { type: Number },
+      w_id: { type: Number },
+      t_id: { type: Number },
+      m: { type: String, trim: true },
+    },
+  ],
   gender: { type: Number, default: 0 },
-  dateOfBirth: { type: Date },
-  phoneNumber: { type: String, trim: true },
+  dateOfBirth: { type: Date, default: now.toISOString() },
+  phoneNumber: { type: String, required: true, trim: true },
   favoriteProducts: [{ type: Schema.Types.ObjectId, ref: 'product' }],
   favoriteProductsCount: { type: Number, default: 0 },
   resetPasswordLink: {
@@ -32,5 +43,7 @@ UserSchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: 'all',
 });
-
+UserSchema.methods.checkPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 module.exports = mongoose.model('user', UserSchema);

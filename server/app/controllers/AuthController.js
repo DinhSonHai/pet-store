@@ -6,10 +6,11 @@ process.env['NODE_CONFIG_DIR'] = __dirname;
 const config = require('config');
 const nodemailer = require('nodemailer');
 const dayjs = require('dayjs');
+const axios = require('axios');
 
 const User = require('../models/User');
-const Employee = require('../models/Employee');
-const Admin = require('../models/Admin');
+// const Employee = require('../models/Employee');
+// const Admin = require('../models/Admin');
 
 class AuthController {
   // @route   GET api/auth/user
@@ -202,7 +203,7 @@ class AuthController {
       //   }
       // }
       //Kiểm tra mật khẩu
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await user.checkPassword(password);
       if (!isMatch) {
         return res.status(400).json({
           errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
@@ -377,6 +378,352 @@ class AuthController {
       });
     } catch (error) {
       return res.status(500).send('Server error');
+    }
+  }
+  // @route   PUT api/auth/update_user
+  // @desc    Update user info
+  // @access  Private
+  async updateUserInfo(req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const {
+      name,
+      password,
+      phone,
+      password_old,
+      avatar,
+      gender,
+      dateOfBirth,
+    } = req.body;
+    try {
+      let user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+      }
+
+      if (name && name !== user.name) {
+        user.name = name;
+      }
+      if (phone && phone !== user.phoneNumber) {
+        user.phoneNumber = phone;
+      }
+      if (gender && gender !== user.gender) {
+        user.gender = gender;
+      }
+      if (password_old) {
+        const isMatch = await user.checkPassword(password_old);
+        if (!isMatch) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'Mật khẩu cũ không chính xác!' }] });
+        }
+      }
+      if (password && password !== user.password) {
+        if (password.length < 6 || password.length > 32) {
+          return res.status(400).json({
+            errors: [
+              {
+                msg:
+                  'Độ dài của mật khẩu phải nằm trong khoảng từ 6 đến 32 ký tự',
+              },
+            ],
+          });
+        }
+        if (!/\d/.test(password)) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'Mật khẩu phải bao gồm số' }] });
+        }
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+      }
+      if (avatar && avatar !== user.avatar) {
+        user.avatar = avatar;
+      }
+      if (
+        dateOfBirth &&
+        dateOfBirth.toString() !== user.dateOfBirth.toString()
+      ) {
+        user.dateOfBirth = dateOfBirth;
+      }
+      user.save((err, updateUser) => {
+        if (err) {
+          return res.status(400).json({
+            errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
+          });
+        }
+        updateUser.password = undefined;
+        return res.json(updateUser);
+      });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   PUT api/auth/add_address
+  // @desc    Add user address
+  // @access  Private
+  async AddUserAddress(req, res, next) {
+    function getData(path) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(path)
+          .then(function (response) {
+            resolve(response.data);
+          })
+          .catch(function (err) {
+            reject(err.error);
+          });
+      });
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const {
+      provinceState,
+      wardState,
+      townState,
+      moreInfo,
+      isDefault,
+    } = req.body;
+    try {
+      let user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+      }
+      Promise.all([
+        getData(`https://thongtindoanhnghiep.co/api/city/${provinceState}`),
+        getData(`https://thongtindoanhnghiep.co/api/district/${wardState}`),
+        getData(`https://thongtindoanhnghiep.co/api/ward/${townState}`),
+      ])
+        .then((results) => {
+          let province_name = results[0].Title;
+          let ward_name = results[1].Title;
+          let town_name = results[2].Title;
+          let address =
+            moreInfo.trim() +
+            ', ' +
+            town_name +
+            ', ' +
+            ward_name +
+            ', ' +
+            province_name;
+          if (isDefault) {
+            const mapedAddress = user.address.map((item) => {
+              return {
+                value: item.value,
+                isDefault: false,
+                p_id: item.p_id,
+                w_id: item.w_id,
+                t_id: item.t_id,
+                m: item.m,
+              };
+            });
+            user.address = [
+              ...mapedAddress,
+              {
+                value: address,
+                isDefault: true,
+                p_id: provinceState,
+                w_id: wardState,
+                t_id: townState,
+                m: moreInfo,
+              },
+            ];
+          } else {
+            user.address = [
+              ...user.address,
+              {
+                value: address,
+                isDefault: false,
+                p_id: provinceState,
+                w_id: wardState,
+                t_id: townState,
+                m: moreInfo,
+              },
+            ];
+          }
+          user.save((err, updateUser) => {
+            if (err) {
+              return res.status(400).json({
+                errors: [
+                  { msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' },
+                ],
+              });
+            }
+            updateUser.password = undefined;
+            return res.json(updateUser);
+          });
+        })
+        .catch((err) =>
+          res.status(400).json({
+            errors: [
+              { msg: 'Có lỗi xảy ra, hãy reload lại trang và thử lại!' },
+            ],
+          })
+        );
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   PUT api/auth/remove_address
+  // @desc    Remove user address
+  // @access  Private
+  async RemoveUserAddress(req, res, next) {
+    const { address_id } = req.body;
+    try {
+      let user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+      }
+      let findedAdress = user.address.find(
+        (item) => item._id.toString() === address_id
+      );
+      if (!findedAdress) {
+        return res.status(400).json({
+          errors: [{ msg: 'Địa chỉ không tồn tại!' }],
+        });
+      }
+      let removedAddress = user.address.filter(
+        (item) => item._id.toString() !== address_id
+      );
+      user.address = removedAddress;
+      await user.save((err, updateUser) => {
+        if (err) {
+          return res.status(400).json({
+            errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
+          });
+        }
+        updateUser.password = undefined;
+        return res.json(updateUser);
+      });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   PUT api/auth/update_address
+  // @desc    Update user address
+  // @access  Private
+  async UpdateUserAddress(req, res, next) {
+    function getData(path) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(path)
+          .then(function (response) {
+            resolve(response.data);
+          })
+          .catch(function (err) {
+            reject(err.error);
+          });
+      });
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const {
+      provinceState,
+      wardState,
+      townState,
+      moreInfo,
+      isDefault,
+      address_id,
+    } = req.body;
+    try {
+      let user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+      }
+      let index;
+      let findedAdress = user.address.find((item, i) => {
+        index = i;
+        return item._id.toString() === address_id;
+      });
+      if (!findedAdress) {
+        return res.status(400).json({
+          errors: [{ msg: 'Địa chỉ không tồn tại!' }],
+        });
+      }
+      Promise.all([
+        getData(`https://thongtindoanhnghiep.co/api/city/${provinceState}`),
+        getData(`https://thongtindoanhnghiep.co/api/district/${wardState}`),
+        getData(`https://thongtindoanhnghiep.co/api/ward/${townState}`),
+      ])
+        .then((results) => {
+          let province_name = results[0].Title;
+          let ward_name = results[1].Title;
+          let town_name = results[2].Title;
+          let address =
+            moreInfo.trim() +
+            ', ' +
+            town_name +
+            ', ' +
+            ward_name +
+            ', ' +
+            province_name;
+          let upadateAddress;
+          if (findedAdress.isDefault) {
+            upadateAddress = {
+              _id: findedAdress._id,
+              value: address,
+              isDefault: true,
+              p_id: provinceState,
+              w_id: wardState,
+              t_id: townState,
+              m: moreInfo,
+            };
+          } else {
+            if (isDefault) {
+              let defaultIndex = user.address.findIndex(
+                (item) => item.isDefault
+              );
+              user.address[defaultIndex].isDefault = false;
+            }
+            upadateAddress = {
+              _id: findedAdress._id,
+              value: address,
+              isDefault,
+              p_id: provinceState,
+              w_id: wardState,
+              t_id: townState,
+              m: moreInfo,
+            };
+          }
+          user.address[index] = upadateAddress;
+          user.save((err, updateUser) => {
+            if (err) {
+              return res.status(400).json({
+                errors: [
+                  { msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' },
+                ],
+              });
+            }
+            updateUser.password = undefined;
+            return res.json(updateUser);
+          });
+        })
+        .catch((err) =>
+          res.status(400).json({
+            errors: [
+              { msg: 'Có lỗi xảy ra, hãy reload lại trang và thử lại!' },
+            ],
+          })
+        );
+    } catch (err) {
+      return res.status(500).send('Server Error');
     }
   }
 }

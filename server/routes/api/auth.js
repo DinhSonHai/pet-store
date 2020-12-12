@@ -10,6 +10,8 @@ const {
   validateSignIn,
   validateForgotPassword,
   validateResetPassword,
+  validateUpdateUser,
+  validateUpdateAddress,
 } = require('../../helpers/valid');
 
 // @route   POST api/auth/signup
@@ -48,6 +50,38 @@ router.put(
   '/resetpassword',
   validateResetPassword,
   AuthController.resetPassword
+);
+
+// @route   PUT api/auth/update_user
+// @desc    Reset password
+// @access  Public
+router.put(
+  '/update_user',
+  [auth, validateUpdateUser],
+  AuthController.updateUserInfo
+);
+
+// @route   PUT api/auth/add_address
+// @desc    Add user address
+// @access  Private
+router.put(
+  '/add_address',
+  [auth, validateUpdateAddress],
+  AuthController.AddUserAddress
+);
+
+// @route   PUT api/auth/remove_address
+// @desc    Remove user address
+// @access  Private
+router.put('/remove_address', auth, AuthController.RemoveUserAddress);
+
+// @route   PUT api/auth/update_address
+// @desc    Update user address
+// @access  Private
+router.put(
+  '/update_address',
+  [auth, validateUpdateAddress],
+  AuthController.UpdateUserAddress
 );
 
 module.exports = router;
