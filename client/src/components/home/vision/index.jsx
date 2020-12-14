@@ -7,7 +7,7 @@ export default () => {
     <section className='vision'>
       <div className='vision__wrap container'>
         <Row gutter={[26, 26]}>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Payment />
@@ -19,7 +19,7 @@ export default () => {
               </p>
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Call />
@@ -31,7 +31,7 @@ export default () => {
               </p>
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Shipped />
@@ -43,7 +43,7 @@ export default () => {
               </p>
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Reputation />

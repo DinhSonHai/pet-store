@@ -22,7 +22,7 @@ export default () => {
         </h4>
         <div className='experience__content'>
           <Row gutter={[0, 0]}>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card bordered={false}>
                 <img
                   src={Ex_03}
@@ -33,7 +33,7 @@ export default () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card bordered={false}>
                 <img
                   src={Ex_05}
@@ -44,7 +44,7 @@ export default () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card bordered={false}>
                 <img
                   src={Ex_01}
@@ -55,7 +55,7 @@ export default () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card bordered={false}>
                 <img
                   src={Ex_02}
@@ -66,7 +66,7 @@ export default () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card bordered={false}>
                 <img
                   src={Ex_04}
@@ -77,7 +77,7 @@ export default () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card bordered={false}>
                 <img
                   src={Ex_06}

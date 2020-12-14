@@ -6,9 +6,9 @@ class ClientController {
   async getProvince(req, res) {
     try {
       const resData = await axios.default.get(
-        'https://thongtindoanhnghiep.co/api/city'
+        'https://vapi.vnappmob.com/api/province'
       );
-      return res.json(resData.data.LtsItem);
+      return res.json(resData.data.results);
     } catch (err) {
       console.log(err.message);
     }
@@ -20,9 +20,9 @@ class ClientController {
   async getWard(req, res) {
     try {
       const resData = await axios.default.get(
-        `https://thongtindoanhnghiep.co/api/city/${req.params.province_id}/district`
+        `https://vapi.vnappmob.com/api/province/district/${req.params.province_id}`
       );
-      return res.json(resData.data);
+      return res.json(resData.data.results);
     } catch (err) {
       console.log(err.message);
     }
@@ -34,9 +34,9 @@ class ClientController {
   async getTown(req, res) {
     try {
       const resData = await axios.default.get(
-        `https://thongtindoanhnghiep.co/api/district/${req.params.ward_id}/ward`
+        `https://vapi.vnappmob.com/api/province/ward/${req.params.ward_id}`
       );
-      return res.json(resData.data);
+      return res.json(resData.data.results);
     } catch (err) {
       console.log(err.message);
     }

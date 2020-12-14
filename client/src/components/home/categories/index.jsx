@@ -21,7 +21,7 @@ export default () => {
         </h4>
         <div className='category__content'>
           <Row gutter={[28, 28]}>
-            <Col xs={24} sm={24} md={12} lg={6}>
+            <Col xs={24} sm={12} md={12} lg={6}>
               <Link to={`/pet`}>
                 <Card
                   bordered={false}
@@ -33,7 +33,7 @@ export default () => {
                 </Card>
               </Link>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={6}>
+            <Col xs={24} sm={12} md={12} lg={6}>
               <Link to={`/pet`}>
                 {' '}
                 <Card
@@ -46,7 +46,7 @@ export default () => {
                 </Card>
               </Link>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={6}>
+            <Col xs={24} sm={12} md={12} lg={6}>
               <Link to={`/pet`}>
                 {' '}
                 <Card
@@ -59,7 +59,7 @@ export default () => {
                 </Card>
               </Link>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={6}>
+            <Col xs={24} sm={12} md={12} lg={6}>
               <Link to={`/pet`}>
                 {' '}
                 <Card

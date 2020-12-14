@@ -39,7 +39,7 @@ const PetDetails = ({ getProductById, match, data }) => {
           ) : (
             <div className='pet-details__wrap'>
               <Row gutter={[16, 16]}>
-                <Col xs={24} lg={12}>
+                <Col xs={24} sm={24} md={12} lg={12}>
                   <Carousel autoPlay>
                     {data.images.map((img, index) => (
                       <img
@@ -52,7 +52,7 @@ const PetDetails = ({ getProductById, match, data }) => {
                     ))}
                   </Carousel>
                 </Col>
-                <Col xs={24} lg={12}>
+                <Col xs={24} sm={24} md={12} lg={12}>
                   <div className='pet-details__card-info'>
                     <Card title={data.productName} bordered={false}>
                       <p>

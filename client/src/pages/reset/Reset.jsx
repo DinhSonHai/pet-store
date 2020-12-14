@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, Card, Row, Col } from 'antd';
+import { Form, Input, Button, Card } from 'antd';
 import { resetPassword } from '../../redux/actions/auth';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -28,71 +28,67 @@ const Reset = ({ resetPassword, match }) => {
     <section className='reset'>
       <div className='reset__wrap container'>
         <div className='reset__content'>
-          <Row gutter={[0, 0]}>
-            <Col xs={24} sm={24} md={24} lg={12}>
-              <Card>
-                <h1 className='reset__title'>Đặt lại mật khẩu</h1>
-                <Form
-                  layout='vertical'
-                  name='normal_login'
-                  className='login-form'
-                  initialValues={{
-                    remember: true,
-                    size: 'large',
-                  }}
-                  size='large'
-                  onFinish={onFinish}
-                >
-                  <Form.Item
-                    name='password'
-                    label='Mật khẩu'
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Vui lòng nhập mật khẩu!',
-                      },
-                    ]}
-                    hasFeedback
-                  >
-                    <Input.Password />
-                  </Form.Item>
-                  <Form.Item
-                    name='confirm'
-                    label='Xác nhận mật khẩu'
-                    dependencies={['password']}
-                    hasFeedback
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Vui lòng xác nhận mật khẩu!',
-                      },
-                      ({ getFieldValue }) => ({
-                        validator(rule, value) {
-                          if (!value || getFieldValue('password') === value) {
-                            return Promise.resolve();
-                          }
+          <Card style={{ maxWidth: '600px', margin: 'auto' }}>
+            <h1 className='reset__title'>Đặt lại mật khẩu</h1>
+            <Form
+              layout='vertical'
+              name='normal_login'
+              className='login-form'
+              initialValues={{
+                remember: true,
+                size: 'large',
+              }}
+              size='large'
+              onFinish={onFinish}
+            >
+              <Form.Item
+                name='password'
+                label='Mật khẩu'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập mật khẩu!',
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item
+                name='confirm'
+                label='Xác nhận mật khẩu'
+                dependencies={['password']}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng xác nhận mật khẩu!',
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(rule, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
 
-                          return Promise.reject('Mật khẩu không khớp!');
-                        },
-                      }),
-                    ]}
-                  >
-                    <Input.Password />
-                  </Form.Item>
-                  <Form.Item style={{ textAlign: 'center' }}>
-                    <Button
-                      loading={isProcessing}
-                      type='primary'
-                      htmlType='submit'
-                      className='login-form-button'
-                    >
-                      Xác nhận
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Card>
-            </Col>
-          </Row>
+                      return Promise.reject('Mật khẩu không khớp!');
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item style={{ textAlign: 'center' }}>
+                <Button
+                  loading={isProcessing}
+                  type='primary'
+                  htmlType='submit'
+                  className='login-form-button'
+                >
+                  Xác nhận
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
         </div>
       </div>
     </section>

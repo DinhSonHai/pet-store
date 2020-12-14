@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import { Button, Card, Row, Col, Form } from 'antd';
+import { Button, Card, Form } from 'antd';
 import { activate } from '../../redux/actions/auth';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -31,33 +31,29 @@ const Activate = ({ match, activate }) => {
     <section className='activate'>
       <div className='activate__wrap container'>
         <div className='activate__content'>
-          <Row gutter={[0, 0]}>
-            <Col xs={24} sm={18} lg={12}>
-              <Card>
-                <h1 className='activate__title'>Xin chào {name}</h1>
-                <Form
-                  name='normal_activate_form'
-                  initialValues={{
-                    remember: true,
-                    size: 'large',
-                  }}
-                  size='large'
-                  onFinish={onFinish}
+          <Card style={{ maxWidth: '600px', margin: 'auto' }}>
+            <h1 className='activate__title'>Xin chào {name}</h1>
+            <Form
+              name='normal_activate_form'
+              initialValues={{
+                remember: true,
+                size: 'large',
+              }}
+              size='large'
+              onFinish={onFinish}
+            >
+              <Form.Item>
+                <Button
+                  style={{ width: '100%' }}
+                  loading={isProcessing}
+                  type='primary'
+                  htmlType='submit'
                 >
-                  <Form.Item>
-                    <Button
-                      style={{ width: '100%' }}
-                      loading={isProcessing}
-                      type='primary'
-                      htmlType='submit'
-                    >
-                      Kích hoạt
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Card>
-            </Col>
-          </Row>
+                  Kích hoạt
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
         </div>
       </div>
     </section>

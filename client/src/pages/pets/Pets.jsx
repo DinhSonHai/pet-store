@@ -81,7 +81,7 @@ const Pets = ({ data: { products }, getProductsByType, match, location }) => {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className='pets__header-filter'>
-            <Dropdown overlay={menu}>
+            <Dropdown disabled={loading} overlay={menu}>
               <Button>
                 Mới nhất <DownOutlined />
               </Button>

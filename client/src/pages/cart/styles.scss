@@ -1,10 +1,9 @@
 .cart {
   background-color: var(--white-color);
-  &__overall.ant-card {
-    box-shadow: 0 0 29px 0 rgba(68, 88, 144, 0.12);
+  .ant-card {
+    box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.15);
   }
   .ant-card-head-title {
-    text-align: end;
     font-size: 1.4rem;
   }
   .ant-input-number {
@@ -12,6 +11,10 @@
   }
   &__wrap &__content:last-child {
     border-bottom: unset;
+  }
+  &__items {
+    max-height: 800px;
+    overflow-y: auto;
   }
   &__content {
     display: flex;
@@ -39,7 +42,7 @@
     color: var(--mainstream-color);
   }
   &__total {
-    text-align: end;
+    text-align: right;
     margin: 1rem auto;
     font-size: 1.2rem;
     font-weight: 500;

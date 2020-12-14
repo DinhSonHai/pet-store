@@ -7,7 +7,7 @@ export default () => {
     <section className='achivements'>
       <div className='achivements__wrap container'>
         <Row gutter={[26, 32]}>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <div className='achivements__content'>
               <p className='achivements__content--icon'>
                 <Clients />
@@ -16,7 +16,7 @@ export default () => {
               <p className='chivements__content--desc'>Happy Clients</p>
             </div>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <div className='achivements__content'>
               <p className='achivements__content--icon'>
                 <Deals />
@@ -25,7 +25,7 @@ export default () => {
               <p className='chivements__content--desc'>Deals</p>
             </div>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <div className='achivements__content'>
               <p className='achivements__content--icon'>
                 <Supports />
@@ -34,7 +34,7 @@ export default () => {
               <p className='chivements__content--desc'>Hours Of Support</p>
             </div>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <div className='achivements__content'>
               <p className='achivements__content--icon'>
                 <Staff />

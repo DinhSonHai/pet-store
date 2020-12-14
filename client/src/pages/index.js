@@ -12,3 +12,4 @@ export { default as Forgot } from './forgot/Forgot';
 export { default as Reset } from './reset/Reset';
 export { default as ProfileUser } from './profile/user_info';
 export { default as ProfileAddress } from './profile/address';
+export { default as Checkout } from './checkout/Checkout';

@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator');
+const { validationResult, body } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
@@ -473,7 +473,7 @@ class AuthController {
         axios
           .get(path)
           .then(function (response) {
-            resolve(response.data);
+            resolve(response.data.results);
           })
           .catch(function (err) {
             reject(err.error);
@@ -499,14 +499,22 @@ class AuthController {
           .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
       }
       Promise.all([
-        getData(`https://thongtindoanhnghiep.co/api/city/${provinceState}`),
-        getData(`https://thongtindoanhnghiep.co/api/district/${wardState}`),
-        getData(`https://thongtindoanhnghiep.co/api/ward/${townState}`),
+        getData(`https://vapi.vnappmob.com/api/province`),
+        getData(
+          `https://vapi.vnappmob.com/api/province/district/${provinceState}`
+        ),
+        getData(`https://vapi.vnappmob.com/api/province/ward/${wardState}`),
       ])
         .then((results) => {
-          let province_name = results[0].Title;
-          let ward_name = results[1].Title;
-          let town_name = results[2].Title;
+          let province_name = results[0].find(
+            (item) => parseInt(item.province_id) === provinceState
+          ).province_name;
+          let ward_name = results[1].find(
+            (item) => parseInt(item.district_id) === wardState
+          ).district_name;
+          let town_name = results[2].find(
+            (item) => parseInt(item.ward_id) === townState
+          ).ward_name;
           let address =
             moreInfo.trim() +
             ', ' +
@@ -517,13 +525,14 @@ class AuthController {
             province_name;
           if (isDefault) {
             const mapedAddress = user.address.map((item) => {
+              const { value, p_id, w_id, t_id, m } = item;
               return {
-                value: item.value,
+                value,
                 isDefault: false,
-                p_id: item.p_id,
-                w_id: item.w_id,
-                t_id: item.t_id,
-                m: item.m,
+                p_id,
+                w_id,
+                t_id,
+                m,
               };
             });
             user.address = [
@@ -542,7 +551,7 @@ class AuthController {
               ...user.address,
               {
                 value: address,
-                isDefault: false,
+                isDefault: user.address.length === 0 ? true : false,
                 p_id: provinceState,
                 w_id: wardState,
                 t_id: townState,
@@ -621,7 +630,7 @@ class AuthController {
         axios
           .get(path)
           .then(function (response) {
-            resolve(response.data);
+            resolve(response.data.results);
           })
           .catch(function (err) {
             reject(err.error);
@@ -657,15 +666,24 @@ class AuthController {
           errors: [{ msg: 'Địa chỉ không tồn tại!' }],
         });
       }
+
       Promise.all([
-        getData(`https://thongtindoanhnghiep.co/api/city/${provinceState}`),
-        getData(`https://thongtindoanhnghiep.co/api/district/${wardState}`),
-        getData(`https://thongtindoanhnghiep.co/api/ward/${townState}`),
+        getData(`https://vapi.vnappmob.com/api/province`),
+        getData(
+          `https://vapi.vnappmob.com/api/province/district/${provinceState}`
+        ),
+        getData(`https://vapi.vnappmob.com/api/province/ward/${wardState}`),
       ])
         .then((results) => {
-          let province_name = results[0].Title;
-          let ward_name = results[1].Title;
-          let town_name = results[2].Title;
+          let province_name = results[0].find(
+            (item) => parseInt(item.province_id) === provinceState
+          ).province_name;
+          let ward_name = results[1].find(
+            (item) => parseInt(item.district_id) === wardState
+          ).district_name;
+          let town_name = results[2].find(
+            (item) => parseInt(item.ward_id) === townState
+          ).ward_name;
           let address =
             moreInfo.trim() +
             ', ' +

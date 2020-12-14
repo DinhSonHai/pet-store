@@ -63,7 +63,7 @@ const AddressModal = ({
     setIsProcessing(true);
     const data = await getWard(id);
     setWard(data);
-    setCountryState({ ...countryState, p: values });
+    setCountryState({ ...countryState, p: id });
     if (countryState.w || countryState.t) {
       setCountryState({ ...countryState, w: null, t: null });
     }
@@ -77,7 +77,7 @@ const AddressModal = ({
     setIsProcessing(true);
     const data = await getTown(id);
     setTown(data);
-    setCountryState({ ...countryState, w: values });
+    setCountryState({ ...countryState, w: id });
     if (countryState.t) {
       setCountryState({ ...countryState, t: null });
     }
@@ -87,7 +87,8 @@ const AddressModal = ({
     if (!values) {
       return;
     }
-    setCountryState({ ...countryState, t: values });
+    let id = parseInt(values);
+    setCountryState({ ...countryState, t: id });
   };
   const onFinish = async (values) => {
     const { moreInfo, provinceState, wardState, townState } = values;
@@ -157,8 +158,11 @@ const AddressModal = ({
           >
             <Option value={''}>Chọn Tỉnh/Thành Phố</Option>
             {province.map((item) => (
-              <Option key={item.ID} value={item.ID}>
-                {item.Title}
+              <Option
+                key={parseInt(item.province_id)}
+                value={parseInt(item.province_id)}
+              >
+                {item.province_name}
               </Option>
             ))}
           </Select>
@@ -181,8 +185,11 @@ const AddressModal = ({
           >
             <Option value={''}>Chọn Quận/Huyện</Option>
             {ward.map((item) => (
-              <Option key={item.ID} value={item.ID}>
-                {item.Title}
+              <Option
+                key={parseInt(item.district_id)}
+                value={parseInt(item.district_id)}
+              >
+                {item.district_name}
               </Option>
             ))}
           </Select>
@@ -205,8 +212,11 @@ const AddressModal = ({
           >
             <Option value={''}>Chọn Phường/Xã</Option>
             {town.map((item) => (
-              <Option key={item.ID} value={item.ID}>
-                {item.Title}
+              <Option
+                key={parseInt(item.ward_id)}
+                value={parseInt(item.ward_id)}
+              >
+                {item.ward_name}
               </Option>
             ))}
           </Select>

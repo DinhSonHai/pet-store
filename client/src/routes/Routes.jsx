@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Route, Switch } from 'react-router-dom';
-import { PrivateRoute, AuthRoute } from '../routes';
+import { PrivateRoute, AuthRoute, CheckoutRoute } from '../routes';
 import {
   Pets,
   CartHome,
@@ -14,6 +14,7 @@ import {
   Reset,
   ProfileUser,
   ProfileAddress,
+  Checkout,
 } from '../pages';
 
 export default function () {
@@ -31,6 +32,7 @@ export default function () {
       <AuthRoute exact path='/auth/resetpassword/:token' component={Reset} />
       <PrivateRoute exact path='/profile' component={ProfileUser} />
       <PrivateRoute exact path='/profile/address' component={ProfileAddress} />
+      <CheckoutRoute exact path='/checkout' component={Checkout} />
     </Switch>
   );
 }
