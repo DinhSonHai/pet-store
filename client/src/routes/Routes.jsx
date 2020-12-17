@@ -15,6 +15,7 @@ import {
   ProfileUser,
   ProfileAddress,
   Checkout,
+  Order,
 } from '../pages';
 
 export default function () {
@@ -33,6 +34,7 @@ export default function () {
       <PrivateRoute exact path='/profile' component={ProfileUser} />
       <PrivateRoute exact path='/profile/address' component={ProfileAddress} />
       <CheckoutRoute exact path='/checkout' component={Checkout} />
+      <CheckoutRoute exact path='/order' component={Order} />
     </Switch>
   );
 }

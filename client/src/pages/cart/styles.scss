@@ -42,7 +42,9 @@
     color: var(--mainstream-color);
   }
   &__total {
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin: 1rem auto;
     font-size: 1.2rem;
     font-weight: 500;

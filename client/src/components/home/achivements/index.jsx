@@ -13,7 +13,7 @@ export default () => {
                 <Clients />
               </p>
               <p className='achivements__content--count'>232</p>
-              <p className='chivements__content--desc'>Happy Clients</p>
+              <p className='chivements__content--desc'>Khách hàng</p>
             </div>
           </Col>
           <Col xs={24} sm={12} md={12} lg={6}>
@@ -22,7 +22,7 @@ export default () => {
                 <Deals />
               </p>
               <p className='achivements__content--count'>521</p>
-              <p className='chivements__content--desc'>Deals</p>
+              <p className='chivements__content--desc'>Giao dịch</p>
             </div>
           </Col>
           <Col xs={24} sm={12} md={12} lg={6}>
@@ -31,7 +31,7 @@ export default () => {
                 <Supports />
               </p>
               <p className='achivements__content--count'>1,463</p>
-              <p className='chivements__content--desc'>Hours Of Support</p>
+              <p className='chivements__content--desc'>Giờ hỗ trợ</p>
             </div>
           </Col>
           <Col xs={24} sm={12} md={12} lg={6}>
@@ -40,7 +40,7 @@ export default () => {
                 <Staff />
               </p>
               <p className='achivements__content--count'>15</p>
-              <p className='chivements__content--desc'>Hard Workers</p>
+              <p className='chivements__content--desc'>Nhân viên</p>
             </div>
           </Col>
         </Row>

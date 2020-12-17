@@ -9,7 +9,10 @@ module.exports.validateSignUp = [
       max: 32,
     })
     .withMessage('Độ dài của tên phải nằm trong khoảng từ 2 đến 32 ký tự'),
-  check('email', 'Vui lòng nhập email hợp lệ').isEmail(),
+  check('email', 'Vui lòng nhập email')
+    .notEmpty()
+    .isEmail()
+    .withMessage('Vui lòng nhập email hợp lệ'),
   check('password', 'Vui lòng nhập mật khẩu')
     .notEmpty()
     .isLength({
@@ -27,17 +30,27 @@ module.exports.validateSignUp = [
       max: 10,
     })
     .withMessage('Số điện thoại không hợp lệ'),
+  check('gender', 'Vui lòng chọn giới tính')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Giới tính không hợp lệ'),
 ];
 
 //Sign in
 module.exports.validateSignIn = [
-  check('email', 'Vui lòng nhập email hợp lệ').isEmail(),
+  check('email', 'Vui lòng nhập email')
+    .notEmpty()
+    .isEmail()
+    .withMessage('Vui lòng nhập email hợp lệ'),
   check('password', 'Vui lòng nhập mật khẩu').notEmpty(),
 ];
 
 //Forget password
 module.exports.validateForgotPassword = [
-  check('email', 'Vui lòng nhập email hợp lệ').isEmail(),
+  check('email', 'Vui lòng nhập email')
+    .notEmpty()
+    .isEmail()
+    .withMessage('Vui lòng nhập email hợp lệ'),
 ];
 
 //Reset password
@@ -105,4 +118,56 @@ module.exports.validateUpdateAddress = [
   check('wardState', 'Vui lòng chọn Quận/Huyện hợp lệ!').notEmpty(),
   check('townState', 'Vui lòng chọn Phường/Xã hợp lệ!').notEmpty(),
   check('moreInfo', 'Vui lòng nhập địa chỉ!').notEmpty(),
+];
+
+// Order
+module.exports.validateOrder = [
+  check('name', 'Vui lòng nhập họ tên')
+    .notEmpty()
+    .isLength({
+      min: 2,
+      max: 32,
+    })
+    .withMessage('Độ dài của tên phải nằm trong khoảng từ 2 đến 32 ký tự'),
+  check('email', 'Vui lòng nhập email')
+    .notEmpty()
+    .isEmail()
+    .withMessage('Vui lòng nhập email hợp lệ'),
+  check('phone', 'Vui lòng nhập số điện thoại hợp lệ')
+    .isNumeric()
+    .notEmpty()
+    .isLength({
+      min: 10,
+      max: 10,
+    })
+    .withMessage('Số điện thoại không hợp lệ'),
+  check('deliveryState', 'Vui lòng chọn phương thức vận chuyển')
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Phương thức vận chuyển không hợp lệ'),
+  check('paymentState', 'Vui lòng chọn phương thức thanh toán')
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Phương thức thanh toán không hợp lệ'),
+  check('totalMoney', 'Đơn hàng không hợp lệ')
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Đơn hàng không hợp lệ'),
+];
+
+// Order when login
+module.exports.validateOrderAuth = [
+  check('address', 'Vui lòng chọn địa chỉ hợp lệ').notEmpty(),
+  check('totalMoney', 'Đơn hàng không hợp lệ')
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Đơn hàng không hợp lệ'),
+  check('deliveryState', 'Vui lòng chọn phương thức vận chuyển')
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Phương thức vận chuyển không hợp lệ'),
+  check('paymentState', 'Vui lòng chọn phương thức thanh toán')
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Phương thức thanh toán không hợp lệ'),
 ];

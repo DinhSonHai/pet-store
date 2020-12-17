@@ -1,4 +1,4 @@
-.checkout {
+.order {
     &__wrap {
         padding: 1rem;
     }
@@ -11,11 +11,15 @@
     &__order &__products--content:last-child {
         border-bottom: unset;
     }
-    &__total {
+    &__total,
+    &__fee {
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-size: 1.2rem;
+    }
+    &__fee {
+        font-size: 0.9rem;
     }
     &__update-cart {
         display: flex;
@@ -24,7 +28,7 @@
             margin-left: 0.5rem;
         }
     }
-    #checkout__total {
+    #order__total {
         color: var(--mainstream-color);
     }
     &__products {

@@ -1,11 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { CART_LOADER, UPDATE_CART, REMOVE_CART, CONFIRM_CART } from '../types';
+import { CART_LOADER, UPDATE_CART, REMOVE_CART } from '../types';
 
 const initialState = {
   cartState: [],
-  isCheckedOut: false,
   isHaveCart: false,
-  loading: true,
 };
 
 export default function (state = initialState, action) {
@@ -15,7 +13,6 @@ export default function (state = initialState, action) {
     case UPDATE_CART:
       return {
         ...state,
-        loading: false,
         isHaveCart: payload.isHaveCart,
         cartState: payload.cartState,
       };
@@ -23,14 +20,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         cartState: [],
-        isCheckedOut: false,
         isHaveCart: false,
-        loading: false,
-      };
-    case CONFIRM_CART:
-      return {
-        ...state,
-        isCheckedOut: true,
       };
     default:
       return state;

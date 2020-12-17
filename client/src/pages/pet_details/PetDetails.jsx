@@ -2,9 +2,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card, Button, Rate } from 'antd';
+import { Row, Col, Card, Rate, Button } from 'antd';
 import { Carousel } from 'react-responsive-carousel';
-import { AddToCart } from '../../icons';
+import { AddToCartDetail, Heart } from '../../icons';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.scss';
@@ -54,7 +54,22 @@ const PetDetails = ({ getProductById, match, data }) => {
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12}>
                   <div className='pet-details__card-info'>
-                    <Card title={data.productName} bordered={false}>
+                    <Card
+                      actions={[
+                        <Button
+                          type='text'
+                          icon={<Heart />}
+                          onClick={() => addItem(data)}
+                        />,
+                        <Button
+                          type='text'
+                          icon={<AddToCartDetail />}
+                          onClick={() => addItem(data)}
+                        />,
+                      ]}
+                      title={data.productName}
+                      bordered={false}
+                    >
                       <p>
                         <b>Nguồn gốc : </b>
                         {data.origin}
@@ -85,12 +100,6 @@ const PetDetails = ({ getProductById, match, data }) => {
                         </span>
                       </p>
                       <Rate disabled defaultValue={data.starRatings} />
-                      <Button
-                        onClick={() => addItem(data)}
-                        className='addToCart'
-                        icon={<AddToCart />}
-                        type='primary'
-                      />
                     </Card>
                   </div>
                 </Col>

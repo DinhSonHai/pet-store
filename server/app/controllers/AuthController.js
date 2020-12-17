@@ -1,4 +1,4 @@
-const { validationResult, body } = require('express-validator');
+const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
@@ -112,7 +112,7 @@ class AuthController {
         })
         .catch((err) => {
           return res.status(400).json({
-            error: err,
+            errors: [{ msg: err.message }],
           });
         });
     } catch (error) {

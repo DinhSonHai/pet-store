@@ -122,7 +122,7 @@ const CartHome = ({ cartState, history }) => {
               <Col xs={24} sm={24} md={24} lg={8}>
                 <Card title='Tổng đơn hàng' className='cart__overall'>
                   <div className='cart__total'>
-                    Tổng tiền:{' '}
+                    <span>Tổng tiền: </span>
                     <span id='cart__total'>
                       {parseInt(totalCart).toLocaleString('vi-VN', {
                         style: 'currency',

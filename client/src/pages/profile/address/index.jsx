@@ -49,48 +49,49 @@ const Address = ({ location, auth: { user } }) => {
             id={id}
           />
 
-          {user.address
-            .sort((x, y) => {
-              return x.isDefault === y.isDefault ? 0 : x.isDefault ? -1 : 1;
-            })
-            .map((item) => (
-              <Card key={item._id} style={{ margin: '1rem 0' }}>
-                {item.isDefault ? (
-                  <p style={{ color: '#5fdba7' }}>
-                    <CheckCircleOutlined /> Mặc định
+          {user &&
+            user.address
+              .sort((x, y) => {
+                return x.isDefault === y.isDefault ? 0 : x.isDefault ? -1 : 1;
+              })
+              .map((item) => (
+                <Card key={item._id} style={{ margin: '1rem 0' }}>
+                  {item.isDefault ? (
+                    <p style={{ color: '#5fdba7' }}>
+                      <CheckCircleOutlined /> Mặc định
+                    </p>
+                  ) : null}
+                  <p>
+                    <span style={{ color: '#999' }}>Địa chỉ: </span>
+                    {item.value}
                   </p>
-                ) : null}
-                <p>
-                  <span style={{ color: '#999' }}>Địa chỉ: </span>
-                  {item.value}
-                </p>
-                <div style={{ textAlign: 'right' }}>
-                  <Button
-                    onClick={() => {
-                      showModalEdit();
-                      setItem(item);
-                      setDefaultValue(item.isDefault);
-                    }}
-                    type='link'
-                  >
-                    Sửa
-                  </Button>
-                  {item.isDefault ? null : (
+                  <div style={{ textAlign: 'right' }}>
                     <Button
                       onClick={() => {
-                        setVisibleRemove(true);
-                        setId(item._id);
+                        showModalEdit();
+                        setItem(item);
+                        setDefaultValue(item.isDefault);
                       }}
-                      style={{ marginLeft: '0.5rem' }}
                       type='link'
-                      danger
                     >
-                      Xóa
+                      Sửa
                     </Button>
-                  )}
-                </div>
-              </Card>
-            ))}
+                    {item.isDefault ? null : (
+                      <Button
+                        onClick={() => {
+                          setVisibleRemove(true);
+                          setId(item._id);
+                        }}
+                        style={{ marginLeft: '0.5rem' }}
+                        type='link'
+                        danger
+                      >
+                        Xóa
+                      </Button>
+                    )}
+                  </div>
+                </Card>
+              ))}
         </div>
       </div>
     </ProfileMain>

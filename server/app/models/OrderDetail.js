@@ -6,7 +6,7 @@ const OrderDetailSchema = new Schema({
   orderId: { type: Schema.Types.ObjectId, ref: 'order' },
   productId: { type: Schema.Types.ObjectId, ref: 'product' },
   productName: { type: String, trim: true },
-  quantity: { type: Number },
+  amount: { type: Number },
   price: { type: Number },
 });
 

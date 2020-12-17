@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import store from '../../store.js';
-import { LOGOUT, CLEAR_PROFILE } from '../../redux/types';
+import { LOGOUT, CLEAR_CHECKOUT_INFO, REMOVE_CART } from '../../redux/types';
 export default ({ history }) => {
   return (
     <section className='sign-out'>
@@ -10,8 +10,9 @@ export default ({ history }) => {
       <Button
         onClick={() => {
           localStorage.removeItem('cart');
+          store.dispatch({ type: REMOVE_CART });
           store.dispatch({ type: LOGOUT });
-          store.dispatch({ type: CLEAR_PROFILE });
+          store.dispatch({ type: CLEAR_CHECKOUT_INFO });
           return history.push('/');
         }}
         type='primary'

@@ -7,7 +7,12 @@ import { Provider } from 'react-redux';
 import store from './store';
 import setAuthToken from './auth/setAuthToken';
 import { loadUser } from './redux/actions/auth';
-import { LOGOUT, CLEAR_PROFILE, CART_LOADER, REMOVE_CART } from './redux/types';
+import {
+  LOGOUT,
+  CLEAR_CHECKOUT_INFO,
+  CART_LOADER,
+  REMOVE_CART,
+} from './redux/types';
 import api from './api';
 function App() {
   useEffect(() => {
@@ -32,7 +37,9 @@ function App() {
         api.defaults.headers.common['x-auth-token'] !== localStorage.token
       ) {
         store.dispatch({ type: LOGOUT });
-        store.dispatch({ type: CLEAR_PROFILE });
+        store.dispatch({ type: REMOVE_CART });
+        store.dispatch({ type: CLEAR_CHECKOUT_INFO });
+        localStorage.removeItem('cart');
       }
     });
   }, []);

@@ -14,3 +14,8 @@ export { default as Loader } from './loader';
 export { default as ProgressBar } from './upload';
 export { default as AddressModal } from './modal/address';
 export { default as ConfirmModal } from './modal/confirm';
+export { default as CheckoutFormGuest } from './checkout/checkout_form_guest';
+export { default as CheckoutOrder } from './checkout/checkout_order';
+export { default as CheckoutAddress } from './checkout/checkout_address';
+export { default as CheckoutFormAuth } from './checkout/checkout_form_auth';
+export { default as CheckoutAddressModal } from './modal/checkout_address';
