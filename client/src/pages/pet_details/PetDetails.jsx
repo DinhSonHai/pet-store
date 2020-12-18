@@ -2,20 +2,28 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card, Rate, Button } from 'antd';
+import { Row, Col, Card, Rate, Button, notification } from 'antd';
 import { Carousel } from 'react-responsive-carousel';
-import { AddToCartDetail, Heart } from '../../icons';
+import { AddToCartDetail, Heart, HeartFill } from '../../icons';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.scss';
 
 import { getProductById } from '../../redux/actions/products';
+import { UpdateFavorite } from '../../redux/actions/auth';
 import { addItem } from '../../utils/cart';
 import { Loader } from '../../components';
 import { connect } from 'react-redux';
 
-const PetDetails = ({ getProductById, match, data }) => {
+const PetDetails = ({
+  getProductById,
+  UpdateFavorite,
+  match,
+  data,
+  auth: { user, isAuthenticated },
+}) => {
   const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
   useEffect(() => {
     if (data && data._id === match.params.id) {
       setLoading(false);
@@ -28,7 +36,20 @@ const PetDetails = ({ getProductById, match, data }) => {
     }
     getData();
   }, [getProductById, match.params.id]);
-
+  const handleFavorite = async (productId) => {
+    if (!isAuthenticated) {
+      return notification.open({
+        message: 'Lỗi!',
+        description: 'Bạn cần đăng nhập để thực hiện thao tác này!',
+      });
+    }
+    if (!productId) {
+      return;
+    }
+    setIsProcessing(true);
+    await UpdateFavorite(productId);
+    setIsProcessing(false);
+  };
   return (
     <section className='pet-details'>
       <div className='container'>
@@ -57,9 +78,17 @@ const PetDetails = ({ getProductById, match, data }) => {
                     <Card
                       actions={[
                         <Button
+                          disabled={isProcessing}
+                          loading={isProcessing}
                           type='text'
-                          icon={<Heart />}
-                          onClick={() => addItem(data)}
+                          icon={
+                            user && user.favoriteProducts.includes(data._id) ? (
+                              <HeartFill />
+                            ) : (
+                              <Heart />
+                            )
+                          }
+                          onClick={() => handleFavorite(data._id)}
                         />,
                         <Button
                           type='text'
@@ -114,10 +143,14 @@ const PetDetails = ({ getProductById, match, data }) => {
 
 PetDetails.propTypes = {
   getProductById: PropTypes.func.isRequired,
+  UpdateFavorite: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   data: state.products.product,
+  auth: state.auth,
 });
 
-export default connect(mapStateToProps, { getProductById })(PetDetails);
+export default connect(mapStateToProps, { getProductById, UpdateFavorite })(
+  PetDetails
+);

@@ -271,3 +271,26 @@ export const UpdateAdress = (data) => async (dispatch) => {
     }
   }
 };
+
+// Add/Remove favorite product
+export const UpdateFavorite = (productId) => async (dispatch) => {
+  try {
+    const res = await api.put('/auth/favorite', { productId });
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+    loadUser();
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};

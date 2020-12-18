@@ -36,6 +36,9 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
     if (localStorage.token) {
       return window.location.reload(false);
     }
+    if (!idToken) {
+      return;
+    }
     const res = await loginGoogle(idToken);
     if (res) {
       return history.push('/');
@@ -49,6 +52,9 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
   const facebookLoginHandle = async (userID, accessToken) => {
     if (localStorage.token) {
       return window.location.reload(false);
+    }
+    if (!userID || !accessToken) {
+      return;
     }
     const res = await loginFacebook(userID, accessToken);
     if (res) {

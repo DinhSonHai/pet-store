@@ -12,6 +12,7 @@ const axios = require('axios');
 const client = new OAuth2Client(config.get('GOOGLE_CLIENT'));
 
 const User = require('../models/User');
+const Product = require('../models/Product');
 
 class AuthController {
   // @route   GET api/auth/user
@@ -868,6 +869,44 @@ class AuthController {
             ],
           })
         );
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+  // @route   PUT api/auth/favorite
+  // @desc    Add favorite product
+  // @access  Private
+  async favoriteProduct(req, res) {
+    const { productId } = req.body;
+    try {
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Sản phẩm không tồn tại!' }] });
+      }
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+      }
+      let isHave = user.favoriteProducts.includes(productId);
+      if (isHave) {
+        const index = user.favoriteProducts.indexOf(productId);
+        user.favoriteProducts.splice(index, 1);
+      } else {
+        user.favoriteProducts = [productId, ...user.favoriteProducts];
+      }
+      user.save((err, updatedUser) => {
+        if (err) {
+          return res.status(400).json({
+            errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
+          });
+        }
+        updatedUser.password = undefined;
+        return res.json(updatedUser);
+      });
     } catch (err) {
       return res.status(500).send('Server Error');
     }

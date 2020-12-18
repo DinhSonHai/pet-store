@@ -94,4 +94,9 @@ router.put(
   AuthController.UpdateUserAddress
 );
 
+// @route   PUT api/auth/favorite
+// @desc    Add favorite product
+// @access  Private
+router.put('/favorite', auth, AuthController.favoriteProduct);
+
 module.exports = router;
