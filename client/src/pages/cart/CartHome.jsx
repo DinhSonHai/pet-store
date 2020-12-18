@@ -1,13 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState, Fragment } from 'react';
 import { Col, Row, Card, InputNumber, Button } from 'antd';
+import { removeItem, setAmount } from '../../utils/cart';
 import equal from 'fast-deep-equal';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import '../../store';
-import { UPDATE_CART, REMOVE_CART } from '../../redux/types';
 import './styles.scss';
-import store from '../../store';
 
 const CartHome = ({ cartState, history }) => {
   const [totalCart, setTotalCart] = useState(0);
@@ -21,41 +20,6 @@ const CartHome = ({ cartState, history }) => {
     let total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);
     setTotalCart(total_value);
   }, [cartState]);
-  const setAmount = (_id, value) => {
-    if (!value || isNaN(value) || !Number.isInteger(value)) {
-      return;
-    }
-    let cart = JSON.parse(localStorage.getItem('cart'));
-    let updatedCart = cart.map((item) => {
-      return item._id === _id ? { ...item, amount: value } : item;
-    });
-    store.dispatch({
-      type: UPDATE_CART,
-      payload: { isHaveCart: true, cartState: updatedCart },
-    });
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
-
-  const removeItem = (_id) => {
-    let cart = JSON.parse(localStorage.getItem('cart'));
-    let updatedCart = cart.filter((item) => {
-      return item._id !== _id;
-    });
-    if (updatedCart.length <= 0) {
-      store.dispatch({
-        type: REMOVE_CART,
-      });
-    } else {
-      store.dispatch({
-        type: UPDATE_CART,
-        payload: {
-          isHaveCart: true,
-          cartState: updatedCart,
-        },
-      });
-    }
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
   return (
     <section className='cart'>
       <div className='container'>

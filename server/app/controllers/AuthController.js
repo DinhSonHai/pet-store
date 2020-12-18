@@ -224,6 +224,9 @@ class AuthController {
   async facebookLogin(req, res) {
     const { userID, accessToken } = req.body;
     const URL = `https://graph.facebook.com/v9.0/${userID}/?fields=id,name,email,picture&access_token=${accessToken}`;
+    if (!userID || !accessToken) {
+      return;
+    }
     try {
       const facebookRes = await axios.default.get(URL);
       const {
@@ -284,10 +287,14 @@ class AuthController {
   // @access  Public
   async googleLogin(req, res) {
     const { idToken } = req.body;
+    if (!idToken) {
+      return;
+    }
     try {
       client
         .verifyIdToken({ idToken, audience: config.get('GOOGLE_CLIENT') })
         .then(async (response) => {
+          console.log(response);
           const { email_verified, name, email, picture } = response.payload;
 
           if (email_verified) {

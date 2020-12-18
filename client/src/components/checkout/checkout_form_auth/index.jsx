@@ -15,6 +15,12 @@ const CheckoutFormAuth = ({ cartState, history, user }) => {
         description: 'Vui lòng chọn địa chỉ giao hàng!',
       });
     }
+    if (user && !user.phoneNumber) {
+      return notification.open({
+        message: 'Lỗi!',
+        description: 'Vui lòng cung cấp số điện thoại!',
+      });
+    }
     const { note } = values;
     const payload = {
       note,

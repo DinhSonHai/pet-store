@@ -208,6 +208,11 @@ class OrderController {
           .status(400)
           .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
       }
+      if (!user.phoneNumber) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Vui lòng cung cấp số điện thoại!' }] });
+      }
       let order = new Order({
         userId: user._id,
         name: user.name,

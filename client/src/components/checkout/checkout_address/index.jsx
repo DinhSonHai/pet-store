@@ -62,17 +62,30 @@ const CheckoutAddress = ({
       ) : (
         user.address.length <= 0 && (
           <p style={{ textAlign: 'center' }}>
-            Có vẻ như bạn chưa có địa chỉ trong tài khoản, hãy thêm địa chỉ của
-            bạn trong{' '}
+            (<span style={{ color: 'var(--danger-color)' }}>*</span>) Có vẻ như
+            bạn chưa có địa chỉ trong tài khoản, hãy thêm địa chỉ của bạn trong{' '}
             <span
               onClick={() => history.push('/profile/address')}
               style={{ color: 'var(--mainstream-color)', cursor: 'pointer' }}
             >
               Sổ địa chỉ
             </span>{' '}
-            để tiếp tục
+            để tiếp tục.
           </p>
         )
+      )}
+      {!user.phoneNumber && (
+        <p style={{ textAlign: 'center' }}>
+          (<span style={{ color: 'var(--danger-color)' }}>*</span>) Bạn cần cung
+          cấp số điện thoại trong{' '}
+          <span
+            onClick={() => history.push('/profile')}
+            style={{ color: 'var(--mainstream-color)', cursor: 'pointer' }}
+          >
+            Tài khoản
+          </span>{' '}
+          để tiếp tục.
+        </p>
       )}
     </Fragment>
   );

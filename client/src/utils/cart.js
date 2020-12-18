@@ -1,5 +1,5 @@
 import store from '../store';
-import { UPDATE_CART } from '../redux/types';
+import { UPDATE_CART, REMOVE_CART } from '../redux/types';
 export const addItem = (item) => {
   let cartCopy = JSON.parse(localStorage.getItem('cart')) || [];
   let existingItem = cartCopy.find((cartItem) => cartItem._id === item._id);
@@ -15,4 +15,40 @@ export const addItem = (item) => {
     payload: { isHaveCart: true, cartState: cartCopy },
   });
   localStorage.setItem('cart', JSON.stringify(cartCopy));
+};
+
+export const removeItem = (_id) => {
+  let cart = JSON.parse(localStorage.getItem('cart'));
+  let updatedCart = cart.filter((item) => {
+    return item._id !== _id;
+  });
+  if (updatedCart.length <= 0) {
+    store.dispatch({
+      type: REMOVE_CART,
+    });
+  } else {
+    store.dispatch({
+      type: UPDATE_CART,
+      payload: {
+        isHaveCart: true,
+        cartState: updatedCart,
+      },
+    });
+  }
+  localStorage.setItem('cart', JSON.stringify(updatedCart));
+};
+
+export const setAmount = (_id, value) => {
+  if (!value || isNaN(value) || !Number.isInteger(value)) {
+    return;
+  }
+  let cart = JSON.parse(localStorage.getItem('cart'));
+  let updatedCart = cart.map((item) => {
+    return item._id === _id ? { ...item, amount: value } : item;
+  });
+  store.dispatch({
+    type: UPDATE_CART,
+    payload: { isHaveCart: true, cartState: updatedCart },
+  });
+  localStorage.setItem('cart', JSON.stringify(updatedCart));
 };
