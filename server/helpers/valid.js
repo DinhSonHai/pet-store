@@ -102,14 +102,15 @@ module.exports.validateUpdateUser = [
       max: 32,
     })
     .withMessage('Độ dài của tên phải nằm trong khoảng từ 2 đến 32 ký tự'),
-  check('phone', 'Vui lòng nhập số điện thoại hợp lệ')
-    .isNumeric()
+  check('phone', 'Vui lòng nhập số điện thoại')
     .notEmpty()
+    .isNumeric()
+    .withMessage('Số điện thoại không hợp lệ')
     .isLength({
       min: 10,
       max: 10,
     })
-    .withMessage('Số điện thoại không hợp lệ'),
+    .withMessage('Số điện thoại tối thiểu và tối đa 10 chữ số'),
 ];
 
 // Update/Add address user
@@ -133,25 +134,26 @@ module.exports.validateOrder = [
     .notEmpty()
     .isEmail()
     .withMessage('Vui lòng nhập email hợp lệ'),
-  check('phone', 'Vui lòng nhập số điện thoại hợp lệ')
-    .isNumeric()
+  check('phone', 'Vui lòng nhập số điện thoại')
     .notEmpty()
+    .isNumeric()
+    .withMessage('Số điện thoại không hợp lệ')
     .isLength({
       min: 10,
       max: 10,
     })
-    .withMessage('Số điện thoại không hợp lệ'),
+    .withMessage('Số điện thoại tối thiểu và tối đa 10 chữ số'),
   check('deliveryState', 'Vui lòng chọn phương thức vận chuyển')
-    .isNumeric()
     .notEmpty()
+    .isNumeric()
     .withMessage('Phương thức vận chuyển không hợp lệ'),
   check('paymentState', 'Vui lòng chọn phương thức thanh toán')
-    .isNumeric()
     .notEmpty()
+    .isNumeric()
     .withMessage('Phương thức thanh toán không hợp lệ'),
   check('totalMoney', 'Đơn hàng không hợp lệ')
-    .isNumeric()
     .notEmpty()
+    .isNumeric()
     .withMessage('Đơn hàng không hợp lệ'),
 ];
 
@@ -159,15 +161,15 @@ module.exports.validateOrder = [
 module.exports.validateOrderAuth = [
   check('address', 'Vui lòng chọn địa chỉ hợp lệ').notEmpty(),
   check('totalMoney', 'Đơn hàng không hợp lệ')
-    .isNumeric()
     .notEmpty()
+    .isNumeric()
     .withMessage('Đơn hàng không hợp lệ'),
   check('deliveryState', 'Vui lòng chọn phương thức vận chuyển')
-    .isNumeric()
     .notEmpty()
+    .isNumeric()
     .withMessage('Phương thức vận chuyển không hợp lệ'),
   check('paymentState', 'Vui lòng chọn phương thức thanh toán')
-    .isNumeric()
     .notEmpty()
+    .isNumeric()
     .withMessage('Phương thức thanh toán không hợp lệ'),
 ];

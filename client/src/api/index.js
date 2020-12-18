@@ -21,7 +21,6 @@ api.interceptors.response.use(
     if (err.response.status === 401) {
       store.dispatch({ type: LOGOUT });
       store.dispatch({ type: CLEAR_PROFILE });
-      //   store.dispatch({ type: CLEAR_NOTIFCATIONS });
     }
     return Promise.reject(err);
   }

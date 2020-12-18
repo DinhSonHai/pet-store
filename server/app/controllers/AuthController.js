@@ -2,15 +2,16 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
+const shortid = require('shortid');
 process.env['NODE_CONFIG_DIR'] = __dirname;
 const config = require('config');
 const nodemailer = require('nodemailer');
 const dayjs = require('dayjs');
 const axios = require('axios');
+const client = new OAuth2Client(config.get('GOOGLE_CLIENT'));
 
 const User = require('../models/User');
-// const Employee = require('../models/Employee');
-// const Admin = require('../models/Admin');
 
 class AuthController {
   // @route   GET api/auth/user
@@ -189,19 +190,6 @@ class AuthController {
           errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
         });
       }
-      // if (!user) {
-      //   //Kiểm tra xem có phải nhân viên đăng nhập không
-      //   user = await Employee.findOne({ email });
-      //   if (!user) {
-      //     //Kiểm tra xem có phải nhân viên đăng nhập không
-      //     user = await Admin.findOne({ email });
-      //   }
-      //   if (!user) {
-      //     return res.status(400).json({
-      //       errors: [{ msg: 'Tên tài khoản hoặc mật khẩu không hợp lệ' }],
-      //     });
-      //   }
-      // }
       //Kiểm tra mật khẩu
       const isMatch = await user.checkPassword(password);
       if (!isMatch) {
@@ -227,6 +215,139 @@ class AuthController {
       );
     } catch (error) {
       return res.status(500).send('Server error');
+    }
+  }
+
+  // @route   POST api/auth/facebooklogin
+  // @desc    Sign in with facebok account
+  // @access  Public
+  async facebookLogin(req, res) {
+    const { userID, accessToken } = req.body;
+    const URL = `https://graph.facebook.com/v9.0/${userID}/?fields=id,name,email,picture&access_token=${accessToken}`;
+    try {
+      const facebookRes = await axios.default.get(URL);
+      const {
+        email,
+        name,
+        picture: { data },
+      } = facebookRes.data;
+      const user = await User.findOne({ email });
+      if (user) {
+        const payload = {
+          user: {
+            id: user._id,
+          },
+        };
+        jwt.sign(
+          payload,
+          config.get('jwtSignInSecret'),
+          { expiresIn: '7d' },
+          (err, token) => {
+            if (err) throw err;
+            return res.json({ token });
+          }
+        );
+        return;
+      }
+      let newPassword = shortid.generate();
+      const salt = await bcrypt.genSalt(10);
+      let hashedPassword = await bcrypt.hash(newPassword, salt);
+      const newUser = new User({
+        name,
+        email,
+        avatar: data.url,
+        password: hashedPassword,
+      });
+      await newUser.save();
+      const payload = {
+        user: {
+          id: newUser._id,
+        },
+      };
+      jwt.sign(
+        payload,
+        config.get('jwtSignInSecret'),
+        { expiresIn: '7d' },
+        (err, token) => {
+          if (err) throw err;
+          return res.json({ token });
+        }
+      );
+    } catch (err) {
+      return res.status(400).json({
+        errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
+      });
+    }
+  }
+  // @route   POST api/auth/googlelogin
+  // @desc    Sign in with google account
+  // @access  Public
+  async googleLogin(req, res) {
+    const { idToken } = req.body;
+    try {
+      client
+        .verifyIdToken({ idToken, audience: config.get('GOOGLE_CLIENT') })
+        .then(async (response) => {
+          const { email_verified, name, email, picture } = response.payload;
+
+          if (email_verified) {
+            const user = await User.findOne({ email });
+            if (user) {
+              const payload = {
+                user: {
+                  id: user._id,
+                },
+              };
+              jwt.sign(
+                payload,
+                config.get('jwtSignInSecret'),
+                { expiresIn: '7d' },
+                (err, token) => {
+                  if (err) throw err;
+                  return res.json({ token });
+                }
+              );
+              return;
+            }
+            let newPassword = shortid.generate();
+            const salt = await bcrypt.genSalt(10);
+            let hashedPassword = await bcrypt.hash(newPassword, salt);
+            const newUser = new User({
+              name,
+              email,
+              avatar: picture,
+              password: hashedPassword,
+            });
+            await newUser.save();
+            const payload = {
+              user: {
+                id: newUser._id,
+              },
+            };
+            jwt.sign(
+              payload,
+              config.get('jwtSignInSecret'),
+              { expiresIn: '7d' },
+              (err, token) => {
+                if (err) throw err;
+                return res.json({ token });
+              }
+            );
+          } else {
+            return res.status(400).json({
+              errors: [
+                {
+                  msg:
+                    'Tài khoản google của bạn chưa được xác thực, vui lòng thử lại!',
+                },
+              ],
+            });
+          }
+        });
+    } catch (err) {
+      return res.status(400).json({
+        errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
+      });
     }
   }
 
@@ -470,7 +591,7 @@ class AuthController {
   async AddUserAddress(req, res, next) {
     function getData(path) {
       return new Promise((resolve, reject) => {
-        axios
+        axios.default
           .get(path)
           .then(function (response) {
             resolve(response.data.results);
@@ -627,7 +748,7 @@ class AuthController {
   async UpdateUserAddress(req, res, next) {
     function getData(path) {
       return new Promise((resolve, reject) => {
-        axios
+        axios.default
           .get(path)
           .then(function (response) {
             resolve(response.data.results);

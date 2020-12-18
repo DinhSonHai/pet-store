@@ -179,7 +179,7 @@ const UserInfo = ({ location, auth: { user }, updateUserInfo }) => {
               Thay đổi mật khẩu
             </Checkbox>
           </Form.Item>
-          {passStatus ? (
+          {passStatus && (
             <Fragment>
               <Form.Item name='password_old' label='Mật khẩu cũ'>
                 <Input.Password />
@@ -206,7 +206,7 @@ const UserInfo = ({ location, auth: { user }, updateUserInfo }) => {
                 <Input.Password />
               </Form.Item>
             </Fragment>
-          ) : null}
+          )}
           <Form.Item style={{ textAlign: 'right' }}>
             <Button loading={isProcessing} type='primary' htmlType='submit'>
               Cập nhật

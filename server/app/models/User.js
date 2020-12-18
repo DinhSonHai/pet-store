@@ -28,7 +28,11 @@ const UserSchema = new Schema({
   ],
   gender: { type: Number, default: 0 },
   dateOfBirth: { type: Date, default: now.toISOString() },
-  phoneNumber: { type: String, required: true, trim: true },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    default: '',
+  },
   favoriteProducts: [{ type: Schema.Types.ObjectId, ref: 'product' }],
   favoriteProductsCount: { type: Number, default: 0 },
   resetPasswordLink: {

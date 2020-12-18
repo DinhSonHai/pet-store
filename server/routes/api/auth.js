@@ -29,6 +29,16 @@ router.post('/activate', AuthController.activate);
 // @access  Public
 router.post('/signin', validateSignIn, AuthController.signIn);
 
+// @route   POST api/auth/googlelogin
+// @desc    Sign in with google account
+// @access  Public
+router.post('/googlelogin', AuthController.googleLogin);
+
+// @route   POST api/auth/facebooklogin
+// @desc    Sign in with facebok account
+// @access  Public
+router.post('/facebooklogin', AuthController.facebookLogin);
+
 // @route   GET api/auth/user
 // @desc    Get user data
 // @access  Private
@@ -53,8 +63,8 @@ router.put(
 );
 
 // @route   PUT api/auth/update_user
-// @desc    Reset password
-// @access  Public
+// @desc    Update user
+// @access  Private
 router.put(
   '/update_user',
   [auth, validateUpdateUser],

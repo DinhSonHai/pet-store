@@ -62,7 +62,54 @@ export const login = (email, password) => async (dispatch) => {
 
   try {
     const res = await api.post('/auth/signin', body);
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(loadUser());
+    return true;
+  } catch (err) {
+    const errors = err.response.data.errors;
 
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
+
+// Login with google account
+export const loginGoogle = (idToken) => async (dispatch) => {
+  try {
+    const res = await api.post('/auth/googlelogin', { idToken });
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(loadUser());
+    return true;
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};
+
+// Login with facebook account
+export const loginFacebook = (userID, accessToken) => async (dispatch) => {
+  try {
+    const res = await api.post('/auth/facebooklogin', { userID, accessToken });
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,

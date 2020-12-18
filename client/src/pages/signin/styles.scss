@@ -11,4 +11,20 @@
   .ant-card {
     box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.15);
   }
+  &__social {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+}
+@media (max-width: 499px) {
+  .login {
+    &__social {
+      flex-direction: column;
+      justify-content: center;
+    }
+    &__facebook {
+      margin: 0.5rem 0;
+    }
+  }
 }
