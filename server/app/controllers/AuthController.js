@@ -202,6 +202,7 @@ class AuthController {
       const payload = {
         user: {
           id: user._id,
+          role: user.role,
         },
       };
       //Trả về token
@@ -240,6 +241,7 @@ class AuthController {
         const payload = {
           user: {
             id: user._id,
+            role: user.role,
           },
         };
         jwt.sign(
@@ -266,6 +268,7 @@ class AuthController {
       const payload = {
         user: {
           id: newUser._id,
+          role: newUser.role,
         },
       };
       jwt.sign(
@@ -295,7 +298,6 @@ class AuthController {
       client
         .verifyIdToken({ idToken, audience: config.get('GOOGLE_CLIENT') })
         .then(async (response) => {
-          console.log(response);
           const { email_verified, name, email, picture } = response.payload;
 
           if (email_verified) {
@@ -304,6 +306,7 @@ class AuthController {
               const payload = {
                 user: {
                   id: user._id,
+                  role: user.role,
                 },
               };
               jwt.sign(
@@ -330,6 +333,7 @@ class AuthController {
             const payload = {
               user: {
                 id: newUser._id,
+                role: newUser.role,
               },
             };
             jwt.sign(
@@ -907,6 +911,45 @@ class AuthController {
         updatedUser.password = undefined;
         return res.json(updatedUser);
       });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+  // @route   GET api/auth/favorite
+  // @desc    Get favorite product
+  // @access  Private
+  async getFavoriteProducts(req, res) {
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+      }
+      let length = user.favoriteProducts.length;
+      let getFavoriteProducts = [];
+      if (length > 0) {
+        for (let i = 0; i < length; ++i) {
+          let product = await Product.findById(user.favoriteProducts[i]);
+          if (!product) {
+            return res
+              .status(404)
+              .json({ errors: [{ msg: 'Sản phẩm không tồn tại!' }] });
+          }
+          getFavoriteProducts = [
+            {
+              _id: product._id,
+              productName: product.productName,
+              price: product.price,
+              image: product.images[0],
+              starRatings: product.starRatings,
+            },
+            ...getFavoriteProducts,
+          ];
+        }
+        return res.json(getFavoriteProducts);
+      }
+      return res.json(getFavoriteProducts);
     } catch (err) {
       return res.status(500).send('Server Error');
     }

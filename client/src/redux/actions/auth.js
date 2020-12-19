@@ -294,3 +294,22 @@ export const UpdateFavorite = (productId) => async (dispatch) => {
     }
   }
 };
+
+// Get favorite products
+export const GetFavorite = () => async (dispatch) => {
+  try {
+    const res = await api.get('/auth/favorite');
+    return res.data;
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
+};

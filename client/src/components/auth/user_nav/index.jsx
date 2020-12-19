@@ -19,12 +19,18 @@ export default ({ user }) => {
             </Link>
           </li>
           <li>
-            <Link className='navbar__user--action-link-item' to='/orders'>
+            <Link
+              className='navbar__user--action-link-item'
+              to='/profile/orders'
+            >
               Đơn hàng
             </Link>
           </li>
           <li>
-            <Link className='navbar__user--action-link-item' to='/wishlist'>
+            <Link
+              className='navbar__user--action-link-item'
+              to='/profile/wishlist'
+            >
               Ưa thích
             </Link>
           </li>

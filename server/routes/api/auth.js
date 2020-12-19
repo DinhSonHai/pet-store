@@ -99,4 +99,9 @@ router.put(
 // @access  Private
 router.put('/favorite', auth, AuthController.favoriteProduct);
 
+// @route   GET api/auth/favorite
+// @desc    Get favorite product
+// @access  Private
+router.get('/favorite', auth, AuthController.getFavoriteProducts);
+
 module.exports = router;

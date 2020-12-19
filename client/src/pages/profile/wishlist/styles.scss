@@ -1,0 +1,31 @@
+.profile {
+    &__main {
+        &--wishlist {
+            &-wrap {
+                img {
+                    margin-right: 1rem;
+                }
+                display: flex;
+            }
+            .wishlist-loader {
+                text-align: center;
+            }
+            .ant-row {
+                margin-bottom: 0 !important;
+            }
+            &-name,
+            &-price,
+            &-rate {
+                margin-bottom: 0;
+            }
+            &-name {
+                font-size: 1rem;
+                color: var(--dark-second-color);
+            }
+            &-price {
+                margin-top: 0.3rem;
+                color: var(--mainstream-color);
+            }
+        }
+    }
+}

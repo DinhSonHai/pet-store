@@ -14,3 +14,4 @@ export { default as ProfileUser } from './profile/user_info';
 export { default as ProfileAddress } from './profile/address';
 export { default as Checkout } from './checkout/Checkout';
 export { default as Order } from './order/Order';
+export { default as WishList } from './profile/wishlist';

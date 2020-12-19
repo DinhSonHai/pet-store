@@ -22,13 +22,9 @@ const PetDetails = ({
   data,
   auth: { user, isAuthenticated },
 }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   useEffect(() => {
-    if (data && data._id === match.params.id) {
-      setLoading(false);
-      return;
-    }
     async function getData() {
       setLoading(true);
       await getProductById(match.params.id);
@@ -56,7 +52,7 @@ const PetDetails = ({
         <h1 className='pet-details__title'>Chi tiết</h1>
         <div className='pet-details__content'>
           {loading || !data ? (
-            <Loader />
+            <Loader className={'loader'} />
           ) : (
             <div className='pet-details__wrap'>
               <Row gutter={[16, 16]}>

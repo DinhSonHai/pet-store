@@ -22,7 +22,7 @@ const { Meta } = Card;
 
 const Pets = ({ data: { products }, getProductsByType, match, location }) => {
   let filter = queryString.parse(location.search).sort;
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     async function getData() {
       if (filter) {
@@ -91,7 +91,7 @@ const Pets = ({ data: { products }, getProductsByType, match, location }) => {
         <div className='pets-list'>
           <Row gutter={[16, 16]}>
             {loading || !products ? (
-              <Loader />
+              <Loader className={'loader'} />
             ) : (
               products.map((product) => (
                 <Col key={product._id} xs={24} sm={12} md={8} lg={6}>

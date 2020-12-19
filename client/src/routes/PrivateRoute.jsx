@@ -13,7 +13,7 @@ const PrivateRoute = ({
     {...rest}
     render={(props) =>
       loading ? (
-        <Loader />
+        <Loader className={'loader'} />
       ) : isAuthenticated ? (
         <Component {...props} />
       ) : (

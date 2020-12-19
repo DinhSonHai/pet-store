@@ -7,17 +7,26 @@ module.exports = function (req, res, next) {
 
   //Kiểm tra có tồn tại token trong header không
   if (!token) {
-    return res.status(401).json({ msg: 'Không có token, từ chối thao tác' });
+    return res.status(401).json({
+      errors: [{ msg: 'Bạn cần đăng nhập để thực hiện thao tác này!' }],
+    });
   }
 
   //Xác thực token
   try {
     const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
+    const { role } = decoded.user;
+    if (!role || role !== 2) {
+      // role===2 is user
+      return res.status(401).json({
+        errors: [{ msg: 'Bạn không có quyền thực hiện thao tác này!' }],
+      });
+    }
 
     req.user = decoded.user;
-    
+
     next();
   } catch (err) {
-    return res.status(401).json({ msg: 'Token không hợp lệ' });
+    return res.status(401).json({ errors: [{ msg: 'Token không hợp lệ!' }] });
   }
 };

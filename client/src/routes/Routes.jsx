@@ -16,6 +16,7 @@ import {
   ProfileAddress,
   Checkout,
   Order,
+  WishList,
 } from '../pages';
 
 export default function () {
@@ -33,6 +34,7 @@ export default function () {
       <AuthRoute exact path='/auth/resetpassword/:token' component={Reset} />
       <PrivateRoute exact path='/profile' component={ProfileUser} />
       <PrivateRoute exact path='/profile/address' component={ProfileAddress} />
+      <PrivateRoute exact path='/profile/wishlist' component={WishList} />
       <CheckoutRoute exact path='/checkout' component={Checkout} />
       <CheckoutRoute exact path='/order' component={Order} />
     </Switch>
