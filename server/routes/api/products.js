@@ -31,6 +31,11 @@ router.post('/:id/review', [auth, validateReview], ProductController.review);
 // @access  Private
 router.put('/:id/review/:reviewId', [auth, validateComment], ProductController.comment);
 
+// @route   DELETE api/products/:id/review/:reviewId/comment/:commentId
+// @desc    Delete a comment on a review
+// @access  Private
+router.delete('/:id/review/:reviewId/comment/:commentId', auth, ProductController.deleteComment);
+
 // @route   GET api/products/:id
 // @desc    Get product by id
 // @access  Public

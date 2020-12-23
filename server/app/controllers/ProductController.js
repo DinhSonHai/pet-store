@@ -144,6 +144,9 @@ class ProductController {
     let { replyComment } = req.body;
     try {
       const review = await Review.findById(req.params.reviewId);
+      if (!review) {
+        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
+      }
       const comment = {
         userReplyId: req.user.id,
         replyComment
@@ -151,6 +154,30 @@ class ProductController {
       review.replyComment.push(comment);
       await review.save();
       res.json(review.replyComment);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   DELETE api/products/:id/review/:reviewId/comment/commentId
+  // @desc    Delete a comment on a review
+  // @access  Private
+  async deleteComment(req, res, next) {
+    try {
+      const review = await Review.findById(req.params.reviewId);
+      if (!review) {
+        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
+      }
+      // Kiểm tra xem người dùng có comment ở review này không
+      if (review.replyComment.filter(comment => comment.userReplyId.toString() === req.user.id).length === 0) {
+        return res.status(404).json({ msg: 'Chưa có bình luận nào' });
+      }
+      // Lấy thứ tự xóa comment
+      const removeIndex = review.replyComment.findIndex(
+        comment => comment.userReplyId.toString() === req.user.id && comment._id.toString() === req.params.commentId);
+      review.replyComment.splice(removeIndex, 1);
+      await review.save();
+      return res.json(review.replyComment);
     } catch (err) {
       return res.status(500).send('Server Error');
     }
