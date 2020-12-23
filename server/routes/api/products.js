@@ -3,7 +3,7 @@ const router = express.Router();
 
 const ProductController = require('../../app/controllers/ProductController');
 const checkPermission = require('../../app/middlewares/checkPermission');
-const { validateCreateProductInfo, validateUpdateProductInfo } = require('../../helpers/valid');
+const { validateCreateProductInfo, validateUpdateProductInfo, validateReview, validateComment } = require('../../helpers/valid');
 
 // @route   GET api/products
 // @desc    Get all products
@@ -14,6 +14,11 @@ router.get('/', ProductController.index);
 // @desc    Get all products has been soft deleted
 // @access  Private
 router.get('/deleted', checkPermission, ProductController.getDeletedProduct);
+
+// @route   GET api/products/:id/review
+// @desc    Get all review content of a product
+// @access  Public
+router.get('/:id/review', ProductController.getProductReview);
 
 // @route   GET api/products/:id
 // @desc    Get product by id

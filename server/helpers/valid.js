@@ -173,3 +173,19 @@ module.exports.validateOrderAuth = [
     .isNumeric()
     .withMessage('Phương thức thanh toán không hợp lệ'),
 ];
+
+// Valid review content
+module.exports.validateReview = [
+  check('starRatings', 'Vui lòng đánh giá sản phẩm')
+    .isNumeric(),
+  check('comment', 'Vui lòng nhập bình luận')
+    .notEmpty()
+    .isLength({ min: 5 }),
+]
+
+// Valid comment on review content
+module.exports.validateComment = [
+  check('comment', 'Vui lòng nhập bình luận')
+    .notEmpty()
+    .isLength({ min: 5 }),
+]

@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/Product');
 const Type = require('../models/Type');
+const Review = require('../models/Review');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 class ProductController {
@@ -84,6 +85,22 @@ class ProductController {
       return res.json(products);
     } catch (err) {
       console.error(err.message);
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/products/:id/review
+  // @desc    Get all review content of a product
+  // @access  Private
+  async getProductReview(req, res, next) {
+    try {
+      //Lấy tất cả đánh giá của sản phẩm
+      const review = await Review.find({ productId: new ObjectId(req.params.id) });
+      if (!review) {
+        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
+      }
+      return res.json(review);
+    } catch (err) {
       return res.status(500).send('Server Error');
     }
   }
