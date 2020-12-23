@@ -125,8 +125,32 @@ class ProductController {
         productId: req.params.id,
         starRatings, 
         comment });
-      review.save();
+      await review.save();
       return res.json({ msg: 'Gửi đánh giá thành công' });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   PUT api/products/:id/review
+  // @desc    Comment on a review
+  // @access  Private
+  async comment(req, res, next) {
+    //Kiểm tra req.body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    let { replyComment } = req.body;
+    try {
+      const review = await Review.findById(req.params.reviewId);
+      const comment = {
+        userReplyId: req.user.id,
+        replyComment
+      }
+      review.replyComment.push(comment);
+      await review.save();
+      res.json(review.replyComment);
     } catch (err) {
       return res.status(500).send('Server Error');
     }

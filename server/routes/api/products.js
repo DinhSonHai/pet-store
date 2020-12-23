@@ -26,6 +26,11 @@ router.get('/:id/review', ProductController.getProductReview);
 // @access  Private
 router.post('/:id/review', [auth, validateReview], ProductController.review);
 
+// @route   PUT api/products/:id/review/:reviewId
+// @desc    Comment on a review
+// @access  Private
+router.put('/:id/review/:reviewId', [auth, validateComment], ProductController.comment);
+
 // @route   GET api/products/:id
 // @desc    Get product by id
 // @access  Public

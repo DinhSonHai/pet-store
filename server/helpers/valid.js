@@ -182,12 +182,10 @@ module.exports.validateReview = [
     .withMessage('Số đánh giá phải nằm trong khoảng từ 0 đến 5'),
   check('comment', 'Vui lòng nhập bình luận')
     .notEmpty()
-    .isLength({ min: 5 }),
 ]
 
 // Valid comment on review content
 module.exports.validateComment = [
-  check('comment', 'Vui lòng nhập bình luận')
+  check('replyComment', 'Vui lòng nhập bình luận')
     .notEmpty()
-    .isLength({ min: 5 }),
 ]
