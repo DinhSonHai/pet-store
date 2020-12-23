@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const ProductController = require('../../app/controllers/ProductController');
+const auth = require('../../app/middlewares/auth');
 const checkPermission = require('../../app/middlewares/checkPermission');
 const { validateCreateProductInfo, validateUpdateProductInfo, validateReview, validateComment } = require('../../helpers/valid');
 
@@ -19,6 +20,11 @@ router.get('/deleted', checkPermission, ProductController.getDeletedProduct);
 // @desc    Get all review content of a product
 // @access  Public
 router.get('/:id/review', ProductController.getProductReview);
+
+// @route   POST api/products/:id/review
+// @desc    Review on a product
+// @access  Private
+router.post('/:id/review', [auth, validateReview], ProductController.review);
 
 // @route   GET api/products/:id
 // @desc    Get product by id

@@ -105,6 +105,33 @@ class ProductController {
     }
   }
 
+  // @route   POST api/products/:id/review
+  // @desc    Review on a product
+  // @access  Private
+  async review(req, res, next) {
+    try {
+      const product = await Product.findById(req.params.id);
+      if(!product) {
+        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm.' });
+      }
+      //Kiểm tra req.body
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      let { starRatings, comment } = req.body;
+      let review = new Review({
+        userId: req.user.id,
+        productId: req.params.id,
+        starRatings, 
+        comment });
+      review.save();
+      return res.json({ msg: 'Gửi đánh giá thành công' });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   GET api/products/categories/:categoryId
   // @desc    Get all products by Category
   // @access  Public

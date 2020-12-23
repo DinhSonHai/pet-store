@@ -177,7 +177,9 @@ module.exports.validateOrderAuth = [
 // Valid review content
 module.exports.validateReview = [
   check('starRatings', 'Vui lòng đánh giá sản phẩm')
-    .isNumeric(),
+    .notEmpty()
+    .isFloat( { min: 0, max: 5 })
+    .withMessage('Số đánh giá phải nằm trong khoảng từ 0 đến 5'),
   check('comment', 'Vui lòng nhập bình luận')
     .notEmpty()
     .isLength({ min: 5 }),
