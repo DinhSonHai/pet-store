@@ -19,3 +19,4 @@ export { default as CheckoutOrder } from './checkout/checkout_order';
 export { default as CheckoutAddress } from './checkout/checkout_address';
 export { default as CheckoutFormAuth } from './checkout/checkout_form_auth';
 export { default as CheckoutAddressModal } from './modal/checkout_address';
+export { default as FavoriteAction } from './favorite_action';

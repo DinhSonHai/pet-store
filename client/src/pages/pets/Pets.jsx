@@ -4,7 +4,17 @@ import PropTypes from 'prop-types';
 import { getProductsByType } from '../../redux/actions/products';
 import { connect } from 'react-redux';
 
-import { Row, Col, Card, Menu, Dropdown, Button, Breadcrumb } from 'antd';
+import {
+  Row,
+  Col,
+  Card,
+  Menu,
+  Dropdown,
+  Button,
+  Breadcrumb,
+  notification,
+  Pagination,
+} from 'antd';
 import {
   HeartOutlined,
   StarOutlined,
@@ -20,23 +30,32 @@ import queryString from 'query-string';
 import './styles.scss';
 const { Meta } = Card;
 
-const Pets = ({ data: { products }, getProductsByType, match, location }) => {
+const Pets = ({
+  data: { products, total },
+  getProductsByType,
+  match,
+  location,
+  history,
+}) => {
   let filter = queryString.parse(location.search).sort;
+  let page = queryString.parse(location.search).page;
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     async function getData() {
-      if (filter) {
-        setLoading(true);
-        await getProductsByType(match.params.id, filter);
-        setLoading(false);
-        return;
-      }
       setLoading(true);
-      await getProductsByType(match.params.id);
+      await getProductsByType(match.params.id, filter, page);
       setLoading(false);
     }
     getData();
-  }, [getProductsByType, match.params.id, filter]);
+  }, [getProductsByType, match.params.id, filter, page]);
+  const handlePagination = async (_page) => {
+    if (filter) {
+      return history.push(
+        `/pets/types/${match.params.id}/?sort=${filter}&page=${_page}`
+      );
+    }
+    return history.push(`/pets/types/${match.params.id}/?page=${_page}`);
+  };
   const menu = (
     <Menu>
       <Menu.Item key='1' icon={<StarOutlined />}>
@@ -59,6 +78,15 @@ const Pets = ({ data: { products }, getProductsByType, match, location }) => {
       </Menu.Item>
     </Menu>
   );
+  const handleAddToCart = (item) => {
+    if (item) {
+      addItem(item);
+      notification.open({
+        message: 'Thông báo!',
+        description: 'Đã thêm sản phẩm vào giỏ hàng',
+      });
+    }
+  };
   return (
     <section className='pets'>
       <div className='container'>
@@ -118,7 +146,7 @@ const Pets = ({ data: { products }, getProductsByType, match, location }) => {
                       </p>
                     </Link>
                     <Button
-                      onClick={() => addItem(product)}
+                      onClick={() => handleAddToCart(product)}
                       className='addToCart'
                       icon={<AddToCart />}
                       type='primary'
@@ -129,6 +157,16 @@ const Pets = ({ data: { products }, getProductsByType, match, location }) => {
             )}
           </Row>
         </div>
+        <Pagination
+          onChange={handlePagination}
+          disabled={loading}
+          current={!page ? 1 : parseInt(page)}
+          responsive={true}
+          pageSize={12}
+          total={total}
+          showSizeChanger={false}
+          style={{ textAlign: 'center', margin: '3rem 0 1rem 0' }}
+        />
       </div>
     </section>
   );

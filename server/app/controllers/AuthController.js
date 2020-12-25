@@ -908,8 +908,7 @@ class AuthController {
             errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
           });
         }
-        updatedUser.password = undefined;
-        return res.json(updatedUser);
+        return res.json({ check: isHave });
       });
     } catch (err) {
       return res.status(500).send('Server Error');

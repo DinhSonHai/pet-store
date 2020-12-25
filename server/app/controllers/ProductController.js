@@ -55,33 +55,25 @@ class ProductController {
   // @desc    Get all products by typeId
   // @access  Public
   async getByTypeId(req, res, next) {
+    const filterStatus = req.query.sort;
+    const typeId = new ObjectId(req.params.typeId);
+    const page = parseInt(req.query.page) || 1;
+    const query = { typeId: { $eq: typeId } };
+    const limit = 12;
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    const filterValue =
+      filterStatus === 'undefined'
+        ? { createdAt: -1 }
+        : filterStatus === 'desc'
+        ? { price: -1 }
+        : { price: 1 };
     try {
-      let filterStatus = req.query.sort;
-      let products = [];
-      if (filterStatus) {
-        if (filterStatus === 'desc') {
-          products = await Product.find({
-            typeId: new ObjectId(req.params.typeId),
-          }).sort({ price: 'desc' });
-        } else if (filterStatus === 'asc') {
-          products = await Product.find({
-            typeId: new ObjectId(req.params.typeId),
-          }).sort({ price: 'asc' });
-        } else {
-          products = await Product.find({
-            typeId: new ObjectId(req.params.typeId),
-          });
-        }
-      } else {
-        products = await Product.find({
-          typeId: new ObjectId(req.params.typeId),
-        });
-      }
-      // const products = await Product.find({ typeId: new ObjectId(req.params.typeId) });
-      if (!products) {
-        return res.status(404).json({ msg: 'Sản phẩm không tồn tại' });
-      }
-      return res.json(products);
+      const products = await Product.find(query).sort(filterValue);
+      return res.json({
+        data: products.slice(start, end),
+        total: products.length,
+      });
     } catch (err) {
       console.error(err.message);
       return res.status(500).send('Server Error');

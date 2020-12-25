@@ -10,6 +10,7 @@ import './styles.scss';
 const WishList = ({ location, GetFavorite, UpdateFavorite }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   useEffect(() => {
     let flag = true;
     async function getProducts() {
@@ -24,9 +25,11 @@ const WishList = ({ location, GetFavorite, UpdateFavorite }) => {
     return () => (flag = false);
   }, [GetFavorite]);
   const handleUnFavorite = async (id) => {
+    setIsProcessing(true);
     const updatedData = data.filter((item) => item._id !== id);
     setData(updatedData);
     await UpdateFavorite(id);
+    setIsProcessing(false);
   };
   return (
     <ProfileMain checkPage={location.pathname}>
@@ -63,6 +66,7 @@ const WishList = ({ location, GetFavorite, UpdateFavorite }) => {
                     })}
                   </p>
                   <Button
+                    disabled={isProcessing}
                     onClick={() => handleUnFavorite(item._id)}
                     type='text'
                     danger

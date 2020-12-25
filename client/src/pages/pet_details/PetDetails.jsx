@@ -4,26 +4,25 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Card, Rate, Button, notification } from 'antd';
 import { Carousel } from 'react-responsive-carousel';
-import { AddToCartDetail, Heart, HeartFill } from '../../icons';
+import { AddToCartDetail } from '../../icons';
+import { FavoriteAction } from '../../components';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.scss';
 
 import { getProductById } from '../../redux/actions/products';
-import { UpdateFavorite } from '../../redux/actions/auth';
 import { addItem } from '../../utils/cart';
 import { Loader } from '../../components';
 import { connect } from 'react-redux';
 
 const PetDetails = ({
   getProductById,
-  UpdateFavorite,
   match,
   data,
   auth: { user, isAuthenticated },
 }) => {
   const [loading, setLoading] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+
   useEffect(() => {
     async function getData() {
       setLoading(true);
@@ -32,19 +31,14 @@ const PetDetails = ({
     }
     getData();
   }, [getProductById, match.params.id]);
-  const handleFavorite = async (productId) => {
-    if (!isAuthenticated) {
-      return notification.open({
-        message: 'Lỗi!',
-        description: 'Bạn cần đăng nhập để thực hiện thao tác này!',
+  const handleAddToCart = (item) => {
+    if (item) {
+      addItem(item);
+      notification.open({
+        message: 'Thông báo!',
+        description: 'Đã thêm sản phẩm vào giỏ hàng',
       });
     }
-    if (!productId) {
-      return;
-    }
-    setIsProcessing(true);
-    await UpdateFavorite(productId);
-    setIsProcessing(false);
   };
   return (
     <section className='pet-details'>
@@ -73,23 +67,20 @@ const PetDetails = ({
                   <div className='pet-details__card-info'>
                     <Card
                       actions={[
-                        <Button
-                          disabled={isProcessing}
-                          loading={isProcessing}
-                          type='text'
-                          icon={
-                            user && user.favoriteProducts.includes(data._id) ? (
-                              <HeartFill />
-                            ) : (
-                              <Heart />
-                            )
+                        <FavoriteAction
+                          isAuthenticated={isAuthenticated}
+                          data={data}
+                          user={user}
+                          favoriteState={
+                            user
+                              ? user.favoriteProducts.includes(data._id)
+                              : null
                           }
-                          onClick={() => handleFavorite(data._id)}
                         />,
                         <Button
                           type='text'
                           icon={<AddToCartDetail />}
-                          onClick={() => addItem(data)}
+                          onClick={() => handleAddToCart(data)}
                         />,
                       ]}
                       title={data.productName}
@@ -139,7 +130,6 @@ const PetDetails = ({
 
 PetDetails.propTypes = {
   getProductById: PropTypes.func.isRequired,
-  UpdateFavorite: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -147,6 +137,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { getProductById, UpdateFavorite })(
-  PetDetails
-);
+export default connect(mapStateToProps, { getProductById })(PetDetails);

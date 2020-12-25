@@ -3,7 +3,10 @@ const router = express.Router();
 
 const ProductController = require('../../app/controllers/ProductController');
 const checkPermission = require('../../app/middlewares/checkPermission');
-const { validateCreateProductInfo, validateUpdateProductInfo } = require('../../helpers/valid');
+const {
+  validateCreateProductInfo,
+  validateUpdateProductInfo,
+} = require('../../helpers/valid');
 
 // @route   GET api/products
 // @desc    Get all products
@@ -33,12 +36,20 @@ router.get('/categories/:categoryId', ProductController.getByCategoryId);
 // @route   POST api/products
 // @desc    Create products
 // @access  Private
-router.post('/', [checkPermission, validateCreateProductInfo], ProductController.create);
+router.post(
+  '/',
+  [checkPermission, validateCreateProductInfo],
+  ProductController.create
+);
 
 // @route   PUT api/products/:id
 // @desc    Update products
 // @access  Private
-router.put('/:id', [checkPermission, validateUpdateProductInfo], ProductController.update);
+router.put(
+  '/:id',
+  [checkPermission, validateUpdateProductInfo],
+  ProductController.update
+);
 
 // @route   DELETE api/products/:id
 // @desc    Soft delete products (hide)

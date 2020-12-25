@@ -276,11 +276,7 @@ export const UpdateAdress = (data) => async (dispatch) => {
 export const UpdateFavorite = (productId) => async (dispatch) => {
   try {
     const res = await api.put('/auth/favorite', { productId });
-    dispatch({
-      type: UPDATE_USER,
-      payload: res.data,
-    });
-    loadUser();
+    return res.data.check;
   } catch (err) {
     const errors = err.response.data.errors;
 

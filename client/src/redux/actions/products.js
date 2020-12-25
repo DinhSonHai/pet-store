@@ -18,11 +18,13 @@ export const getAllProducts = () => async (dispatch) => {
 };
 
 // Get products by Type
-export const getProductsByType = (id, filterValue) => async (dispatch) => {
+export const getProductsByType = (id, filterValue, page) => async (
+  dispatch
+) => {
   try {
-    const res = filterValue
-      ? await api.get(`/products/types/${id}/?sort=${filterValue}`)
-      : await api.get(`/products/types/${id}`);
+    const res = await api.get(
+      `/products/types/${id}/?sort=${filterValue}&page=${page}`
+    );
     dispatch({
       type: GET_ALL_PRODUCTS,
       payload: res.data,
