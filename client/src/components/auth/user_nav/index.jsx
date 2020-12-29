@@ -8,20 +8,26 @@ export default ({ user }) => {
       <div className='navbar__user--action'>
         <ul className='navbar__user--action-link'>
           <li>
-            <Link className='navbar__user--action-link-item name' to='/profile'>
+            <Link
+              className='navbar__user--action-link-item name'
+              to='/profile/?tab=info'
+            >
               {'@ ' + user.name}
             </Link>
           </li>
           <div className='navbar__separate'></div>
           <li>
-            <Link className='navbar__user--action-link-item' to='/profile'>
+            <Link
+              className='navbar__user--action-link-item'
+              to='/profile/?tab=info'
+            >
               Tài khoản
             </Link>
           </li>
           <li>
             <Link
               className='navbar__user--action-link-item'
-              to='/profile/orders'
+              to='/profile/?tab=orders'
             >
               Đơn hàng
             </Link>
@@ -29,7 +35,7 @@ export default ({ user }) => {
           <li>
             <Link
               className='navbar__user--action-link-item'
-              to='/profile/wishlist'
+              to='/profile/?tab=wishlist'
             >
               Ưa thích
             </Link>

@@ -12,11 +12,10 @@ import {
   SignOut,
   Forgot,
   Reset,
-  ProfileUser,
-  ProfileAddress,
+  Profile,
   Checkout,
   Order,
-  WishList,
+  PetsType,
 } from '../pages';
 
 export default function () {
@@ -24,6 +23,7 @@ export default function () {
     <Switch>
       <Route exact path='/' component={Home} />
       <Route exact path='/pets/types/:id' component={Pets} />
+      <Route exact path='/pets/all_types/:id' component={PetsType} />
       <Route exact path='/cart' component={CartHome} />
       <Route exact path='/pet/:id' component={PetDetails} />
       <AuthRoute exact path='/signin' component={Signin} />
@@ -32,9 +32,7 @@ export default function () {
       <AuthRoute exact path='/auth/activate/:token' component={Activate} />
       <AuthRoute exact path='/forget' component={Forgot} />
       <AuthRoute exact path='/auth/resetpassword/:token' component={Reset} />
-      <PrivateRoute exact path='/profile' component={ProfileUser} />
-      <PrivateRoute exact path='/profile/address' component={ProfileAddress} />
-      <PrivateRoute exact path='/profile/wishlist' component={WishList} />
+      <PrivateRoute exact path='/profile' component={Profile} />
       <CheckoutRoute exact path='/checkout' component={Checkout} />
       <CheckoutRoute exact path='/order' component={Order} />
     </Switch>

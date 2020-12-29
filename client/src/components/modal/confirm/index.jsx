@@ -17,8 +17,8 @@ const ConfirmModal = ({
   const onFinish = async () => {
     setConfirmLoading(true);
     await RemoveAdress(id);
-    setVisibleRemove(false);
     setConfirmLoading(false);
+    setVisibleRemove(false);
   };
   return (
     <Modal

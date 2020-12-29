@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { ProfileMain } from '../../../components';
+import { useState, useEffect, Fragment } from 'react';
 import { Card, Rate, Button } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,7 +6,7 @@ import { GetFavorite, UpdateFavorite } from '../../../redux/actions/auth';
 import { Link } from 'react-router-dom';
 import { Loader } from '../../../components';
 import './styles.scss';
-const WishList = ({ location, GetFavorite, UpdateFavorite }) => {
+const WishList = ({ GetFavorite, UpdateFavorite }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -32,7 +31,7 @@ const WishList = ({ location, GetFavorite, UpdateFavorite }) => {
     setIsProcessing(false);
   };
   return (
-    <ProfileMain checkPage={location.pathname}>
+    <Fragment>
       <h3 className='profile__title'>Sản phẩm yêu thích({data.length})</h3>
       <div className='profile__main--wishlist'>
         {!data || isLoading ? (
@@ -79,7 +78,7 @@ const WishList = ({ location, GetFavorite, UpdateFavorite }) => {
           ))
         )}
       </div>
-    </ProfileMain>
+    </Fragment>
   );
 };
 WishList.propTypes = {

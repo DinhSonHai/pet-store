@@ -47,3 +47,11 @@ export const getProductById = (id) => async (dispatch) => {
     });
   } catch (err) {}
 };
+
+// Get all types by catId
+export const getTypesByCatId = (id) => async (dispatch) => {
+  try {
+    const res = await api.get(`/types/categories/${id}`);
+    return res.data;
+  } catch (err) {}
+};

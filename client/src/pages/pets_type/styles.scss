@@ -1,0 +1,20 @@
+.petsType {
+    background-color: var(--white-color);
+    &__content {
+        padding: 1rem 0;
+    }
+    &__header {
+        margin-bottom: 1rem;
+        &-title {
+            font-size: 0.9rem;
+        }
+    }
+    &__desc {
+        font-size: 1.2rem;
+        color: var(--dark-second-color);
+        text-align: center;
+    }
+    .ant-card:hover &__desc {
+        color: var(--mainstream-color);
+    }
+}

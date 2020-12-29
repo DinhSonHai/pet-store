@@ -1,55 +1,16 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { useEffect, useState, Fragment } from 'react';
+import { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Menu, Dropdown, Input } from 'antd';
+import { Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { CartAction, UserNav } from '../../components';
-import api from '../../api';
 import { getProductsByType } from '../../redux/actions/products';
 import { connect } from 'react-redux';
 import './styles.scss';
 
-const { SubMenu } = Menu;
 const { Search } = Input;
 
-const NavBar = ({
-  getProductsByType,
-  auth: { isAuthenticated, user, loading },
-}) => {
-  const [types, setTypes] = useState([]);
-  const [category, setCategory] = useState([]);
-  useEffect(() => {
-    const getMenu = async () => {
-      const cat = await api.get('/categories');
-      const ty = await api.get('/types');
-      setCategory(cat.data);
-      setTypes(ty.data);
-    };
-    getMenu();
-  }, []);
-  const menu = (
-    <Menu>
-      {category.map((cat) => {
-        return (
-          <SubMenu key={cat._id} title={cat.categoryName}>
-            {types.map((ty) => {
-              return cat._id === ty.categoryId ? (
-                <Menu.Item key={ty._id}>
-                  <Link
-                    className='type__title'
-                    onClick={async () => await getProductsByType(ty._id)}
-                    to={`/pets/types/${ty._id}`}
-                  >
-                    {ty.typeName}
-                  </Link>
-                </Menu.Item>
-              ) : null;
-            })}
-          </SubMenu>
-        );
-      })}
-    </Menu>
-  );
+const NavBar = ({ auth: { isAuthenticated, user, loading } }) => {
   const onSearch = (value) => {
     console.log(value);
   };
@@ -91,9 +52,21 @@ const NavBar = ({
           <Link className='navbar__wrap-actions--link' to='/'>
             Trang chủ
           </Link>
-          <Dropdown overlay={menu}>
-            <div className='navbar__wrap-actions--link'>Thú cưng</div>
-          </Dropdown>
+          <Link
+            className='navbar__wrap-actions--link'
+            to={`/pets/all_types/5f9d1f0f92c1c0b400863677`}
+          >
+            Chó cảnh
+          </Link>
+          <Link className='navbar__wrap-actions--link' to='/'>
+            Mèo cảnh
+          </Link>
+          <Link className='navbar__wrap-actions--link' to='/'>
+            Thức ăn
+          </Link>
+          <Link className='navbar__wrap-actions--link' to='/'>
+            Phụ kiện
+          </Link>
           <Link className='navbar__wrap-actions--link' to='/about'>
             Về chúng tôi
           </Link>

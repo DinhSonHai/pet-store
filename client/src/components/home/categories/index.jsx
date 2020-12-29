@@ -22,14 +22,14 @@ export default () => {
         <div className='category__content'>
           <Row gutter={[28, 28]}>
             <Col xs={24} sm={12} md={12} lg={6}>
-              <Link to={`/pet`}>
+              <Link to={`/pets/all_types/5f9d1f0f92c1c0b400863677`}>
                 <Card
                   bordered={false}
                   cover={
                     <img width='100%' height='100%' alt='example' src={Dog} />
                   }
                 >
-                  <p className='category__desc'>Choss cảnh</p>
+                  <p className='category__desc'>Chó cảnh</p>
                 </Card>
               </Link>
             </Col>
@@ -42,7 +42,7 @@ export default () => {
                     <img width='100%' height='100%' alt='example' src={Cat} />
                   }
                 >
-                  <p className='category__desc'>Hoàng thượng</p>
+                  <p className='category__desc'>Mèo cảnh</p>
                 </Card>
               </Link>
             </Col>

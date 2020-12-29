@@ -31,7 +31,9 @@ const AddressModal = ({
     t: '',
   });
   useEffect(() => {
-    form.resetFields();
+    if (edit) {
+      form.resetFields();
+    }
     async function Get_Province() {
       const data = await getProvince();
       setProvince(data);

@@ -13,14 +13,13 @@ import {
   Checkbox,
   notification,
 } from 'antd';
-import { ProfileMain } from '../../../components';
 import { ProgressBar } from '../../../components';
 import imageCompression from 'browser-image-compression';
 import Compressor from 'compressorjs';
 import './styles.scss';
 
 const { Option } = Select;
-const UserInfo = ({ location, auth: { user }, updateUserInfo }) => {
+const UserInfo = ({ auth: { user }, updateUserInfo }) => {
   const [passStatus, setPassStatus] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [imageUrl, setImageUpdateUser] = useState('');
@@ -78,7 +77,7 @@ const UserInfo = ({ location, auth: { user }, updateUserInfo }) => {
     setIsProcessing(false);
   };
   return (
-    <ProfileMain checkPage={location.pathname}>
+    <Fragment>
       <h3 className='profile__title'>Thông tin tài khoản</h3>
       <Card className='profile__main--card profile__main--user'>
         <Form
@@ -214,7 +213,7 @@ const UserInfo = ({ location, auth: { user }, updateUserInfo }) => {
           </Form.Item>
         </Form>
       </Card>
-    </ProfileMain>
+    </Fragment>
   );
 };
 UserInfo.propTypes = {

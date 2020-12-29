@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, notification } from 'antd';
+import { Button, notification, message } from 'antd';
 import { Heart, HeartFill } from '../../icons';
 import { connect } from 'react-redux';
 import { UpdateFavorite } from '../../redux/actions/auth';
@@ -25,10 +25,7 @@ const FavoriteAction = ({
     setIsProcessing(true);
     const res = await UpdateFavorite(productId);
     if (!res) {
-      notification.open({
-        message: 'Thông báo!',
-        description: 'Đã thêm sản phẩm vào mục yêu thích.',
-      });
+      message.success('Đã thêm sản phẩm vào mục yêu thích.');
     }
     setIsProcessing(false);
     if (isFavorite) {

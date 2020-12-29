@@ -12,7 +12,7 @@ import {
   Dropdown,
   Button,
   Breadcrumb,
-  notification,
+  message,
   Pagination,
 } from 'antd';
 import {
@@ -81,10 +81,7 @@ const Pets = ({
   const handleAddToCart = (item) => {
     if (item) {
       addItem(item);
-      notification.open({
-        message: 'Thông báo!',
-        description: 'Đã thêm sản phẩm vào giỏ hàng',
-      });
+      return message.success('Đã thêm sản phẩm vào giỏ hàng');
     }
   };
   return (
@@ -103,9 +100,7 @@ const Pets = ({
               </Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <Link className='pets__header-title' to='/'>
-                Chó Alaska
-              </Link>
+              <span className='pets__header-title'>Chó Alaska</span>
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className='pets__header-filter'>

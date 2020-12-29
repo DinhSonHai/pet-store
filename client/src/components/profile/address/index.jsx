@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { ProfileMain, AddressModal, ConfirmModal } from '../../../components';
+import { useState, Fragment } from 'react';
+import { AddressModal, ConfirmModal } from '../../../components';
 import { Button, Card } from 'antd';
 import { PlusOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import './styles.scss';
 
-const Address = ({ location, auth: { user } }) => {
+const Address = ({ auth: { user } }) => {
   const [visible, setVisible] = useState(false);
   const [visible_remove, setVisibleRemove] = useState(false);
   const [id, setId] = useState(null);
@@ -23,7 +23,7 @@ const Address = ({ location, auth: { user } }) => {
     setVisible(true);
   };
   return (
-    <ProfileMain checkPage={location.pathname}>
+    <Fragment>
       <h3 className='profile__title'>Sổ địa chỉ</h3>
       <div className='profile__main--address'>
         <Button
@@ -94,7 +94,7 @@ const Address = ({ location, auth: { user } }) => {
               ))}
         </div>
       </div>
-    </ProfileMain>
+    </Fragment>
   );
 };
 const mapStateToProps = (state) => ({

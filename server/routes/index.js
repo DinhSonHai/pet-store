@@ -1,6 +1,3 @@
-const express = require('express');
-const path = require('path');
-
 const products = require('./api/products');
 const types = require('./api/types');
 const categories = require('./api/categories');

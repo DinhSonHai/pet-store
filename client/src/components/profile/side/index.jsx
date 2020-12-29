@@ -9,37 +9,37 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import './styles.scss';
-export default ({ checkPage }) => {
+export default ({ tab }) => {
   const styleState = { backgroundColor: '#f0f0f0', color: '#106eea' };
 
   return (
     <Card bordered={false} className='profile__side--wrap'>
       <span>
-        <Link style={checkPage === '/profile' ? styleState : {}} to='/profile'>
+        <Link style={tab === 'info' ? styleState : {}} to='/profile/?tab=info'>
           <UserOutlined /> Thông tin tài khoản
         </Link>
       </span>
       <span>
         {' '}
         <Link
-          style={checkPage === '/profile/orders' ? styleState : {}}
-          to='/profile/orders'
+          style={tab === 'orders' ? styleState : {}}
+          to='/profile/?tab=orders'
         >
           <ContainerOutlined /> Quản lý đơn hàng
         </Link>
       </span>
       <span>
         <Link
-          style={checkPage === '/profile/address' ? styleState : {}}
-          to='/profile/address'
+          style={tab === 'address' ? styleState : {}}
+          to='/profile/?tab=address'
         >
           <ShopOutlined /> Sổ địa chỉ
         </Link>
       </span>
       <span>
         <Link
-          style={checkPage === '/profile/wishlist' ? styleState : {}}
-          to='/profile/wishlist'
+          style={tab === 'wishlist' ? styleState : {}}
+          to='/profile/?tab=wishlist'
         >
           <HeartOutlined /> Sản phẩm ưa thích
         </Link>

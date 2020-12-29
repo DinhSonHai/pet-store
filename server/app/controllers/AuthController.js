@@ -160,8 +160,14 @@ class AuthController {
       //Định dạng lại ngày
       user.dateOfBirth = dayjs(user.dateOfBirth).format();
       //Lưu tài khoản vào csdl
-      await user.save();
-      return res.json({ message: 'Kích hoạt tài khoản thành công!' });
+      await user.save((err, data) => {
+        if (!err) {
+          return res.json({ message: 'Kích hoạt tài khoản thành công!' });
+        }
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Kích hoạt tài khoản thất bại!' }] });
+      });
     } catch (error) {
       return res.status(401).json({
         errors: [

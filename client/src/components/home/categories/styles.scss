@@ -39,7 +39,11 @@
     color: var(--dark-second-color);
   }
   &__desc {
+    text-align: center;
     font-size: 1.2rem;
     color: var(--dark-second-color);
+  }
+  .ant-card:hover &__desc {
+    color: var(--mainstream-color);
   }
 }

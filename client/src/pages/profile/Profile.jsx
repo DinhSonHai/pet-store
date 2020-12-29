@@ -1,9 +1,17 @@
 /* eslint-disable import/no-anonymous-default-export */
+import { useState, useEffect } from 'react';
 import { Row, Col } from 'antd';
-import { ProfileSide } from '../../../components';
+import { ProfileSide } from '../../components';
+import { ProfileInfo, ProfileAddress, ProfileWishlist } from '../../components';
 import { connect } from 'react-redux';
+import queryString from 'query-string';
 import './styles.scss';
-const Profile = ({ children, checkPage, auth: { user } }) => {
+const Profile = ({ location, auth: { user } }) => {
+  let tab = queryString.parse(location.search).tab;
+  const [tabState, setTabState] = useState(tab || 'info');
+  useEffect(() => {
+    setTabState(tab);
+  }, [tab]);
   return (
     <section className='profile'>
       <div className='profile__wrap container'>
@@ -17,10 +25,18 @@ const Profile = ({ children, checkPage, auth: { user } }) => {
                   <p className='profile__username'>{user.name}</p>
                 </div>
               </div>
-              <ProfileSide checkPage={checkPage} />
+              <ProfileSide tab={tab} />
             </Col>
             <Col className='profile__main' xs={24} sm={24} md={18} lg={18}>
-              {children}
+              {tabState === 'info' ? (
+                <ProfileInfo />
+              ) : tabState === 'address' ? (
+                <ProfileAddress />
+              ) : tabState === 'wishlist' ? (
+                <ProfileWishlist />
+              ) : (
+                !tabState && <ProfileInfo />
+              )}
             </Col>
           </Row>
         </div>

@@ -2,7 +2,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card, Rate, Button, notification } from 'antd';
+import { Row, Col, Card, Rate, Button, message } from 'antd';
 import { Carousel } from 'react-responsive-carousel';
 import { AddToCartDetail } from '../../icons';
 import { FavoriteAction } from '../../components';
@@ -34,10 +34,7 @@ const PetDetails = ({
   const handleAddToCart = (item) => {
     if (item) {
       addItem(item);
-      notification.open({
-        message: 'Thông báo!',
-        description: 'Đã thêm sản phẩm vào giỏ hàng',
-      });
+      return message.success('Đã thêm sản phẩm vào giỏ hàng');
     }
   };
   return (

@@ -65,7 +65,7 @@ const CheckoutAddress = ({
             (<span style={{ color: 'var(--danger-color)' }}>*</span>) Có vẻ như
             bạn chưa có địa chỉ trong tài khoản, hãy thêm địa chỉ của bạn trong{' '}
             <span
-              onClick={() => history.push('/profile/address')}
+              onClick={() => history.push('/profile/?tab=address')}
               style={{ color: 'var(--mainstream-color)', cursor: 'pointer' }}
             >
               Sổ địa chỉ
@@ -79,7 +79,7 @@ const CheckoutAddress = ({
           (<span style={{ color: 'var(--danger-color)' }}>*</span>) Bạn cần cung
           cấp số điện thoại trong{' '}
           <span
-            onClick={() => history.push('/profile')}
+            onClick={() => history.push('/profile/?tab=info')}
             style={{ color: 'var(--mainstream-color)', cursor: 'pointer' }}
           >
             Tài khoản
