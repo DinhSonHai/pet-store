@@ -132,6 +132,18 @@ class ProductController {
     }
   }
 
+  // @route   DELETE api/products/:id/review/:reviewId
+  // @desc    Delete a review
+  // @access  Private
+  async deleteReview(req, res, next) {
+    try {
+      await Review.findOneAndRemove({ _id: req.params.reviewId });
+      return res.json({ msg: 'Review deleted' });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   PUT api/products/:id/review
   // @desc    Comment on a review
   // @access  Private
@@ -153,7 +165,7 @@ class ProductController {
       }
       review.replyComment.push(comment);
       await review.save();
-      res.json(review.replyComment);
+      return res.json(review.replyComment);
     } catch (err) {
       return res.status(500).send('Server Error');
     }
