@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/Product');
 const Type = require('../models/Type');
+const Review = require('../models/Review');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 class ProductController {
@@ -76,6 +77,112 @@ class ProductController {
       });
     } catch (err) {
       console.error(err.message);
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/products/:id/review
+  // @desc    Get all review content of a product
+  // @access  Private
+  async getProductReview(req, res, next) {
+    try {
+      //Lấy tất cả đánh giá của sản phẩm
+      const review = await Review.find({ productId: new ObjectId(req.params.id) });
+      if (!review) {
+        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
+      }
+      return res.json(review);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   POST api/products/:id/review
+  // @desc    Review on a product
+  // @access  Private
+  async review(req, res, next) {
+    try {
+      const product = await Product.findById(req.params.id);
+      if(!product) {
+        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm.' });
+      }
+      //Kiểm tra req.body
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      let { starRatings, comment } = req.body;
+      let review = new Review({
+        userId: req.user.id,
+        productId: req.params.id,
+        starRatings, 
+        comment });
+      await review.save();
+      return res.json({ msg: 'Gửi đánh giá thành công' });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   DELETE api/products/:id/review/:reviewId
+  // @desc    Delete a review
+  // @access  Private
+  async deleteReview(req, res, next) {
+    try {
+      await Review.findOneAndRemove({ _id: req.params.reviewId });
+      return res.json({ msg: 'Review deleted' });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   PUT api/products/:id/review
+  // @desc    Comment on a review
+  // @access  Private
+  async comment(req, res, next) {
+    //Kiểm tra req.body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    let { replyComment } = req.body;
+    try {
+      const review = await Review.findById(req.params.reviewId);
+      if (!review) {
+        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
+      }
+      const comment = {
+        userReplyId: req.user.id,
+        replyComment
+      }
+      review.replyComment.push(comment);
+      await review.save();
+      return res.json(review.replyComment);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   DELETE api/products/:id/review/:reviewId/comment/commentId
+  // @desc    Delete a comment on a review
+  // @access  Private
+  async deleteComment(req, res, next) {
+    try {
+      const review = await Review.findById(req.params.reviewId);
+      if (!review) {
+        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
+      }
+      // Kiểm tra xem người dùng có comment ở review này không
+      if (review.replyComment.filter(comment => comment.userReplyId.toString() === req.user.id).length === 0) {
+        return res.status(404).json({ msg: 'Chưa có bình luận nào' });
+      }
+      // Lấy thứ tự xóa comment
+      const removeIndex = review.replyComment.findIndex(
+        comment => comment.userReplyId.toString() === req.user.id && comment._id.toString() === req.params.commentId);
+      review.replyComment.splice(removeIndex, 1);
+      await review.save();
+      return res.json(review.replyComment);
+    } catch (err) {
       return res.status(500).send('Server Error');
     }
   }
