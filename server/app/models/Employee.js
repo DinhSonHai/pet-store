@@ -21,5 +21,7 @@ const EmployeeSchema = new Schema({
   isWorking: { type: Boolean, default: true },
   createdAt: { type: Date, default: now.toISOString() },
 });
-
+UserSchema.methods.checkPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 module.exports = mongoose.model('employee', EmployeeSchema);

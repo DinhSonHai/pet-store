@@ -13,8 +13,11 @@ const client = new OAuth2Client(config.get('GOOGLE_CLIENT'));
 
 const User = require('../models/User');
 const Product = require('../models/Product');
+const Employee = require('../models/Employee');
 
 class AuthController {
+  //* Client *//
+
   // @route   GET api/auth/user
   // @desc    Get user data
   // @access  Private
@@ -270,22 +273,28 @@ class AuthController {
         avatar: data.url,
         password: hashedPassword,
       });
-      await newUser.save();
-      const payload = {
-        user: {
-          id: newUser._id,
-          role: newUser.role,
-        },
-      };
-      jwt.sign(
-        payload,
-        config.get('jwtSignInSecret'),
-        { expiresIn: '7d' },
-        (err, token) => {
-          if (err) throw err;
-          return res.json({ token });
+      await newUser.save((err, userData) => {
+        if (err) {
+          return res.status(400).json({
+            errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
+          });
         }
-      );
+        const payload = {
+          user: {
+            id: userData._id,
+            role: userData.role,
+          },
+        };
+        jwt.sign(
+          payload,
+          config.get('jwtSignInSecret'),
+          { expiresIn: '7d' },
+          (err, token) => {
+            if (err) throw err;
+            return res.json({ token });
+          }
+        );
+      });
     } catch (err) {
       return res.status(400).json({
         errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
@@ -335,22 +344,28 @@ class AuthController {
               avatar: picture,
               password: hashedPassword,
             });
-            await newUser.save();
-            const payload = {
-              user: {
-                id: newUser._id,
-                role: newUser.role,
-              },
-            };
-            jwt.sign(
-              payload,
-              config.get('jwtSignInSecret'),
-              { expiresIn: '7d' },
-              (err, token) => {
-                if (err) throw err;
-                return res.json({ token });
+            await newUser.save((err, userData) => {
+              if (err) {
+                return res.status(400).json({
+                  errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
+                });
               }
-            );
+              const payload = {
+                user: {
+                  id: userData._id,
+                  role: userData.role,
+                },
+              };
+              jwt.sign(
+                payload,
+                config.get('jwtSignInSecret'),
+                { expiresIn: '7d' },
+                (err, token) => {
+                  if (err) throw err;
+                  return res.json({ token });
+                }
+              );
+            });
           } else {
             return res.status(400).json({
               errors: [
@@ -957,6 +972,54 @@ class AuthController {
       return res.json(getFavoriteProducts);
     } catch (err) {
       return res.status(500).send('Server Error');
+    }
+  }
+
+  //* Admin *//
+
+  // @route   POST api/auth/_signin
+  // @desc    Sign in for admin
+  // @access  Public
+  async _signIn(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+      //Lấy thông tin user theo email
+      let user = await Employee.findOne({ email });
+      if (!user) {
+        return res.status(400).json({
+          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
+        });
+      }
+      //Kiểm tra mật khẩu
+      const isMatch = await user.checkPassword(password);
+      if (!isMatch) {
+        return res.status(400).json({
+          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
+        });
+      }
+      //Tạo payload cho token
+      const payload = {
+        user: {
+          id: user._id,
+          role: user.role,
+        },
+      };
+      //Trả về token
+      jwt.sign(
+        payload,
+        config.get('jwtSignInSecret'),
+        { expiresIn: '30d' },
+        (err, token) => {
+          if (err) throw err;
+          return res.json({ token });
+        }
+      );
+    } catch (error) {
+      return res.status(500).send('Server error');
     }
   }
 }

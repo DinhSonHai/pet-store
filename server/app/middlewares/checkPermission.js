@@ -1,37 +1,27 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-const User = require('../models/User');
-const Employee = require('../models/Employee');
 module.exports = function (req, res, next) {
   //Lấy token từ header
   const token = req.header('x-auth-token');
-
   //Kiểm tra có tồn tại token trong header không
   if (!token) {
-    return res.status(401).json({ msg: 'Không có token, từ chối thao tác' });
+    return res.status(401).json({
+      errors: [{ msg: 'Bạn cần đăng nhập để thực hiện thao tác này!' }],
+    });
   }
-
   //Xác thực token
   try {
     const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
+    const { role } = decoded.user;
 
-    let user = decoded.user;
-
-    const checkAccountExists = async () => { 
-      const check = await Employee.exists({ _id: user.id }) || await Admin.exists({ _id: user.id });  
-      console.log(check)
-  
-      if(!check) {
-        return res.status(401).json({ msg: 'Từ chối thao tác, bạn không có quyền truy cập' });
-      }
-  
-      req.user = user;
-      
-      next();
+    if (!role || role === 2 || role !== 1 || role !== 0) {
+      return res.status(401).json({
+        errors: [{ msg: 'Từ chối thao tác, bạn không có quyền truy cập!' }],
+      });
     }
-
-    checkAccountExists();
+    req.user = decoded.user;
+    next();
   } catch (err) {
     return res.status(401).json({ msg: 'Token không hợp lệ' });
   }
