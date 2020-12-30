@@ -8,6 +8,8 @@ const checkPermission = require('../../app/middlewares/checkPermission');
 const {
   validateCreateProductInfo,
   validateUpdateProductInfo,
+  validateComment,
+  validateReview
 } = require('../../helpers/valid');
 // @route   GET api/products
 // @desc    Get all products
