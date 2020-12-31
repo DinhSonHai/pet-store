@@ -17,14 +17,11 @@ module.exports = function (req, res, next) {
     const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
     const { role } = decoded.user;
     if (!role || role !== 2) {
-      // role===2 is user
       return res.status(401).json({
         errors: [{ msg: 'Bạn không có quyền thực hiện thao tác này!' }],
       });
     }
-
     req.user = decoded.user;
-
     next();
   } catch (err) {
     return res.status(401).json({ errors: [{ msg: 'Token không hợp lệ!' }] });

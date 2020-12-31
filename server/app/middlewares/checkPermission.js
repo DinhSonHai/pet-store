@@ -15,9 +15,9 @@ module.exports = function (req, res, next) {
     const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
     const { role } = decoded.user;
 
-    if (!role || role === 2 || role !== 1 || role !== 0) {
+    if (!role || role !== 0) {
       return res.status(401).json({
-        errors: [{ msg: 'Từ chối thao tác, bạn không có quyền truy cập!' }],
+        errors: [{ msg: 'Từ chối thao tác, bạn không có quyền!' }],
       });
     }
     req.user = decoded.user;

@@ -1,7 +1,6 @@
 const Type = require('../models/Type');
 const Category = require('../models/Category');
 const ObjectId = require('mongoose').Types.ObjectId;
-const checkRole = require('../../app/middlewares/checkRole');
 
 class TypeController {
   // @route   GET api/types
@@ -55,7 +54,6 @@ class TypeController {
   // @desc    Tạo loại sản phẩm
   // @access  Private
   async Add(req, res, next) {
-    checkRole(req.user.role);
     const { typeName, typeImg, categoryId } = req.body;
     if (!typeName) {
       return res
@@ -95,7 +93,6 @@ class TypeController {
   // @desc    Sửa loại sản phẩm
   // @access  Private
   async Edit(req, res, next) {
-    checkRole(req.user.role);
     const { typeName, typeImg, categoryId, id } = req.body;
     if (!typeName) {
       return res
@@ -137,7 +134,6 @@ class TypeController {
   // @desc    Soft delete loại sản phẩm (ẩn đi)
   // @access  Private
   async softDelete(req, res) {
-    checkRole(req.user.role);
     try {
       let ty = await Type.findById(req.params.id);
       if (!ty) {
@@ -154,7 +150,6 @@ class TypeController {
   // @desc    Phục hồi loại sản phẩm soft deleted
   // @access  Private
   async restore(req, res) {
-    checkRole(req.user.role);
     try {
       await Type.restore({ _id: req.params.id });
       return res.json({ message: 'Khôi phục thành công' });
@@ -167,7 +162,6 @@ class TypeController {
   // @desc    Lây tất cả loại sản phẩn soft deleted
   // @access  Private
   async getDeleted(req, res) {
-    checkRole(req.user.role);
     try {
       const ty = await Type.findDeleted({});
       return res.json(ty);

@@ -1,5 +1,4 @@
 const Category = require('../models/Category');
-const checkRole = require('../../app/middlewares/checkRole');
 
 class CategoryController {
   // @route   GET api/categories
@@ -34,7 +33,6 @@ class CategoryController {
   // @desc    Tạo danh mục
   // @access  Private
   async Add(req, res, next) {
-    checkRole(req.user.role);
     const { categoryName } = req.body;
     if (!categoryName) {
       return res
@@ -61,7 +59,6 @@ class CategoryController {
   // @desc    Sửa danh mục
   // @access  Private
   async editById(req, res, next) {
-    checkRole(req.user.role);
     const { id, categoryName } = req.body;
     if (!categoryName) {
       return res
@@ -90,7 +87,6 @@ class CategoryController {
   // @desc    Soft delete danh mục (ẩn đi)
   // @access  Private
   async softDelete(req, res) {
-    checkRole(req.user.role);
     try {
       let cat = await Category.findById(req.params.id);
       if (!cat) {
@@ -107,7 +103,6 @@ class CategoryController {
   // @desc    Phục hồi danh mục soft deleted
   // @access  Private
   async restore(req, res) {
-    checkRole(req.user.role);
     try {
       await Category.restore({ _id: req.params.id });
       return res.json({ message: 'Khôi phục thành công' });
@@ -120,7 +115,6 @@ class CategoryController {
   // @desc    Lây tất cả danh mục soft deleted
   // @access  Private
   async getDeleted(req, res) {
-    checkRole(req.user.role);
     try {
       const cat = await Category.findDeleted({});
       return res.json(cat);

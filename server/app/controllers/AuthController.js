@@ -1001,11 +1001,17 @@ class AuthController {
           errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
         });
       }
+      const { id, role } = user;
+      if (!role || role === 2 || role !== 1 || role !== 0) {
+        return res.status(401).json({
+          errors: [{ msg: 'Từ chối thao tác, bạn không có quyền truy cập!' }],
+        });
+      }
       //Tạo payload cho token
       const payload = {
         user: {
-          id: user._id,
-          role: user.role,
+          id,
+          role,
         },
       };
       //Trả về token
@@ -1018,6 +1024,105 @@ class AuthController {
           return res.json({ token });
         }
       );
+    } catch (error) {
+      return res.status(500).send('Server error');
+    }
+  }
+
+  // @route   POST api/auth/_signup
+  // @desc    Sign up for Employee
+  // @access  Private
+  async _signUp(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const {
+      name,
+      email,
+      password,
+      phoneNumber,
+      address,
+      gender,
+      dateOfBirth,
+    } = req.body;
+    try {
+      //Lấy thông tin user theo email
+      let user = await Employee.findOne({ email });
+      if (user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Nhân viên này đã tồn tại!' }] });
+      }
+      //Mã hóa mật khẩu
+      const salt = await bcrypt.genSalt(10);
+
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const userFields = {
+        password: hashedPassword,
+        name,
+        email,
+        phoneNumber,
+        address,
+        gender,
+        dateOfBirth,
+      };
+
+      user = _.extend(user, userFields);
+
+      //Lưu tài khoản vào csdl
+      await user.save((err, data) => {
+        if (!err) {
+          return res.json({ message: 'Đăng ký thành công!' });
+        }
+        return res.status(400).json({ errors: [{ msg: 'Đăng ký thất bại!' }] });
+      });
+    } catch (error) {
+      return res.status(500).send('Server error');
+    }
+  }
+
+  // @route   POST api/auth/_signup
+  // @desc    Sign up for Employee
+  // @access  Private
+  async _signUp_admin(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { name, email, password, secret } = req.body;
+    if (!secret || secret !== config.get('SECRET_ADMIN_SIGNUP')) {
+      return res.status(400).json({ errors: [{ msg: 'Truy cập bị chặn!!' }] });
+    }
+    try {
+      //Lấy thông tin user theo email
+      let user = await Employee.findOne({ email });
+      if (user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Admin này đã tồn tại!' }] });
+      }
+      //Mã hóa mật khẩu
+      const salt = await bcrypt.genSalt(10);
+
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const userFields = {
+        password: hashedPassword,
+        name,
+        email,
+      };
+
+      user = _.extend(user, userFields);
+
+      //Lưu tài khoản vào csdl
+      await user.save((err, data) => {
+        if (!err) {
+          return res.json({ message: 'Đăng ký thành công!' });
+        }
+        return res.status(400).json({ errors: [{ msg: 'Đăng ký thất bại!' }] });
+      });
     } catch (error) {
       return res.status(500).send('Server error');
     }
