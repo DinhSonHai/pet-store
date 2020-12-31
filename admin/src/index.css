@@ -10,6 +10,7 @@
   --white-color: #fff;
   --danger-color: #dc3545;
   --success-color: #28a745;
+  --theme-dark: #141414;
 }
 * {
   box-sizing: border-box;
@@ -17,7 +18,7 @@
   padding: 0;
 }
 body {
-  font-family: "Lato", sans-serif !important;
+  font-family: 'Lato', sans-serif !important;
   font-size: 1rem !important;
   line-height: 1.6 !important;
   color: var(--dark-second-color) !important;
@@ -28,4 +29,11 @@ body {
   margin: 10rem auto 3rem auto;
   overflow: hidden;
   padding: 0 1rem;
+}
+
+.site-layout .site-layout-background {
+  background: var(--white-color);
+}
+[data-theme='dark'] .site-layout .site-layout-background {
+  background: var(--theme-dark);
 }

@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from 'antd';
 import { Link } from 'react-router-dom';
-import { CartAction, UserNav } from '../../components';
+import { CartAction, UserNav, Loader } from '../../components';
 import { getProductsByType } from '../../redux/actions/products';
 import { connect } from 'react-redux';
 import './styles.scss';
@@ -33,14 +33,16 @@ const NavBar = ({ auth: { isAuthenticated, user, loading } }) => {
             </div>
           </div>
           <div className='navbar__info-social'>
-            {loading ? null : !isAuthenticated ? (
+            {loading ? (
+              <Loader className={''} />
+            ) : !isAuthenticated ? (
               <Fragment>
                 <Link to='/signin'>Đăng nhập</Link>
                 <Link to='/signup'>Đăng kí</Link>
               </Fragment>
             ) : (
               <div className='navbar__user'>
-                {!user ? null : <UserNav user={user} />}
+                {!user ? <Loader className={''} /> : <UserNav user={user} />}
               </div>
             )}
             <CartAction />

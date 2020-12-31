@@ -12,10 +12,10 @@ module.exports = function (req, res, next) {
   }
   //Xác thực token
   try {
-    const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
+    const decoded = jwt.verify(token, config.get('jwtSignInSecretAdmin'));
     const { role } = decoded.user;
 
-    if (!role || role !== 0) {
+    if (role !== 0) {
       return res.status(401).json({
         errors: [{ msg: 'Từ chối thao tác, bạn không có quyền!' }],
       });
@@ -23,6 +23,8 @@ module.exports = function (req, res, next) {
     req.user = decoded.user;
     next();
   } catch (err) {
-    return res.status(401).json({ msg: 'Token không hợp lệ' });
+    return res.status(401).json({
+      errors: [{ msg: 'Token không hợp lệ!' }],
+    });
   }
 };

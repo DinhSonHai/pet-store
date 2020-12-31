@@ -977,8 +977,28 @@ class AuthController {
 
   //* Admin *//
 
+  // @route   GET api/auth/_user
+  // @desc    Get user data
+  // @access  Private
+  async get_UserData(req, res) {
+    try {
+      const user = await Employee.findById(req.user.id).select([
+        '-password',
+        '-resetPasswordLink',
+      ]);
+      if (!user) {
+        return res.status(404).json({
+          errors: [{ msg: 'Tài khoản không tồn tại' }],
+        });
+      }
+      return res.json(user);
+    } catch (error) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   POST api/auth/_signin
-  // @desc    Sign in for admin
+  // @desc    Sign in for admin/employee
   // @access  Public
   async _signIn(req, res) {
     const errors = validationResult(req);
@@ -1002,28 +1022,29 @@ class AuthController {
         });
       }
       const { id, role } = user;
-      if (!role || role === 2 || role !== 1 || role !== 0) {
-        return res.status(401).json({
-          errors: [{ msg: 'Từ chối thao tác, bạn không có quyền truy cập!' }],
-        });
+      if (role === 1 || role === 0) {
+        //Tạo payload cho token
+        const payload = {
+          user: {
+            id,
+            role,
+          },
+        };
+        //Trả về token
+        jwt.sign(
+          payload,
+          config.get('jwtSignInSecretAdmin'),
+          { expiresIn: '30d' },
+          (err, token) => {
+            if (err) throw err;
+            return res.json({ token });
+          }
+        );
+        return;
       }
-      //Tạo payload cho token
-      const payload = {
-        user: {
-          id,
-          role,
-        },
-      };
-      //Trả về token
-      jwt.sign(
-        payload,
-        config.get('jwtSignInSecret'),
-        { expiresIn: '30d' },
-        (err, token) => {
-          if (err) throw err;
-          return res.json({ token });
-        }
-      );
+      return res.status(401).json({
+        errors: [{ msg: 'Từ chối thao tác, bạn không có quyền truy cập!' }],
+      });
     } catch (error) {
       return res.status(500).send('Server error');
     }
@@ -1083,14 +1104,10 @@ class AuthController {
     }
   }
 
-  // @route   POST api/auth/_signup
-  // @desc    Sign up for Employee
+  // @route   POST api/auth/_signup_admin
+  // @desc    Sign up for Admin
   // @access  Private
   async _signUp_admin(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
     const { name, email, password, secret } = req.body;
     if (!secret || secret !== config.get('SECRET_ADMIN_SIGNUP')) {
       return res.status(400).json({ errors: [{ msg: 'Truy cập bị chặn!!' }] });
@@ -1107,15 +1124,12 @@ class AuthController {
       const salt = await bcrypt.genSalt(10);
 
       const hashedPassword = await bcrypt.hash(password, salt);
-
-      const userFields = {
+      user = new Employee({
         password: hashedPassword,
         name,
         email,
-      };
-
-      user = _.extend(user, userFields);
-
+      });
+      user.role = 0;
       //Lưu tài khoản vào csdl
       await user.save((err, data) => {
         if (!err) {

@@ -1,6 +1,9 @@
 .login {
+  &__wrap {
+    margin-top: 5rem;
+  }
   &__content {
-    padding: 1rem 0;
+    padding: 1rem;
   }
   &__title {
     text-align: center;

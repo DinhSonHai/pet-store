@@ -9,6 +9,7 @@ import {
   UserOutlined,
   BarChartOutlined,
   PaperClipOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 
 import './styles.scss';
@@ -64,19 +65,31 @@ const SiderComponent = () => {
           </Menu.Item>
         </SubMenu>
         <Menu.Item key='orders_management' icon={<AuditOutlined />}>
-          Quản lý hóa đơn
+          <Link to='/?tab=orders'>Quản lý hóa đơn</Link>
         </Menu.Item>
         <Menu.Item key='users_management' icon={<UserOutlined />}>
-          Quản lý người dùng
+          <Link to='/?tab=users'>Quản lý người dùng</Link>
         </Menu.Item>
         <Menu.Item key='frontend_management' icon={<DesktopOutlined />}>
-          Quản lý UI/UX
+          <Link to='/?tab=frontend'>Quản lý UI/UX</Link>
         </Menu.Item>
         <Menu.Item key='posts_management' icon={<PaperClipOutlined />}>
-          Quản lý bài đăng
+          <Link to='/?tab=posts'>Quản lý bài đăng</Link>
         </Menu.Item>
+        <SubMenu
+          key='employee_management'
+          icon={<TeamOutlined />}
+          title='Quản lý nhân viên'
+        >
+          <Menu.Item key='employees'>
+            <Link to='/?tab=employees'>Nhân viên</Link>
+          </Menu.Item>
+          <Menu.Item key='account'>
+            <Link to='/?tab=signup'>Tài khoản</Link>
+          </Menu.Item>
+        </SubMenu>
         <Menu.Item key='statistical' icon={<BarChartOutlined />}>
-          Thống kê
+          <Link to='/?tab=statistical'>Thống kê</Link>
         </Menu.Item>
       </Menu>
     </Sider>

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import { SiderComponent } from '../../components';
-import { Category } from '../../pages';
+import { Category, Footer, Navbar } from '../../pages';
 
 import queryString from 'query-string';
 import './styles.scss';
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 
 const Home = ({ location }) => {
   let tab = queryString.parse(location.search).tab;
@@ -18,13 +18,11 @@ const Home = ({ location }) => {
     <Layout style={{ minHeight: '100vh' }}>
       <SiderComponent />
       <Layout className='site-layout'>
-        <Header className='site-layout-background' style={{ padding: 0 }} />
+        <Navbar />
         <Content style={{ margin: '0 1rem' }}>
           {tabState === 'category' ? <Category /> : null}
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          PetStore ©2020 Created by Duc Dao
-        </Footer>
+        <Footer />
       </Layout>
     </Layout>
   );

@@ -178,14 +178,12 @@ module.exports.validateOrderAuth = [
 module.exports.validateReview = [
   check('starRatings', 'Vui lòng đánh giá sản phẩm')
     .notEmpty()
-    .isFloat( { min: 0, max: 5 })
+    .isFloat({ min: 0, max: 5 })
     .withMessage('Số đánh giá phải nằm trong khoảng từ 0 đến 5'),
-  check('comment', 'Vui lòng nhập bình luận')
-    .notEmpty()
-]
+  check('comment', 'Vui lòng nhập bình luận').notEmpty(),
+];
 
 // Valid comment on review content
 module.exports.validateComment = [
-  check('replyComment', 'Vui lòng nhập bình luận')
-    .notEmpty()
-]
+  check('replyComment', 'Vui lòng nhập bình luận').notEmpty(),
+];

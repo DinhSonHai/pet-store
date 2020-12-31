@@ -1,0 +1,29 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  padding: 0 1rem;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+  &__separate {
+    height: 1px;
+    width: 100%;
+    background-color: var(--light-color);
+    margin: 10px 0;
+  }
+}
+
+// Sign out
+.sign-out {
+  padding: calc(15% + 100px) 2% 10%;
+  text-align: center;
+  &__title {
+    font-size: 1.2rem;
+    color: var(--dark-second-color);
+  }
+  button {
+    font-size: 1rem;
+    height: 50px;
+  }
+}

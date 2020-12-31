@@ -4,6 +4,7 @@ const router = express.Router();
 const AuthController = require('../../app/controllers/AuthController');
 
 const auth = require('../../app/middlewares/auth');
+const checkPermission = require('../../app/middlewares/checkPermission');
 
 const {
   validateSignUp,
@@ -19,6 +20,20 @@ const {
 // @access  Public
 router.post('/signup', validateSignUp, AuthController.signUp);
 
+// @route   POST api/auth/_signup
+// @desc    Sign up for Employee
+// @access  Private
+router.post(
+  '/_signup',
+  [checkPermission, validateSignUp],
+  AuthController._signUp
+);
+
+// @route   POST api/auth/_signup_admin
+// @desc    Sign up for Admin
+// @access  Private
+router.post('/_signup_admin', AuthController._signUp_admin);
+
 // @route   POST api/auth/activate
 // @desc    Activate an account
 // @access  Public
@@ -28,6 +43,11 @@ router.post('/activate', AuthController.activate);
 // @desc    Sign in
 // @access  Public
 router.post('/signin', validateSignIn, AuthController.signIn);
+
+// @route   POST api/auth/_signin
+// @desc    Sign in for admin/employee
+// @access  Public
+router.post('/_signin', validateSignIn, AuthController._signIn);
 
 // @route   POST api/auth/googlelogin
 // @desc    Sign in with google account
@@ -43,6 +63,11 @@ router.post('/facebooklogin', AuthController.facebookLogin);
 // @desc    Get user data
 // @access  Private
 router.get('/user', auth, AuthController.getUserData);
+
+// @route   GET api/auth/_user
+// @desc    Get admin, employee data
+// @access  Private
+router.get('/_user', checkPermission, AuthController.get_UserData);
 
 // @route   PUT api/auth/forgetpassword
 // @desc    Forget password
