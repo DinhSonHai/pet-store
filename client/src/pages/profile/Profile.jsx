@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 import queryString from 'query-string';
 import './styles.scss';
 const Profile = ({ location, auth: { user } }) => {
-  let tab = queryString.parse(location.search).tab;
-  const [tabState, setTabState] = useState(tab || 'info');
+  let tab = queryString.parse(location.search).tab || 'info';
+  const [tabState, setTabState] = useState(tab);
   useEffect(() => {
     setTabState(tab);
   }, [tab]);
