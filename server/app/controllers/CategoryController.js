@@ -29,7 +29,7 @@ class CategoryController {
     }
   }
 
-  // @route   POST api/category
+  // @route   POST api/categories
   // @desc    Tạo danh mục
   // @access  Private
   async Add(req, res, next) {
@@ -43,6 +43,7 @@ class CategoryController {
       const cat = new Category({
         categoryName,
       });
+      cat.key = cat._id;
       await cat.save((err, data) => {
         if (err) {
           return res.status(400).json({ errors: [{ msg: 'Thêm thất bại!' }] });
@@ -104,6 +105,10 @@ class CategoryController {
   // @access  Private
   async restore(req, res) {
     try {
+      let cat = await Category.findDeleted({ _id: req.params.id });
+      if (!cat) {
+        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+      }
       await Category.restore({ _id: req.params.id });
       return res.json({ message: 'Khôi phục thành công' });
     } catch (error) {

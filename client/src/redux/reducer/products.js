@@ -5,7 +5,6 @@ const initialState = {
   products: [],
   total: 0,
   product: null,
-  loading: true,
   error: {},
 };
 
@@ -17,12 +16,10 @@ export default function (state = initialState, action) {
         ...state,
         products: payload.data,
         total: payload.total,
-        loading: false,
       };
     case GET_PRODUCT_BY_ID:
       return {
         ...state,
-        loading: false,
         product: payload,
       };
     default:

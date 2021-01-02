@@ -61,6 +61,10 @@ const AddressModal = ({
     if (!values) {
       return;
     }
+    form.setFieldsValue({
+      wardState: '',
+      townState: '',
+    });
     let id = parseInt(values);
     setIsProcessing(true);
     const data = await getWard(id);
@@ -75,6 +79,9 @@ const AddressModal = ({
     if (!values) {
       return;
     }
+    form.setFieldsValue({
+      townState: '',
+    });
     let id = parseInt(values);
     setIsProcessing(true);
     const data = await getTown(id);
