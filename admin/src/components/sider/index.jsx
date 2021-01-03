@@ -26,6 +26,7 @@ const SiderComponent = ({ tabState }) => {
         height: '100vh',
         position: 'fixed',
         left: 0,
+        zIndex: 999,
       };
       setStyle(st);
       return;

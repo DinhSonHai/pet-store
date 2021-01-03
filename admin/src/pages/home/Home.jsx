@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 
 import { SiderComponent } from '../../components';
-import { Category, Footer, Navbar, DashBoard } from '../../pages';
+import { Category, Footer, Navbar, DashBoard, Type } from '../../pages';
 
 import queryString from 'query-string';
 import './styles.scss';
@@ -19,6 +19,8 @@ const Home = ({ location }) => {
     switch (tabState) {
       case 'category':
         return <Category />;
+      case 'type':
+        return <Type />;
       default:
         return <DashBoard />;
     }

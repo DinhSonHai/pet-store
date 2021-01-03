@@ -8,7 +8,10 @@ class TypeController {
   // @access  Public
   async getAll(req, res, next) {
     try {
-      const types = await Type.find();
+      const types = await Type.find().populate({
+        path: 'categoryId',
+        select: ['categoryName'],
+      });
       return res.json(types);
     } catch (err) {
       console.error(err.message);
@@ -77,11 +80,16 @@ class TypeController {
         typeImg,
         categoryId,
       });
+      ty.key = ty._id;
       await ty.save((err, data) => {
         if (err) {
           return res.status(400).json({ errors: [{ msg: 'Thêm thất bại!' }] });
         }
-        return res.json({ data, message: 'Thêm thành công' });
+        return res.json({
+          data,
+          categoryName: cat.categoryName,
+          message: 'Thêm thành công',
+        });
       });
     } catch (err) {
       console.error(err.message);
@@ -122,7 +130,11 @@ class TypeController {
         if (err) {
           return res.status(400).json({ errors: [{ msg: 'Sửa thất bại!' }] });
         }
-        return res.json({ data, message: 'Sửa thành công' });
+        return res.json({
+          data,
+          categoryName: cat.categoryName,
+          message: 'Sửa thành công',
+        });
       });
     } catch (err) {
       console.error(err.message);

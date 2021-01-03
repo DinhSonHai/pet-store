@@ -9,6 +9,11 @@ const checkPermission = require('../../app/middlewares/checkPermission');
 // @access  Public
 router.get('/', TypeController.getAll);
 
+// @route   GET api/types/deleted
+// @desc    Lây tất cả loại sản phẩn soft deleted
+// @access  Private
+router.get('/deleted', checkPermission, TypeController.getDeleted);
+
 // @route   GET api/types/:id
 // @desc    Lấy loại theo id
 // @access  Public
@@ -38,10 +43,5 @@ router.delete('/:id', checkPermission, TypeController.softDelete);
 // @desc    Phục hồi loại sản phẩm soft deleted
 // @access  Private
 router.patch('/:id/restore', checkPermission, TypeController.restore);
-
-// @route   GET api/types/deleted
-// @desc    Lây tất cả loại sản phẩn soft deleted
-// @access  Private
-router.get('/deleted', checkPermission, TypeController.getDeleted);
 
 module.exports = router;

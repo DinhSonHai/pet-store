@@ -64,7 +64,9 @@ const CategoryList = ({
       await getAllCategories();
       setIsLoading(false);
     }
-    getData();
+    if (tabChange === 'list') {
+      getData();
+    }
   }, [getAllCategories, tabChange]);
   const remove = async (id) => {
     setIsLoading(true);

@@ -1,37 +1,34 @@
 import { useState, useEffect } from 'react';
 import { Table, Button } from 'antd';
 import { connect } from 'react-redux';
-import {
-  getRemovedCategories,
-  restoreCategory,
-} from '../../../redux/actions/categories';
-const CategoryRemoved = ({
-  categories: { categories_removed },
-  getRemovedCategories,
-  restoreCategory,
+import { getRemovedTypes, restoreType } from '../../../redux/actions/types';
+const TypeRemoved = ({
+  types: { types_removed },
+  getRemovedTypes,
+  restoreType,
   tabChange,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      await getRemovedCategories();
+      await getRemovedTypes();
       setIsLoading(false);
     }
     if (tabChange === 'removed') {
       getData();
     }
-  }, [getRemovedCategories, tabChange]);
+  }, [getRemovedTypes, tabChange]);
   const onRestore = async (key) => {
     setIsLoading(true);
-    await restoreCategory(key);
+    await restoreType(key);
     setIsLoading(false);
   };
   const columns = [
     {
-      title: 'Tên danh mục',
-      dataIndex: 'categoryName',
-      key: 'categoryName',
+      title: 'Tên loại',
+      dataIndex: 'typeName',
+      key: 'typeName',
     },
     {
       title: 'Hành động',
@@ -51,14 +48,14 @@ const CategoryRemoved = ({
       }}
       loading={isLoading}
       columns={columns}
-      dataSource={categories_removed}
+      dataSource={types_removed}
     />
   );
 };
 const mapStateToProps = (state) => ({
-  categories: state.categories,
+  types: state.types,
 });
 export default connect(mapStateToProps, {
-  getRemovedCategories,
-  restoreCategory,
-})(CategoryRemoved);
+  getRemovedTypes,
+  restoreType,
+})(TypeRemoved);

@@ -32,7 +32,7 @@ const UserInfo = ({ auth: { user }, updateUserInfo }) => {
       let file_size = selected.size;
       if (parseInt(file_size) > 2097152) {
         return notification.open({
-          message: 'Thành công!',
+          message: 'Lỗi!',
           description: 'Ảnh đại diện có dung lượng phải bé hơn 2mb',
         });
       }

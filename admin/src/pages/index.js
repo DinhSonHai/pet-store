@@ -5,3 +5,4 @@ export { default as Footer } from './layout/Footer';
 export { default as Navbar } from './layout/Navbar';
 export { default as Signout } from './layout/SignOut';
 export { default as DashBoard } from './dashboard/DashBoard';
+export { default as Type } from './type/Type';
