@@ -22,8 +22,13 @@ router.post(
 
 // @route   POST api/order/auth
 // @desc    Đặt hàng user
-// @access  Public
+// @access  Private
 router.post('/auth', [auth, validateOrderAuth], OrderController.authOrder);
+
+// @route   PUT api/order/auth/:orderId
+// @desc    Hủy đơn hàng
+// @access  Private
+router.put('/auth/:orderId', auth, OrderController.cancleOrder);
 
 // @route   PUT api/order/:orderId
 // @desc    Cập nhật trạng thái đơn hàng

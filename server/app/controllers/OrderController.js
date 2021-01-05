@@ -310,6 +310,41 @@ class OrderController {
     }
   }
 
+  // @route   PUT api/order/auth
+  // @desc    Hủy đơn hàng
+  // @access  Private
+  async cancleOrder(req, res) {
+    try {
+      let orderId = req.params.orderId;
+      let order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({ msg: 'Không tìm thấy đơn đặt hàng này.' });
+      }
+      let { status } = order;
+      // -1: Hủy đơn hàng
+      // 0: Đặt hàng thành công
+      // 1: Đã xác nhận đơn hàng
+      // 2: Đang lấy hàng
+      // 3: Đóng gói xong
+      // 4: Đang vận chuyển
+      // 5: Giao hàng thành công
+      if (status === 0 || status === 1) {
+        status = -1;
+      }
+      else {
+        return res.json({ msg: 'Bạn không thể hủy đơn hàng.' });
+      }
+      order = await Order.findOneAndUpdate(
+        { _id: orderId },
+        { $set: { status }},
+        { new: true }
+      );
+      return res.json({ msg: 'Đã hủy đơn hàng thành công.' });
+    } catch (err) {
+      return res.status(500).send('Server Error'); 
+    }
+  }
+
   // @route   PUT api/order/:orderId
   // @desc    Cập nhật trạng thái đơn hàng
   // @access  Private
@@ -321,13 +356,17 @@ class OrderController {
         return res.status(404).json({ msg: 'Không tìm thấy đơn đặt hàng này.' });
       }
       let { status } = order;
+      // -1: Hủy đơn hàng
       // 0: Đặt hàng thành công
       // 1: Đã xác nhận đơn hàng
       // 2: Đang lấy hàng
       // 3: Đóng gói xong
       // 4: Đang vận chuyển
       // 5: Giao hàng thành công
-      if (status === 0) {
+      if (status === -1) {
+        return res.json({ msg: 'Đơn hàng đã bị hủy. Không thể thay đổi trạng thái đơn hàng.' });
+      }
+      else if (status === 0) {
         status = 1;
       }
       else if (status === 1) {
