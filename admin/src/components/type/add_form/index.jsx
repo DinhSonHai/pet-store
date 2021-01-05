@@ -1,19 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
-import { Form, Button, Input, Modal, Select, message } from 'antd';
+import { useState, useEffect, Fragment } from 'react';
+import { Form, Button, Input, Select, message } from 'antd';
 import { ProgressBar } from '../../../components';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { connect } from 'react-redux';
+import { createType, editType } from '../../../redux/actions/types';
 import api from '../../../api';
 const { Option } = Select;
-const TypeAddForm = ({
-  visible,
-  setVisible,
-  createType,
-  editType,
-  edit,
-  item,
-}) => {
+const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [content, setContent] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [categoryState, setCategoryState] = useState([]);
   const [images, setImages] = useState([]);
@@ -23,6 +21,7 @@ const TypeAddForm = ({
   useEffect(() => {
     if (edit) {
       form.resetFields();
+      setContent(item.content);
       setImages([item.typeImg]);
     }
     async function getCategories() {
@@ -33,9 +32,6 @@ const TypeAddForm = ({
     }
     getCategories();
   }, [item]);
-  const handleCancel = () => {
-    setVisible(false);
-  };
   const uploadImages = async (e) => {
     setImages([]);
     let selected = e.target.files[0];
@@ -55,35 +51,32 @@ const TypeAddForm = ({
     if (images.length <= 0) {
       return message.error('Vui lòng chọn hình ảnh!');
     }
-    if (!edit) {
-      if (values) {
-        setConfirmLoading(true);
-        await createType({ ...values, typeImg: images[0] });
-        setConfirmLoading(false);
-        setVisible(false);
-      }
+    if (edit) {
+      setConfirmLoading(true);
+      await editType({ ...values, typeImg: images[0], content, id: item._id });
+      setConfirmLoading(false);
       return;
     }
-    if (values) {
-      setConfirmLoading(true);
-      await editType({ ...values, typeImg: images[0], id: item._id });
-      setConfirmLoading(false);
-      setVisible(false);
-    }
+    setConfirmLoading(true);
+    await createType({ ...values, typeImg: images[0], content });
+    setConfirmLoading(false);
+  };
+  const handleCkeditor = (event, editor) => {
+    let data = editor.getData();
+    setContent(data);
   };
   return (
-    <Modal
-      style={{ wordBreak: 'break-word' }}
-      closable={false}
-      footer={false}
-      onCancel={handleCancel}
-      confirmLoading={confirmLoading}
-      visible={visible}
-      onOk={onFinish}
-      maskClosable={!confirmLoading}
-      title={edit ? 'Sửa loại SP' : 'Thêm loại SP'}
-    >
-      <Form form={form} size='large' layout='vertical' onFinish={onFinish}>
+    <Fragment>
+      <h3 style={{ textAlign: 'right' }}>
+        {edit ? 'Sửa loại sản phẩm' : 'Thêm loại sản phẩm'}
+      </h3>
+      <Form
+        encType='multipart/form-data'
+        form={form}
+        size='large'
+        layout='vertical'
+        onFinish={onFinish}
+      >
         <Form.Item
           initialValue={edit ? item.typeName : ''}
           label='Tên loại SP'
@@ -117,7 +110,7 @@ const TypeAddForm = ({
             ))}
           </Select>
         </Form.Item>
-        <Form.Item style={{ textAlign: 'center' }} label='Ảnh loại sp'>
+        <Form.Item style={{ textAlign: 'center' }} label='Ảnh thumbnail'>
           {images.length > 0 && (
             <img
               alt='Avt'
@@ -164,20 +157,40 @@ const TypeAddForm = ({
             />
           )}
         </div>
+        <Form.Item>
+          <CKEditor
+            data={edit ? item.content : ''}
+            config={{
+              ckfinder: {
+                uploadUrl: '/upload',
+              },
+              height: 800,
+              // toolbar: false,
+            }}
+            editor={ClassicEditor}
+            onChange={handleCkeditor}
+          />
+        </Form.Item>
         <Form.Item style={{ textAlign: 'right' }}>
-          <Button
-            style={{ marginRight: '1rem' }}
-            disabled={confirmLoading}
-            onClick={handleCancel}
-          >
-            Hủy
-          </Button>
+          {edit && (
+            <Button
+              style={{ marginRight: '1rem' }}
+              onClick={() => {
+                setContent('');
+                setImages([]);
+                setEdit(false);
+              }}
+            >
+              Hủy
+            </Button>
+          )}
+
           <Button type='primary' loading={confirmLoading} htmlType='submit'>
-            {!edit ? ' Thêm' : 'Lưu'}
+            {edit ? 'Lưu' : ' Thêm'}
           </Button>
         </Form.Item>
       </Form>
-    </Modal>
+    </Fragment>
   );
 };
-export default TypeAddForm;
+export default connect(null, { createType, editType })(TypeAddForm);

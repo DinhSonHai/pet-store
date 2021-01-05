@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
-import { TypeList, TypeRemoved } from '../../components';
-import { UnorderedListOutlined, DeleteOutlined } from '@ant-design/icons';
+import { TypeList, TypeRemoved, TypeAddForm } from '../../components';
+import {
+  UnorderedListOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 const { TabPane } = Tabs;
 const Type = () => {
   const [tabChange, setTabChange] = useState('list');
@@ -41,6 +45,17 @@ const Type = () => {
             key='removed'
           >
             <TypeRemoved tabChange={tabChange} />
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+                <PlusOutlined />
+                Thêm
+              </span>
+            }
+            key='actions'
+          >
+            <TypeAddForm tabChange={tabChange} />
           </TabPane>
         </Tabs>
       </div>

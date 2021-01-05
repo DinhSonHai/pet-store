@@ -1,11 +1,31 @@
 const express = require('express');
 const path = require('path');
+const multiparty = require('connect-multiparty');
+const MultipartyMiddleware = multiparty({
+  uploadDir: __dirname + '/public/uploads',
+});
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  cloud_name: 'petstore-mern',
+  api_key: '961355747379429',
+  api_secret: 'rGLBE9UbLRa4qpuVh6lKlJ2Z_u4',
+});
 
 const connectDB = require('./config/db');
 const route = require('./routes');
 
 const app = express();
 app.use(express.json());
+app.use(express.static('public'));
+app.post('/upload', MultipartyMiddleware, async (req, res) => {
+  let tmpFile = req.files.upload;
+  let pathFile = tmpFile.path;
+  const imageUrl = await cloudinary.uploader.upload(pathFile);
+  return res.status(200).json({
+    uploaded: true,
+    url: imageUrl.url,
+  });
+});
 
 connectDB();
 

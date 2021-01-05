@@ -9,6 +9,7 @@ const TypeSchema = new Schema({
   typeName: { type: String, trim: true, required: true },
   key: { type: Schema.Types.ObjectId, required: true },
   typeImg: { type: String, trim: true },
+  content: { type: String, trim: true },
   categoryId: { type: Schema.Types.ObjectId, ref: 'category', required: true },
   createdAt: { type: Date, default: now.toISOString() },
 });

@@ -1,26 +1,13 @@
 import { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Table, Popconfirm } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-
-import {
-  getAllTypes,
-  editType,
-  removeType,
-  createType,
-} from '../../../redux/actions/types';
 import { TypeAddForm } from '../../../components';
-const TypeList = ({
-  types: { types },
-  getAllTypes,
-  editType,
-  removeType,
-  createType,
-  tabChange,
-}) => {
+import { Button, Form, Table, Popconfirm } from 'antd';
+
+import { getAllTypes, removeType } from '../../../redux/actions/types';
+
+const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange }) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
-  const [visible, setVisible] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
   useEffect(() => {
@@ -29,10 +16,10 @@ const TypeList = ({
       await getAllTypes();
       setIsLoading(false);
     }
-    if (tabChange === 'list') {
+    if (tabChange === 'list' && !edit) {
       getData();
     }
-  }, [getAllTypes, tabChange]);
+  }, [getAllTypes, tabChange, edit]);
   const remove = async (id) => {
     setIsLoading(true);
     await removeType(id);
@@ -56,9 +43,8 @@ const TypeList = ({
             <Button
               type='link'
               onClick={() => {
-                setEdit(true);
                 setItem(record);
-                setVisible(true);
+                setEdit(true);
               }}
             >
               Sửa
@@ -78,36 +64,23 @@ const TypeList = ({
   ];
   return (
     <Fragment>
-      <Button
-        style={{ fontSize: '1rem', marginBottom: '1rem' }}
-        icon={<PlusOutlined />}
-        type='link'
-        onClick={() => {
-          setEdit(false);
-          setVisible(true);
-        }}
-      >
-        Thêm
-      </Button>
-      <TypeAddForm
-        edit={edit}
-        item={item}
-        createType={createType}
-        editType={editType}
-        setVisible={setVisible}
-        visible={visible}
-      />
-      <Form form={form} component={false}>
-        <Table
-          columns={columns}
-          loading={isLoading}
-          dataSource={types}
-          pagination={{
-            responsive: true,
-            showSizeChanger: false,
-          }}
-        />
-      </Form>
+      {!edit ? (
+        <Fragment>
+          <Form form={form} component={false}>
+            <Table
+              columns={columns}
+              loading={isLoading}
+              dataSource={types}
+              pagination={{
+                responsive: true,
+                showSizeChanger: false,
+              }}
+            />
+          </Form>
+        </Fragment>
+      ) : (
+        <TypeAddForm edit={edit} setEdit={setEdit} item={item} />
+      )}
     </Fragment>
   );
 };
@@ -116,7 +89,5 @@ const mapStateToProps = (state) => ({
 });
 export default connect(mapStateToProps, {
   getAllTypes,
-  editType,
   removeType,
-  createType,
 })(TypeList);

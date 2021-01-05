@@ -57,7 +57,7 @@ class TypeController {
   // @desc    Tạo loại sản phẩm
   // @access  Private
   async Add(req, res, next) {
-    const { typeName, typeImg, categoryId } = req.body;
+    const { typeName, typeImg, categoryId, content } = req.body;
     if (!typeName) {
       return res
         .status(400)
@@ -79,6 +79,7 @@ class TypeController {
         typeName,
         typeImg,
         categoryId,
+        content,
       });
       ty.key = ty._id;
       await ty.save((err, data) => {
@@ -101,7 +102,7 @@ class TypeController {
   // @desc    Sửa loại sản phẩm
   // @access  Private
   async Edit(req, res, next) {
-    const { typeName, typeImg, categoryId, id } = req.body;
+    const { typeName, typeImg, categoryId, id, content } = req.body;
     if (!typeName) {
       return res
         .status(400)
@@ -126,6 +127,7 @@ class TypeController {
       ty.typeName = typeName;
       ty.typeImg = typeImg;
       ty.categoryId = categoryId;
+      ty.content = content;
       await ty.save((err, data) => {
         if (err) {
           return res.status(400).json({ errors: [{ msg: 'Sửa thất bại!' }] });

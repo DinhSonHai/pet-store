@@ -4,11 +4,12 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.3.0",
+    "@ckeditor/ckeditor5-build-classic": "^24.0.0",
+    "@ckeditor/ckeditor5-react": "^3.0.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
     "antd": "^4.9.4",
-    "antd-img-crop": "^3.13.2",
     "axios": "^0.21.1",
     "dayjs": "^1.9.8",
     "eslint-plugin-react": "^7.21.5",
