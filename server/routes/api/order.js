@@ -9,6 +9,7 @@ const {
   validateOrderAuth,
 } = require('../../helpers/valid');
 const auth = require('../../app/middlewares/auth');
+const checkPermission = require('../../app/middlewares/checkPermission');
 
 // @route   POST api/order
 // @desc    Đặt hàng guest
@@ -23,5 +24,10 @@ router.post(
 // @desc    Đặt hàng user
 // @access  Public
 router.post('/auth', [auth, validateOrderAuth], OrderController.authOrder);
+
+// @route   PUT api/order/:orderId
+// @desc    Cập nhật trạng thái đơn hàng
+// @access  Private
+router.put('/:orderId', checkPermission, OrderController.updateOrderStatus);
 
 module.exports = router;

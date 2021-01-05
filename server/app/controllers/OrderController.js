@@ -3,6 +3,7 @@ process.env['NODE_CONFIG_DIR'] = __dirname;
 const config = require('config');
 const nodemailer = require('nodemailer');
 const axios = require('axios');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
@@ -219,12 +220,12 @@ class OrderController {
         phone: user.phoneNumber,
         email: user.email,
         address,
-        note,
         totalMoney,
+        note,
         deliveryState,
         paymentState,
       });
-      order = await order.save();
+      await order.save();
       let getProducts = [];
       if (order._id) {
         for (let i = 0; i < cartLength; ++i) {
@@ -306,6 +307,49 @@ class OrderController {
         });
     } catch (err) {
       return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   PUT api/order/:orderId
+  // @desc    Cập nhật trạng thái đơn hàng
+  // @access  Private
+  async updateOrderStatus(req, res) {
+    try {
+      let orderId = req.params.orderId;
+      let order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({ msg: 'Không tìm thấy đơn đặt hàng này.' });
+      }
+      let { status } = order;
+      // 0: Đặt hàng thành công
+      // 1: Đã xác nhận đơn hàng
+      // 2: Đang lấy hàng
+      // 3: Đóng gói xong
+      // 4: Đang vận chuyển
+      // 5: Giao hàng thành công
+      if (status === 0) {
+        status = 1;
+      }
+      else if (status === 1) {
+        status = 2;
+      }
+      else if (status === 2) {
+        status = 3;
+      }
+      else if (status === 3) {
+        status = 4;
+      }
+      else if (status === 4) {
+        status = 5;
+      }
+      order = await Order.findOneAndUpdate(
+        { _id: orderId },
+        { $set: { status }},
+        { new: true }
+      );
+      return res.json(order);
+    } catch (err) {
+      return res.status(500).send('Server Error'); 
     }
   }
 }
