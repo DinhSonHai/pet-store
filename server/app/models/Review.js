@@ -15,6 +15,7 @@ const ReviewSchema = new Schema({
       userReplyId: { type: Schema.Types.ObjectId, ref: 'user' },
       replyComment: { type: String, trim: true },
       replyCommentedAt: { type: Date, default: now.toISOString() },
+      status: { type: Number, default: 0 }
     },
   ],
   status: { type: Number, default: 0}

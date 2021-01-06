@@ -44,7 +44,7 @@ class ProductController {
   // @access  Private
   async declineReview(req, res) {
     try {
-      let product = await Product.findOne({ _id: req.params.id });
+      let product = await Product.findById({ _id: req.params.id });
       if (!product) {
         return res.status(404).json({ msg: 'Không tìm thấy sản phẩm này.' });
       }
@@ -66,6 +66,78 @@ class ProductController {
         );
       }
       return res.json(review);
+    } catch (err) {
+      return res.status(500).send('Server Error'); 
+    }
+  }
+
+  // @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/approve
+  // @desc    Duyệt bình luận trong đánh giá của người dùng
+  // @access  Private
+  async approveComment(req, res) {
+    try {
+      let product = await Product.findById({ _id: req.params.id });
+      if (!product) {
+        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm này.' });
+      }
+      let reviewId = req.params.reviewId;
+      let review = await Review.findById(reviewId);
+      if (!review) {
+        return res.status(404).json({ msg: 'Không tìm thấy đánh giá này.' });
+      }
+      let { replyComment } = review;
+      // -1: Không phê duyệt bình luận
+      // 0: Đăng bình luận thành công
+      // 1: Đã phê duyệt bình luận
+      replyComment.forEach(comment => {
+        if (comment._id.toString() === req.params.commentId) {
+          if (comment.status === 0 || comment.status === -1) {
+            comment.status = 1;
+          }
+        }
+      })
+      review = await Review.findOneAndUpdate(
+        { _id: reviewId },
+        { $set: { replyComment }},
+        { new: true }
+      );
+      return res.json(replyComment);
+    } catch (err) {
+      return res.status(500).send('Server Error'); 
+    }
+  }
+
+// @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/decline
+// @desc    Từ chối bình luận trong đánh giá của người dùng
+// @access  Private
+  async declineComment(req, res) {
+    try {
+      let product = await Product.findById({ _id: req.params.id });
+      if (!product) {
+        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm này.' });
+      }
+      let reviewId = req.params.reviewId;
+      let review = await Review.findById(reviewId);
+      if (!review) {
+        return res.status(404).json({ msg: 'Không tìm thấy đánh giá này.' });
+      }
+      let { replyComment } = review;
+      // -1: Không phê duyệt bình luận
+      // 0: Đăng bình luận thành công
+      // 1: Đã phê duyệt bình luận
+      replyComment.forEach(comment => {
+        if (comment._id.toString() === req.params.commentId) {
+          if (comment.status === 0 || comment.status === 1) {
+            comment.status = -1;
+          }
+        }
+      })
+      review = await Review.findOneAndUpdate(
+        { _id: reviewId },
+        { $set: { replyComment }},
+        { new: true }
+      );
+      return res.json(replyComment);
     } catch (err) {
       return res.status(500).send('Server Error'); 
     }

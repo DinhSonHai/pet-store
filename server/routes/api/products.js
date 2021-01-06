@@ -22,6 +22,16 @@ router.put('/admin/:id/review/:reviewId/approve', checkPermission, ProductContro
 // @access  Private
 router.put('/admin/:id/review/:reviewId/decline', checkPermission, ProductController.declineReview);
 
+// @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/approve
+// @desc    Duyệt bình luận trong đánh giá của người dùng
+// @access  Private
+router.put('/admin/:id/review/:reviewId/comment/:commentId/approve', checkPermission, ProductController.approveComment);
+
+// @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/decline
+// @desc    Từ chối bình luận trong đánh giá của người dùng
+// @access  Private
+router.put('/admin/:id/review/:reviewId/comment/:commentId/decline', checkPermission, ProductController.declineComment);
+
 // @route   GET api/products
 // @desc    Get all products
 // @access  Public
