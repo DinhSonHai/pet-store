@@ -11,6 +11,12 @@ const {
   validateComment,
   validateReview
 } = require('../../helpers/valid');
+
+// @route   PUT api/products/admin/:id/review/:reviewId
+// @desc    Duyệt đánh giá của người dùng
+// @access  Private
+router.put('/admin/:id/review/:reviewId', checkPermission, ProductController.approveReview);
+
 // @route   GET api/products
 // @desc    Get all products
 // @access  Public

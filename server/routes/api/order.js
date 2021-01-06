@@ -11,6 +11,11 @@ const {
 const auth = require('../../app/middlewares/auth');
 const checkPermission = require('../../app/middlewares/checkPermission');
 
+// @route   GET api/order
+// @desc    Lấy tất cả đơn hàng phía admin
+// @access  Private
+router.get('/', checkPermission, OrderController.getAllOrderAdmin);
+
 // @route   POST api/order
 // @desc    Đặt hàng guest
 // @access  Public

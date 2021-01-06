@@ -17,6 +17,7 @@ const ReviewSchema = new Schema({
       replyCommentedAt: { type: Date, default: now.toISOString() },
     },
   ],
+  status: { type: Number, default: 0}
 });
 
 module.exports = mongoose.model('review', ReviewSchema);

@@ -11,6 +11,21 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 
 class OrderController {
+  // @route   GET api/order
+  // @desc    Lấy tất cả đơn hàng phía admin
+  // @access  Private
+  async getAllOrderAdmin(req, res) {
+    try {
+      let orders = await Order.find({}).sort({ createdAt: 'desc' });
+      if (!orders) {
+        return res.status(404).json({ msg: 'Chưa có đơn hàng nào.' });
+      }
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   POST api/order
   // @desc    Đặt hàng vai trò khách
   // @access  Public
