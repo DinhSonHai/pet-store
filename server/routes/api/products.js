@@ -42,8 +42,14 @@ router.get('/', ProductController.index);
 // @access  Private
 router.get('/deleted', checkPermission, ProductController.getDeletedProduct);
 
+
+// @route   GET api/products/admin/:id/review
+// @desc    Lấy tất cả đánh giá của sản phẩm
+// @access  Private
+router.get('/admin/:id/review', checkPermission, ProductController.getAllProductReview);
+
 // @route   GET api/products/:id/review
-// @desc    Get all review content of a product
+// @desc    Lấy đánh giá của sản phẩm
 // @access  Public
 router.get('/:id/review', ProductController.getProductReview);
 

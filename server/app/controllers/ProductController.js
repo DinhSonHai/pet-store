@@ -218,16 +218,35 @@ class ProductController {
     }
   }
 
-  // @route   GET api/products/:id/review
-  // @desc    Get all review content of a product
+  // @route   GET api/products/admin/:id/review
+  // @desc    Lấy tất cả đánh giá của sản phẩm
   // @access  Private
-  async getProductReview(req, res, next) {
+  async getAllProductReview(req, res, next) {
     try {
       //Lấy tất cả đánh giá của sản phẩm
-      const review = await Review.find({ productId: new ObjectId(req.params.id), status: 1 });
+      let review = await Review.find({ productId: new ObjectId(req.params.id) });
       if (!review) {
         return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
       }
+      return res.json(review);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/products/:id/review
+  // @desc    Get all review content of a product
+  // @access  Public
+  async getProductReview(req, res, next) {
+    try {
+      //Lấy đánh giá của sản phẩm
+      let review = await Review.find({ productId: new ObjectId(req.params.id), status: 1 });
+      if (!review) {
+        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
+      }
+      review.forEach(rv => {
+        rv.replyComment = rv.replyComment.filter(comment => comment.status === 1);
+      })
       return res.json(review);
     } catch (err) {
       return res.status(500).send('Server Error');
