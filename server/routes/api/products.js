@@ -12,10 +12,15 @@ const {
   validateReview
 } = require('../../helpers/valid');
 
-// @route   PUT api/products/admin/:id/review/:reviewId
+// @route   PUT api/products/admin/:id/review/:reviewId/approve
 // @desc    Duyệt đánh giá của người dùng
 // @access  Private
-router.put('/admin/:id/review/:reviewId', checkPermission, ProductController.approveReview);
+router.put('/admin/:id/review/:reviewId/approve', checkPermission, ProductController.approveReview);
+
+// @route   PUT api/products/admin/:id/review/:reviewId/decline
+// @desc    Từ chối đánh giá của người dùng
+// @access  Private
+router.put('/admin/:id/review/:reviewId/decline', checkPermission, ProductController.declineReview);
 
 // @route   GET api/products
 // @desc    Get all products

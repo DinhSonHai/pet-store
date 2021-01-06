@@ -7,7 +7,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 class ProductController {
 
-  // @route   PUT api/products/admin/:id/review/:reviewId
+  // @route   PUT api/products/admin/:id/review/:reviewId/approve
   // @desc    Duyệt đánh giá của người dùng
   // @access  Private
   async approveReview(req, res) {
@@ -25,7 +25,7 @@ class ProductController {
       // -1: Không phê duyệt đánh giá
       // 0: Đăng đánh giá thành công
       // 1: Đã phê duyệt đánh giá
-      if (status === 0) {
+      if (status === 0 || status === -1) {
         status = 1;
         review = await Review.findOneAndUpdate(
           { _id: reviewId },
@@ -38,6 +38,39 @@ class ProductController {
       return res.status(500).send('Server Error'); 
     }
   }
+
+  // @route   PUT api/products/admin/:id/review/:reviewId/decline
+  // @desc    Từ chối đánh giá của người dùng
+  // @access  Private
+  async declineReview(req, res) {
+    try {
+      let product = await Product.findOne({ _id: req.params.id });
+      if (!product) {
+        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm này.' });
+      }
+      let reviewId = req.params.reviewId;
+      let review = await Review.findById(reviewId);
+      if (!review) {
+        return res.status(404).json({ msg: 'Không tìm thấy đánh giá này.' });
+      }
+      let { status } = review;
+      // -1: Không phê duyệt đánh giá
+      // 0: Đăng đánh giá thành công
+      // 1: Đã phê duyệt đánh giá
+      if (status = 0 || status === 1) {
+        status = -1;
+        review = await Review.findOneAndUpdate(
+          { _id: reviewId },
+          { $set: { status }},
+          { new: true }
+        );
+      }
+      return res.json(review);
+    } catch (err) {
+      return res.status(500).send('Server Error'); 
+    }
+  }
+
   // @route   GET api/products
   // @desc    Get all products
   // @access  Public
