@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Navbar, Footer } from './pages';
 import { Routes } from './routes';
-
+import MessengerCustomerChat from 'react-messenger-customer-chat';
 import { Provider } from 'react-redux';
 import store from './store';
 import setAuthToken from './auth/setAuthToken';
@@ -47,6 +47,12 @@ function App() {
     <Provider store={store}>
       <Router>
         <Navbar />
+        <div>
+          <MessengerCustomerChat
+            pageId='101556255057258'
+            appId='615365382438209'
+          />
+        </div>
         <Switch>
           <Route component={Routes} />
         </Switch>
