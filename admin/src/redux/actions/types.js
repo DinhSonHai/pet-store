@@ -1,8 +1,6 @@
 import api from '../../api';
 import {
   GET_ALL_TYPES,
-  CREATE_TYPE,
-  EDIT_TYPE,
   REMOVE_TYPE,
   RESTORE_TYPE,
   GET_ALL_TYPES_REMOVED,
@@ -24,10 +22,6 @@ export const getAllTypes = () => async (dispatch) => {
 export const createType = (data) => async (dispatch) => {
   try {
     const res = await api.post('/types', data);
-    dispatch({
-      type: CREATE_TYPE,
-      payload: res.data,
-    });
     message.success(res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
@@ -42,10 +36,6 @@ export const createType = (data) => async (dispatch) => {
 export const editType = (data) => async (dispatch) => {
   try {
     const res = await api.put('/types', data);
-    dispatch({
-      type: EDIT_TYPE,
-      payload: res.data,
-    });
     message.success(res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;

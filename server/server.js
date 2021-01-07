@@ -20,11 +20,35 @@ app.use(express.static('public'));
 app.post('/upload', MultipartyMiddleware, async (req, res) => {
   let tmpFile = req.files.upload;
   let pathFile = tmpFile.path;
-  const imageUrl = await cloudinary.uploader.upload(pathFile);
-  return res.status(200).json({
-    uploaded: true,
-    url: imageUrl.url,
-  });
+  try {
+    const imageUrl = await cloudinary.uploader.upload(pathFile);
+    if (!imageUrl) {
+      return res.status(400).json({ errors: [{ msg: 'Thêm ảnh thất bại!' }] });
+    }
+    return res.status(200).json({
+      uploaded: true,
+      url: imageUrl.url,
+    });
+  } catch (error) {
+    return res.status(400).json({ errors: [{ msg: 'Thêm ảnh thất bại!' }] });
+  }
+});
+
+app.post('/uploadProduct', MultipartyMiddleware, async (req, res) => {
+  let tmpFile = req.files.file;
+  let pathFile = tmpFile.path;
+  try {
+    const imageUrl = await cloudinary.uploader.upload(pathFile);
+    if (!imageUrl) {
+      return res.status(400).json({ errors: [{ msg: 'Thêm ảnh thất bại!' }] });
+    }
+    return res.status(200).json({
+      uploaded: true,
+      url: imageUrl.url,
+    });
+  } catch (error) {
+    return res.status(400).json({ errors: [{ msg: 'Thêm ảnh thất bại!' }] });
+  }
 });
 
 connectDB();

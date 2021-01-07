@@ -2,7 +2,14 @@ import { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 
 import { SiderComponent } from '../../components';
-import { Category, Footer, Navbar, DashBoard, Type } from '../../pages';
+import {
+  Category,
+  Footer,
+  Navbar,
+  DashBoard,
+  Type,
+  Product,
+} from '../../pages';
 
 import queryString from 'query-string';
 import './styles.scss';
@@ -21,6 +28,8 @@ const Home = ({ location }) => {
         return <Category />;
       case 'type':
         return <Type />;
+      case 'product':
+        return <Product />;
       default:
         return <DashBoard />;
     }

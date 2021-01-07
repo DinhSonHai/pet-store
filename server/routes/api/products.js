@@ -9,17 +9,17 @@ const {
   validateCreateProductInfo,
   validateUpdateProductInfo,
   validateComment,
-  validateReview
+  validateReview,
 } = require('../../helpers/valid');
 // @route   GET api/products
 // @desc    Get all products
 // @access  Public
-router.get('/', ProductController.index);
+router.get('/', ProductController.getAll);
 
 // @route   GET api/products/deleted
 // @desc    Get all products has been soft deleted
 // @access  Private
-router.get('/deleted', checkPermission, ProductController.getDeletedProduct);
+router.get('/deleted', checkPermission, ProductController.getDeleted);
 
 // @route   GET api/products/:id/review
 // @desc    Get all review content of a product
@@ -34,12 +34,20 @@ router.post('/:id/review', [auth, validateReview], ProductController.review);
 // @route   PUT api/products/:id/review/:reviewId
 // @desc    Comment on a review
 // @access  Private
-router.put('/:id/review/:reviewId', [auth, validateComment], ProductController.comment);
+router.put(
+  '/:id/review/:reviewId',
+  [auth, validateComment],
+  ProductController.comment
+);
 
 // @route   DELETE api/products/:id/review/:reviewId/comment/:commentId
 // @desc    Delete a comment on a review
 // @access  Private
-router.delete('/:id/review/:reviewId/comment/:commentId', auth, ProductController.deleteComment);
+router.delete(
+  '/:id/review/:reviewId/comment/:commentId',
+  auth,
+  ProductController.deleteComment
+);
 
 // @route   DELETE api/products/:id/review/:reviewId
 // @desc    Delete a review
@@ -67,7 +75,7 @@ router.get('/categories/:categoryId', ProductController.getByCategoryId);
 router.post(
   '/',
   [checkPermission, validateCreateProductInfo],
-  ProductController.create
+  ProductController.Add
 );
 
 // @route   PUT api/products/:id
@@ -76,7 +84,7 @@ router.post(
 router.put(
   '/:id',
   [checkPermission, validateUpdateProductInfo],
-  ProductController.update
+  ProductController.Edit
 );
 
 // @route   DELETE api/products/:id

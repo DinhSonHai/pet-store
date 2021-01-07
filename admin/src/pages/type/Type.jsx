@@ -39,7 +39,7 @@ const Type = () => {
             tab={
               <span>
                 <DeleteOutlined />
-                Loại SP ẩn
+                Danh sách ẩn
               </span>
             }
             key='removed'

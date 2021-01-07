@@ -35,7 +35,7 @@ const Category = () => {
             tab={
               <span>
                 <DeleteOutlined />
-                Danh mục ẩn
+                Danh sách ẩn
               </span>
             }
             key='removed'

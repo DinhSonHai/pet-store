@@ -6,6 +6,7 @@ const mongooseDelete = require('mongoose-delete');
 const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
+  key: { type: Schema.Types.ObjectId, required: true },
   productName: { type: String, required: true, trim: true },
   age: { type: String, trim: true, default: '' },
   gender: { type: Number, default: 0 },
@@ -16,7 +17,7 @@ const ProductSchema = new Schema({
   images: [{ type: String, trim: true }],
   price: { type: Number, required: true }, //price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
   quantity: { type: Number, required: true },
-  status: { type: Number, default: 1 },
+  status: { type: Boolean, default: true },
   starRatings: { type: Number, default: 0 },
   typeId: { type: Schema.Types.ObjectId, ref: 'type' },
   isShow: { type: Boolean, default: true },

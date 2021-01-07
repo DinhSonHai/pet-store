@@ -1,8 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import {
   GET_ALL_TYPES,
-  CREATE_TYPE,
-  EDIT_TYPE,
   REMOVE_TYPE,
   RESTORE_TYPE,
   GET_ALL_TYPES_REMOVED,
@@ -24,35 +22,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
         types_removed: payload,
-      };
-    case CREATE_TYPE:
-      return {
-        ...state,
-        types: [
-          ...state.types,
-          {
-            ...payload.data,
-            categoryId: {
-              _id: payload.data.categoryId,
-              categoryName: payload.categoryName,
-            },
-          },
-        ],
-      };
-    case EDIT_TYPE:
-      return {
-        ...state,
-        types: state.types.map((ty) =>
-          ty._id === payload.data._id
-            ? {
-                ...payload.data,
-                categoryId: {
-                  _id: payload.data.categoryId,
-                  categoryName: payload.categoryName,
-                },
-              }
-            : ty
-        ),
       };
     case REMOVE_TYPE:
       return {

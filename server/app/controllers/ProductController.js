@@ -4,34 +4,35 @@ const Product = require('../models/Product');
 const Type = require('../models/Type');
 const Review = require('../models/Review');
 const ObjectId = require('mongoose').Types.ObjectId;
+const _ = require('lodash');
 
 class ProductController {
   // @route   GET api/products
   // @desc    Get all products
   // @access  Public
-  async index(req, res, next) {
+  async getAll(req, res, next) {
+    const filterStatus = req.query.sort;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    const filterValue =
+      filterStatus === 'undefined' || !filterStatus
+        ? { createdAt: -1 }
+        : filterStatus === 'desc'
+        ? { price: -1 }
+        : { price: 1 };
     try {
-      let type = Number(req.query.type);
-      if (type === 0) {
-      } else if (type === 1) {
-      } else if (type === 2) {
-        const products = await Product.find().sort({ price: 'asc' });
-        if (!products) {
-          return res.status(404).json({ msg: 'Sản phẩm không tồn tại' });
-        }
-        return res.json(products);
-      } else if (type === 3) {
-        const products = await Product.find().sort({ price: 'desc' });
-        if (!products) {
-          return res.status(404).json({ msg: 'Sản phẩm không tồn tại' });
-        }
-        return res.json(products);
-      }
-      const products = await Product.find().sort({ createdAt: 'desc' });
-      if (!products) {
-        return res.status(404).json({ msg: 'Sản phẩm không tồn tại' });
-      }
-      return res.json(products);
+      const products = await Product.find()
+        .sort(filterValue)
+        .populate({
+          path: 'typeId',
+          select: ['typeName'],
+        });
+      return res.json({
+        data: products.slice(start, end),
+        total: products.length,
+      });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
@@ -87,7 +88,9 @@ class ProductController {
   async getProductReview(req, res, next) {
     try {
       //Lấy tất cả đánh giá của sản phẩm
-      const review = await Review.find({ productId: new ObjectId(req.params.id) });
+      const review = await Review.find({
+        productId: new ObjectId(req.params.id),
+      });
       if (!review) {
         return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
       }
@@ -103,7 +106,7 @@ class ProductController {
   async review(req, res, next) {
     try {
       const product = await Product.findById(req.params.id);
-      if(!product) {
+      if (!product) {
         return res.status(404).json({ msg: 'Không tìm thấy sản phẩm.' });
       }
       //Kiểm tra req.body
@@ -115,8 +118,9 @@ class ProductController {
       let review = new Review({
         userId: req.user.id,
         productId: req.params.id,
-        starRatings, 
-        comment });
+        starRatings,
+        comment,
+      });
       await review.save();
       return res.json({ msg: 'Gửi đánh giá thành công' });
     } catch (err) {
@@ -153,8 +157,8 @@ class ProductController {
       }
       const comment = {
         userReplyId: req.user.id,
-        replyComment
-      }
+        replyComment,
+      };
       review.replyComment.push(comment);
       await review.save();
       return res.json(review.replyComment);
@@ -173,12 +177,19 @@ class ProductController {
         return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
       }
       // Kiểm tra xem người dùng có comment ở review này không
-      if (review.replyComment.filter(comment => comment.userReplyId.toString() === req.user.id).length === 0) {
+      if (
+        review.replyComment.filter(
+          (comment) => comment.userReplyId.toString() === req.user.id
+        ).length === 0
+      ) {
         return res.status(404).json({ msg: 'Chưa có bình luận nào' });
       }
       // Lấy thứ tự xóa comment
       const removeIndex = review.replyComment.findIndex(
-        comment => comment.userReplyId.toString() === req.user.id && comment._id.toString() === req.params.commentId);
+        (comment) =>
+          comment.userReplyId.toString() === req.user.id &&
+          comment._id.toString() === req.params.commentId
+      );
       review.replyComment.splice(removeIndex, 1);
       await review.save();
       return res.json(review.replyComment);
@@ -216,7 +227,7 @@ class ProductController {
   // @route   POST api/products
   // @desc    Add products
   // @access  Private
-  async create(req, res) {
+  async Add(req, res) {
     //Kiểm tra req.body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -246,12 +257,17 @@ class ProductController {
         origin,
         description,
         images,
-        price,
-        quantity,
+        price: parseInt(price),
+        quantity: parseInt(quantity),
         typeId,
       });
-      await product.save();
-      return res.json({ msg: 'Tạo sản phẩm thành công' });
+      product.key = product._id;
+      await product.save((err, data) => {
+        if (err) {
+          return res.status(400).json({ errors: [{ msg: 'Thêm thất bại!' }] });
+        }
+      });
+      return res.json({ message: 'Thêm thành công' });
     } catch (error) {
       return res.status(500).send('Server error');
     }
@@ -260,7 +276,7 @@ class ProductController {
   // @route   PUT api/products
   // @desc    Update products
   // @access  Private
-  async update(req, res) {
+  async Edit(req, res) {
     //Kiểm tra req.body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -278,32 +294,35 @@ class ProductController {
       price,
       quantity,
       typeId,
+      id,
     } = req.body;
     try {
-      let product = await Product.findById(req.params.id);
+      let product = await Product.findById(id);
       if (!product) {
-        return res.status(404).json({ msg: 'Sản phẩm không tồn tại' });
+        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
       }
-      product = await Product.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $set: {
-            productName,
-            age,
-            gender,
-            color,
-            weight,
-            origin,
-            description,
-            images,
-            price,
-            quantity,
-            typeId,
-          },
-        },
-        { new: true }
-      );
-      return res.json({ msg: 'Cập nhật sản phẩm thành công' });
+      const productFields = {
+        productName,
+        age,
+        gender,
+        color,
+        weight,
+        origin,
+        description,
+        images,
+        price: parseInt(price),
+        quantity: parseInt(quantity),
+        typeId,
+      };
+      product = _.extend(product, productFields);
+      await product.save((err, data) => {
+        if (err) {
+          return res.status(400).json({ errors: [{ msg: 'Sửa thất bại!' }] });
+        }
+        return res.json({
+          message: 'Sửa thành công',
+        });
+      });
     } catch (error) {
       return res.status(500).send('Server error');
     }
@@ -316,10 +335,10 @@ class ProductController {
     try {
       let product = await Product.findById(req.params.id);
       if (!product) {
-        return res.status(404).json({ msg: 'Sản phẩm không tồn tại' });
+        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
       }
       await Product.delete({ _id: req.params.id });
-      return res.json({ msg: 'Đã xóa sản phẩm thành công' });
+      return res.json({ message: 'Xóa thành công' });
     } catch (error) {
       return res.status(500).send('Server error');
     }
@@ -330,8 +349,12 @@ class ProductController {
   // @access  Private
   async restore(req, res) {
     try {
+      let p = await Product.findDeleted({ _id: req.params.id });
+      if (!p) {
+        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+      }
       await Product.restore({ _id: req.params.id });
-      return res.json({ msg: 'Khôi phục sản phẩm thành công' });
+      return res.json({ message: 'Khôi phục thành công' });
     } catch (error) {
       return res.status(500).send('Server error');
     }
@@ -340,13 +363,17 @@ class ProductController {
   // @route   GET api/products/deleted
   // @desc    Get all products has been soft deleted
   // @access  Private
-  async getDeletedProduct(req, res) {
+  async getDeleted(req, res) {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const start = (page - 1) * limit;
+    const end = page * limit;
     try {
-      let products = await Product.findDeleted({});
-      if (products.length === 0) {
-        return res.json({ msg: 'Không có sản phẩm nào' });
-      }
-      return res.json(products);
+      let products = await Product.findDeleted();
+      return res.json({
+        data: products.slice(start, end),
+        total: products.length,
+      });
     } catch (error) {
       return res.status(500).send('Server error');
     }

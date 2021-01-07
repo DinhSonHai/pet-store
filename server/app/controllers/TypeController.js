@@ -87,8 +87,6 @@ class TypeController {
           return res.status(400).json({ errors: [{ msg: 'Thêm thất bại!' }] });
         }
         return res.json({
-          data,
-          categoryName: cat.categoryName,
           message: 'Thêm thành công',
         });
       });
@@ -133,8 +131,6 @@ class TypeController {
           return res.status(400).json({ errors: [{ msg: 'Sửa thất bại!' }] });
         }
         return res.json({
-          data,
-          categoryName: cat.categoryName,
           message: 'Sửa thành công',
         });
       });
@@ -165,6 +161,10 @@ class TypeController {
   // @access  Private
   async restore(req, res) {
     try {
+      let ty = await Type.findDeleted({ _id: req.params.id });
+      if (!ty) {
+        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+      }
       await Type.restore({ _id: req.params.id });
       return res.json({ message: 'Khôi phục thành công' });
     } catch (error) {

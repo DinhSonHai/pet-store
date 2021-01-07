@@ -1,10 +1,16 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID } from '../types';
+import {
+  GET_ALL_PRODUCTS,
+  GET_ALL_PRODUCTS_REMOVED,
+  REMOVE_PRODUCT,
+  RESTORE_PRODUCT,
+} from '../types';
 
 const initialState = {
   products: [],
   products_removed: [],
-  product: null,
+  total: 0,
+  total_removed: 0,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -13,13 +19,25 @@ export default function (state = initialState, action) {
       return {
         ...state,
         products: payload.data,
-        loading: false,
+        total: payload.total,
       };
-    case GET_PRODUCT_BY_ID:
+    case GET_ALL_PRODUCTS_REMOVED:
       return {
         ...state,
-        loading: false,
-        product: payload,
+        products_removed: payload.data,
+        total_removed: payload.total,
+      };
+    case REMOVE_PRODUCT:
+      return {
+        ...state,
+        products: state.products.filter((p) => p._id !== payload),
+      };
+    case RESTORE_PRODUCT:
+      return {
+        ...state,
+        products_removed: state.products_removed.filter(
+          (p) => p._id !== payload
+        ),
       };
     default:
       return state;

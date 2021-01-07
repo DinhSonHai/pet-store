@@ -84,24 +84,16 @@ const PetDetails = ({
                       bordered={false}
                     >
                       <p>
-                        <b>Nguồn gốc : </b>
-                        {data.origin}
-                      </p>
-                      <p>
-                        <b>Tuổi : </b>
-                        {data.age}
-                      </p>
-                      <p>
-                        <b>Cân nặng : </b>
-                        {data.weight}
-                      </p>
-                      <p>
-                        <b>Giới tính : </b>
-                        {data.gender === 0 ? 'Đực' : 'Cái'}
-                      </p>
-                      <p>
-                        <b>Màu sắc: </b>
-                        {data.color}
+                        <b>Tình trạng: </b>
+                        <span
+                          style={{
+                            color: data.status
+                              ? 'var(--success-color)'
+                              : 'var(--danger-color)',
+                          }}
+                        >
+                          {data.status ? 'Còn hàng' : 'Hết hàng'}
+                        </span>
                       </p>
                       <p>
                         <b>Giá : </b>
