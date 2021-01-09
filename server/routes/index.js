@@ -5,6 +5,7 @@ const auth = require('./api/auth');
 const cart = require('./api/cart');
 const order = require('./api/order');
 const client = require('./api/client');
+const receipts = require('./api/receipts');
 
 function route(app) {
   //Products route
@@ -27,6 +28,9 @@ function route(app) {
 
   // Client route
   app.use('/api/client', client);
+
+  // Receipt route
+  app.use('/api/receipts', receipts);
 }
 
 module.exports = route;

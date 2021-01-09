@@ -13,6 +13,7 @@ import {
   CART_LOADER,
   REMOVE_CART,
 } from './redux/types';
+import { REACT_APP_FACEBOOK_CLIENT } from './config/login';
 import api from './api';
 function App() {
   useEffect(() => {
@@ -49,8 +50,8 @@ function App() {
         <Navbar />
         <div>
           <MessengerCustomerChat
-            pageId='101556255057258'
-            appId='615365382438209'
+            pageId='106278264756196'
+            appId={REACT_APP_FACEBOOK_CLIENT}
           />
         </div>
         <Switch>
