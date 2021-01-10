@@ -10,6 +10,7 @@ import {
   BarChartOutlined,
   PaperClipOutlined,
   TeamOutlined,
+  ImportOutlined,
 } from '@ant-design/icons';
 
 import './styles.scss';
@@ -70,12 +71,6 @@ const SiderComponent = ({ tabState }) => {
         <Menu.Item key='user' icon={<UserOutlined />}>
           <Link to='/?tab=user'>Quản lý người dùng</Link>
         </Menu.Item>
-        <Menu.Item key='frontend' icon={<DesktopOutlined />}>
-          <Link to='/?tab=frontend'>Quản lý UI/UX</Link>
-        </Menu.Item>
-        <Menu.Item key='post' icon={<PaperClipOutlined />}>
-          <Link to='/?tab=post'>Quản lý bài đăng</Link>
-        </Menu.Item>
         <SubMenu
           key='employee_management'
           icon={<TeamOutlined />}
@@ -88,6 +83,15 @@ const SiderComponent = ({ tabState }) => {
             <Link to='/?tab=account'>Tài khoản</Link>
           </Menu.Item>
         </SubMenu>
+        <Menu.Item key='receipt' icon={<ImportOutlined />}>
+          <Link to='/?tab=receipt'>Quản lý phiếu nhập</Link>
+        </Menu.Item>
+        <Menu.Item key='post' icon={<PaperClipOutlined />}>
+          <Link to='/?tab=post'>Quản lý bài đăng</Link>
+        </Menu.Item>
+        <Menu.Item key='frontend' icon={<DesktopOutlined />}>
+          <Link to='/?tab=frontend'>Quản lý UI/UX</Link>
+        </Menu.Item>
         <Menu.Item key='statistical' icon={<BarChartOutlined />}>
           <Link to='/?tab=statistical'>Thống kê</Link>
         </Menu.Item>

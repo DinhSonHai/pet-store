@@ -3,9 +3,9 @@ import { GET_ALL_RECEIPTS, GET_ALL_RECEIPTS_DETAIL } from '../types';
 import { message } from 'antd';
 
 // get all receipts
-export const getAllReceipts = () => async (dispatch) => {
+export const getAllReceipts = (filter, page) => async (dispatch) => {
   try {
-    const res = await api.get('/receipts');
+    const res = await api.get(`/receipts/?sort=${filter}&page=${page}`);
     dispatch({
       type: GET_ALL_RECEIPTS,
       payload: res.data,

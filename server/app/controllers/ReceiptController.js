@@ -8,9 +8,23 @@ class ReceiptController {
   // @desc    Lấy tất cả phiếu nhập
   // @access  Private
   async getAll(req, res) {
+    const filterStatus = req.query.sort;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    const filterValue =
+      filterStatus === 'undefined' || !filterStatus
+        ? { createdAt: -1 }
+        : { createdAt: -1 };
     try {
-      const receipts = await Receipt.find();
-      return res.json(receipts);
+      const receipts = await Receipt.find()
+        .sort(filterValue)
+        .populate({ path: 'employeeId', select: ['name', 'role'] });
+      return res.json({
+        data: receipts.slice(start, end),
+        total: receipts.length,
+      });
     } catch (err) {
       console.error(err.message);
       return res.status(500).send('Server Error');
@@ -40,6 +54,7 @@ class ReceiptController {
         employeeId: req.user.id,
         note,
       });
+      receipt.key = receipt._id;
       receipt = await receipt.save();
       let length = data.length;
       for (let i = 0; i < length; ++i) {
@@ -56,6 +71,7 @@ class ReceiptController {
           quantity: parseInt(data[i].quantity),
           price: parseInt(data[i].price),
         });
+        detail.key = detail._id;
         await product.save();
         await detail.save();
       }

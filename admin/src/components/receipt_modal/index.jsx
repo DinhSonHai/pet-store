@@ -1,7 +1,10 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Table, Input, Button, Popconfirm, Form, Modal } from 'antd';
 import { connect } from 'react-redux';
-import { createReceipt } from '../../redux/actions/receipts';
+import {
+  createReceipt,
+  getAllReceiptsDetails,
+} from '../../redux/actions/receipts';
 import dayjs from 'dayjs';
 import './styles.scss';
 const now = dayjs();
@@ -89,10 +92,40 @@ export const ReceiptModal = ({
   data,
   auth: { user },
   createReceipt,
+  receiptId,
+  item,
+  setView,
+  getAllReceiptsDetails,
+  receipts: { receipts_detail },
 }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState(data);
   const [note, setNote] = useState('');
+  const columns_details = [
+    {
+      title: 'Tên sản phẩm',
+      dataIndex: 'productName',
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      editable: true,
+    },
+    {
+      title: 'Đơn giá',
+      dataIndex: 'price',
+      editable: true,
+      render: (value) => (
+        <span>
+          {parseInt(value).toLocaleString('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+          })}
+        </span>
+      ),
+    },
+  ];
   const columns = [
     {
       title: 'STT',
@@ -135,6 +168,16 @@ export const ReceiptModal = ({
         ) : null,
     },
   ];
+  useEffect(() => {
+    async function getData() {
+      setIsLoading(true);
+      await getAllReceiptsDetails(receiptId);
+      setIsLoading(false);
+    }
+    if (receiptId) {
+      getData();
+    }
+  }, [receiptId, getAllReceiptsDetails]);
   const handleCancel = () => {
     setVisible(false);
   };
@@ -193,51 +236,83 @@ export const ReceiptModal = ({
       <div className='receipt'>
         <p className='receipt__name'>
           {' '}
-          <span>Người nhập phiếu: </span> {user.name}
+          <span>Người nhập phiếu: </span>{' '}
+          {receiptId ? item.employeeId.name : user.name}
         </p>
         <p className='receipt__role'>
           {' '}
-          <span>Vai trò: </span> {user.role === 0 ? 'Quản trị' : 'Nhân viên'}
+          <span>Vai trò: </span>{' '}
+          {receiptId
+            ? item.employeeId.role === 0
+              ? 'Quản trị'
+              : 'Nhân viên'
+            : user.role === 0
+            ? 'Quản trị'
+            : 'Nhân viên'}
         </p>
         <p className='receipt__amount'>
           {' '}
-          <span>Số lượng nhập: </span> {data.length}
+          <span>Số lượng nhập: </span>{' '}
+          {receiptId ? receipts_detail.length : data.length}
         </p>
         <p className='receipt__date'>
           {' '}
           <span>Ngày nhập: </span>{' '}
-          {`${now.date()}/${now.month() + 1}/${now.year()}`}
+          {receiptId
+            ? `${dayjs(item.createdAt).format('DD/MM/YYYY')}`
+            : `${now.date()}/${now.month() + 1}/${now.year()}`}
         </p>
         <p className='receipt__note'>
           <span>Note: </span>
         </p>
       </div>
       <div style={{ marginBottom: '1rem' }}>
-        <Input.TextArea rows={4} onChange={onChange} />
+        <Input.TextArea
+          defaultValue={receiptId ? item.note : ''}
+          rows={4}
+          onChange={onChange}
+        />
       </div>
       <Table
-        scroll={{ y: 500 }}
-        components={components}
-        rowClassName={() => 'editable-row'}
-        dataSource={dataSource}
-        columns={_columns}
+        loading={isLoading}
+        scroll={{ y: 250 }}
+        components={receiptId ? null : components}
+        rowClassName={() => (receiptId ? '' : 'editable-row')}
+        dataSource={receiptId ? receipts_detail : dataSource}
+        columns={receiptId ? columns_details : _columns}
       />
-      <div style={{ textAlign: 'right', marginTop: '1rem' }}>
-        <Button
-          style={{ marginRight: '1rem' }}
-          disabled={confirmLoading}
-          onClick={handleCancel}
-        >
-          Hủy
-        </Button>
-        <Button type='primary' onClick={onFinish} loading={confirmLoading}>
-          {'Thêm'}
-        </Button>
-      </div>
+      {receiptId ? (
+        <div style={{ textAlign: 'right', marginTop: '1rem' }}>
+          <Button
+            onClick={() => {
+              setView(false);
+            }}
+          >
+            Đóng
+          </Button>
+        </div>
+      ) : (
+        <div style={{ textAlign: 'right', marginTop: '1rem' }}>
+          <Button
+            style={{ marginRight: '1rem' }}
+            disabled={confirmLoading}
+            onClick={handleCancel}
+          >
+            Hủy
+          </Button>
+          <Button type='primary' onClick={onFinish} loading={confirmLoading}>
+            {'Thêm'}
+          </Button>
+        </div>
+      )}
     </Modal>
   );
 };
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  receipts: state.receipts,
 });
-export default connect(mapStateToProps, { createReceipt })(ReceiptModal);
+export default connect(mapStateToProps, {
+  createReceipt,
+  getAllReceiptsDetails,
+})(ReceiptModal);
