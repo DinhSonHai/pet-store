@@ -8,6 +8,8 @@
   --dark-second-color: #4a4a4a;
   --light-color: #f0f0f0;
   --white-color: #fff;
+  --gray-color: #a0a0a0;
+  --second-btn-color: #fdd835;
   --danger-color: #dc3545;
   --success-color: #28a745;
 }
@@ -29,4 +31,7 @@ body {
   margin: 10rem auto 3rem auto;
   overflow: hidden;
   padding: 0 1rem;
+}
+.ant-table-thead tr th {
+  font-weight: 600 !important;
 }

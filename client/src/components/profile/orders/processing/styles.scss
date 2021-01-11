@@ -1,0 +1,20 @@
+.order-processing {
+  margin-bottom: 1rem;
+  &__title {
+    color: var(--gray-color);
+  }
+  &__status {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: var(--mainstream-color);
+  }
+  &__actions {
+    text-align: right;
+  }
+  &.ant-card-bordered {
+    border: 1px solid var(--fourthstream-color) !important;
+  }
+}
+.order-processing-loader {
+  text-align: center;
+}

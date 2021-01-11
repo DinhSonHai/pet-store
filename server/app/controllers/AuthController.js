@@ -10,10 +10,13 @@ const nodemailer = require('nodemailer');
 const dayjs = require('dayjs');
 const axios = require('axios');
 const client = new OAuth2Client(config.get('GOOGLE_CLIENT'));
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Employee = require('../models/Employee');
+const Order = require('../models/Order');
+const OrderDetail = require('../models/OrderDetail');
 
 class AuthController {
   //* Client *//
@@ -970,6 +973,66 @@ class AuthController {
         return res.json(getFavoriteProducts);
       }
       return res.json(getFavoriteProducts);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/auth/orders_detail/:id
+  // @desc    Get   orders detail
+  // @access  Private
+  async getOrdersDetail(req, res) {
+    try {
+      const orders = await OrderDetail.find({
+        orderId: new ObjectId(req.params.id),
+      });
+
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/auth/orders_processing
+  // @desc    Get  processing orders
+  // @access  Private
+  async getProcessingOrders(req, res) {
+    try {
+      const orders = await Order.find({
+        userId: new ObjectId(req.user.id),
+        status: { $gt: -1, $lt: 5 },
+      }).sort({ createdAt: -1 });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/auth/orders_completed
+  // @desc    Get completed orders
+  // @access  Private
+  async getCompletedOrders(req, res) {
+    try {
+      const orders = await Order.find({
+        userId: new ObjectId(req.user.id),
+        status: 5,
+      }).sort({ createdAt: -1 });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/auth/orders_canceled
+  // @desc    Get canceled orders
+  // @access  Private
+  async getCanceledOrders(req, res) {
+    try {
+      const orders = await Order.find({
+        userId: new ObjectId(req.user.id),
+        status: -1,
+      }).sort({ createdAt: -1 });
+      return res.json(orders);
     } catch (err) {
       return res.status(500).send('Server Error');
     }

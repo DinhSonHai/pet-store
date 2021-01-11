@@ -9,12 +9,7 @@ export const getAllProducts = () => async (dispatch) => {
       type: GET_ALL_PRODUCTS,
       payload: res.data,
     });
-  } catch (err) {
-    // dispatch({
-    //   type: PRODUCTS_ERROR,
-    //   payload: { msg: err.response.statusText, status: err.response.status },
-    // });
-  }
+  } catch (err) {}
 };
 
 // Get products by Type
@@ -29,12 +24,7 @@ export const getProductsByType = (id, filterValue, page) => async (
       type: GET_ALL_PRODUCTS,
       payload: res.data,
     });
-  } catch (err) {
-    // dispatch({
-    //   type: PRODUCTS_ERROR,
-    //   payload: { msg: err.response.statusText, status: err.response.status },
-    // });
-  }
+  } catch (err) {}
 };
 
 // Get product by id

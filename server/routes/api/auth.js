@@ -130,4 +130,23 @@ router.put('/favorite', auth, AuthController.favoriteProduct);
 // @access  Private
 router.get('/favorite', auth, AuthController.getFavoriteProducts);
 
+// @route   GET api/auth/orders_detail
+// @desc    Get   orders detail
+// @access  Private
+router.get('/orders_detail/:id', auth, AuthController.getOrdersDetail);
+
+// @route   GET api/auth/orders_processing
+// @desc    Get  processing orders
+// @access  Private
+router.get('/orders_processing', auth, AuthController.getProcessingOrders);
+
+// @route   GET api/auth/orders_completed
+// @desc    Get completed orders
+// @access  Private
+router.get('/orders_completed', auth, AuthController.getCompletedOrders);
+
+// @route   GET api/auth/orders_canceled
+// @desc    Get canceled orders
+// @access  Private
+router.get('/orders_canceled', auth, AuthController.getCanceledOrders);
 module.exports = router;

@@ -38,7 +38,7 @@ const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
             </p>
             <div style={{ textAlign: 'right' }}>
               <Button
-                onClick={() => history.push('/profile/address')}
+                onClick={() => history.push('/profile/?tab=address')}
                 type='link'
                 danger
               >

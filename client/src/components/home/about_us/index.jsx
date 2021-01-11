@@ -12,8 +12,8 @@ export default () => {
           Về <span>chúng tôi</span>
         </h1>
         <h4 className='about__desc-head'>
-          Ut possimus qui ut temporibus culpa velit eveniet modi omnis est
-          adipisci expedita at voluptas atque vitae autem.
+          PetStore không chỉ mang đến cho bạn chú cún cưng mà bạn yêu thích. Đến
+          với PetStore bạn sẽ tìm cho mình được một người bạn trung thành.
         </h4>
         <div className='about__content'>
           <Row gutter={[28, 0]}>
@@ -29,12 +29,12 @@ export default () => {
             <Col xs={24} lg={12}>
               <Card bordered={false}>
                 <p className='about_header'>
-                  Voluptatem dignissimos provident quasi corporis voluptates sit
-                  assumenda.
+                  Đến với PetStore, bạn sẽ hoàn toàn an tâm về chất lượng dịch
+                  vụ, uy tín, an tâm khi mua thú cưng.
                 </p>
                 <p style={{ fontSize: '1rem' }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  PetStore sở hữu đội ngũ nhân viên là các chuyên gia nhân giống
+                  thú cưng chuyên nghiệp và dày dặn kinh nghiệm.
                 </p>
                 <div className='about__mission'>
                   <div className='about__mission-icon'>

@@ -1,6 +1,9 @@
 .profile {
-    &__main {
-        &--adress {
-        }
+  &__main {
+    &--address {
+      .ant-card-bordered {
+        border: 1px solid var(--fourthstream-color) !important;
+      }
     }
+  }
 }

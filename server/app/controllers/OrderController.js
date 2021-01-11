@@ -86,7 +86,8 @@ class OrderController {
             deliveryState,
             paymentState,
           });
-          order = await order.save();
+          order.key = order._id;
+          order.amount = cartLength;
           let getProducts = [];
           if (order._id) {
             for (let i = 0; i < cartLength; ++i) {
@@ -104,8 +105,10 @@ class OrderController {
                 amount: cart[i].amount,
                 price: product.price,
               });
+              detail.key = detail._id;
               await detail.save();
             }
+            await order.save();
           } else {
             return res
               .status(400)
@@ -224,7 +227,8 @@ class OrderController {
         deliveryState,
         paymentState,
       });
-      order = await order.save();
+      order.key = order._id;
+      order.amount = cartLength;
       let getProducts = [];
       if (order._id) {
         for (let i = 0; i < cartLength; ++i) {
@@ -242,8 +246,14 @@ class OrderController {
             amount: cart[i].amount,
             price: product.price,
           });
+          detail.key = detail._id;
           await detail.save();
         }
+        await order.save();
+      } else {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
       }
 
       const transporter = nodemailer.createTransport({

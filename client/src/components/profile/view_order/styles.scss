@@ -1,0 +1,24 @@
+.view-order {
+  &__total {
+    color: var(--mainstream-color);
+  }
+  &__total {
+    text-align: right;
+  }
+  &__name,
+  .ant-card-head-title {
+    font-weight: 600;
+  }
+  &__name,
+  &__id,
+  &__status,
+  &__date,
+  &__total {
+    span {
+      color: var(--gray-color);
+    }
+  }
+  .ant-card-bordered {
+    border: 1px solid var(--fourthstream-color) !important;
+  }
+}
