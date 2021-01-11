@@ -19,6 +19,10 @@ const OrderSchema = new Schema({
   paymentState: { type: Number, default: 0 },
   createdAt: { type: Date, default: now.toISOString() },
   deliveriedAt: { type: Date, default: null },
+  confirmedAt: { type: Date, default: null },
+  pickupedAt: { type: Date, default: null },
+  packedAt: { type: Date, default: null },
+  transportedAt: { type: Date, default: null },
 });
 
 module.exports = mongoose.model('order', OrderSchema);

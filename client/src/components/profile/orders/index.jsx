@@ -9,12 +9,13 @@ import {
   OrderCompleted,
   OrderProcessing,
   ViewOrder,
+  TrackOrder,
 } from '../../../components';
 import { Tabs } from 'antd';
 const { TabPane } = Tabs;
 const Order = () => {
   const [tabChange, setTabChange] = useState('processing');
-  const [viewDetail, setViewDetail] = useState(false);
+  const [view, setView] = useState('default');
   const [id, setId] = useState(null);
   const [order, setOrder] = useState(null);
   const onTabChange = (key) => {
@@ -24,59 +25,67 @@ const Order = () => {
     <Fragment>
       <h3 className='profile__title'>Đơn hàng của tôi</h3>
       <div className='profile__main--order'>
-        {viewDetail ? (
-          <ViewOrder id={id} order={order} setViewDetail={setViewDetail} />
+        {view === 'detail' ? (
+          <ViewOrder setId={setId} id={id} order={order} setView={setView} />
+        ) : view === 'track' ? (
+          <TrackOrder id={id} setView={setView} />
         ) : (
-          <Tabs
-            onTabClick={onTabChange}
-            defaultActiveKey={tabChange}
-            type='card'
-          >
-            <TabPane
-              tab={
-                <span>
-                  <EllipsisOutlined />
-                  Đang xử lí
-                </span>
-              }
-              key='processing'
+          view === 'default' && (
+            <Tabs
+              onTabClick={onTabChange}
+              defaultActiveKey={tabChange}
+              type='card'
             >
-              <OrderProcessing
-                setViewDetail={setViewDetail}
-                setId={setId}
-                setOrder={setOrder}
-                tabChange={tabChange}
-              />
-            </TabPane>
-            <TabPane
-              tab={
-                <span>
-                  <CheckCircleOutlined />
-                  Đã hoàn tất
-                </span>
-              }
-              key='completed'
-            >
-              <OrderCompleted
-                setViewDetail={setViewDetail}
-                tabChange={tabChange}
-              />
-            </TabPane>
-            <TabPane
-              tab={
-                <span>
-                  <CloseCircleOutlined />
-                  Đã hủy
-                </span>
-              }
-              key='canceled'
-            >
-              <OrderCanceled
-                setViewDetail={setViewDetail}
-                tabChange={tabChange}
-              />
-            </TabPane>
-          </Tabs>
+              <TabPane
+                tab={
+                  <span>
+                    <EllipsisOutlined />
+                    Đang xử lí
+                  </span>
+                }
+                key='processing'
+              >
+                <OrderProcessing
+                  setView={setView}
+                  setId={setId}
+                  setOrder={setOrder}
+                  tabChange={tabChange}
+                />
+              </TabPane>
+              <TabPane
+                tab={
+                  <span>
+                    <CheckCircleOutlined />
+                    Đã hoàn tất
+                  </span>
+                }
+                key='completed'
+              >
+                <OrderCompleted
+                  setId={setId}
+                  setOrder={setOrder}
+                  setView={setView}
+                  tabChange={tabChange}
+                />
+              </TabPane>
+              <TabPane
+                tab={
+                  <span>
+                    <CloseCircleOutlined />
+                    Đã hủy
+                  </span>
+                }
+                key='canceled'
+              >
+                <OrderCanceled
+                  setId={setId}
+                  setOrder={setOrder}
+                  setView={setView}
+                  tabChange={tabChange}
+                />
+              </TabPane>
+            </Tabs>
+          )
         )}
       </div>
     </Fragment>

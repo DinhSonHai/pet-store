@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Tooltip } from 'antd';
+import { Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import api from '../../../../api';
-export const OrderCompleted = ({ tabChange }) => {
+export const OrderCompleted = ({ tabChange, setId, setOrder, setView }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [completedOrders, setCompletedOrders] = useState([]);
   const columns = [
@@ -12,9 +12,18 @@ export const OrderCompleted = ({ tabChange }) => {
       ellipsis: {
         showTitle: false,
       },
-      render: (value) => (
+      render: (value, record) => (
         <Tooltip placement='topLeft' title={value}>
-          {value}
+          <span
+            onClick={() => {
+              setId(value);
+              setOrder(record);
+              setView('detail');
+            }}
+            style={{ color: 'var(--mainstream-color)', cursor: 'pointer' }}
+          >
+            {value}
+          </span>
         </Tooltip>
       ),
     },

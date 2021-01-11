@@ -7,7 +7,6 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const _ = require('lodash');
 
 class ProductController {
-
   // @route   PUT api/products/admin/:id/review/:reviewId/approve
   // @desc    Duyệt đánh giá của người dùng
   // @access  Private
@@ -30,13 +29,13 @@ class ProductController {
         status = 1;
         review = await Review.findOneAndUpdate(
           { _id: reviewId },
-          { $set: { status }},
+          { $set: { status } },
           { new: true }
         );
       }
       return res.json(review);
     } catch (err) {
-      return res.status(500).send('Server Error'); 
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -58,17 +57,17 @@ class ProductController {
       // -1: Không phê duyệt đánh giá
       // 0: Đăng đánh giá thành công
       // 1: Đã phê duyệt đánh giá
-      if (status = 0 || status === 1) {
+      if ((status = 0 || status === 1)) {
         status = -1;
         review = await Review.findOneAndUpdate(
           { _id: reviewId },
-          { $set: { status }},
+          { $set: { status } },
           { new: true }
         );
       }
       return res.json(review);
     } catch (err) {
-      return res.status(500).send('Server Error'); 
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -90,27 +89,27 @@ class ProductController {
       // -1: Không phê duyệt bình luận
       // 0: Đăng bình luận thành công
       // 1: Đã phê duyệt bình luận
-      replyComment.forEach(comment => {
+      replyComment.forEach((comment) => {
         if (comment._id.toString() === req.params.commentId) {
           if (comment.status === 0 || comment.status === -1) {
             comment.status = 1;
           }
         }
-      })
+      });
       review = await Review.findOneAndUpdate(
         { _id: reviewId },
-        { $set: { replyComment }},
+        { $set: { replyComment } },
         { new: true }
       );
       return res.json(replyComment);
     } catch (err) {
-      return res.status(500).send('Server Error'); 
+      return res.status(500).send('Server Error');
     }
   }
 
-// @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/decline
-// @desc    Từ chối bình luận trong đánh giá của người dùng
-// @access  Private
+  // @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/decline
+  // @desc    Từ chối bình luận trong đánh giá của người dùng
+  // @access  Private
   async declineComment(req, res) {
     try {
       let product = await Product.findById({ _id: req.params.id });
@@ -126,21 +125,21 @@ class ProductController {
       // -1: Không phê duyệt bình luận
       // 0: Đăng bình luận thành công
       // 1: Đã phê duyệt bình luận
-      replyComment.forEach(comment => {
+      replyComment.forEach((comment) => {
         if (comment._id.toString() === req.params.commentId) {
           if (comment.status === 0 || comment.status === 1) {
             comment.status = -1;
           }
         }
-      })
+      });
       review = await Review.findOneAndUpdate(
         { _id: reviewId },
-        { $set: { replyComment }},
+        { $set: { replyComment } },
         { new: true }
       );
       return res.json(replyComment);
     } catch (err) {
-      return res.status(500).send('Server Error'); 
+      return res.status(500).send('Server Error');
     }
   }
 
@@ -182,7 +181,9 @@ class ProductController {
     try {
       const product = await Product.findById(req.params.id);
       if (!product) {
-        return res.status(404).json({ msg: 'Sản phẩm không tồn tại' });
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Không tìm thấy sản phẩm!' }] });
       }
       return res.json(product);
     } catch (err) {
@@ -225,7 +226,9 @@ class ProductController {
   async getAllProductReview(req, res, next) {
     try {
       //Lấy tất cả đánh giá của sản phẩm
-      let review = await Review.find({ productId: new ObjectId(req.params.id) });
+      let review = await Review.find({
+        productId: new ObjectId(req.params.id),
+      });
       if (!review) {
         return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
       }
@@ -241,13 +244,18 @@ class ProductController {
   async getProductReview(req, res, next) {
     try {
       //Lấy tất cả đánh giá của sản phẩm đã được duyệt
-      let review = await Review.find({ productId: new ObjectId(req.params.id), status: 1 });
+      let review = await Review.find({
+        productId: new ObjectId(req.params.id),
+        status: 1,
+      });
       if (!review) {
         return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
       }
-      review.forEach(rv => {
-        rv.replyComment = rv.replyComment.filter(comment => comment.status === 1);
-      })
+      review.forEach((rv) => {
+        rv.replyComment = rv.replyComment.filter(
+          (comment) => comment.status === 1
+        );
+      });
       return res.json(review);
     } catch (err) {
       return res.status(500).send('Server Error');

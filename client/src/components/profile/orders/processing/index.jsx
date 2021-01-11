@@ -5,12 +5,7 @@ import { Loader } from '../../../../components';
 import dayjs from 'dayjs';
 import api from '../../../../api';
 import './styles.scss';
-export const OrderProcessing = ({
-  tabChange,
-  setViewDetail,
-  setId,
-  setOrder,
-}) => {
+export const OrderProcessing = ({ tabChange, setView, setId, setOrder }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [processingOrders, setProcessingOrders] = useState([]);
   const [updateState, setUpdateState] = useState(false);
@@ -111,14 +106,22 @@ export const OrderProcessing = ({
                   onClick={() => {
                     setId(p._id);
                     setOrder(p);
-                    setViewDetail(true);
+                    setView('detail');
                   }}
                   style={{ marginRight: '1rem' }}
                   type='primary'
                 >
                   Xem chi tiết
                 </Button>
-                <Button type='primary'>Theo dõi đơn hàng</Button>
+                <Button
+                  onClick={() => {
+                    setId(p._id);
+                    setView('track');
+                  }}
+                  type='primary'
+                >
+                  Theo dõi đơn hàng
+                </Button>
               </div>
             </Card>
           ))}

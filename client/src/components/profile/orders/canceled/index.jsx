@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Tooltip } from 'antd';
+import { Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import api from '../../../../api';
-export const OrderCanceled = ({ tabChange }) => {
+export const OrderCanceled = ({ tabChange, setId, setOrder, setView }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [canceledOrders, setCanceledOrders] = useState([]);
   const columns = [
@@ -12,9 +12,18 @@ export const OrderCanceled = ({ tabChange }) => {
       ellipsis: {
         showTitle: false,
       },
-      render: (value) => (
+      render: (value, record) => (
         <Tooltip placement='topLeft' title={value}>
-          {value}
+          <span
+            onClick={() => {
+              setId(value);
+              setOrder(record);
+              setView('detail');
+            }}
+            style={{ color: 'var(--mainstream-color)', cursor: 'pointer' }}
+          >
+            {value}
+          </span>
         </Tooltip>
       ),
     },
@@ -40,7 +49,7 @@ export const OrderCanceled = ({ tabChange }) => {
     {
       title: 'Trạng thái',
       dataIndex: 'status',
-      render: (value) => `${value === 5 && `Giao hàng thành công`}`,
+      render: (value) => `${value === -1 && `Đã hủy`}`,
     },
   ];
   useEffect(() => {

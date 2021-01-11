@@ -1,5 +1,6 @@
 import api from '../../api';
 import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID } from '../types';
+import { notification } from 'antd';
 
 // Get all products
 export const getAllProducts = () => async (dispatch) => {
@@ -35,7 +36,18 @@ export const getProductById = (id) => async (dispatch) => {
       type: GET_PRODUCT_BY_ID,
       payload: res.data,
     });
-  } catch (err) {}
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) =>
+        notification.open({
+          message: 'Lỗi!',
+          description: error.msg,
+        })
+      );
+    }
+  }
 };
 
 // Get all types by catId

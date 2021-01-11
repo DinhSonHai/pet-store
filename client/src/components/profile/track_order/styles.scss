@@ -1,0 +1,19 @@
+.track-order-loader {
+  text-align: center;
+}
+.track-order {
+  &__title {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  .ant-card-head-title,
+  .ant-steps-item-title {
+    font-size: 1rem;
+  }
+  .ant-card-bordered {
+    border: 1px solid var(--fourthstream-color) !important;
+  }
+  .ant-card-head {
+    border-bottom: 1px solid var(--fourthstream-color) !important;
+  }
+}

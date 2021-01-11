@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, Button } from 'antd';
+import { Row, Col, Card, Table, Button, Popconfirm, message } from 'antd';
 import { FastBackwardOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import api from '../../../api';
 import './styles.scss';
 
-const ViewOrder = ({ id, order, setViewDetail }) => {
+const ViewOrder = ({ id, order, setView, setId }) => {
   const [orderDetail, setOrderDetail] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const columns = [
     {
       title: 'Sản phẩm',
       dataIndex: 'productName',
-      render: (value, record) => <Link to={record._id}>{value}</Link>,
+      width: '65%',
+      render: (value, record) => (
+        <Link to={`/pet/${record.productId}`}>{value}</Link>
+      ),
     },
     {
       title: 'Số lượng',
@@ -22,6 +27,7 @@ const ViewOrder = ({ id, order, setViewDetail }) => {
     {
       title: 'Đơn giá',
       dataIndex: 'price',
+
       render: (value) => (
         <span>
           {parseInt(value).toLocaleString('vi-VN', {
@@ -47,7 +53,29 @@ const ViewOrder = ({ id, order, setViewDetail }) => {
     }
     return () => (flag = false);
   }, [id]);
-  console.log(id);
+  const showPopconfirm = () => {
+    setVisible(true);
+  };
+
+  const handleOk = async () => {
+    try {
+      setConfirmLoading(true);
+      const res = await api.put(`/order/auth/${id}`);
+      setConfirmLoading(false);
+      setVisible(false);
+      message.success(res.data.message);
+      setView('default');
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach((error) => message.error(error.msg));
+      }
+    }
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
   return (
     <section className='view-order'>
       <p className='view-order__id'>
@@ -66,12 +94,43 @@ const ViewOrder = ({ id, order, setViewDetail }) => {
           ? ' Đóng gói xong'
           : order.status === 4
           ? ' Đang vận chuyển'
-          : order.status === 5 && ' Giao hàng thành công'}
+          : order.status === 5
+          ? ' Giao hàng thành công'
+          : order.status === -1 && 'Đã hủy'}
       </p>
       <p className='view-order__date'>
         <span>Ngày đặt: </span>
         {dayjs(order.createdAt).format('HH:mm DD/MM/YYYY')}
       </p>
+      {order.status < 2 && order.status !== -1 && (
+        <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
+          <Popconfirm
+            title='Hủy đơn hàng?'
+            visible={visible}
+            onConfirm={handleOk}
+            okButtonProps={{ loading: confirmLoading }}
+            cancelButtonProps={{ disabled: confirmLoading }}
+            onCancel={handleCancel}
+          >
+            <Button onClick={showPopconfirm} danger>
+              Hủy đơn hàng
+            </Button>
+          </Popconfirm>
+        </div>
+      )}
+      {order.status === 5 && (
+        <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
+          <Button
+            onClick={() => {
+              setId(order._id);
+              setView('track');
+            }}
+            type='primary'
+          >
+            Theo dõi đơn hàng
+          </Button>
+        </div>
+      )}
       <Row gutter={[16, 16]}>
         <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
           <Card style={{ height: '100%' }} title='Địa chỉ người nhận'>
@@ -124,7 +183,7 @@ const ViewOrder = ({ id, order, setViewDetail }) => {
         icon={<FastBackwardOutlined />}
         type='link'
         onClick={() => {
-          setViewDetail(false);
+          setView('default');
         }}
       >
         Quay lại hóa đơn của tôi

@@ -13,25 +13,46 @@ const {
   validateReview,
 } = require('../../helpers/valid');
 
+// @route   GET api/products/:id
+// @desc    Get product by id
+// @access  Public
+router.get('/:id', ProductController.getById);
+
 // @route   PUT api/products/admin/:id/review/:reviewId/approve
 // @desc    Duyệt đánh giá của người dùng
 // @access  Private
-router.put('/admin/:id/review/:reviewId/approve', checkPermission, ProductController.approveReview);
+router.put(
+  '/admin/:id/review/:reviewId/approve',
+  checkPermission,
+  ProductController.approveReview
+);
 
 // @route   PUT api/products/admin/:id/review/:reviewId/decline
 // @desc    Từ chối đánh giá của người dùng
 // @access  Private
-router.put('/admin/:id/review/:reviewId/decline', checkPermission, ProductController.declineReview);
+router.put(
+  '/admin/:id/review/:reviewId/decline',
+  checkPermission,
+  ProductController.declineReview
+);
 
 // @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/approve
 // @desc    Duyệt bình luận trong đánh giá của người dùng
 // @access  Private
-router.put('/admin/:id/review/:reviewId/comment/:commentId/approve', checkPermission, ProductController.approveComment);
+router.put(
+  '/admin/:id/review/:reviewId/comment/:commentId/approve',
+  checkPermission,
+  ProductController.approveComment
+);
 
 // @route   PUT api/products/admin/:id/review/:reviewId/comment/:commentId/decline
 // @desc    Từ chối bình luận trong đánh giá của người dùng
 // @access  Private
-router.put('/admin/:id/review/:reviewId/comment/:commentId/decline', checkPermission, ProductController.declineComment);
+router.put(
+  '/admin/:id/review/:reviewId/comment/:commentId/decline',
+  checkPermission,
+  ProductController.declineComment
+);
 
 // @route   GET api/products
 // @desc    Get all products
@@ -43,11 +64,14 @@ router.get('/', ProductController.getAll);
 // @access  Private
 router.get('/deleted', authAdmin, ProductController.getDeleted);
 
-
 // @route   GET api/products/admin/:id/review
 // @desc    Lấy tất cả đánh giá của sản phẩm
 // @access  Private
-router.get('/admin/:id/review', checkPermission, ProductController.getAllProductReview);
+router.get(
+  '/admin/:id/review',
+  checkPermission,
+  ProductController.getAllProductReview
+);
 
 // @route   GET api/products/:id/review
 // @desc    Lấy đánh giá của sản phẩm
@@ -81,11 +105,6 @@ router.delete(
 // @desc    Delete a review
 // @access  Private
 router.delete('/:id/review/:reviewId', auth, ProductController.deleteReview);
-
-// @route   GET api/products/:id
-// @desc    Get product by id
-// @access  Public
-router.get('/:id', ProductController.getById);
 
 // @route   GET api/products/types/:typeId
 // @desc    Get all products by typeId

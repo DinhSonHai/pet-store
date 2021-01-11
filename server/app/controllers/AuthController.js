@@ -979,7 +979,7 @@ class AuthController {
   }
 
   // @route   GET api/auth/orders_detail/:id
-  // @desc    Get   orders detail
+  // @desc    Get orders detail
   // @access  Private
   async getOrdersDetail(req, res) {
     try {

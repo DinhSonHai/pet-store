@@ -27,3 +27,4 @@ export { default as OrderProcessing } from './profile/orders/processing';
 export { default as OrderCompleted } from './profile/orders/completed';
 export { default as OrderCanceled } from './profile/orders/canceled';
 export { default as ViewOrder } from './profile/view_order';
+export { default as TrackOrder } from './profile/track_order';

@@ -4,6 +4,8 @@ const config = require('config');
 const nodemailer = require('nodemailer');
 const axios = require('axios');
 const ObjectId = require('mongoose').Types.ObjectId;
+const dayjs = require('dayjs');
+const now = dayjs();
 
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
@@ -11,6 +13,26 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 
 class OrderController {
+  // @route   GET api/order/:id
+  // @desc    Lấy đơn hàng theo id
+  // @access  Private
+  async getById(req, res) {
+    try {
+      const order = await Order.findById(req.params.id);
+      if (!order) {
+        return res.status(404).json({
+          errors: [
+            {
+              msg: 'Đơn hàng không tồn tại!',
+            },
+          ],
+        });
+      }
+      return res.json(order);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
   // @route   GET api/order
   // @desc    Lấy tất cả đơn hàng phía admin
   // @access  Private
@@ -335,7 +357,7 @@ class OrderController {
     }
   }
 
-  // @route   PUT api/order/auth
+  // @route   PUT api/order/auth/:orderId
   // @desc    Hủy đơn hàng
   // @access  Private
   async cancleOrder(req, res) {
@@ -345,7 +367,7 @@ class OrderController {
       if (!order) {
         return res
           .status(404)
-          .json({ msg: 'Không tìm thấy đơn đặt hàng này.' });
+          .json({ errors: [{ msg: 'Không tìm thấy đơn hàng!' }] });
       }
       let { status } = order;
       // -1: Hủy đơn hàng
@@ -358,14 +380,19 @@ class OrderController {
       if (status === 0 || status === 1) {
         status = -1;
       } else {
-        return res.json({ msg: 'Bạn không thể hủy đơn hàng.' });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Bạn không thể hủy đơn hàng!' }] });
       }
-      order = await Order.findOneAndUpdate(
-        { _id: orderId },
-        { $set: { status } },
-        { new: true }
-      );
-      return res.json({ msg: 'Đã hủy đơn hàng thành công.' });
+      order.status = status;
+      await order.save((err, data) => {
+        if (err) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'Hủy đơn hàng thất bại!' }] });
+        }
+        return res.json({ message: 'Đã hủy đơn hàng thành công!' });
+      });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
@@ -381,7 +408,7 @@ class OrderController {
       if (!order) {
         return res
           .status(404)
-          .json({ msg: 'Không tìm thấy đơn đặt hàng này.' });
+          .json({ errors: [{ msg: 'Không tìm thấy đơn đặt hàng này!' }] });
       }
       let { status } = order;
       // -1: Hủy đơn hàng
@@ -392,26 +419,50 @@ class OrderController {
       // 4: Đang vận chuyển
       // 5: Giao hàng thành công
       if (status === -1) {
-        return res.json({
-          msg: 'Đơn hàng đã bị hủy. Không thể thay đổi trạng thái đơn hàng.',
+        return res.status(400).json({
+          errors: [
+            {
+              msg:
+                'Đơn hàng đã bị hủy. Không thể thay đổi trạng thái đơn hàng.!',
+            },
+          ],
         });
       } else if (status === 0) {
-        status = 1;
+        order.status = 1;
+        order.confirmedAt = now.toISOString();
       } else if (status === 1) {
-        status = 2;
+        order.status = 2;
+        order.pickupedAt = now.toISOString();
       } else if (status === 2) {
-        status = 3;
+        order.status = 3;
+        order.packedAt = now.toISOString();
       } else if (status === 3) {
-        status = 4;
+        order.status = 4;
+        order.transportedAt = now.toISOString();
       } else if (status === 4) {
-        status = 5;
+        order.status = 5;
+        order.deliveriedAt = now.toISOString();
+      } else {
+        return res.status(400).json({
+          errors: [
+            {
+              msg: 'Không thể cập nhật đơn hàng!',
+            },
+          ],
+        });
       }
-      order = await Order.findOneAndUpdate(
-        { _id: orderId },
-        { $set: { status } },
-        { new: true }
-      );
-      return res.json(order);
+      await order.save((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            errors: [
+              {
+                msg: 'Không thể cập nhật đơn hàng!',
+              },
+            ],
+          });
+        }
+        return res.json({ message: 'Cập nhật đơn hàng thành công!' });
+      });
     } catch (err) {
       return res.status(500).send('Server Error');
     }

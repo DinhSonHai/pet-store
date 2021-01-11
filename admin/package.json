@@ -9,7 +9,7 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
-    "antd": "^4.9.4",
+    "antd": "^4.10.1",
     "axios": "^0.21.1",
     "dayjs": "^1.9.8",
     "eslint-plugin-react": "^7.21.5",
