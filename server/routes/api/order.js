@@ -9,6 +9,12 @@ const {
   validateOrderAuth,
 } = require('../../helpers/valid');
 const auth = require('../../app/middlewares/auth');
+const checkPermission = require('../../app/middlewares/checkPermission');
+
+// @route   GET api/order
+// @desc    Lấy tất cả đơn hàng phía admin
+// @access  Private
+router.get('/', checkPermission, OrderController.getAllOrderAdmin);
 
 // @route   POST api/order
 // @desc    Đặt hàng guest
@@ -21,7 +27,17 @@ router.post(
 
 // @route   POST api/order/auth
 // @desc    Đặt hàng user
-// @access  Public
+// @access  Private
 router.post('/auth', [auth, validateOrderAuth], OrderController.authOrder);
+
+// @route   PUT api/order/auth/:orderId
+// @desc    Hủy đơn hàng
+// @access  Private
+router.put('/auth/:orderId', auth, OrderController.cancleOrder);
+
+// @route   PUT api/order/:orderId
+// @desc    Cập nhật trạng thái đơn hàng
+// @access  Private
+router.put('/:orderId', checkPermission, OrderController.updateOrderStatus);
 
 module.exports = router;
