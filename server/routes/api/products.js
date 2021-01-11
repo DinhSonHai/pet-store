@@ -4,6 +4,7 @@ const router = express.Router();
 const ProductController = require('../../app/controllers/ProductController');
 const auth = require('../../app/middlewares/auth');
 const checkPermission = require('../../app/middlewares/checkPermission');
+const authAdmin = require('../../app/middlewares/auth_admin');
 
 const {
   validateCreateProductInfo,
@@ -40,7 +41,7 @@ router.get('/', ProductController.getAll);
 // @route   GET api/products/deleted
 // @desc    Get all products has been soft deleted
 // @access  Private
-router.get('/deleted', checkPermission, ProductController.getDeleted);
+router.get('/deleted', authAdmin, ProductController.getDeleted);
 
 
 // @route   GET api/products/admin/:id/review
@@ -101,27 +102,35 @@ router.get('/categories/:categoryId', ProductController.getByCategoryId);
 // @access  Private
 router.post(
   '/',
-  [checkPermission, validateCreateProductInfo],
+  [authAdmin, checkPermission, validateCreateProductInfo],
   ProductController.Add
 );
 
-// @route   PUT api/products/:id
+// @route   PUT api/products
 // @desc    Update products
 // @access  Private
 router.put(
-  '/:id',
-  [checkPermission, validateUpdateProductInfo],
+  '/',
+  [authAdmin, checkPermission, validateUpdateProductInfo],
   ProductController.Edit
 );
 
 // @route   DELETE api/products/:id
 // @desc    Soft delete products (hide)
 // @access  Private
-router.delete('/:id', checkPermission, ProductController.softDelete);
+router.delete(
+  '/:id',
+  [authAdmin, checkPermission],
+  ProductController.softDelete
+);
 
 // @route   PATCH api/products/:id/restore
 // @desc    Restore products has been soft deleted
 // @access  Private
-router.patch('/:id/restore', checkPermission, ProductController.restore);
+router.patch(
+  '/:id/restore',
+  [authAdmin, checkPermission],
+  ProductController.restore
+);
 
 module.exports = router;

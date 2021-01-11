@@ -11,3 +11,4 @@ export { default as ProductAddForm } from './product/add_form';
 export { default as ProductList } from './product/list';
 export { default as ProductRemoved } from './product/removed';
 export { default as ProgressBar } from './progressbar';
+export { default as ReceiptModal } from './receipt_modal';

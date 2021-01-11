@@ -4,6 +4,7 @@ const router = express.Router();
 const AuthController = require('../../app/controllers/AuthController');
 
 const auth = require('../../app/middlewares/auth');
+const authAdmin = require('../../app/middlewares/auth_admin');
 const checkPermission = require('../../app/middlewares/checkPermission');
 
 const {
@@ -25,7 +26,7 @@ router.post('/signup', validateSignUp, AuthController.signUp);
 // @access  Private
 router.post(
   '/_signup',
-  [checkPermission, validateSignUp],
+  [authAdmin, checkPermission, validateSignUp],
   AuthController._signUp
 );
 
@@ -67,7 +68,7 @@ router.get('/user', auth, AuthController.getUserData);
 // @route   GET api/auth/_user
 // @desc    Get admin, employee data
 // @access  Private
-router.get('/_user', checkPermission, AuthController.get_UserData);
+router.get('/_user', authAdmin, AuthController.get_UserData);
 
 // @route   PUT api/auth/forgetpassword
 // @desc    Forget password

@@ -1,9 +1,10 @@
 import { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
-import { ProductAddForm } from '../../../components';
+import { ProductAddForm, ReceiptModal } from '../../../components';
 import { Button, Table, Popconfirm, Pagination } from 'antd';
 import queryString from 'query-string';
+import { PlusOutlined } from '@ant-design/icons';
 import { getAllProducts, removeProduct } from '../../../redux/actions/products';
 
 const ProductList = ({
@@ -19,24 +20,32 @@ const ProductList = ({
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
       await getAllProducts(filter, page);
       setIsLoading(false);
     }
-    if (tabChange === 'list' && !edit) {
+    if (tabChange === 'list' && !edit && !visible) {
       getData();
     }
-  }, [getAllProducts, tabChange, edit, filter, page]);
+  }, [getAllProducts, tabChange, edit, filter, page, visible]);
   const remove = async (id) => {
     setIsLoading(true);
     await removeProduct(id);
     setIsLoading(false);
   };
-  const onSelectChange = (selectedRowKeys) => {
-    setSelectedRowKeys(selectedRowKeys);
+  const onSelectChange = (_, selectedRows) => {
+    let mapData = selectedRows.map((p, index) => ({
+      numericalOrder: index,
+      key: p.key,
+      productName: p.productName,
+      quantity: p.quantity,
+      price: p.price,
+    }));
+    setSelectedRows(mapData);
   };
   const handlePagination = async (_page) => {
     if (filter) {
@@ -56,6 +65,14 @@ const ProductList = ({
     {
       title: 'Đơn giá',
       dataIndex: 'price',
+      render: (value) => (
+        <span>
+          {parseInt(value).toLocaleString('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+          })}
+        </span>
+      ),
     },
     {
       title: 'Tình trạng',
@@ -102,8 +119,28 @@ const ProductList = ({
     <Fragment>
       {!edit ? (
         <Fragment>
+          <Button
+            disabled={selectedRows.length > 0 ? false : true}
+            style={{ margin: '1rem 0' }}
+            type='primary'
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Thêm phiếu nhập
+          </Button>
+          {visible && (
+            <ReceiptModal
+              visible={visible}
+              setVisible={setVisible}
+              data={selectedRows}
+            />
+          )}
+
           <Table
-            rowSelection={{ selectedRowKeys, onChange: onSelectChange }}
+            rowSelection={{
+              selectedRows,
+              onChange: onSelectChange,
+            }}
             columns={columns}
             loading={isLoading}
             dataSource={products}

@@ -27,8 +27,10 @@ const ProductAddForm = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [typeState, setTypeState] = useState([]);
   const [images, setImages] = useState([]);
+  const [status, setStatus] = useState(true);
   useEffect(() => {
     if (edit) {
+      setStatus(item.status);
       setImages(
         item.images.map((img, index) => ({
           uid: index,
@@ -56,6 +58,7 @@ const ProductAddForm = ({
         ...values,
         description: content,
         id: item._id,
+        status,
         images: images.map((img) => img.response.url),
       });
       setConfirmLoading(false);
@@ -76,6 +79,9 @@ const ProductAddForm = ({
   const handleChange = ({ fileList }) => {
     setImages(fileList);
   };
+  function onChangeStatus(e) {
+    setStatus(e.target.checked);
+  }
   return (
     <Fragment>
       <h3 style={{ textAlign: 'right' }}>
@@ -177,9 +183,14 @@ const ProductAddForm = ({
         >
           <Input placeholder='Số lượng' />
         </Form.Item>
-        <Form.Item label='Tình trạng'>
-          <Checkbox checked={edit ? item.status : true}>Còn hàng</Checkbox>
-        </Form.Item>
+        {edit && (
+          <Form.Item label='Tình trạng'>
+            <Checkbox onChange={onChangeStatus} checked={edit && status}>
+              Còn hàng
+            </Checkbox>
+          </Form.Item>
+        )}
+
         <Form.Item label='Ảnh'>
           <Upload
             action='/uploadProduct'

@@ -448,8 +448,10 @@ class ProductController {
       price,
       quantity,
       typeId,
+      status,
       id,
     } = req.body;
+
     try {
       let product = await Product.findById(id);
       if (!product) {
@@ -466,6 +468,7 @@ class ProductController {
         images,
         price: parseInt(price),
         quantity: parseInt(quantity),
+        status,
         typeId,
       };
       product = _.extend(product, productFields);

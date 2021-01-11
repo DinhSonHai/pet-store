@@ -47,10 +47,10 @@ const ProductList = ({
       render: (value) => (
         <span
           style={{
-            color: value === 1 ? 'var(--success-color)' : 'var(--danger-color)',
+            color: value ? 'var(--success-color)' : 'var(--danger-color)',
           }}
         >
-          {value === 1 ? 'Còn hàng' : 'Hết hàng'}
+          {value ? 'Còn hàng' : 'Hết hàng'}
         </span>
       ),
     },
