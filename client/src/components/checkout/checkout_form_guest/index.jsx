@@ -7,6 +7,7 @@ import store from '../../../store';
 import equal from 'fast-deep-equal';
 const { Option } = Select;
 const CheckoutFormGuest = ({ cartState, history }) => {
+  const [form] = Form.useForm();
   const [province, setProvince] = useState([]);
   const [ward, setWard] = useState([]);
   const [town, setTown] = useState([]);
@@ -27,6 +28,10 @@ const CheckoutFormGuest = ({ cartState, history }) => {
     if (!values) {
       return;
     }
+    form.setFieldsValue({
+      wardState: '',
+      townState: '',
+    });
     let id = parseInt(values);
     setIsProcessing(true);
     const data = await getWard(id);
@@ -41,6 +46,9 @@ const CheckoutFormGuest = ({ cartState, history }) => {
     if (!values) {
       return;
     }
+    form.setFieldsValue({
+      townState: '',
+    });
     let id = parseInt(values);
     setIsProcessing(true);
     const data = await getTown(id);
@@ -100,6 +108,7 @@ const CheckoutFormGuest = ({ cartState, history }) => {
   return (
     <Card>
       <Form
+        form={form}
         layout='vertical'
         name='normal_checkout'
         initialValues={{

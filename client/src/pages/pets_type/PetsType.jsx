@@ -44,6 +44,7 @@ const PetsType = ({ getTypesByCatId, match }) => {
                   <Link to={`/pets/types/${item._id}`}>
                     <Card
                       bordered={false}
+                      hoverable
                       cover={
                         <img
                           width='100%'

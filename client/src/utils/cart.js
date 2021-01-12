@@ -1,10 +1,15 @@
 import store from '../store';
 import { UPDATE_CART, REMOVE_CART } from '../redux/types';
+import { message } from 'antd';
 export const addItem = (item) => {
   let cartCopy = JSON.parse(localStorage.getItem('cart')) || [];
   let existingItem = cartCopy.find((cartItem) => cartItem._id === item._id);
   if (existingItem) {
     existingItem.amount += 1;
+    if (existingItem.amount === 101) {
+      message.error('Số lượng phải nhỏ hơn 100!');
+      return false;
+    }
   } else {
     item.amount = 1;
     let { _id, amount, productName, images, price } = item;
@@ -15,6 +20,7 @@ export const addItem = (item) => {
     payload: { isHaveCart: true, cartState: cartCopy },
   });
   localStorage.setItem('cart', JSON.stringify(cartCopy));
+  return true;
 };
 
 export const removeItem = (_id) => {
@@ -40,7 +46,10 @@ export const removeItem = (_id) => {
 
 export const setAmount = (_id, value) => {
   if (!value || isNaN(value) || !Number.isInteger(value)) {
-    return;
+    return message.error('Số lượng không hợp lệ!');
+  }
+  if (value > 100) {
+    return message.error('Số lượng phải nhỏ hơn 100!');
   }
   let cart = JSON.parse(localStorage.getItem('cart'));
   let updatedCart = cart.map((item) => {

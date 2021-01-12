@@ -17,7 +17,12 @@ const Product = require('../models/Product');
 const Employee = require('../models/Employee');
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
-
+const api = axios.default.create({
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+});
 class AuthController {
   //* Client *//
 
@@ -68,7 +73,17 @@ class AuthController {
           .status(400)
           .json({ errors: [{ msg: 'Địa chỉ email này đã được đăng ký' }] });
       }
-
+      // const checkVerifiedEmail = await api.get(
+      //   `https://app.verify-email.org/api/v1/${config.get(
+      //     'CHECK_VERIFIED_MAIL'
+      //   )}/verify/${email}`
+      // );
+      // const { status } = checkVerifiedEmail.data;
+      // if (!status || status === 0) {
+      //   return res.status(400).json({
+      //     errors: [{ msg: 'Vui lòng sử dụng email đã được kích hoạt' }],
+      //   });
+      // }
       const payload = {
         user: {
           name,

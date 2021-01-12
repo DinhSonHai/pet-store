@@ -12,6 +12,13 @@ const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
 const User = require('../models/User');
 
+const api = axios.default.create({
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+});
+
 class OrderController {
   // @route   GET api/order/:id
   // @desc    Lấy đơn hàng theo id
@@ -76,12 +83,23 @@ class OrderController {
       email,
       name,
       phone,
-      totalMoney,
       deliveryState,
       paymentState,
       note,
       cart,
     } = req.body;
+    // const checkVerifiedEmail = await api.get(
+    //   `https://app.verify-email.org/api/v1/${config.get(
+    //     'CHECK_VERIFIED_MAIL'
+    //   )}/verify/${email}`
+    // );
+    // const { status } = checkVerifiedEmail.data;
+    // if (!status || status === 0) {
+    //   return res.status(400).json({
+    //     errors: [{ msg: 'Vui lòng sử dụng email đã được kích hoạt' }],
+    //   });
+    // }
+    let totalMoney = 0;
     try {
       Promise.all([
         getData(`https://vapi.vnappmob.com/api/province`),
@@ -120,7 +138,6 @@ class OrderController {
             email,
             address,
             note,
-            totalMoney,
             deliveryState,
             paymentState,
           });
@@ -129,12 +146,28 @@ class OrderController {
           let getProducts = [];
           if (order._id) {
             for (let i = 0; i < cartLength; ++i) {
+              if (!cart[i].amount || cart[i].amount <= 0) {
+                return res.status(400).json({
+                  errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
+                });
+              }
               const product = await Product.findById(cart[i]._id);
               if (!product) {
                 return res.status(404).json({
                   errors: [{ msg: 'Sản phẩm không tồn tại!' }],
                 });
               }
+              if (product.quantity <= 0) {
+                return res.status(400).json({
+                  errors: [{ msg: 'Sản phẩm hết hàng!' }],
+                });
+              }
+              if (product.quantity < cart[i].amount) {
+                return res.status(400).json({
+                  errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
+                });
+              }
+              product.quantity = product.quantity - cart[i].amount;
               getProducts.push({ product, amount: cart[i].amount });
               let detail = new OrderDetail({
                 orderId: order._id,
@@ -145,7 +178,13 @@ class OrderController {
               });
               detail.key = detail._id;
               await detail.save();
+              await product.save();
             }
+            totalMoney = getProducts.reduce(
+              (a, b) => a + b.product.price * b.amount,
+              deliveryState === 0 ? 35000 : 55000
+            );
+            order.totalMoney = totalMoney;
             await order.save();
           } else {
             return res
@@ -190,14 +229,12 @@ class OrderController {
           <p>Xin cảm ơn quý khách</p>
           <p>${config.get('CLIENT_URL')}</p>
         `;
-
             const mailOptions = {
               from: config.get('NODEMAILER_EMAIL'),
               to: email,
               subject: 'Thông báo mua hàng ở Pet store',
               html: content,
             };
-
             transporter
               .sendMail(mailOptions)
               .then(() => {
@@ -228,14 +265,8 @@ class OrderController {
   // @desc    Đặt hàng vai trò người dùng
   // @access  Private
   async authOrder(req, res) {
-    const {
-      totalMoney,
-      deliveryState,
-      paymentState,
-      note,
-      cart,
-      address,
-    } = req.body;
+    const { deliveryState, paymentState, note, cart, address } = req.body;
+    let totalMoney = 0;
     try {
       let user = await User.findById(req.user.id);
       if (!user) {
@@ -254,13 +285,17 @@ class OrderController {
           .status(400)
           .json({ errors: [{ msg: 'Vui lòng cung cấp số điện thoại!' }] });
       }
+      if (user.address.length <= 0) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Vui lòng cung cấp địa chỉ!' }] });
+      }
       let order = new Order({
         userId: user._id,
         name: user.name,
         phone: user.phoneNumber,
         email: user.email,
         address,
-        totalMoney,
         note,
         deliveryState,
         paymentState,
@@ -270,12 +305,28 @@ class OrderController {
       let getProducts = [];
       if (order._id) {
         for (let i = 0; i < cartLength; ++i) {
+          if (!cart[i].amount || cart[i].amount <= 0) {
+            return res.status(400).json({
+              errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
+            });
+          }
           const product = await Product.findById(cart[i]._id);
           if (!product) {
             return res.status(404).json({
               errors: [{ msg: 'Sản phẩm không tồn tại!' }],
             });
           }
+          if (product.quantity <= 0) {
+            return res.status(400).json({
+              errors: [{ msg: 'Sản phẩm hết hàng!' }],
+            });
+          }
+          if (product.quantity < cart[i].amount) {
+            return res.status(400).json({
+              errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
+            });
+          }
+          product.quantity = product.quantity - cart[i].amount;
           getProducts.push({ product, amount: cart[i].amount });
           let detail = new OrderDetail({
             orderId: order._id,
@@ -286,14 +337,19 @@ class OrderController {
           });
           detail.key = detail._id;
           await detail.save();
+          await product.save();
         }
+        totalMoney = getProducts.reduce(
+          (a, b) => a + b.product.price * b.amount,
+          deliveryState === 0 ? 35000 : 55000
+        );
+        order.totalMoney = totalMoney;
         await order.save();
       } else {
         return res
           .status(400)
           .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
       }
-
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -313,7 +369,6 @@ class OrderController {
             { style: 'currency', currency: 'VND' }
           )}</li></ul></li>`
       );
-
       const content = `
           <h1>Bạn vừa mua hàng ở Pet store</h1>
           <p>Tên khách hàng: ${user.name}</p>

@@ -80,8 +80,10 @@ const Pets = ({
   );
   const handleAddToCart = (item) => {
     if (item) {
-      addItem(item);
-      return message.success('Đã thêm sản phẩm vào giỏ hàng');
+      const check = addItem(item);
+      if (check) {
+        return message.success('Đã thêm sản phẩm vào giỏ hàng');
+      }
     }
   };
   return (

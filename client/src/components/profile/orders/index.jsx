@@ -28,7 +28,12 @@ const Order = () => {
         {view === 'detail' ? (
           <ViewOrder setId={setId} id={id} order={order} setView={setView} />
         ) : view === 'track' ? (
-          <TrackOrder id={id} setView={setView} />
+          <TrackOrder
+            id={id}
+            setId={setId}
+            setOrder={setOrder}
+            setView={setView}
+          />
         ) : (
           view === 'default' && (
             <Tabs

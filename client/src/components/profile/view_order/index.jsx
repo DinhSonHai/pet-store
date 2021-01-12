@@ -70,6 +70,7 @@ const ViewOrder = ({ id, order, setView, setId }) => {
       if (errors) {
         errors.forEach((error) => message.error(error.msg));
       }
+      setConfirmLoading(false);
     }
   };
 
@@ -102,8 +103,15 @@ const ViewOrder = ({ id, order, setView, setId }) => {
         <span>Ngày đặt: </span>
         {dayjs(order.createdAt).format('HH:mm DD/MM/YYYY')}
       </p>
-      {order.status < 2 && order.status !== -1 && (
-        <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '1rem',
+          justifyContent: 'flex-end',
+        }}
+      >
+        {order.status < 2 && order.status !== -1 && (
           <Popconfirm
             title='Hủy đơn hàng?'
             visible={visible}
@@ -116,11 +124,10 @@ const ViewOrder = ({ id, order, setView, setId }) => {
               Hủy đơn hàng
             </Button>
           </Popconfirm>
-        </div>
-      )}
-      {order.status === 5 && (
-        <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
+        )}
+        {order.status !== -1 && (
           <Button
+            style={{ marginLeft: '1rem' }}
             onClick={() => {
               setId(order._id);
               setView('track');
@@ -129,8 +136,8 @@ const ViewOrder = ({ id, order, setView, setId }) => {
           >
             Theo dõi đơn hàng
           </Button>
-        </div>
-      )}
+        )}
+      </div>
       <Row gutter={[16, 16]}>
         <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
           <Card style={{ height: '100%' }} title='Địa chỉ người nhận'>

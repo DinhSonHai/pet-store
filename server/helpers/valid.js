@@ -64,7 +64,7 @@ module.exports.validateResetPassword = [
     .withMessage('Độ dài của mật khẩu phải nằm trong khoảng từ 6 đến 32 ký tự')
     .matches(/\d/)
     .withMessage('Mật khẩu phải bao gồm số'),
-  check('resetPasswordLink', 'Thiếu thông tin, lỗi server').notEmpty(),
+  check('resetPasswordLink', 'Link reset không hợp lệ!').notEmpty(),
 ];
 
 //Create Product
@@ -151,19 +151,11 @@ module.exports.validateOrder = [
     .notEmpty()
     .isNumeric()
     .withMessage('Phương thức thanh toán không hợp lệ'),
-  check('totalMoney', 'Đơn hàng không hợp lệ')
-    .notEmpty()
-    .isNumeric()
-    .withMessage('Đơn hàng không hợp lệ'),
 ];
 
 // Order when login
 module.exports.validateOrderAuth = [
   check('address', 'Vui lòng chọn địa chỉ hợp lệ').notEmpty(),
-  check('totalMoney', 'Đơn hàng không hợp lệ')
-    .notEmpty()
-    .isNumeric()
-    .withMessage('Đơn hàng không hợp lệ'),
   check('deliveryState', 'Vui lòng chọn phương thức vận chuyển')
     .notEmpty()
     .isNumeric()

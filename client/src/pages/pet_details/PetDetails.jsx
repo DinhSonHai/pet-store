@@ -33,8 +33,10 @@ const PetDetails = ({
   }, [getProductById, match.params.id]);
   const handleAddToCart = (item) => {
     if (item) {
-      addItem(item);
-      return message.success('Đã thêm sản phẩm vào giỏ hàng');
+      const check = addItem(item);
+      if (check) {
+        message.success('Đã thêm sản phẩm vào giỏ hàng');
+      }
     }
   };
   return (
@@ -63,6 +65,7 @@ const PetDetails = ({
                 <Col xs={24} sm={24} md={12} lg={12}>
                   <div className='pet-details__card-info'>
                     <Card
+                      bordered={false}
                       actions={[
                         <FavoriteAction
                           isAuthenticated={isAuthenticated}
@@ -81,7 +84,6 @@ const PetDetails = ({
                         />,
                       ]}
                       title={data.productName}
-                      bordered={false}
                     >
                       <p>
                         <b>Tình trạng: </b>

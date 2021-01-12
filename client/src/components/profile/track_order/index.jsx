@@ -9,7 +9,7 @@ import './styles.scss';
 
 const { Step } = Steps;
 
-const TrackOrder = ({ id, setView }) => {
+const TrackOrder = ({ id, setView, setId, setOrder }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [updateState, setUpdateState] = useState(false);
@@ -36,15 +36,27 @@ const TrackOrder = ({ id, setView }) => {
       ) : (
         <Fragment>
           <div className='trac-order__overall'>
-            <p className='track-order__title'>{`Theo dõi đơn hàng: #${data._id}`}</p>
-            <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
-              <Button
-                icon={<SyncOutlined />}
-                onClick={() => setUpdateState(!updateState)}
-              >
-                Cập nhật
-              </Button>
-            </div>
+            <p
+              onClick={() => {
+                setId(data._id);
+                setOrder(data);
+                setView('detail');
+              }}
+              className='track-order__title'
+            >
+              {`Theo dõi đơn hàng: #`}
+              <span>{data._id}</span>
+            </p>
+            {data.status !== 5 && (
+              <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
+                <Button
+                  icon={<SyncOutlined />}
+                  onClick={() => setUpdateState(!updateState)}
+                >
+                  Cập nhật
+                </Button>
+              </div>
+            )}
             <Card
               style={{ marginBottom: '1rem' }}
               title={`Trạng thái: ${

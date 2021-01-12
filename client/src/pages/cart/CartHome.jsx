@@ -67,6 +67,7 @@ const CartHome = ({ cartState, history }) => {
                             onChange={(value) => {
                               setAmount(item._id, value);
                             }}
+                            max={100}
                             min={1}
                             value={item.amount}
                           />
@@ -84,7 +85,11 @@ const CartHome = ({ cartState, history }) => {
                 </Card>
               </Col>
               <Col xs={24} sm={24} md={24} lg={8}>
-                <Card title='Tổng đơn hàng' className='cart__overall'>
+                <Card
+                  // bordered={false}
+                  title='Tổng đơn hàng'
+                  className='cart__overall'
+                >
                   <div className='cart__total'>
                     <span>Tổng tiền: </span>
                     <span id='cart__total'>
