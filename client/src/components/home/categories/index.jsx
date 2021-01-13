@@ -22,7 +22,7 @@ export default () => {
         <div className='category__content'>
           <Row gutter={[28, 28]}>
             <Col xs={24} sm={12} md={12} lg={6}>
-              <Link to={`/pets/all_types/5f9d1f0f92c1c0b400863677`}>
+              <Link to={`/pets/dog/5f9d1f0f92c1c0b400863677`}>
                 <Card
                   bordered={false}
                   cover={
@@ -34,7 +34,7 @@ export default () => {
               </Link>
             </Col>
             <Col xs={24} sm={12} md={12} lg={6}>
-              <Link to={`/pets/all_types/5f9d1f1d92c1c0b400863843`}>
+              <Link to={`/pets/cat/5f9d1f1d92c1c0b400863843`}>
                 {' '}
                 <Card
                   bordered={false}
@@ -47,7 +47,7 @@ export default () => {
               </Link>
             </Col>
             <Col xs={24} sm={12} md={12} lg={6}>
-              <Link to={`/pets/all_types/5ff00f72488a9a35bcb5d1dc`}>
+              <Link to={`/pets/food/5ff00f72488a9a35bcb5d1dc`}>
                 {' '}
                 <Card
                   bordered={false}
@@ -60,7 +60,7 @@ export default () => {
               </Link>
             </Col>
             <Col xs={24} sm={12} md={12} lg={6}>
-              <Link to={`/pets/all_types/5ff01f04d5b5e035d8ed9f67`}>
+              <Link to={`/pets/accessories/5ff01f04d5b5e035d8ed9f67`}>
                 {' '}
                 <Card
                   bordered={false}

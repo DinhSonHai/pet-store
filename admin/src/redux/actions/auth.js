@@ -5,7 +5,7 @@ import { notification } from 'antd';
 // Load User
 export const loadUser = () => async (dispatch) => {
   try {
-    const res = await api.get('/auth/_user');
+    const res = await api.get('/employee/user');
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -20,7 +20,7 @@ export const loadUser = () => async (dispatch) => {
 // Register User
 export const register = (formData) => async (dispatch) => {
   try {
-    const res = await api.post('/auth/_signup', formData);
+    const res = await api.post('/employee/signup', formData);
     notification.open({
       message: 'Đăng ký thành công!',
       description: res.data.message,
@@ -41,7 +41,7 @@ export const register = (formData) => async (dispatch) => {
 export const login = (email, password) => async (dispatch) => {
   const body = { email, password };
   try {
-    const res = await api.post('/auth/_signin', body);
+    const res = await api.post('/employee/signin', body);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,

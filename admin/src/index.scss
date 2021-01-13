@@ -18,7 +18,8 @@
   padding: 0;
 }
 body {
-  font-family: 'Lato', sans-serif !important;
+  // font-family: 'Lato', sans-serif !important;
+  font-family: Arial, Helvetica, sans-serif !important;
   font-size: 1rem !important;
   line-height: 1.6 !important;
   color: var(--dark-second-color) !important;
@@ -34,7 +35,7 @@ body {
 .site-layout .site-layout-background {
   background: var(--white-color);
 }
-[data-theme='dark'] .site-layout .site-layout-background {
+[data-theme="dark"] .site-layout .site-layout-background {
   background: var(--theme-dark);
 }
 
@@ -46,7 +47,8 @@ body {
 }
 .ck.ck-editor__editable_inline {
   padding: 0 1.5rem !important;
-  ul {
+  ul,
+  ol {
     padding-left: 1.5rem;
   }
 }

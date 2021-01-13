@@ -4,8 +4,6 @@ const router = express.Router();
 const AuthController = require('../../app/controllers/AuthController');
 
 const auth = require('../../app/middlewares/auth');
-const authAdmin = require('../../app/middlewares/auth_admin');
-const checkPermission = require('../../app/middlewares/checkPermission');
 
 const {
   validateSignUp,
@@ -17,61 +15,37 @@ const {
 } = require('../../helpers/valid');
 
 // @route   POST api/auth/signup
-// @desc    Sign up an account
+// @desc    Đăng ký tài khoản
 // @access  Public
 router.post('/signup', validateSignUp, AuthController.signUp);
 
-// @route   POST api/auth/_signup
-// @desc    Sign up for Employee
-// @access  Private
-router.post(
-  '/_signup',
-  [authAdmin, checkPermission, validateSignUp],
-  AuthController._signUp
-);
-
-// @route   POST api/auth/_signup_admin
-// @desc    Sign up for Admin
-// @access  Private
-router.post('/_signup_admin', AuthController._signUp_admin);
-
 // @route   POST api/auth/activate
-// @desc    Activate an account
+// @desc    Kích hoạt tài khoản
 // @access  Public
 router.post('/activate', AuthController.activate);
 
 // @route   POST api/auth/signin
-// @desc    Sign in
+// @desc    Đăng nhập
 // @access  Public
 router.post('/signin', validateSignIn, AuthController.signIn);
 
-// @route   POST api/auth/_signin
-// @desc    Sign in for admin/employee
-// @access  Public
-router.post('/_signin', validateSignIn, AuthController._signIn);
-
 // @route   POST api/auth/googlelogin
-// @desc    Sign in with google account
+// @desc    Đăng nhập bằng google
 // @access  Public
 router.post('/googlelogin', AuthController.googleLogin);
 
 // @route   POST api/auth/facebooklogin
-// @desc    Sign in with facebok account
+// @desc    Đăng nhập bằng facebook
 // @access  Public
 router.post('/facebooklogin', AuthController.facebookLogin);
 
 // @route   GET api/auth/user
-// @desc    Get user data
+// @desc    Lấy thông tin người dùng
 // @access  Private
 router.get('/user', auth, AuthController.getUserData);
 
-// @route   GET api/auth/_user
-// @desc    Get admin, employee data
-// @access  Private
-router.get('/_user', authAdmin, AuthController.get_UserData);
-
 // @route   PUT api/auth/forgetpassword
-// @desc    Forget password
+// @desc    Yêu cầu reset password
 // @access  Public
 router.put(
   '/forgotpassword',
@@ -89,7 +63,7 @@ router.put(
 );
 
 // @route   PUT api/auth/update_user
-// @desc    Update user
+// @desc    Cập nhật thông tin người dùng
 // @access  Private
 router.put(
   '/update_user',
@@ -98,7 +72,7 @@ router.put(
 );
 
 // @route   PUT api/auth/add_address
-// @desc    Add user address
+// @desc    Thêm địa chỉ người dùng
 // @access  Private
 router.put(
   '/add_address',
@@ -107,12 +81,12 @@ router.put(
 );
 
 // @route   PUT api/auth/remove_address
-// @desc    Remove user address
+// @desc    Xóa địa chỉ người dùng
 // @access  Private
 router.put('/remove_address', auth, AuthController.RemoveUserAddress);
 
 // @route   PUT api/auth/update_address
-// @desc    Update user address
+// @desc    Cập nhật địa chỉ người dùng
 // @access  Private
 router.put(
   '/update_address',
@@ -121,32 +95,13 @@ router.put(
 );
 
 // @route   PUT api/auth/favorite
-// @desc    Add favorite product
+// @desc    Thêm/Bỏ sản phẩm ưa thích
 // @access  Private
 router.put('/favorite', auth, AuthController.favoriteProduct);
 
 // @route   GET api/auth/favorite
-// @desc    Get favorite product
+// @desc    Lấy sản phẩm ưa thích
 // @access  Private
 router.get('/favorite', auth, AuthController.getFavoriteProducts);
 
-// @route   GET api/auth/orders_detail
-// @desc    Get   orders detail
-// @access  Private
-router.get('/orders_detail/:id', auth, AuthController.getOrdersDetail);
-
-// @route   GET api/auth/orders_processing
-// @desc    Get  processing orders
-// @access  Private
-router.get('/orders_processing', auth, AuthController.getProcessingOrders);
-
-// @route   GET api/auth/orders_completed
-// @desc    Get completed orders
-// @access  Private
-router.get('/orders_completed', auth, AuthController.getCompletedOrders);
-
-// @route   GET api/auth/orders_canceled
-// @desc    Get canceled orders
-// @access  Private
-router.get('/orders_canceled', auth, AuthController.getCanceledOrders);
 module.exports = router;

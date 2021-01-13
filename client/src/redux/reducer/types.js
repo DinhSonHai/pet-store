@@ -1,25 +1,23 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID } from '../types';
+import { GET_ALL_TYPES, GET_TYPE_BY_ID } from '../types';
 
 const initialState = {
-  products: [],
-  total: 0,
+  types: [],
   product: null,
 };
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case GET_ALL_PRODUCTS:
+    case GET_ALL_TYPES:
       return {
         ...state,
-        products: payload.data,
-        total: payload.total,
+        types: payload,
       };
-    case GET_PRODUCT_BY_ID:
+    case GET_TYPE_BY_ID:
       return {
         ...state,
-        product: payload,
+        type: payload,
       };
     default:
       return state;

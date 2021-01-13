@@ -3,6 +3,7 @@ import { Form, Input, Button, Select, DatePicker, Card } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { register } from '../../redux/actions/auth';
+import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import './styles.scss';
 
@@ -21,7 +22,7 @@ const Signup = ({ register }) => {
       phoneNumber: phone,
       password,
       gender,
-      dateOfBirth: new Date(dateOfBirth).toISOString(),
+      dateOfBirth: dayjs(dateOfBirth).toISOString(),
     });
     setIsProcessing(false);
   };

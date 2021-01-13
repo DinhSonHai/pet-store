@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const dayjs = require('dayjs');
-const now = dayjs();
 const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
@@ -21,7 +20,7 @@ const ProductSchema = new Schema({
   starRatings: { type: Number, default: 0 },
   typeId: { type: Schema.Types.ObjectId, ref: 'type' },
   isShow: { type: Boolean, default: true },
-  createdAt: { type: Date, default: now.toISOString() },
+  createdAt: { type: Date, default: dayjs().toISOString() },
   modifiedAt: { type: Date },
 });
 

@@ -1,5 +1,5 @@
 export { default as CartHome } from './cart/CartHome';
-export { default as Pets } from './pets/Pets';
+export { default as PetsList } from './pets_list/PetsList';
 export { default as PetDetails } from './pet_details/PetDetails';
 export { default as Navbar } from './layout/Navbar';
 export { default as Home } from './home/Home';
@@ -11,9 +11,7 @@ export { default as SignOut } from './layout/SignOut';
 export { default as Forgot } from './forgot/Forgot';
 export { default as Reset } from './reset/Reset';
 export { default as Profile } from './profile/Profile';
-// export { default as ProfileUser } from './profile/user_info';
-// export { default as ProfileAddress } from './profile/address';
 export { default as Checkout } from './checkout/Checkout';
 export { default as Order } from './order/Order';
-// export { default as WishList } from './profile/wishlist';
 export { default as PetsType } from './pets_type/PetsType';
+export { default as PetsPost } from './pets_post/PetsPost';

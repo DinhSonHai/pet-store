@@ -65,7 +65,6 @@ const PetDetails = ({
                 <Col xs={24} sm={24} md={12} lg={12}>
                   <div className='pet-details__card-info'>
                     <Card
-                      bordered={false}
                       actions={[
                         <FavoriteAction
                           isAuthenticated={isAuthenticated}
@@ -78,13 +77,15 @@ const PetDetails = ({
                           }
                         />,
                         <Button
+                          block
+                          style={{ height: '100%' }}
                           type='text'
                           icon={<AddToCartDetail />}
                           onClick={() => handleAddToCart(data)}
                         />,
                       ]}
-                      title={data.productName}
                     >
+                      <p style={{ fontSize: '1.2rem' }}>{data.productName}</p>
                       <p>
                         <b>Tình trạng: </b>
                         <span

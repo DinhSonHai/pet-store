@@ -43,9 +43,6 @@ class TypeController {
       const types = await Type.find({
         categoryId: new ObjectId(req.params.categoryId),
       });
-      if (!types) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
-      }
       return res.json(types);
     } catch (err) {
       console.error(err.message);
@@ -56,7 +53,7 @@ class TypeController {
   // @route   POST api/types
   // @desc    Tạo loại sản phẩm
   // @access  Private
-  async Add(req, res, next) {
+  async add(req, res, next) {
     const { typeName, typeImg, categoryId, content } = req.body;
     if (!typeName) {
       return res
@@ -99,7 +96,7 @@ class TypeController {
   // @route   PUT api/types
   // @desc    Sửa loại sản phẩm
   // @access  Private
-  async Edit(req, res, next) {
+  async edit(req, res, next) {
     const { typeName, typeImg, categoryId, id, content } = req.body;
     if (!typeName) {
       return res

@@ -2,11 +2,11 @@ import { useState, useEffect, Fragment } from 'react';
 import { Card, Rate, Button } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { GetFavorite, UpdateFavorite } from '../../../redux/actions/auth';
+import { getFavorite, updateFavorite } from '../../../redux/actions/auth';
 import { Link } from 'react-router-dom';
 import { Loader } from '../../../components';
 import './styles.scss';
-const WishList = ({ GetFavorite, UpdateFavorite }) => {
+const WishList = ({ getFavorite, updateFavorite }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -14,7 +14,7 @@ const WishList = ({ GetFavorite, UpdateFavorite }) => {
     let flag = true;
     async function getProducts() {
       setIsLoading(true);
-      const res = await GetFavorite();
+      const res = await getFavorite();
       if (res && flag) {
         setData(res);
       }
@@ -22,12 +22,12 @@ const WishList = ({ GetFavorite, UpdateFavorite }) => {
     }
     getProducts();
     return () => (flag = false);
-  }, [GetFavorite]);
+  }, [getFavorite]);
   const handleUnFavorite = async (id) => {
     setIsProcessing(true);
     const updatedData = data.filter((item) => item._id !== id);
     setData(updatedData);
-    await UpdateFavorite(id);
+    await updateFavorite(id);
     setIsProcessing(false);
   };
   return (
@@ -82,7 +82,7 @@ const WishList = ({ GetFavorite, UpdateFavorite }) => {
   );
 };
 WishList.propTypes = {
-  GetFavorite: PropTypes.func.isRequired,
-  UpdateFavorite: PropTypes.func.isRequired,
+  getFavorite: PropTypes.func.isRequired,
+  updateFavorite: PropTypes.func.isRequired,
 };
-export default connect(null, { GetFavorite, UpdateFavorite })(WishList);
+export default connect(null, { getFavorite, updateFavorite })(WishList);

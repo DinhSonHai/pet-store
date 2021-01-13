@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import api from '../../../../api';
-export const OrderCanceled = ({ tabChange, setId, setOrder, setView }) => {
+import { getCaneledOrders } from '../../../../redux/actions/order';
+import { connect } from 'react-redux';
+export const OrderCanceled = ({
+  tabChange,
+  setId,
+  setOrder,
+  setView,
+  getCaneledOrders,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [canceledOrders, setCanceledOrders] = useState([]);
   const columns = [
@@ -30,7 +37,7 @@ export const OrderCanceled = ({ tabChange, setId, setOrder, setView }) => {
     {
       title: 'Ngày mua',
       dataIndex: 'createdAt',
-      render: (value) => <span>{dayjs(value).format('DD/MM/YYYY')}</span>,
+      render: (value) => <span>{dayjs(value).format('HH:mm DD/MM/YYYY')}</span>,
     },
     {
       title: 'Số lượng',
@@ -56,9 +63,9 @@ export const OrderCanceled = ({ tabChange, setId, setOrder, setView }) => {
     let flag = true;
     async function getData() {
       setIsLoading(true);
-      const res = await api.get('/auth/orders_canceled');
+      const res = await getCaneledOrders();
       if (flag) {
-        setCanceledOrders(res.data);
+        setCanceledOrders(res);
       }
       setIsLoading(false);
     }
@@ -66,7 +73,7 @@ export const OrderCanceled = ({ tabChange, setId, setOrder, setView }) => {
       getData();
     }
     return () => (flag = false);
-  }, [tabChange]);
+  }, [tabChange, getCaneledOrders]);
   return (
     <Table
       columns={columns}
@@ -79,4 +86,4 @@ export const OrderCanceled = ({ tabChange, setId, setOrder, setView }) => {
     />
   );
 };
-export default OrderCanceled;
+export default connect(null, { getCaneledOrders })(OrderCanceled);

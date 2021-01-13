@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Select, Form, Input, Checkbox } from 'antd';
 import { getProvince, getWard, getTown } from '../../../api/address';
 import { connect } from 'react-redux';
-import { AddAdress, UpdateAdress } from '../../../redux/actions/auth';
+import { addAdress, updateAdress } from '../../../redux/actions/auth';
 import PropTypes from 'prop-types';
 
 const { Option } = Select;
@@ -11,8 +11,8 @@ const { Option } = Select;
 const AddressModal = ({
   visible,
   setVisible,
-  AddAdress,
-  UpdateAdress,
+  addAdress,
+  updateAdress,
   edit,
   defaultValue,
   item,
@@ -104,7 +104,7 @@ const AddressModal = ({
     const { p, w, t } = countryState;
     if (edit) {
       setConfirmLoading(true);
-      const res = await UpdateAdress({
+      const res = await updateAdress({
         provinceState: p ? provinceState : p,
         wardState: w ? wardState : w,
         townState: t ? townState : t,
@@ -119,7 +119,7 @@ const AddressModal = ({
       return;
     }
     setConfirmLoading(true);
-    const res = await AddAdress({
+    const res = await addAdress({
       provinceState: p ? provinceState : p,
       wardState: w ? wardState : w,
       townState: t ? townState : t,
@@ -268,8 +268,8 @@ const AddressModal = ({
   );
 };
 AddressModal.propTypes = {
-  AddAdress: PropTypes.func.isRequired,
-  UpdateAdress: PropTypes.func.isRequired,
+  addAdress: PropTypes.func.isRequired,
+  updateAdress: PropTypes.func.isRequired,
 };
 
-export default connect(null, { AddAdress, UpdateAdress })(AddressModal);
+export default connect(null, { addAdress, updateAdress })(AddressModal);

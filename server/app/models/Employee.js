@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const dayjs = require('dayjs');
-const now = dayjs();
 const bcrypt = require('bcryptjs');
 
 const Schema = mongoose.Schema;
@@ -18,7 +17,7 @@ const EmployeeSchema = new Schema({
   },
   address: { type: String, trim: true, default: '' },
   gender: { type: Number, default: 0 },
-  dateOfBirth: { type: Date, default: now.toISOString() },
+  dateOfBirth: { type: Date, default: dayjs().toISOString() },
   phoneNumber: { type: String, trim: true },
   resetPasswordLink: {
     data: String,
@@ -26,7 +25,7 @@ const EmployeeSchema = new Schema({
   },
   role: { type: Number, default: 1 },
   isWorking: { type: Boolean, default: true },
-  createdAt: { type: Date, default: now.toISOString() },
+  createdAt: { type: Date, default: dayjs().toISOString() },
 });
 EmployeeSchema.methods.checkPassword = async function (password) {
   return await bcrypt.compare(password, this.password);

@@ -2,7 +2,7 @@
 import { Route, Switch } from 'react-router-dom';
 import { PrivateRoute, AuthRoute, CheckoutRoute } from '../routes';
 import {
-  Pets,
+  PetsList,
   CartHome,
   PetDetails,
   Home,
@@ -16,14 +16,16 @@ import {
   Checkout,
   Order,
   PetsType,
+  PetsPost,
 } from '../pages';
 
 export default function () {
   return (
     <Switch>
       <Route exact path='/' component={Home} />
-      <Route exact path='/pets/types/:id' component={Pets} />
-      <Route exact path='/pets/all_types/:id' component={PetsType} />
+      <Route exact path='/pets/:type/list/:id' component={PetsList} />
+      <Route exact path='/pets/:type/post/:id' component={PetsPost} />
+      <Route exact path='/pets/:type/:id' component={PetsType} />
       <Route exact path='/cart' component={CartHome} />
       <Route exact path='/pet/:id' component={PetDetails} />
       <AuthRoute exact path='/signin' component={Signin} />

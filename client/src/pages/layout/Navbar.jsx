@@ -56,25 +56,25 @@ const NavBar = ({ auth: { isAuthenticated, user, loading } }) => {
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/all_types/5f9d1f0f92c1c0b400863677`}
+            to={`/pets/dog/5f9d1f0f92c1c0b400863677`}
           >
             Chó cảnh
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/all_types/5f9d1f1d92c1c0b400863843`}
+            to={`/pets/cat/5f9d1f1d92c1c0b400863843`}
           >
             Mèo cảnh
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/all_types/5ff00f72488a9a35bcb5d1dc`}
+            to={`/pets/food/5ff00f72488a9a35bcb5d1dc`}
           >
             Thức ăn
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/all_types/5ff01f04d5b5e035d8ed9f67`}
+            to={`/pets/accessories/5ff01f04d5b5e035d8ed9f67`}
           >
             Phụ kiện
           </Link>

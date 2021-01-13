@@ -30,7 +30,7 @@ import queryString from 'query-string';
 import './styles.scss';
 const { Meta } = Card;
 
-const Pets = ({
+const PetsList = ({
   data: { products, total },
   getProductsByType,
   match,
@@ -51,10 +51,12 @@ const Pets = ({
   const handlePagination = async (_page) => {
     if (filter) {
       return history.push(
-        `/pets/types/${match.params.id}/?sort=${filter}&page=${_page}`
+        `/pets/${match.params.type}/list/${match.params.id}/?sort=${filter}&page=${_page}`
       );
     }
-    return history.push(`/pets/types/${match.params.id}/?page=${_page}`);
+    return history.push(
+      `/pets/${match.params.type}/list/${match.params.id}/?page=${_page}`
+    );
   };
   const menu = (
     <Menu>
@@ -65,13 +67,17 @@ const Pets = ({
         Thứ tự theo: mức độ yêu thích
       </Menu.Item>
       <Menu.Item key='3' icon={<CaretUpOutlined />}>
-        <Link to={`/pets/types/${match.params.id}/?sort=asc`}>
+        <Link
+          to={`/pets/${match.params.type}/list/${match.params.id}/?sort=asc`}
+        >
           {' '}
           Thứ tự theo: giá thấp đến cao
         </Link>
       </Menu.Item>
       <Menu.Item key='4' icon={<CaretDownOutlined />}>
-        <Link to={`/pets/types/${match.params.id}/?sort=desc`}>
+        <Link
+          to={`/pets/${match.params.type}/list/${match.params.id}/?sort=desc`}
+        >
           {' '}
           Thứ tự theo: giá cao đến thấp
         </Link>
@@ -98,7 +104,13 @@ const Pets = ({
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <Link className='pets__header-title' to='/'>
-                Chó cảnh
+                {match.params.type === 'dog'
+                  ? 'Chó cảnh'
+                  : match.params.type === 'cat'
+                  ? 'Mèo cảnh'
+                  : match.params.type === 'food'
+                  ? 'Thức ăn'
+                  : match.params.type === 'accessories' && 'Phụ kiện'}
               </Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
@@ -120,20 +132,18 @@ const Pets = ({
             ) : (
               products.map((product) => (
                 <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
-                  <Card
-                    bordered={false}
-                    cover={
-                      <Link to={`/pet/${product._id}`}>
+                  <Card hoverable>
+                    <Link to={`/pet/${product._id}`}>
+                      <div
+                        style={{ textAlign: 'center', marginBottom: '1.5rem' }}
+                      >
                         <img
                           width='100%'
                           height='100%'
                           alt='example'
                           src={product.images[0]}
                         />
-                      </Link>
-                    }
-                  >
-                    <Link to={`/pet/${product._id}`}>
+                      </div>
                       <Meta title={product.productName} />
                       <p className='pets__price'>
                         {parseInt(product.price).toLocaleString('vi-VN', {
@@ -169,7 +179,7 @@ const Pets = ({
   );
 };
 
-Pets.propTypes = {
+PetsList.propTypes = {
   getProductsByType: PropTypes.func.isRequired,
 };
 
@@ -177,4 +187,4 @@ const mapStateToProps = (state) => ({
   data: state.products,
 });
 
-export default connect(mapStateToProps, { getProductsByType })(Pets);
+export default connect(mapStateToProps, { getProductsByType })(PetsList);

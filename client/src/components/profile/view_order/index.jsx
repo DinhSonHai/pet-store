@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, Button, Popconfirm, message } from 'antd';
+import { Row, Col, Card, Table, Button, Popconfirm } from 'antd';
+import { connect } from 'react-redux';
+import {
+  getOrderDetailById,
+  cancelOrderById,
+} from '../../../redux/actions/order';
 import { FastBackwardOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import api from '../../../api';
 import './styles.scss';
 
-const ViewOrder = ({ id, order, setView, setId }) => {
+const ViewOrder = ({
+  id,
+  order,
+  setView,
+  setId,
+  getOrderDetailById,
+  cancelOrderById,
+}) => {
   const [orderDetail, setOrderDetail] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -42,9 +53,9 @@ const ViewOrder = ({ id, order, setView, setId }) => {
     let flag = true;
     async function getData() {
       setIsLoading(true);
-      const res = await api.get(`/auth/orders_detail/${id}`);
+      const res = await getOrderDetailById(id);
       if (flag) {
-        setOrderDetail(res.data);
+        setOrderDetail(res);
       }
       setIsLoading(false);
     }
@@ -52,25 +63,18 @@ const ViewOrder = ({ id, order, setView, setId }) => {
       getData();
     }
     return () => (flag = false);
-  }, [id]);
+  }, [id, getOrderDetailById]);
   const showPopconfirm = () => {
     setVisible(true);
   };
 
   const handleOk = async () => {
-    try {
-      setConfirmLoading(true);
-      const res = await api.put(`/order/auth/${id}`);
-      setConfirmLoading(false);
-      setVisible(false);
-      message.success(res.data.message);
+    setConfirmLoading(true);
+    const res = await cancelOrderById(id);
+    setConfirmLoading(false);
+    setVisible(false);
+    if (res) {
       setView('default');
-    } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach((error) => message.error(error.msg));
-      }
-      setConfirmLoading(false);
     }
   };
 
@@ -198,4 +202,6 @@ const ViewOrder = ({ id, order, setView, setId }) => {
     </section>
   );
 };
-export default ViewOrder;
+export default connect(null, { getOrderDetailById, cancelOrderById })(
+  ViewOrder
+);

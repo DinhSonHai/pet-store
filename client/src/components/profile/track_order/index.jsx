@@ -1,15 +1,16 @@
 import { useState, useEffect, Fragment } from 'react';
 import { Button, Card, Steps, Timeline } from 'antd';
+import { getOrderById } from '../../../redux/actions/order';
+import { connect } from 'react-redux';
 import { FastBackwardOutlined } from '@ant-design/icons';
 import { SyncOutlined } from '@ant-design/icons';
 import { Loader } from '../../../components';
 import dayjs from 'dayjs';
-import api from '../../../api';
 import './styles.scss';
 
 const { Step } = Steps;
 
-const TrackOrder = ({ id, setView, setId, setOrder }) => {
+const TrackOrder = ({ id, setView, setId, setOrder, getOrderById }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [updateState, setUpdateState] = useState(false);
@@ -17,9 +18,9 @@ const TrackOrder = ({ id, setView, setId, setOrder }) => {
     let flag = true;
     async function getData() {
       setIsLoading(true);
-      const res = await api.get(`/order/${id}`);
+      const res = await getOrderById(id);
       if (flag) {
-        setData(res.data);
+        setData(res);
       }
       setIsLoading(false);
     }
@@ -27,7 +28,7 @@ const TrackOrder = ({ id, setView, setId, setOrder }) => {
       getData();
     }
     return () => (flag = false);
-  }, [id, updateState]);
+  }, [id, updateState, getOrderById]);
 
   return (
     <section className='track-order'>
@@ -77,7 +78,7 @@ const TrackOrder = ({ id, setView, setId, setOrder }) => {
                   : data.status === 1
                   ? data.confirmedAt
                   : data.status === 2
-                  ? data.pickupedAt
+                  ? data.pickedUpAt
                   : data.status === 3
                   ? data.packedAt
                   : data.status === 4
@@ -115,7 +116,7 @@ const TrackOrder = ({ id, setView, setId, setOrder }) => {
                 )}
                 {data.status >= 2 && (
                   <Timeline.Item
-                    label={dayjs(data.pickupedAt).format('HH:mm DD/MM/YYYY')}
+                    label={dayjs(data.pickedUpAt).format('HH:mm DD/MM/YYYY')}
                   >
                     Đang lấy hàng
                   </Timeline.Item>
@@ -159,4 +160,4 @@ const TrackOrder = ({ id, setView, setId, setOrder }) => {
     </section>
   );
 };
-export default TrackOrder;
+export default connect(null, { getOrderById })(TrackOrder);

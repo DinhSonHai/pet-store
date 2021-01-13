@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const dayjs = require('dayjs');
-const now = dayjs();
 const mongooseDelete = require('mongoose-delete');
 const bcrypt = require('bcryptjs');
 
@@ -27,7 +26,7 @@ const UserSchema = new Schema({
     },
   ],
   gender: { type: Number, default: 0 },
-  dateOfBirth: { type: Date, default: now.toISOString() },
+  dateOfBirth: { type: Date, default: dayjs().toISOString() },
   phoneNumber: {
     type: String,
     trim: true,
@@ -39,7 +38,7 @@ const UserSchema = new Schema({
     default: '',
   },
   role: { type: Number, default: 2 },
-  createdAt: { type: Date, default: now.toISOString() },
+  createdAt: { type: Date, default: dayjs().toISOString() },
 });
 
 UserSchema.plugin(mongooseDelete, {

@@ -202,7 +202,7 @@ export const updateUserInfo = (data) => async (dispatch) => {
 };
 
 // Add address for user
-export const AddAdress = (data) => async (dispatch) => {
+export const addAdress = (data) => async (dispatch) => {
   try {
     const res = await api.put('/auth/add_address', data);
     dispatch({
@@ -226,7 +226,7 @@ export const AddAdress = (data) => async (dispatch) => {
 };
 
 // Remove address for user
-export const RemoveAdress = (address_id) => async (dispatch) => {
+export const removeAdress = (address_id) => async (dispatch) => {
   try {
     const res = await api.put('/auth/remove_address', { address_id });
     dispatch({
@@ -249,7 +249,7 @@ export const RemoveAdress = (address_id) => async (dispatch) => {
 };
 
 // Update address for user
-export const UpdateAdress = (data) => async (dispatch) => {
+export const updateAdress = (data) => async (dispatch) => {
   try {
     const res = await api.put('/auth/update_address', data);
     dispatch({
@@ -273,7 +273,7 @@ export const UpdateAdress = (data) => async (dispatch) => {
 };
 
 // Add/Remove favorite product
-export const UpdateFavorite = (productId) => async (dispatch) => {
+export const updateFavorite = (productId) => async (dispatch) => {
   try {
     const res = await api.put('/auth/favorite', { productId });
     return res.data.check;
@@ -292,7 +292,7 @@ export const UpdateFavorite = (productId) => async (dispatch) => {
 };
 
 // Get favorite products
-export const GetFavorite = () => async (dispatch) => {
+export const getFavorite = () => async (dispatch) => {
   try {
     const res = await api.get('/auth/favorite');
     return res.data;

@@ -18,7 +18,7 @@
     "cloudinary": "^1.23.0",
     "config": "^3.3.2",
     "connect-multiparty": "^2.2.0",
-    "dayjs": "^1.9.4",
+    "dayjs": "^1.10.3",
     "express": "^4.17.1",
     "express-validator": "^6.6.1",
     "google-auth-library": "^6.1.3",

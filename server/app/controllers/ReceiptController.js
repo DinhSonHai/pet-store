@@ -31,7 +31,7 @@ class ReceiptController {
     }
   }
   // @route   GET api/receipts/:id
-  // @desc    Lấy tất cả phiếu nhập chi tiết theo id
+  // @desc    Lấy tất cả phiếu nhập chi tiết theo id phiếu nhập
   // @access  Private
   async getAllDetail(req, res) {
     try {
@@ -47,7 +47,7 @@ class ReceiptController {
   // @route   POST api/receipts
   // @desc    Tạo phiếu nhập
   // @access  Private
-  async Add(req, res) {
+  async add(req, res) {
     const { data, note } = req.body;
     try {
       let receipt = new Receipt({

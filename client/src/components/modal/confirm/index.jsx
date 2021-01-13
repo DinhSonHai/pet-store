@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Modal, Button } from 'antd';
 import { connect } from 'react-redux';
-import { RemoveAdress } from '../../../redux/actions/auth';
+import { removeAdress } from '../../../redux/actions/auth';
 import PropTypes from 'prop-types';
 
 const ConfirmModal = ({
   visible_remove,
   setVisibleRemove,
-  RemoveAdress,
+  removeAdress,
   id,
 }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -16,7 +16,7 @@ const ConfirmModal = ({
   };
   const onFinish = async () => {
     setConfirmLoading(true);
-    await RemoveAdress(id);
+    await removeAdress(id);
     setConfirmLoading(false);
     setVisibleRemove(false);
   };
@@ -48,7 +48,7 @@ const ConfirmModal = ({
   );
 };
 ConfirmModal.propTypes = {
-  RemoveAdress: PropTypes.func.isRequired,
+  removeAdress: PropTypes.func.isRequired,
 };
 
-export default connect(null, { RemoveAdress })(ConfirmModal);
+export default connect(null, { removeAdress })(ConfirmModal);

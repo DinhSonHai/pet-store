@@ -3,26 +3,32 @@ import { Card, Row, Col, Breadcrumb } from 'antd';
 import { Link } from 'react-router-dom';
 import { Loader } from '../../components';
 import { connect } from 'react-redux';
-import { getTypesByCatId } from '../../redux/actions/products';
+import { getTypesByCatId } from '../../redux/actions/types';
 import './styles.scss';
 
-const PetsType = ({ getTypesByCatId, match }) => {
-  const [data, setData] = useState([]);
+const PetsType = ({ getTypesByCatId, match, types: { types } }) => {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      const res = await getTypesByCatId(match.params.id);
-      setData(res);
+      await getTypesByCatId(match.params.id);
       setIsLoading(false);
     }
     getData();
   }, [getTypesByCatId, match.params.id]);
+  const redirectUrl = (id) => {
+    switch (match.params.type) {
+      case 'dog':
+      case 'cat':
+        return `/pets/${match.params.type}/post/${id}`;
+      default:
+        return `/pets/${match.params.type}/list/${id}`;
+    }
+  };
   return (
     <section className='petsType'>
       <div className='petsType__wrap container'>
         <div className='petsType__header'>
-          {' '}
           <Breadcrumb>
             <Breadcrumb.Item>
               <Link className='petsType__header-title' to='/'>
@@ -30,7 +36,15 @@ const PetsType = ({ getTypesByCatId, match }) => {
               </Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <span className='petsType__header-title'>Chó cảnh</span>
+              <span className='petsType__header-title'>
+                {match.params.type === 'dog'
+                  ? 'Chó cảnh'
+                  : match.params.type === 'cat'
+                  ? 'Mèo cảnh'
+                  : match.params.type === 'food'
+                  ? 'Thức ăn'
+                  : match.params.type === 'accessories' && 'Phụ kiện'}
+              </span>
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -39,21 +53,20 @@ const PetsType = ({ getTypesByCatId, match }) => {
         ) : (
           <div className='petsType__content'>
             <Row gutter={[16, 16]}>
-              {data.map((item) => (
+              {types.map((item) => (
                 <Col key={item._id} xs={12} sm={8} md={6} lg={6}>
-                  <Link to={`/pets/types/${item._id}`}>
-                    <Card
-                      bordered={false}
-                      hoverable
-                      cover={
+                  <Link to={redirectUrl(item._id)}>
+                    <Card bordered={false} hoverable>
+                      <div
+                        style={{ textAlign: 'center', marginBottom: '1.5rem' }}
+                      >
                         <img
                           width='100%'
-                          height='100%'
+                          height='auto'
                           alt='example'
                           src={item.typeImg}
                         />
-                      }
-                    >
+                      </div>
                       <p className='petsType__desc'>{item.typeName}</p>
                     </Card>
                   </Link>
@@ -66,4 +79,7 @@ const PetsType = ({ getTypesByCatId, match }) => {
     </section>
   );
 };
-export default connect(null, { getTypesByCatId })(PetsType);
+const mapStateToProps = (state) => ({
+  types: state.types,
+});
+export default connect(mapStateToProps, { getTypesByCatId })(PetsType);

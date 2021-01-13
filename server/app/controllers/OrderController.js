@@ -1,27 +1,26 @@
-const { validationResult } = require('express-validator');
 process.env['NODE_CONFIG_DIR'] = __dirname;
+const { validationResult } = require('express-validator');
 const config = require('config');
 const nodemailer = require('nodemailer');
 const axios = require('axios');
 const ObjectId = require('mongoose').Types.ObjectId;
 const dayjs = require('dayjs');
-const now = dayjs();
 
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
 const User = require('../models/User');
 
-const api = axios.default.create({
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-});
+// const api = axios.default.create({
+//   headers: {
+//     Accept: 'application/json',
+//     'Content-Type': 'application/json',
+//   },
+// });
 
 class OrderController {
-  // @route   GET api/order/:id
-  // @desc    Lấy đơn hàng theo id
+  // @route   GET api/orders/auth/:id
+  // @desc    Lấy đơn hàng theo orderId phía người dùng
   // @access  Private
   async getById(req, res) {
     try {
@@ -35,12 +34,81 @@ class OrderController {
           ],
         });
       }
+      if (order.userId.toString() !== req.user.id.toString()) {
+        return res.status(400).json({
+          errors: [
+            {
+              msg: 'Đơn hàng phải của bạn đâu mà lấy!',
+            },
+          ],
+        });
+      }
       return res.json(order);
     } catch (err) {
       return res.status(500).send('Server Error');
     }
   }
-  // @route   GET api/order
+
+  // @route   GET api/orders/detail/auth/:id
+  // @desc    Lấy chi tiết đơn hàng theo orderId phía người dùng
+  // @access  Private
+  async getOrdersDetailByOrderIdAuth(req, res) {
+    try {
+      const orders = await OrderDetail.find({
+        userId: new ObjectId(req.user.id),
+        orderId: new ObjectId(req.params.id),
+      });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/orders/orders_processing/auth
+  // @desc    Lấy đơn hàng đang xử lí phía người dùng
+  // @access  Private
+  async getProcessingOrders(req, res) {
+    try {
+      const orders = await Order.find({
+        userId: new ObjectId(req.user.id),
+        status: { $gt: -1, $lt: 5 },
+      }).sort({ createdAt: -1 });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/orders/orders_completed/auth
+  // @desc    Lấy đơn hàng hoàn tất phía người dùng
+  // @access  Private
+  async getCompletedOrders(req, res) {
+    try {
+      const orders = await Order.find({
+        userId: new ObjectId(req.user.id),
+        status: 5,
+      }).sort({ createdAt: -1 });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/orders/orders_canceled/auth
+  // @desc    Lấy đơn hàng bị hủy phía người dùng
+  // @access  Private
+  async getCanceledOrders(req, res) {
+    try {
+      const orders = await Order.find({
+        userId: new ObjectId(req.user.id),
+        status: -1,
+      }).sort({ createdAt: -1 });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+  // @route   GET api/orders
   // @desc    Lấy tất cả đơn hàng phía admin
   // @access  Private
   async getAllOrderAdmin(req, res) {
@@ -55,7 +123,7 @@ class OrderController {
     }
   }
 
-  // @route   POST api/order
+  // @route   POST api/orders
   // @desc    Đặt hàng vai trò khách
   // @access  Public
   async guestOrder(req, res) {
@@ -88,6 +156,28 @@ class OrderController {
       note,
       cart,
     } = req.body;
+    const checkMail = await User.findOne({ email });
+    if (checkMail) {
+      return res.status(400).json({
+        errors: [
+          {
+            msg:
+              'Có vẻ như email của bạn đã được đăng kí tại PetStore, vui lòng đăng nhập để mua hàng và quản lí đơn hàng của bạn dễ dàng hơn!',
+          },
+        ],
+      });
+    }
+    const checkPhone = await User.findOne({ phoneNumber: phone.toString() });
+    if (checkPhone) {
+      return res.status(400).json({
+        errors: [
+          {
+            msg:
+              'Số điện thoại này đã được sử dụng bởi một tài khoản ở PetStore, vui lòng sử dụng số điện thoại khác!',
+          },
+        ],
+      });
+    }
     // const checkVerifiedEmail = await api.get(
     //   `https://app.verify-email.org/api/v1/${config.get(
     //     'CHECK_VERIFIED_MAIL'
@@ -261,7 +351,14 @@ class OrderController {
       return res.status(500).send('Server Error');
     }
   }
-  // @route   POST api/order/auth
+  // @route   POST api/orders/admin
+  // @desc    Đặt hàng vai trò khách, xử lí ở admin
+  // @access  Private
+  async adminOrder(req, res) {
+    const { note, cart, address, name, phoneNumber } = req.body;
+  }
+
+  // @route   POST api/orders/auth
   // @desc    Đặt hàng vai trò người dùng
   // @access  Private
   async authOrder(req, res) {
@@ -329,6 +426,7 @@ class OrderController {
           product.quantity = product.quantity - cart[i].amount;
           getProducts.push({ product, amount: cart[i].amount });
           let detail = new OrderDetail({
+            userId: user._id,
             orderId: order._id,
             productId: product._id,
             productName: product.productName,
@@ -412,8 +510,8 @@ class OrderController {
     }
   }
 
-  // @route   PUT api/order/auth/:orderId
-  // @desc    Hủy đơn hàng
+  // @route   PUT api/orders/auth/:orderId
+  // @desc    Hủy đơn hàng phía người dùng
   // @access  Private
   async cancleOrder(req, res) {
     try {
@@ -423,6 +521,11 @@ class OrderController {
         return res
           .status(404)
           .json({ errors: [{ msg: 'Không tìm thấy đơn hàng!' }] });
+      }
+      if (order.userId.toString() !== req.user.id.toString()) {
+        return res.status(400).json({
+          errors: [{ msg: 'Bạn không có quyền thực hiện thao tác này!' }],
+        });
       }
       let { status } = order;
       // -1: Hủy đơn hàng
@@ -453,8 +556,8 @@ class OrderController {
     }
   }
 
-  // @route   PUT api/order/:orderId
-  // @desc    Cập nhật trạng thái đơn hàng
+  // @route   PUT api/orders/:orderId
+  // @desc    Cập nhật trạng thái đơn hàng phía admin
   // @access  Private
   async updateOrderStatus(req, res) {
     try {
@@ -484,19 +587,19 @@ class OrderController {
         });
       } else if (status === 0) {
         order.status = 1;
-        order.confirmedAt = now.toISOString();
+        order.confirmedAt = dayjs().toISOString();
       } else if (status === 1) {
         order.status = 2;
-        order.pickupedAt = now.toISOString();
+        order.pickedUpAt = dayjs().toISOString();
       } else if (status === 2) {
         order.status = 3;
-        order.packedAt = now.toISOString();
+        order.packedAt = dayjs().toISOString();
       } else if (status === 3) {
         order.status = 4;
-        order.transportedAt = now.toISOString();
+        order.transportedAt = dayjs().toISOString();
       } else if (status === 4) {
         order.status = 5;
-        order.deliveriedAt = now.toISOString();
+        order.deliveriedAt = dayjs().toISOString();
       } else {
         return res.status(400).json({
           errors: [

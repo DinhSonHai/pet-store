@@ -164,7 +164,6 @@ const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
               ckfinder: {
                 uploadUrl: '/upload',
               },
-              height: 800,
               // toolbar: false,
             }}
             editor={ClassicEditor}

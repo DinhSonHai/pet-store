@@ -3,9 +3,16 @@ import { Button, Col, Row, Card, Progress } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import { Loader } from '../../../../components';
 import dayjs from 'dayjs';
-import api from '../../../../api';
+import { getProcessingOrders } from '../../../../redux/actions/order';
+import { connect } from 'react-redux';
 import './styles.scss';
-export const OrderProcessing = ({ tabChange, setView, setId, setOrder }) => {
+export const OrderProcessing = ({
+  tabChange,
+  setView,
+  setId,
+  setOrder,
+  getProcessingOrders,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [processingOrders, setProcessingOrders] = useState([]);
   const [updateState, setUpdateState] = useState(false);
@@ -13,9 +20,9 @@ export const OrderProcessing = ({ tabChange, setView, setId, setOrder }) => {
     let flag = true;
     async function getData() {
       setIsLoading(true);
-      const res = await api.get('/auth/orders_processing');
+      const res = await getProcessingOrders();
       if (flag) {
-        setProcessingOrders(res.data);
+        setProcessingOrders(res);
       }
       setIsLoading(false);
     }
@@ -23,7 +30,7 @@ export const OrderProcessing = ({ tabChange, setView, setId, setOrder }) => {
       getData();
     }
     return () => (flag = false);
-  }, [tabChange, updateState]);
+  }, [tabChange, updateState, getProcessingOrders]);
   return (
     <Fragment>
       {isLoading ? (
@@ -130,4 +137,4 @@ export const OrderProcessing = ({ tabChange, setView, setId, setOrder }) => {
     </Fragment>
   );
 };
-export default OrderProcessing;
+export default connect(null, { getProcessingOrders })(OrderProcessing);

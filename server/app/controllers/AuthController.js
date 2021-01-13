@@ -1,33 +1,28 @@
+process.env['NODE_CONFIG_DIR'] = __dirname;
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const shortid = require('shortid');
-process.env['NODE_CONFIG_DIR'] = __dirname;
 const config = require('config');
 const nodemailer = require('nodemailer');
 const dayjs = require('dayjs');
 const axios = require('axios');
 const client = new OAuth2Client(config.get('GOOGLE_CLIENT'));
-const ObjectId = require('mongoose').Types.ObjectId;
 
 const User = require('../models/User');
 const Product = require('../models/Product');
-const Employee = require('../models/Employee');
-const Order = require('../models/Order');
-const OrderDetail = require('../models/OrderDetail');
-const api = axios.default.create({
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-});
-class AuthController {
-  //* Client *//
 
+// const api = axios.default.create({
+//   headers: {
+//     Accept: 'application/json',
+//     'Content-Type': 'application/json',
+//   },
+// });
+class AuthController {
   // @route   GET api/auth/user
-  // @desc    Get user data
+  // @desc    Lấy thông tin người dùng
   // @access  Private
   async getUserData(req, res) {
     try {
@@ -47,7 +42,7 @@ class AuthController {
   }
 
   // @route   POST api/auth/signup
-  // @desc    Sign up an account
+  // @desc    Đăng ký tài khoản
   // @access  Public
   async signUp(req, res) {
     //Validate request body
@@ -144,7 +139,7 @@ class AuthController {
   }
 
   // @route   POST api/auth/activate
-  // @desc    Activate an account
+  // @desc    Kích hoạt tài khoản
   // @access  Public
   async activate(req, res) {
     const { token } = req.body;
@@ -179,7 +174,7 @@ class AuthController {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       //Định dạng lại ngày
-      user.dateOfBirth = dayjs(user.dateOfBirth).format();
+      user.dateOfBirth = dayjs(user.dateOfBirth).toISOString();
       //Lưu tài khoản vào csdl
       await user.save((err, data) => {
         if (!err) {
@@ -202,7 +197,7 @@ class AuthController {
   }
 
   // @route   POST api/auth/signin
-  // @desc    Sign in
+  // @desc    Đăng nhập
   // @access  Public
   async signIn(req, res) {
     const errors = validationResult(req);
@@ -248,7 +243,7 @@ class AuthController {
   }
 
   // @route   POST api/auth/facebooklogin
-  // @desc    Sign in with facebok account
+  // @desc    Đăng nhập bằng facebok
   // @access  Public
   async facebookLogin(req, res) {
     const { userID, accessToken } = req.body;
@@ -320,7 +315,7 @@ class AuthController {
     }
   }
   // @route   POST api/auth/googlelogin
-  // @desc    Sign in with google account
+  // @desc    Đăng nhập bằng google
   // @access  Public
   async googleLogin(req, res) {
     const { idToken } = req.body;
@@ -388,8 +383,7 @@ class AuthController {
             return res.status(400).json({
               errors: [
                 {
-                  msg:
-                    'Tài khoản google của bạn chưa được xác thực, vui lòng thử lại!',
+                  msg: 'Tài khoản google của bạn chưa được xác thực!',
                 },
               ],
             });
@@ -403,7 +397,7 @@ class AuthController {
   }
 
   // @route   PUT api/auth/forgetpassword
-  // @desc    Send request for reset pwd
+  // @desc    Yêu cầu reset password
   // @access  Public
   async forgotPassword(req, res, next) {
     const errors = validationResult(req);
@@ -553,7 +547,7 @@ class AuthController {
     }
   }
   // @route   PUT api/auth/update_user
-  // @desc    Update user info
+  // @desc    Cập nhật thông tin người dùng
   // @access  Private
   async updateUserInfo(req, res, next) {
     const errors = validationResult(req);
@@ -637,7 +631,7 @@ class AuthController {
   }
 
   // @route   PUT api/auth/add_address
-  // @desc    Add user address
+  // @desc    Thêm địa chỉ người dùng
   // @access  Private
   async AddUserAddress(req, res, next) {
     function getData(path) {
@@ -756,7 +750,7 @@ class AuthController {
   }
 
   // @route   PUT api/auth/remove_address
-  // @desc    Remove user address
+  // @desc    Xóa địa chỉ người dùng
   // @access  Private
   async RemoveUserAddress(req, res, next) {
     const { address_id } = req.body;
@@ -794,7 +788,7 @@ class AuthController {
   }
 
   // @route   PUT api/auth/update_address
-  // @desc    Update user address
+  // @desc    Cập nhật địa chỉ người dùng
   // @access  Private
   async UpdateUserAddress(req, res, next) {
     function getData(path) {
@@ -917,7 +911,7 @@ class AuthController {
     }
   }
   // @route   PUT api/auth/favorite
-  // @desc    Add favorite product
+  // @desc    Thêm/Bỏ sản phẩm ưa thích
   // @access  Private
   async favoriteProduct(req, res) {
     const { productId } = req.body;
@@ -954,7 +948,7 @@ class AuthController {
     }
   }
   // @route   GET api/auth/favorite
-  // @desc    Get favorite product
+  // @desc    Lấy sản phẩm ưa thích
   // @access  Private
   async getFavoriteProducts(req, res) {
     try {
@@ -990,233 +984,6 @@ class AuthController {
       return res.json(getFavoriteProducts);
     } catch (err) {
       return res.status(500).send('Server Error');
-    }
-  }
-
-  // @route   GET api/auth/orders_detail/:id
-  // @desc    Get orders detail
-  // @access  Private
-  async getOrdersDetail(req, res) {
-    try {
-      const orders = await OrderDetail.find({
-        orderId: new ObjectId(req.params.id),
-      });
-
-      return res.json(orders);
-    } catch (err) {
-      return res.status(500).send('Server Error');
-    }
-  }
-
-  // @route   GET api/auth/orders_processing
-  // @desc    Get  processing orders
-  // @access  Private
-  async getProcessingOrders(req, res) {
-    try {
-      const orders = await Order.find({
-        userId: new ObjectId(req.user.id),
-        status: { $gt: -1, $lt: 5 },
-      }).sort({ createdAt: -1 });
-      return res.json(orders);
-    } catch (err) {
-      return res.status(500).send('Server Error');
-    }
-  }
-
-  // @route   GET api/auth/orders_completed
-  // @desc    Get completed orders
-  // @access  Private
-  async getCompletedOrders(req, res) {
-    try {
-      const orders = await Order.find({
-        userId: new ObjectId(req.user.id),
-        status: 5,
-      }).sort({ createdAt: -1 });
-      return res.json(orders);
-    } catch (err) {
-      return res.status(500).send('Server Error');
-    }
-  }
-
-  // @route   GET api/auth/orders_canceled
-  // @desc    Get canceled orders
-  // @access  Private
-  async getCanceledOrders(req, res) {
-    try {
-      const orders = await Order.find({
-        userId: new ObjectId(req.user.id),
-        status: -1,
-      }).sort({ createdAt: -1 });
-      return res.json(orders);
-    } catch (err) {
-      return res.status(500).send('Server Error');
-    }
-  }
-
-  //* Admin *//
-
-  // @route   GET api/auth/_user
-  // @desc    Get user data
-  // @access  Private
-  async get_UserData(req, res) {
-    try {
-      const user = await Employee.findById(req.user.id).select([
-        '-password',
-        '-resetPasswordLink',
-      ]);
-      if (!user) {
-        return res.status(404).json({
-          errors: [{ msg: 'Tài khoản không tồn tại' }],
-        });
-      }
-      return res.json(user);
-    } catch (error) {
-      return res.status(500).send('Server Error');
-    }
-  }
-
-  // @route   POST api/auth/_signin
-  // @desc    Sign in for admin/employee
-  // @access  Public
-  async _signIn(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const { email, password } = req.body;
-    try {
-      //Lấy thông tin user theo email
-      let user = await Employee.findOne({ email });
-      if (!user) {
-        return res.status(400).json({
-          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
-        });
-      }
-      //Kiểm tra mật khẩu
-      const isMatch = await user.checkPassword(password);
-      if (!isMatch) {
-        return res.status(400).json({
-          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
-        });
-      }
-      const { id, role } = user;
-      if (role === 1 || role === 0) {
-        //Tạo payload cho token
-        const payload = {
-          user: {
-            id,
-            role,
-          },
-        };
-        //Trả về token
-        jwt.sign(
-          payload,
-          config.get('jwtSignInSecretAdmin'),
-          { expiresIn: '30d' },
-          (err, token) => {
-            if (err) throw err;
-            return res.json({ token });
-          }
-        );
-        return;
-      }
-      return res.status(401).json({
-        errors: [{ msg: 'Từ chối thao tác, bạn không có quyền truy cập!' }],
-      });
-    } catch (error) {
-      return res.status(500).send('Server error');
-    }
-  }
-
-  // @route   POST api/auth/_signup
-  // @desc    Sign up for Employee
-  // @access  Private
-  async _signUp(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const {
-      name,
-      email,
-      password,
-      phoneNumber,
-      address,
-      gender,
-      dateOfBirth,
-    } = req.body;
-    try {
-      //Lấy thông tin user theo email
-      let user = await Employee.findOne({ email });
-      if (user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Nhân viên này đã tồn tại!' }] });
-      }
-      //Mã hóa mật khẩu
-      const salt = await bcrypt.genSalt(10);
-
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      const userFields = {
-        password: hashedPassword,
-        name,
-        email,
-        phoneNumber,
-        address,
-        gender,
-        dateOfBirth,
-      };
-
-      user = _.extend(user, userFields);
-
-      //Lưu tài khoản vào csdl
-      await user.save((err, data) => {
-        if (!err) {
-          return res.json({ message: 'Đăng ký thành công!' });
-        }
-        return res.status(400).json({ errors: [{ msg: 'Đăng ký thất bại!' }] });
-      });
-    } catch (error) {
-      return res.status(500).send('Server error');
-    }
-  }
-
-  // @route   POST api/auth/_signup_admin
-  // @desc    Sign up for Admin
-  // @access  Private
-  async _signUp_admin(req, res) {
-    const { name, email, password, secret } = req.body;
-    if (!secret || secret !== config.get('SECRET_ADMIN_SIGNUP')) {
-      return res.status(400).json({ errors: [{ msg: 'Truy cập bị chặn!!' }] });
-    }
-    try {
-      //Lấy thông tin user theo email
-      let user = await Employee.findOne({ email });
-      if (user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Admin này đã tồn tại!' }] });
-      }
-      //Mã hóa mật khẩu
-      const salt = await bcrypt.genSalt(10);
-
-      const hashedPassword = await bcrypt.hash(password, salt);
-      user = new Employee({
-        password: hashedPassword,
-        name,
-        email,
-      });
-      user.role = 0;
-      //Lưu tài khoản vào csdl
-      await user.save((err, data) => {
-        if (!err) {
-          return res.json({ message: 'Đăng ký thành công!' });
-        }
-        return res.status(400).json({ errors: [{ msg: 'Đăng ký thất bại!' }] });
-      });
-    } catch (error) {
-      return res.status(500).send('Server error');
     }
   }
 }

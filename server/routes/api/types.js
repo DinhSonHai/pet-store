@@ -28,12 +28,12 @@ router.get('/categories/:categoryId', TypeController.getByCategoryId);
 // @route   POST api/types
 // @desc    Tạo loại sản phẩm
 // @access  Private
-router.post('/', [authAdmin, checkPermission], TypeController.Add);
+router.post('/', [authAdmin, checkPermission], TypeController.add);
 
 // @route   PUT api/types
 // @desc    Sửa loại sản phẩm
 // @access  Private
-router.put('/', [authAdmin, checkPermission], TypeController.Edit);
+router.put('/', [authAdmin, checkPermission], TypeController.edit);
 
 // @route   DELETE api/types/:id
 // @desc    Soft delete loại sản phẩm (ẩn đi)

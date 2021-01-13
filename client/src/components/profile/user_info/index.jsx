@@ -143,7 +143,7 @@ const UserInfo = ({ auth: { user }, updateUserInfo }) => {
                 message: 'Vui lòng chọn ngày sinh!',
               },
             ]}
-            initialValue={moment(user.dateOfBirth, 'YYYY-MM-DD')}
+            initialValue={moment(user.dateOfBirth)}
             name='dateOfBirth'
             label='Ngày sinh'
           >
