@@ -10,7 +10,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.10.1",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "browser-image-compression": "^1.0.13",
     "compressorjs": "^1.0.7",
     "dayjs": "^1.10.3",

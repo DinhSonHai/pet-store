@@ -7,13 +7,14 @@
     "start": "node server/server",
     "server": "nodemon server/server",
     "client": "npm start --prefix client",
+    "admin": "npm start --prefix admin",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.23.0",
     "config": "^3.3.2",
