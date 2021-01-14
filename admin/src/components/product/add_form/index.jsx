@@ -1,6 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, Fragment } from 'react';
-import { Form, Button, Input, Select, message, Upload, Checkbox } from 'antd';
+import {
+  Form,
+  Button,
+  Input,
+  Select,
+  message,
+  Upload,
+  Checkbox,
+  InputNumber,
+} from 'antd';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { connect } from 'react-redux';
@@ -158,6 +167,7 @@ const ProductAddForm = ({
           <Input placeholder='Nguồn gốc' />
         </Form.Item>
         <Form.Item
+          style={{ width: '100%' }}
           rules={[
             {
               required: true,
@@ -168,7 +178,11 @@ const ProductAddForm = ({
           label='Đơn giá'
           name='price'
         >
-          <Input placeholder='Đơn giá' />
+          <InputNumber
+            style={{ width: '100%' }}
+            min={0}
+            placeholder='Đơn giá'
+          />
         </Form.Item>
         <Form.Item
           rules={[
@@ -181,7 +195,11 @@ const ProductAddForm = ({
           label='Số lượng'
           name='quantity'
         >
-          <Input placeholder='Số lượng' />
+          <InputNumber
+            style={{ width: '100%' }}
+            min={0}
+            placeholder='Số lượng'
+          />
         </Form.Item>
         {edit && (
           <Form.Item label='Tình trạng'>
@@ -209,7 +227,6 @@ const ProductAddForm = ({
               ckfinder: {
                 uploadUrl: '/upload',
               },
-              height: 800,
             }}
             editor={ClassicEditor}
             onChange={handleCkeditor}

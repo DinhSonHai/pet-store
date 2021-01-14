@@ -63,12 +63,12 @@ class ReceiptController {
           return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
         }
         product.price = parseInt(data[i].price);
-        product.quantity = parseInt(data[i].quantity);
+        product.quantity = product.quantity + parseInt(data[i].quantityImport);
         let detail = new ReceiptDetail({
           receiptId: receipt._id,
           productId: data[i].key,
           productName: data[i].productName,
-          quantity: parseInt(data[i].quantity),
+          quantity: parseInt(data[i].quantityImport),
           price: parseInt(data[i].price),
         });
         detail.key = detail._id;

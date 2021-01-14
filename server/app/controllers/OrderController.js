@@ -10,6 +10,7 @@ const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const { parseInt } = require('lodash');
 
 // const api = axios.default.create({
 //   headers: {
@@ -156,28 +157,6 @@ class OrderController {
       note,
       cart,
     } = req.body;
-    const checkMail = await User.findOne({ email });
-    if (checkMail) {
-      return res.status(400).json({
-        errors: [
-          {
-            msg:
-              'Có vẻ như email của bạn đã được đăng kí tại PetStore, vui lòng đăng nhập để mua hàng và quản lí đơn hàng của bạn dễ dàng hơn!',
-          },
-        ],
-      });
-    }
-    const checkPhone = await User.findOne({ phoneNumber: phone.toString() });
-    if (checkPhone) {
-      return res.status(400).json({
-        errors: [
-          {
-            msg:
-              'Số điện thoại này đã được sử dụng bởi một tài khoản ở PetStore, vui lòng sử dụng số điện thoại khác!',
-          },
-        ],
-      });
-    }
     // const checkVerifiedEmail = await api.get(
     //   `https://app.verify-email.org/api/v1/${config.get(
     //     'CHECK_VERIFIED_MAIL'
@@ -236,7 +215,7 @@ class OrderController {
           let getProducts = [];
           if (order._id) {
             for (let i = 0; i < cartLength; ++i) {
-              if (!cart[i].amount || cart[i].amount <= 0) {
+              if (!cart[i].amount || parseInt(cart[i].amount <= 0)) {
                 return res.status(400).json({
                   errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
                 });
@@ -247,17 +226,20 @@ class OrderController {
                   errors: [{ msg: 'Sản phẩm không tồn tại!' }],
                 });
               }
-              if (product.quantity <= 0) {
+              if (product.quantity <= 0 || product.status === false) {
                 return res.status(400).json({
                   errors: [{ msg: 'Sản phẩm hết hàng!' }],
                 });
               }
-              if (product.quantity < cart[i].amount) {
+              if (product.quantity < parseInt(cart[i].amount)) {
                 return res.status(400).json({
                   errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
                 });
               }
-              product.quantity = product.quantity - cart[i].amount;
+              product.quantity = product.quantity - parseInt(cart[i].amount);
+              if (product.quantity <= 0) {
+                product.status = false;
+              }
               getProducts.push({ product, amount: cart[i].amount });
               let detail = new OrderDetail({
                 orderId: order._id,
@@ -355,7 +337,78 @@ class OrderController {
   // @desc    Đặt hàng vai trò khách, xử lí ở admin
   // @access  Private
   async adminOrder(req, res) {
-    const { note, cart, address, name, phoneNumber } = req.body;
+    const { note, cart, address, name, phone } = req.body;
+    let totalMoney = 0;
+    const cartLength = cart.length;
+    if (!cart || cartLength <= 0) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
+    }
+    try {
+      const order = new Order({
+        note,
+        name,
+        address,
+        phone,
+      });
+      order.key = order._id;
+      order.amount = cartLength;
+      if (order._id) {
+        for (let i = 0; i < cartLength; ++i) {
+          if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
+            return res.status(400).json({
+              errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
+            });
+          }
+          const product = await Product.findById(cart[i]._id);
+          if (!product) {
+            return res.status(404).json({
+              errors: [{ msg: 'Sản phẩm không tồn tại!' }],
+            });
+          }
+          if (product.quantity <= 0 || product.status === false) {
+            return res.status(400).json({
+              errors: [{ msg: 'Sản phẩm hết hàng!' }],
+            });
+          }
+          if (product.quantity < parseInt(cart[i].amount)) {
+            return res.status(400).json({
+              errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
+            });
+          }
+          product.quantity = product.quantity - parseInt(cart[i].amount);
+          if (product.quantity <= 0) {
+            product.status = false;
+          }
+          getProducts.push({ product, amount: cart[i].amount });
+          const detail = new OrderDetail({
+            orderId: order._id,
+            productId: product._id,
+            productName: product.productName,
+            amount: cart[i].amount,
+            price: product.price,
+          });
+          detail.key = detail._id;
+          await detail.save();
+          await product.save();
+        }
+        totalMoney = getProducts.reduce(
+          (a, b) => a + b.product.price * b.amount,
+          0
+        );
+        order.totalMoney = totalMoney;
+        order.status = 5;
+        await order.save();
+      } else {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
+      }
+      return res.json({ message: 'Đặt hàng thành công!' });
+    } catch (error) {
+      return res.status(500).send('Server Error');
+    }
   }
 
   // @route   POST api/orders/auth
@@ -402,7 +455,7 @@ class OrderController {
       let getProducts = [];
       if (order._id) {
         for (let i = 0; i < cartLength; ++i) {
-          if (!cart[i].amount || cart[i].amount <= 0) {
+          if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
             return res.status(400).json({
               errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
             });
@@ -413,17 +466,20 @@ class OrderController {
               errors: [{ msg: 'Sản phẩm không tồn tại!' }],
             });
           }
-          if (product.quantity <= 0) {
+          if (product.quantity <= 0 || product.status === false) {
             return res.status(400).json({
               errors: [{ msg: 'Sản phẩm hết hàng!' }],
             });
           }
-          if (product.quantity < cart[i].amount) {
+          if (product.quantity < parseInt(cart[i].amount)) {
             return res.status(400).json({
               errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
             });
           }
           product.quantity = product.quantity - cart[i].amount;
+          if (product.quantity <= 0) {
+            product.status = false;
+          }
           getProducts.push({ product, amount: cart[i].amount });
           let detail = new OrderDetail({
             userId: user._id,

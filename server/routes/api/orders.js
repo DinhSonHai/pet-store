@@ -6,6 +6,7 @@ const {
   validateOrder,
   validateUpdateAddress,
   validateOrderAuth,
+  validateOrderAdmin,
 } = require('../../helpers/valid');
 const auth = require('../../app/middlewares/auth');
 const authAdmin = require('../../app/middlewares/auth_admin');
@@ -55,6 +56,15 @@ router.post(
   '/',
   [validateUpdateAddress, validateOrder],
   OrderController.guestOrder
+);
+
+// @route   POST api/orders/admin
+// @desc    Đặt hàng vai trò khách, xử lí ở admin
+// @access  Private
+router.post(
+  '/admin',
+  [authAdmin, validateOrderAdmin],
+  OrderController.adminOrder
 );
 
 // @route   POST api/orders/auth

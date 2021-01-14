@@ -77,6 +77,7 @@ const PetDetails = ({
                           }
                         />,
                         <Button
+                          disabled={data.status ? false : true}
                           block
                           style={{ height: '100%' }}
                           type='text'

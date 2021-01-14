@@ -153,6 +153,7 @@ const PetsList = ({
                       </p>
                     </Link>
                     <Button
+                      disabled={product.status ? false : true}
                       onClick={() => handleAddToCart(product)}
                       className='addToCart'
                       icon={<AddToCart />}
