@@ -129,11 +129,7 @@ const ProductList = ({
             Thêm phiếu nhập
           </Button>
           {visible && (
-            <ReceiptModal
-              visible={visible}
-              setVisible={setVisible}
-              data={selectedRows}
-            />
+            <ReceiptModal setVisible={setVisible} data={selectedRows} />
           )}
 
           <Table

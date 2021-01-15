@@ -794,6 +794,29 @@ class OrderController {
       return res.status(500).send('Server Error');
     }
   }
+  // @route   GET api/orders/invoice/:id
+  // @desc    Lấy dữ liệu in hóa đơn
+  // @access  Private
+  async invoice(req, res) {
+    try {
+      const order = await Order.findById(req.params.id);
+      if (!order) {
+        return res.status(404).json({
+          errors: [
+            {
+              msg: 'Không tìm thấy hóa đơn!',
+            },
+          ],
+        });
+      }
+      const detail = await OrderDetail.find({
+        orderId: new ObjectId(req.params.id),
+      });
+      return res.json({ order, detail });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
 }
 
 module.exports = new OrderController();

@@ -248,7 +248,14 @@ export const ReceiptModal = ({
   return (
     <Modal
       width={1200}
-      onCancel={handleCancel}
+      onCancel={() => {
+        if (setView) {
+          setView(false);
+        }
+        if (setVisible) {
+          setVisible(false);
+        }
+      }}
       footer={false}
       confirmLoading={confirmLoading}
       visible={true}

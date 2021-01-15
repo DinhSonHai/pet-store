@@ -7,7 +7,11 @@ import {
 import { ViewOrder } from '../../../components';
 import dayjs from 'dayjs';
 import { Button, Table, Tooltip } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  EyeOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 const ConfirmOrders = ({
   tabChange,
   orders: { comfirmOrders },
@@ -61,13 +65,17 @@ const ConfirmOrders = ({
       render: (_, record) => {
         return (
           <Fragment>
-            <Button onClick={() => handleViewOrder(record)} type='link'>
-              Xem
-            </Button>{' '}
+            <Button
+              onClick={() => handleViewOrder(record)}
+              type='link'
+              icon={<EyeOutlined />}
+            />
             |
-            <Button onClick={() => handleUpdateOrder(record._id)} type='link'>
-              Duyệt
-            </Button>{' '}
+            <Button
+              onClick={() => handleUpdateOrder(record._id)}
+              type='link'
+              icon={<CheckCircleOutlined />}
+            />
           </Fragment>
         );
       },

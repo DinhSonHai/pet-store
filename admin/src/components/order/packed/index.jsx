@@ -4,9 +4,15 @@ import {
   getOrdersByStatus,
   updateOrderStatus,
 } from '../../../redux/actions/orders';
+import { Link } from 'react-router-dom';
 import { ViewOrder } from '../../../components';
 import dayjs from 'dayjs';
 import { Button, Table, Tooltip } from 'antd';
+import {
+  CheckCircleOutlined,
+  EyeOutlined,
+  PrinterOutlined,
+} from '@ant-design/icons';
 const PackedOrders = ({
   tabChange,
   orders: { packedOrders },
@@ -59,13 +65,21 @@ const PackedOrders = ({
       render: (_, record) => {
         return (
           <Fragment>
-            <Button onClick={() => handleViewOrder(record)} type='link'>
-              Xem
-            </Button>{' '}
+            <Button
+              onClick={() => handleViewOrder(record)}
+              type='link'
+              icon={<EyeOutlined />}
+            />
             |
-            <Button onClick={() => handleUpdateOrder(record._id)} type='link'>
-              Hoàn tất
-            </Button>{' '}
+            <Link to={`/invoice/${record._id}`} target='_blank'>
+              <Button type='link' icon={<PrinterOutlined />} />
+            </Link>{' '}
+            |
+            <Button
+              onClick={() => handleUpdateOrder(record._id)}
+              type='link'
+              icon={<CheckCircleOutlined />}
+            />
           </Fragment>
         );
       },

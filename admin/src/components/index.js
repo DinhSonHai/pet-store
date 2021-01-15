@@ -18,3 +18,4 @@ export { default as PickUpOrders } from './order/pickup';
 export { default as PackingOrders } from './order/packing';
 export { default as PackedOrders } from './order/packed';
 export { default as TransportingOrders } from './order/transporting';
+export { default as ComponentToPrint } from './invoice';

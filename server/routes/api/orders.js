@@ -106,4 +106,9 @@ router.put('/admin/:orderId', authAdmin, OrderController.cancleOrderAdmin);
 // @access  Private
 router.put('/:orderId', authAdmin, OrderController.updateOrderStatus);
 
+// @route   GET api/orders/invoice/:id
+// @desc    Lấy dữ liệu in hóa đơn
+// @access  Private
+router.get('/invoice/:id', authAdmin, OrderController.invoice);
+
 module.exports = router;
