@@ -15,6 +15,11 @@ const {
 // @access  Private
 router.get('/deleted', authAdmin, ProductController.getDeleted);
 
+// @route   GET api/products/search
+// @desc    Tìm kiếm sản phẩm theo từ khóa
+// @access  Public
+router.get('/search', ProductController.search);
+
 // @route   GET api/products
 // @desc    Lấy tất cả sản phẩm
 // @access  Public

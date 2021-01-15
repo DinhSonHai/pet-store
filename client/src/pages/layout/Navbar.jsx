@@ -38,7 +38,7 @@ const NavBar = ({ auth: { isAuthenticated, user, loading } }) => {
             ) : !isAuthenticated ? (
               <Fragment>
                 <Link to='/signin'>Đăng nhập</Link>
-                <Link to='/signup'>Đăng kí</Link>
+                <Link to='/signup'>Đăng ký</Link>
               </Fragment>
             ) : (
               <div className='navbar__user'>

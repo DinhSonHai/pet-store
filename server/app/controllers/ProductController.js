@@ -265,6 +265,20 @@ class ProductController {
       return res.status(500).send('Server error');
     }
   }
+
+  // @route   GET api/products/search
+  // @desc    Tìm kiếm sản phẩm theo từ khóa
+  // @access  Public
+  async search(req, res) {
+    try {
+      let q = req.query.q;
+      const regex = new RegExp(q, 'i');
+      const products = await Product.find({ productName: regex });
+      return res.json(products);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
 }
 
 module.exports = new ProductController();
