@@ -248,9 +248,8 @@ export const ReceiptModal = ({
   return (
     <Modal
       width={1200}
-      closable={false}
-      footer={false}
       onCancel={handleCancel}
+      footer={false}
       confirmLoading={confirmLoading}
       visible={true}
       maskClosable={false}

@@ -49,6 +49,25 @@ router.get('/orders_completed/auth', auth, OrderController.getCompletedOrders);
 // @access  Private
 router.get('/orders_canceled/auth', auth, OrderController.getCanceledOrders);
 
+// @route   GET api/orders/admin/:id
+// @desc    Lấy đơn hàng theo orderId phía admin
+// @access  Private
+router.get('/admin/:id', authAdmin, OrderController.getByIdAdmin);
+
+// @route   GET api/orders/detail/admin/:id
+// @desc    Lấy chi tiết đơn hàng theo orderId phía admin
+// @access  Private
+router.get(
+  '/detail/admin/:id',
+  authAdmin,
+  OrderController.getOrdersDetailByOrderIdAdmin
+);
+
+// @route   GET api/orders/:status/admin
+// @desc    Lấy các đơn hàng theo trạng thái phía admin
+// @access  Private
+router.get('/:status/admin', authAdmin, OrderController.getOrdersByStatusAdmin);
+
 // @route   POST api/orders
 // @desc    Đặt hàng guest
 // @access  Public
@@ -73,9 +92,14 @@ router.post(
 router.post('/auth', [auth, validateOrderAuth], OrderController.authOrder);
 
 // @route   PUT api/orders/auth/:orderId
-// @desc    Hủy đơn hàng
+// @desc    Hủy đơn hàng phia nguoi dung
 // @access  Private
 router.put('/auth/:orderId', auth, OrderController.cancleOrder);
+
+// @route   PUT api/orders/admin/:orderId
+// @desc    Hủy đơn hàng phia admin
+// @access  Private
+router.put('/admin/:orderId', authAdmin, OrderController.cancleOrderAdmin);
 
 // @route   PUT api/orders/:orderId
 // @desc    Cập nhật trạng thái đơn hàng phía admin

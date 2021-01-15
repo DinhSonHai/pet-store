@@ -7,14 +7,12 @@ import {
 import { ViewOrder } from '../../../components';
 import dayjs from 'dayjs';
 import { Button, Table, Tooltip } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
-const ConfirmOrders = ({
+const TransportingOrders = ({
   tabChange,
-  orders: { comfirmOrders },
+  orders: { transportingOrders },
   getOrdersByStatus,
   updateOrderStatus,
 }) => {
-  const [updateState, setUpdateState] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [view, setView] = useState(false);
   const [item, setItem] = useState(null);
@@ -51,7 +49,7 @@ const ConfirmOrders = ({
       dataIndex: 'status',
       render: (value) => (
         <span style={{ color: 'var(--success-color)' }}>
-          {value === 0 && 'Đặt hàng thành công'}
+          {value === 4 && 'Đang vận chuyển'}
         </span>
       ),
     },
@@ -66,7 +64,7 @@ const ConfirmOrders = ({
             </Button>{' '}
             |
             <Button onClick={() => handleUpdateOrder(record._id)} type='link'>
-              Duyệt
+              Hoàn thành
             </Button>{' '}
           </Fragment>
         );
@@ -76,13 +74,13 @@ const ConfirmOrders = ({
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      await getOrdersByStatus(0);
+      await getOrdersByStatus(4);
       setIsLoading(false);
     }
-    if (tabChange === 'confirm') {
+    if (tabChange === 'transporting') {
       getData();
     }
-  }, [tabChange, getOrdersByStatus, updateState]);
+  }, [tabChange, getOrdersByStatus]);
   const handleViewOrder = (record) => {
     setId(record._id);
     setItem(record);
@@ -91,25 +89,18 @@ const ConfirmOrders = ({
   const handleUpdateOrder = async (id) => {
     if (id) {
       setIsLoading(true);
-      await updateOrderStatus(id, 0);
+      await updateOrderStatus(id, 4);
       setIsLoading(false);
     }
   };
   return (
     <Fragment>
       {view && <ViewOrder id={id} order={item} setView={setView} />}
-      <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
-        <Button
-          icon={<SyncOutlined />}
-          onClick={() => setUpdateState(!updateState)}
-        >
-          Cập nhật
-        </Button>
-      </div>
+
       <Table
         columns={columns}
         loading={isLoading}
-        dataSource={comfirmOrders}
+        dataSource={transportingOrders}
         pagination={{
           responsive: true,
           showSizeChanger: false,
@@ -124,4 +115,4 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getOrdersByStatus,
   updateOrderStatus,
-})(ConfirmOrders);
+})(TransportingOrders);

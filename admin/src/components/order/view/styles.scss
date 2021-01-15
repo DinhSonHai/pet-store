@@ -14,7 +14,7 @@
   &__date,
   &__total {
     span {
-      color: var(--gray-color);
+      color: var(--gray-color) !important;
     }
   }
   .ant-card-bordered {

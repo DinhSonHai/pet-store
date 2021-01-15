@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
-import { ProductList, ProductRemoved, ProductAddForm } from '../../components';
+import {
+  ConfirmOrders,
+  PickUpOrders,
+  PackingOrders,
+  PackedOrders,
+  TransportingOrders,
+} from '../../components';
 const { TabPane } = Tabs;
 const Order = () => {
-  const [tabChange, setTabChange] = useState('list');
+  const [tabChange, setTabChange] = useState('confirm');
   const onTabChange = (key) => {
     setTabChange(key);
   };
@@ -19,19 +25,19 @@ const Order = () => {
       >
         <Tabs onTabClick={onTabChange} defaultActiveKey={tabChange} type='card'>
           <TabPane tab={<span>Chờ xác nhận</span>} key='confirm'>
-            <ProductList tabChange={tabChange} />
+            <ConfirmOrders tabChange={tabChange} />
           </TabPane>
           <TabPane tab={<span>Chờ lấy hàng</span>} key='pickup'>
-            <ProductRemoved tabChange={tabChange} />
+            <PickUpOrders tabChange={tabChange} />
           </TabPane>
-          <TabPane tab={<span>Chờ đóng gói</span>} key='pack'>
-            <ProductAddForm tabChange={tabChange} />
+          <TabPane tab={<span>Chờ đóng gói</span>} key='packing'>
+            <PackingOrders tabChange={tabChange} />
           </TabPane>
-          <TabPane tab={<span>Đang vận chuyển</span>} key='transport'>
-            <ProductAddForm tabChange={tabChange} />
+          <TabPane tab={<span>Đóng gói xong</span>} key='packed'>
+            <PackedOrders tabChange={tabChange} />
           </TabPane>
-          <TabPane tab={<span>Giao hàng thành công</span>} key='complete'>
-            <ProductAddForm tabChange={tabChange} />
+          <TabPane tab={<span>Đang vận chuyển</span>} key='transporting'>
+            <TransportingOrders tabChange={tabChange} />
           </TabPane>
         </Tabs>
       </div>

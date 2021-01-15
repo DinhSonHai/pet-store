@@ -10,7 +10,8 @@ const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
 const User = require('../models/User');
-const { parseInt } = require('lodash');
+const Bill = require('../models/Bill');
+const BillDetail = require('../models/BillDetail');
 
 // const api = axios.default.create({
 //   headers: {
@@ -109,6 +110,52 @@ class OrderController {
       return res.status(500).send('Server Error');
     }
   }
+  // @route   GET api/orders/admin/:id
+  // @desc    Lấy đơn hàng theo orderId phía admin
+  // @access  Private
+  async getByIdAdmin(req, res) {
+    try {
+      const order = await Order.findById(req.params.id);
+      if (!order) {
+        return res.status(404).json({
+          errors: [
+            {
+              msg: 'Đơn hàng không tồn tại!',
+            },
+          ],
+        });
+      }
+      return res.json(order);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+  // @route   GET api/orders/detail/admin/:id
+  // @desc    Lấy chi tiết đơn hàng theo orderId phía admin
+  // @access  Private
+  async getOrdersDetailByOrderIdAdmin(req, res) {
+    try {
+      const orders = await OrderDetail.find({
+        orderId: new ObjectId(req.params.id),
+      });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+  // @route   GET api/orders/:status/admin
+  // @desc    Lấy các đơn hàng theo trạng thái phía admin
+  // @access  Private
+  async getOrdersByStatusAdmin(req, res) {
+    const status = parseInt(req.params.status) || 0;
+    try {
+      const orders = await Order.find({ status }).sort({ createdAt: 1 });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   GET api/orders
   // @desc    Lấy tất cả đơn hàng phía admin
   // @access  Private
@@ -612,6 +659,32 @@ class OrderController {
     }
   }
 
+  // @route   PUT api/orders/admin/:orderId
+  // @desc    Hủy đơn hàng phía admin
+  // @access  Private
+  async cancleOrderAdmin(req, res) {
+    try {
+      let orderId = req.params.orderId;
+      let order = await Order.findById(orderId);
+      if (!order) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Không tìm thấy đơn hàng!' }] });
+      }
+      order.status = -1;
+      await order.save((err, data) => {
+        if (err) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'Hủy đơn hàng thất bại!' }] });
+        }
+        return res.json({ message: 'Đã hủy đơn hàng thành công!' });
+      });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   PUT api/orders/:orderId
   // @desc    Cập nhật trạng thái đơn hàng phía admin
   // @access  Private
@@ -624,7 +697,17 @@ class OrderController {
           .status(404)
           .json({ errors: [{ msg: 'Không tìm thấy đơn đặt hàng này!' }] });
       }
-      let { status } = order;
+      let {
+        status,
+        address,
+        name,
+        phone,
+        email,
+        totalMoney,
+        note,
+        userId,
+        createdAt,
+      } = order;
       // -1: Hủy đơn hàng
       // 0: Đặt hàng thành công
       // 1: Đã xác nhận đơn hàng
@@ -656,6 +739,36 @@ class OrderController {
       } else if (status === 4) {
         order.status = 5;
         order.deliveriedAt = dayjs().toISOString();
+        const bill = new Bill({
+          orderId: order._id,
+          userId,
+          address,
+          name,
+          phone,
+          email,
+          totalMoney,
+          note,
+          orderedAt: createdAt,
+          deliveriedAt: order.deliveriedAt,
+        });
+        bill.key = bill._id;
+        const detailOrders = await OrderDetail.find({
+          orderId: new ObjectId(orderId),
+        });
+        let length = detailOrders.length;
+        for (let i = 0; i < length; ++i) {
+          const detail = new BillDetail({
+            userId: detailOrders[i].userId,
+            billId: bill._id,
+            productId: detailOrders[i].productId,
+            productName: detailOrders[i].productName,
+            amount: detailOrders[i].amount,
+            price: detailOrders[i].price,
+          });
+          detail.key = detail._id;
+          await detail.save();
+        }
+        await bill.save();
       } else {
         return res.status(400).json({
           errors: [
