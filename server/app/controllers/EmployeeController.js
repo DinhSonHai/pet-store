@@ -118,11 +118,19 @@ class EmployeeController {
         gender,
         dateOfBirth,
       };
+      user = new Employee({
+        password: hashedPassword,
+        name,
+        email,
+        phoneNumber,
+        address,
+        gender,
+        dateOfBirth,
+      });
+      user.key = user._id;
 
-      user = _.extend(user, userFields);
-
-      //Lưu tài khoản vào csdl
-      await user.save((err, data) => {
+      // Lưu tài khoản vào csdl
+      user.save((err, data) => {
         if (!err) {
           return res.json({ message: 'Đăng ký thành công!' });
         }
@@ -158,6 +166,7 @@ class EmployeeController {
         name,
         email,
       });
+      user.key = user._id;
       user.role = 0;
       //Lưu tài khoản vào csdl
       await user.save((err, data) => {

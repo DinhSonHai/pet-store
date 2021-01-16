@@ -10,4 +10,9 @@ const authAdmin = require('../../app/middlewares/auth_admin');
 // @access  Private
 router.get('/dailysales', [authAdmin, checkPermission], StatisticalController.getDailySales);
 
+// @route   GET api/statistical/newestorders
+// @desc    Lấy số đơn hàng mới
+// @access  Private
+router.get('/newestorders', authAdmin, StatisticalController.getNewestOrders);
+
 module.exports = router;
