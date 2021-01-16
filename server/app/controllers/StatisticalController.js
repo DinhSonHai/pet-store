@@ -1,6 +1,7 @@
 
 const Bill = require('../models/Bill');
 const Order = require('../models/Order');
+const Review = require('../models/Review');
 const _ = require('lodash');
 
 class StatisticalController {
@@ -39,6 +40,45 @@ class StatisticalController {
           .json({ errors: [{ msg: 'Chưa có đơn hàng nào mới đặt!' }] });
       }
       return res.json({ orderCount: order.length });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/statistical/newestreviews
+  // @desc    Lấy số đánh giá mới
+  // @access  Private
+  async getNewestReviews(req, res) {
+    try {
+      let review = await Review.find({ status: 0 });
+      if (!review) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Chưa có đánh giá mới nào!' }] });
+      }
+      return res.json({ reviewCount: review.length });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/statistical/newestcomments
+  // @desc    Lấy số bình luận mới
+  // @access  Private
+  async getNewestComments(req, res) {
+    try {
+      let review = await Review.find();
+      if (!review) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Chưa có đánh giá mới nào!' }] });
+      }
+      let commentCount = review.reduce((total, current) => {
+        let comment = current.replyComment
+        let newestComment = comment.filter(cmt => cmt.status === 0);
+        return total + newestComment.length;
+      }, 0);
+      return res.json({ commentCount });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
