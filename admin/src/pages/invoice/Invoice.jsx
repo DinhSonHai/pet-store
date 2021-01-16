@@ -15,11 +15,20 @@ class Invoice extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
   async fetchData() {
+    const { page } = this.props.match.params;
     try {
       this.setState({ ...this.state, isFetching: true });
-      const response = await api.get(
-        `/orders/invoice/${this.props.match.params.id}`
-      );
+      let response;
+      if (page === 'packed') {
+        response = await api.get(
+          `/orders/invoice/${this.props.match.params.id}`
+        );
+      }
+      if (page === 'bill') {
+        response = await api.get(
+          `/bills/invoice/${this.props.match.params.id}`
+        );
+      }
       this.setState({
         ...this.state,
         isFetching: false,
@@ -40,6 +49,7 @@ class Invoice extends React.Component {
   }
   render() {
     const { isFetching, detail, order } = this.state;
+    const { page } = this.props.match.params;
     return (
       <div>
         {isFetching || !order ? (
@@ -60,6 +70,7 @@ class Invoice extends React.Component {
               content={() => this.componentRef}
             />
             <ComponentToPrint
+              page={page}
               order={order}
               detail={detail}
               ref={(el) => (this.componentRef = el)}

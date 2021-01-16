@@ -103,3 +103,18 @@ export const updateOrderStatus = (id, status) => async (dispatch) => {
     }
   }
 };
+
+// Đặt hàng
+export const adminOrder = (data) => async (dispatch) => {
+  try {
+    const res = await api.post('/orders/admin', data);
+    message.success(res.data.message);
+    return true;
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) => message.error(error.msg));
+    }
+  }
+};

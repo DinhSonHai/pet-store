@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const dayjs = require('dayjs');
-const now = dayjs();
 const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
@@ -8,7 +7,7 @@ const Schema = mongoose.Schema;
 const CategorySchema = new Schema({
   categoryName: { type: String, trim: true, required: true },
   key: { type: Schema.Types.ObjectId, required: true },
-  createdAt: { type: Date, default: now.toISOString() },
+  createdAt: { type: Date, default: dayjs().toISOString() },
 });
 
 CategorySchema.plugin(mongooseDelete, {

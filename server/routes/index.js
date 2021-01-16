@@ -8,6 +8,7 @@ const client = require('./api/client');
 const receipts = require('./api/receipts');
 const employee = require('./api/employee');
 const review = require('./api/review');
+const bills = require('./api/bills');
 
 function route(app) {
   //Products route
@@ -39,6 +40,9 @@ function route(app) {
 
   // Review route
   app.use('/api/review', review);
+
+  // Bill route
+  app.use('/api/bills', bills);
 }
 
 module.exports = route;

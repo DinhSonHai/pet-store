@@ -9,7 +9,7 @@ export default function () {
       <PrivateRoute exact path='/' component={Home} />
       <AuthRoute exact path='/signin' component={Signin} />
       <PrivateRoute exact path='/signout' component={Signout} />
-      <PrivateRoute exact path='/invoice/:id' component={Invoice} />
+      <PrivateRoute exact path='/invoice/:page/:id' component={Invoice} />
     </Switch>
   );
 }

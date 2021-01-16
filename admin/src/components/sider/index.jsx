@@ -11,6 +11,7 @@ import {
   PaperClipOutlined,
   TeamOutlined,
   ImportOutlined,
+  BarcodeOutlined,
 } from '@ant-design/icons';
 
 import './styles.scss';
@@ -67,6 +68,9 @@ const SiderComponent = ({ tabState }) => {
         </SubMenu>
         <Menu.Item key='order' icon={<AuditOutlined />}>
           <Link to='/?tab=order'>Quản lý đơn hàng</Link>
+        </Menu.Item>
+        <Menu.Item key='bill' icon={<BarcodeOutlined />}>
+          <Link to='/?tab=bill'>Quản lý hóa đơn</Link>
         </Menu.Item>
         <Menu.Item key='user' icon={<UserOutlined />}>
           <Link to='/?tab=user'>Quản lý người dùng</Link>

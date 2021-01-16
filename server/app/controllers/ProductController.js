@@ -130,6 +130,7 @@ class ProductController {
       price,
       quantity,
       typeId,
+      isShow,
     } = req.body;
     try {
       let product = new Product({
@@ -144,6 +145,7 @@ class ProductController {
         price: parseInt(price),
         quantity: parseInt(quantity),
         typeId,
+        isShow,
       });
       product.key = product._id;
       await product.save((err, data) => {
@@ -180,6 +182,7 @@ class ProductController {
       typeId,
       status,
       id,
+      isShow,
     } = req.body;
 
     try {
@@ -200,6 +203,7 @@ class ProductController {
         quantity: parseInt(quantity),
         status,
         typeId,
+        isShow,
       };
       product = _.extend(product, productFields);
       await product.save((err, data) => {

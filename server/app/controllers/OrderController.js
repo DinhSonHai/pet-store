@@ -384,31 +384,37 @@ class OrderController {
   // @desc    Đặt hàng vai trò khách, xử lí ở admin
   // @access  Private
   async adminOrder(req, res) {
-    const { note, cart, address, name, phone } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { note, cart, address, name, phone, email } = req.body;
     let totalMoney = 0;
     const cartLength = cart.length;
+    let getProducts = [];
     if (!cart || cartLength <= 0) {
       return res
         .status(400)
         .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
     }
     try {
-      const order = new Order({
+      const bill = new Bill({
         note,
         name,
         address,
         phone,
+        email,
       });
-      order.key = order._id;
-      order.amount = cartLength;
-      if (order._id) {
+      bill.key = bill._id;
+      bill.amount = cartLength;
+      if (bill._id) {
         for (let i = 0; i < cartLength; ++i) {
           if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
             return res.status(400).json({
               errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
             });
           }
-          const product = await Product.findById(cart[i]._id);
+          const product = await Product.findById(cart[i].key);
           if (!product) {
             return res.status(404).json({
               errors: [{ msg: 'Sản phẩm không tồn tại!' }],
@@ -429,8 +435,8 @@ class OrderController {
             product.status = false;
           }
           getProducts.push({ product, amount: cart[i].amount });
-          const detail = new OrderDetail({
-            orderId: order._id,
+          const detail = new BillDetail({
+            billId: bill._id,
             productId: product._id,
             productName: product.productName,
             amount: cart[i].amount,
@@ -444,15 +450,67 @@ class OrderController {
           (a, b) => a + b.product.price * b.amount,
           0
         );
-        order.totalMoney = totalMoney;
-        order.status = 5;
-        await order.save();
+        bill.totalMoney = totalMoney;
+        await bill.save();
       } else {
         return res
           .status(400)
           .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
       }
-      return res.json({ message: 'Đặt hàng thành công!' });
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: config.get('NODEMAILER_EMAIL'),
+          pass: config.get('NODEMAILER_PASSWORD'),
+        },
+      });
+
+      const item = getProducts.map(
+        (cartItem, index) =>
+          `<li>Sản phẩm ${index + 1}<ul><li>Tên sản phẩm: ${
+            cartItem.product.productName
+          }</li><li>Số lượng: ${
+            cartItem.amount
+          }</li><li>Đơn giá mỗi sản phẩm: ${cartItem.product.price.toLocaleString(
+            'vi-VN',
+            { style: 'currency', currency: 'VND' }
+          )}</li></ul></li>`
+      );
+      const content = `
+          <h1>Bạn vừa mua hàng ở Pet store</h1>
+          <p>Tên khách hàng: ${name}</p>
+          <p>Điện thoại: ${phone}</p>
+          <p>Địa chỉ: ${address}</p>
+          <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+          })}</p>
+          <p>Đơn hàng của quý khách:</p>
+          <ul>
+            ${item}
+          </ul>
+          <hr/>
+          <p>Xin cảm ơn quý khách</p>
+          <p>${config.get('CLIENT_URL')}</p>
+        `;
+
+      const mailOptions = {
+        from: config.get('NODEMAILER_EMAIL'),
+        to: email,
+        subject: 'Thông báo mua hàng ở Pet store',
+        html: content,
+      };
+
+      transporter
+        .sendMail(mailOptions)
+        .then(() => {
+          return res.json({ message: 'Đặt hàng thành công!' });
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [{ msg: err.message }],
+          });
+        });
     } catch (error) {
       return res.status(500).send('Server Error');
     }
@@ -707,6 +765,7 @@ class OrderController {
         note,
         userId,
         createdAt,
+        transportedAt,
       } = order;
       // -1: Hủy đơn hàng
       // 0: Đặt hàng thành công
@@ -749,7 +808,7 @@ class OrderController {
           totalMoney,
           note,
           orderedAt: createdAt,
-          deliveriedAt: order.deliveriedAt,
+          deliveriedAt: transportedAt,
         });
         bill.key = bill._id;
         const detailOrders = await OrderDetail.find({
@@ -804,7 +863,7 @@ class OrderController {
         return res.status(404).json({
           errors: [
             {
-              msg: 'Không tìm thấy hóa đơn!',
+              msg: 'Không tìm thấy đơn hàng!',
             },
           ],
         });

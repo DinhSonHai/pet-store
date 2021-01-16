@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import './style.scss';
 class ComponentToPrint extends React.Component {
   render() {
-    const { order, detail } = this.props;
+    const { order, detail, page } = this.props;
     return (
       <div id='invoice'>
         <div className='invoice overflow-auto'>
@@ -35,18 +35,26 @@ class ComponentToPrint extends React.Component {
                   <h2 className='to'>{order.name}</h2>
                   <div className='address'>{order.address}</div>
                   <div className='email'>
-                    <a href='mailto:john@example.com'>{order.email}</a>
+                    <a href={`mailto:${order.email}`}>{order.email}</a>
                   </div>
                 </div>
                 <div className='invoice-details'>
-                  <h1 className='invoice-id'>{`HD: #${order._id
+                  {/* <h1 className='invoice-id'>{`HD: #${order._id
                     .substring(16, 24)
-                    .toUpperCase()}`}</h1>
+                    .toUpperCase()}`}</h1> */}
                   <div className='date'>
-                    Ngày đặt hàng: {dayjs(order.createdAt).format('DD/MM/YYYY')}
+                    Ngày đặt hàng:{' '}
+                    {dayjs(
+                      page === 'packed'
+                        ? order.createdAt
+                        : page === 'bill' && order.orderedAt
+                    ).format('DD/MM/YYYY')}
                   </div>
                   <div className='date'>
-                    Ngày giao: {dayjs().format('DD/MM/YYYY')}
+                    Ngày giao:{' '}
+                    {page === 'bill'
+                      ? dayjs(order.deliveriedAt).format('DD/MM/YYYY')
+                      : page === 'packed' && dayjs().format('DD/MM/YYYY')}
                   </div>
                 </div>
               </div>
@@ -61,9 +69,9 @@ class ComponentToPrint extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {detail.map((item) => (
+                  {detail.map((item, index) => (
                     <tr key={item._id}>
-                      <td className='no'>01</td>
+                      <td className='no'>{index + 1}</td>
                       <td className='text-left'>{item.productName}</td>
                       <td className='unit'>
                         {' '}

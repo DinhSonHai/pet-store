@@ -10,3 +10,4 @@ export { default as Product } from './product/Product';
 export { default as Receipts } from './receipt/Receipt';
 export { default as Order } from './order/Order';
 export { default as Invoice } from './invoice/Invoice';
+export { default as Bill } from './bill/Bill';

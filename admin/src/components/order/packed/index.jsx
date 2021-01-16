@@ -71,7 +71,7 @@ const PackedOrders = ({
               icon={<EyeOutlined />}
             />
             |
-            <Link to={`/invoice/${record._id}`} target='_blank'>
+            <Link to={`/invoice/packed/${record._id}`} target='_blank'>
               <Button type='link' icon={<PrinterOutlined />} />
             </Link>{' '}
             |

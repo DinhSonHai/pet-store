@@ -15,7 +15,6 @@ import {
 } from '../../redux/actions/receipts';
 import dayjs from 'dayjs';
 import './styles.scss';
-const now = dayjs();
 const EditableContext = React.createContext(null);
 const EditableRow = ({ index, ...props }) => {
   const [form] = Form.useForm();
@@ -95,7 +94,7 @@ const EditableCell = ({
 
   return <td {...restProps}>{childNode}</td>;
 };
-export const ReceiptModal = ({
+const ReceiptModal = ({
   setVisible,
   data,
   auth: { user },
@@ -259,6 +258,7 @@ export const ReceiptModal = ({
       footer={false}
       confirmLoading={confirmLoading}
       visible={true}
+      centered
       maskClosable={false}
       title='Thông tin phiếu nhập'
     >
@@ -289,7 +289,7 @@ export const ReceiptModal = ({
           <span>Ngày nhập: </span>{' '}
           {receiptId
             ? `${dayjs(item.createdAt).format('DD/MM/YYYY')}`
-            : `${now.date()}/${now.month() + 1}/${now.year()}`}
+            : `${dayjs().format('DD/MM/YYYY')}`}
         </p>
         <p className='receipt__note'>
           <span>Note: </span>

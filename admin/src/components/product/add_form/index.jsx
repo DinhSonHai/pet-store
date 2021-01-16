@@ -5,7 +5,6 @@ import {
   Button,
   Input,
   Select,
-  message,
   Upload,
   Checkbox,
   InputNumber,
@@ -30,6 +29,7 @@ const ProductAddForm = ({
   setEdit,
   item,
 }) => {
+  let getIsShow = edit ? item.isShow : true;
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [content, setContent] = useState('');
@@ -37,6 +37,7 @@ const ProductAddForm = ({
   const [typeState, setTypeState] = useState([]);
   const [images, setImages] = useState([]);
   const [status, setStatus] = useState(true);
+  const [isShow, setIsShow] = useState(getIsShow);
   useEffect(() => {
     if (edit) {
       setStatus(item.status);
@@ -58,9 +59,9 @@ const ProductAddForm = ({
     getTypes();
   }, [item]);
   const onFinish = async (values) => {
-    if (images.length <= 0) {
-      return message.error('Vui lòng chọn hình ảnh!');
-    }
+    // if (images.length <= 0) {
+    //   return message.error('Vui lòng chọn hình ảnh!');
+    // }
     if (edit) {
       setConfirmLoading(true);
       await editProduct({
@@ -68,6 +69,7 @@ const ProductAddForm = ({
         description: content,
         id: item._id,
         status,
+        isShow,
         images: images.map((img) => img.response.url),
       });
       setConfirmLoading(false);
@@ -77,6 +79,7 @@ const ProductAddForm = ({
     await createProduct({
       ...values,
       description: content,
+      isShow,
       images: images.map((img) => img.response.url),
     });
     setConfirmLoading(false);
@@ -90,6 +93,9 @@ const ProductAddForm = ({
   };
   function onChangeStatus(e) {
     setStatus(e.target.checked);
+  }
+  function onChangeShow(e) {
+    setIsShow(e.target.checked);
   }
   return (
     <Fragment>
@@ -208,7 +214,11 @@ const ProductAddForm = ({
             </Checkbox>
           </Form.Item>
         )}
-
+        <Form.Item label='Hiển thị'>
+          <Checkbox onChange={onChangeShow} checked={isShow}>
+            Hiển thị bên người dùng
+          </Checkbox>
+        </Form.Item>
         <Form.Item label='Ảnh'>
           <Upload
             action='/uploadProduct'
@@ -222,7 +232,7 @@ const ProductAddForm = ({
 
         <Form.Item label='Mô tả'>
           <CKEditor
-            data={edit ? item.content : ''}
+            data={edit ? item.description : ''}
             config={{
               ckfinder: {
                 uploadUrl: '/upload',
