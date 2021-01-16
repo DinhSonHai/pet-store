@@ -71,7 +71,7 @@ const SearchList = ({
       </Menu.Item>
       <Menu.Item key='3' icon={<CaretUpOutlined />}>
         <Link
-          to={`/pets/${match.params.type}/list/${match.params.id}/?sort=asc`}
+          to={`/pets/search?q=${q}&sort=asc`}
         >
           {' '}
           Thứ tự theo: giá thấp đến cao
@@ -79,7 +79,7 @@ const SearchList = ({
       </Menu.Item>
       <Menu.Item key='4' icon={<CaretDownOutlined />}>
         <Link
-          to={`/pets/${match.params.type}/list/${match.params.id}/?sort=desc`}
+          to={`/pets/search?q=${q}&sort=desc`}
         >
           {' '}
           Thứ tự theo: giá cao đến thấp
