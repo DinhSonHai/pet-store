@@ -4,6 +4,7 @@ import auth from './auth';
 import categories from './categories';
 import types from './types';
 import receipts from './receipts';
+import orders from './orders';
 
 export default combineReducers({
   products,
@@ -11,4 +12,5 @@ export default combineReducers({
   categories,
   types,
   receipts,
+  orders,
 });

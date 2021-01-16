@@ -39,10 +39,10 @@ const ProductList = ({
   };
   const onSelectChange = (_, selectedRows) => {
     let mapData = selectedRows.map((p, index) => ({
-      numericalOrder: index,
       key: p.key,
       productName: p.productName,
       quantity: p.quantity,
+      quantityImport: 0,
       price: p.price,
     }));
     setSelectedRows(mapData);
@@ -129,11 +129,7 @@ const ProductList = ({
             Thêm phiếu nhập
           </Button>
           {visible && (
-            <ReceiptModal
-              visible={visible}
-              setVisible={setVisible}
-              data={selectedRows}
-            />
+            <ReceiptModal setVisible={setVisible} data={selectedRows} />
           )}
 
           <Table

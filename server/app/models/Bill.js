@@ -8,12 +8,14 @@ const BillSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'user', default: null },
   key: { type: Schema.Types.ObjectId, required: true },
   address: { type: String, trim: true, required: true },
+  name: { type: String, required: true, trim: true },
+  phone: { type: String, required: true, trim: true },
   email: { type: String, trim: true },
   totalMoney: { type: Number, required: true },
-  status: { type: Number, required: true },
+  status: { type: Boolean, required: true, default: false },
   note: { type: String, trim: true },
-  createdAt: { type: Date, default: dayjs().toISOString() },
-  deliveriedAt: { type: Date, default: dayjs().toISOString() },
+  orderedAt: { type: Date, default: null },
+  deliveriedAt: { type: Date, default: null },
 });
 
 module.exports = mongoose.model('bill', BillSchema);

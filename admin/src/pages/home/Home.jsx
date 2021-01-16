@@ -10,6 +10,7 @@ import {
   Type,
   Product,
   Receipts,
+  Order,
 } from '../../pages';
 
 import queryString from 'query-string';
@@ -33,6 +34,8 @@ const Home = ({ location }) => {
         return <Product />;
       case 'receipt':
         return <Receipts />;
+      case 'order':
+        return <Order />;
       default:
         return <DashBoard />;
     }

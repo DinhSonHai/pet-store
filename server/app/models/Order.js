@@ -17,11 +17,11 @@ const OrderSchema = new Schema({
   deliveryState: { type: Number, default: 0 },
   paymentState: { type: Number, default: 0 },
   createdAt: { type: Date, default: dayjs().toISOString() },
-  deliveriedAt: { type: Date, default: null },
   confirmedAt: { type: Date, default: null },
   pickedUpAt: { type: Date, default: null },
   packedAt: { type: Date, default: null },
   transportedAt: { type: Date, default: null },
+  deliveriedAt: { type: Date, default: null },
 });
 
 module.exports = mongoose.model('order', OrderSchema);
