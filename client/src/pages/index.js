@@ -1,4 +1,5 @@
 export { default as CartHome } from './cart/CartHome';
+export { default as SearchList } from './search/SearchList';
 export { default as PetsList } from './pets_list/PetsList';
 export { default as PetDetails } from './pet_details/PetDetails';
 export { default as Navbar } from './layout/Navbar';
