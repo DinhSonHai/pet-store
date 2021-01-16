@@ -1,15 +1,16 @@
 
 const Bill = require('../models/Bill');
+const BillDetail = require('../models/BillDetail');
 const Order = require('../models/Order');
 const Review = require('../models/Review');
 const _ = require('lodash');
 
 class StatisticalController {
 
-  // @route   GET api/statistical/dailysales
+  // @route   GET api/statistical/dailyrevenues
   // @desc    Thống kê doanh thu theo ngày
   // @access  Private
-  async getDailySales(req, res) {
+  async getDailyRevenues(req, res) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     try {
@@ -79,6 +80,51 @@ class StatisticalController {
         return total + newestComment.length;
       }, 0);
       return res.json({ commentCount });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/statistical/dailybills
+  // @desc    Lấy số hóa đơn được bán ra trong ngày
+  // @access  Private
+  async getDailyBills(req, res) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    try {
+      let bill = await Bill.find({ deliveriedAt: { $gte: today } });
+      if (!bill) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
+      }
+
+      return res.json({ billCount: bill.length });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/statistical/dailysales
+  // @desc    Lấy số sản phẩm được bán ra trong ngày
+  // @access  Private
+  async getDailySales(req, res) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    try {
+      let bill = await Bill.find({ deliveriedAt: { $gte: today } }).select('_id');
+      if (!bill) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
+      }
+      let billIdList = bill.map(item => item._id);
+      let billDetail = await BillDetail.find({ billId: { $in: billIdList }});
+
+      let productCount = billDetail.reduce((total, current) => {
+        return total + current.amount;
+      }, 0);
+      return res.json({ productCount });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
