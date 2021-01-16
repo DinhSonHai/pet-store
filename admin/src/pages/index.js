@@ -8,3 +8,5 @@ export { default as DashBoard } from './dashboard/DashBoard';
 export { default as Type } from './type/Type';
 export { default as Product } from './product/Product';
 export { default as Receipts } from './receipt/Receipt';
+export { default as Order } from './order/Order';
+export { default as Invoice } from './invoice/Invoice';

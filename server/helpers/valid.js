@@ -166,6 +166,27 @@ module.exports.validateOrderAuth = [
     .withMessage('Phương thức thanh toán không hợp lệ'),
 ];
 
+// Order when process at admin
+module.exports.validateOrderAdmin = [
+  check('address', 'Vui lòng nhập địa chỉ').notEmpty(),
+  check('name', 'Vui lòng nhập họ tên')
+    .notEmpty()
+    .isLength({
+      min: 2,
+      max: 32,
+    })
+    .withMessage('Độ dài của tên phải nằm trong khoảng từ 2 đến 32 ký tự'),
+  check('phone', 'Vui lòng nhập số điện thoại')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Số điện thoại không hợp lệ')
+    .isLength({
+      min: 10,
+      max: 10,
+    })
+    .withMessage('Số điện thoại tối thiểu và tối đa 10 chữ số'),
+];
+
 // Valid review content
 module.exports.validateReview = [
   check('starRatings', 'Vui lòng đánh giá sản phẩm')

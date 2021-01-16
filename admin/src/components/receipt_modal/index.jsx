@@ -1,5 +1,13 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Button, Popconfirm, Form, Modal } from 'antd';
+import {
+  Table,
+  Input,
+  Button,
+  Popconfirm,
+  Form,
+  Modal,
+  InputNumber,
+} from 'antd';
 import { connect } from 'react-redux';
 import {
   createReceipt,
@@ -70,7 +78,7 @@ const EditableCell = ({
           },
         ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <InputNumber ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
       <div
@@ -108,14 +116,21 @@ export const ReceiptModal = ({
       dataIndex: 'productName',
     },
     {
-      title: 'Số lượng',
+      title: 'Số lượng nhập',
       dataIndex: 'quantity',
-      editable: true,
+      render: (value) => (
+        <span
+          style={{
+            color: value >= 0 ? 'var( --success-color)' : 'var(--danger-color)',
+          }}
+        >
+          {value}
+        </span>
+      ),
     },
     {
       title: 'Đơn giá',
       dataIndex: 'price',
-      editable: true,
       render: (value) => (
         <span>
           {parseInt(value).toLocaleString('vi-VN', {
@@ -128,18 +143,26 @@ export const ReceiptModal = ({
   ];
   const columns = [
     {
-      title: 'STT',
-      dataIndex: 'numericalOrder',
-      width: '5%',
-    },
-    {
       title: 'Tên sản phẩm',
       dataIndex: 'productName',
     },
     {
-      title: 'Số lượng',
+      title: 'Số lượng hiện tại',
       dataIndex: 'quantity',
+    },
+    {
+      title: 'Số lượng nhập',
+      dataIndex: 'quantityImport',
       editable: true,
+      render: (value) => (
+        <span
+          style={{
+            color: value >= 0 ? 'var( --success-color)' : 'var(--danger-color)',
+          }}
+        >
+          {value}
+        </span>
+      ),
     },
     {
       title: 'Đơn giá',
@@ -225,9 +248,15 @@ export const ReceiptModal = ({
   return (
     <Modal
       width={1200}
-      closable={false}
+      onCancel={() => {
+        if (setView) {
+          setView(false);
+        }
+        if (setVisible) {
+          setVisible(false);
+        }
+      }}
       footer={false}
-      onCancel={handleCancel}
       confirmLoading={confirmLoading}
       visible={true}
       maskClosable={false}
@@ -252,7 +281,7 @@ export const ReceiptModal = ({
         </p>
         <p className='receipt__amount'>
           {' '}
-          <span>Số lượng nhập: </span>{' '}
+          <span>Số lượng sản phẩm: </span>{' '}
           {receiptId ? receipts_detail.length : data.length}
         </p>
         <p className='receipt__date'>
