@@ -5,7 +5,7 @@ const DashBoard = () => {
   return (
     <section className='category'>
       <Breadcrumb style={{ margin: '1rem 2rem' }}>
-        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+        <Breadcrumb.Item>Trang chủ quản trị</Breadcrumb.Item>
       </Breadcrumb>
       <div
         className='category__wrap site-layout-background'
