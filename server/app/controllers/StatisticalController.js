@@ -1,25 +1,21 @@
-
 const Bill = require('../models/Bill');
 const BillDetail = require('../models/BillDetail');
 const Order = require('../models/Order');
 const Review = require('../models/Review');
 const _ = require('lodash');
+const moment = require('moment');
 
 class StatisticalController {
-
   // @route   GET api/statistical/todayrevenues
   // @desc    Thống kê doanh thu trong ngày hôm nay
   // @access  Private
   async getTodayRevenues(req, res) {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    let today = moment().startOf('day');
+    let tomorrow = moment(today).endOf('day');
     try {
-      let bill = await Bill.find({ deliveriedAt: { $gte: today } });
-      if (!bill) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
-      }
+      let bill = await Bill.find({
+        deliveriedAt: { $gte: today.toDate(), $lt: tomorrow.toDate() },
+      });
       let todayRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
@@ -33,19 +29,15 @@ class StatisticalController {
   // @desc    Thống kê doanh thu theo tháng
   // @access  Admin, Private
   async getMonthlyRevenues(req, res) {
-    const now = new Date();
-    const fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    const toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    let today = moment().startOf('month');
+    let tomorrow = moment(today).endOf('month');
     try {
-      let bill = await Bill.find({ 
+      let bill = await Bill.find({
         deliveriedAt: {
-          '$gte': fromDate, '$lte': toDate
-        }});
-      if (!bill) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Doanh thu tháng này vẫn chưa có!' }] });
-      }
+          $gte: today.toDate(),
+          $lte: tomorrow.toDate(),
+        },
+      });
       let monthlyRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
@@ -59,19 +51,15 @@ class StatisticalController {
   // @desc    Thống kê doanh thu theo năm
   // @access  Admin, Private
   async getAnnualRevenues(req, res) {
-    const now = new Date();
-    const fromDate = new Date(now.getFullYear(), 0, 1);
-    const toDate = new Date(now.getFullYear() + 1, 0, 0);
+    let today = moment().startOf('year');
+    let tomorrow = moment(today).endOf('year');
     try {
-      let bill = await Bill.find({ 
+      let bill = await Bill.find({
         deliveriedAt: {
-          '$gte': fromDate, '$lte': toDate
-      }});
-      if (!bill) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Doanh thu năm này vẫn chưa có!' }] });
-      }
+          $gte: today.toDate(),
+          $lte: tomorrow.toDate(),
+        },
+      });
       let annualRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
@@ -87,11 +75,6 @@ class StatisticalController {
   async getNewestOrders(req, res) {
     try {
       let order = await Order.find({ status: 0 });
-      if (!order) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Chưa có đơn hàng nào mới đặt!' }] });
-      }
       return res.json({ orderCount: order.length });
     } catch (err) {
       return res.status(500).send('Server Error');
@@ -99,16 +82,11 @@ class StatisticalController {
   }
 
   // @route   GET api/statistical/newestreviews
-  // @desc    Lấy số đánh giá mới
+  // @desc    Lấy số đánh giá chưa duyệt
   // @access  Private
   async getNewestReviews(req, res) {
     try {
       let review = await Review.find({ status: 0 });
-      if (!review) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Chưa có đánh giá mới nào!' }] });
-      }
       return res.json({ reviewCount: review.length });
     } catch (err) {
       return res.status(500).send('Server Error');
@@ -120,15 +98,10 @@ class StatisticalController {
   // @access  Private
   async getNewestComments(req, res) {
     try {
-      let review = await Review.find();
-      if (!review) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Chưa có đánh giá mới nào!' }] });
-      }
+      let review = await Review.find({ status: 1 });
       let commentCount = review.reduce((total, current) => {
-        let comment = current.replyComment
-        let newestComment = comment.filter(cmt => cmt.status === 0);
+        let comment = current.replyComment;
+        let newestComment = comment.filter((cmt) => cmt.status === 0);
         return total + newestComment.length;
       }, 0);
       return res.json({ commentCount });
@@ -141,16 +114,9 @@ class StatisticalController {
   // @desc    Lấy số hóa đơn được bán ra trong ngày hôm nay
   // @access  Private
   async getTodayBills(req, res) {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    let today = moment().startOf('day');
     try {
-      let bill = await Bill.find({ deliveriedAt: { $gte: today } });
-      if (!bill) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
-      }
-
+      let bill = await Bill.find({ deliveriedAt: { $gte: today.toDate() } });
       return res.json({ billCount: bill.length });
     } catch (err) {
       return res.status(500).send('Server Error');
@@ -161,17 +127,13 @@ class StatisticalController {
   // @desc    Lấy số sản phẩm được bán ra trong ngày hôm nay
   // @access  Private
   async getTodaySales(req, res) {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    let today = moment().startOf('day');
     try {
-      let bill = await Bill.find({ deliveriedAt: { $gte: today } }).select('_id');
-      if (!bill) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
-      }
-      let billIdList = bill.map(item => item._id);
-      let billDetail = await BillDetail.find({ billId: { $in: billIdList }});
+      let bill = await Bill.find({
+        deliveriedAt: { $gte: today.toDate() },
+      }).select('_id');
+      let billIdList = bill.map((item) => item._id);
+      let billDetail = await BillDetail.find({ billId: { $in: billIdList } });
 
       let productCount = billDetail.reduce((total, current) => {
         return total + current.amount;
@@ -182,24 +144,23 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/ordersdatachart
+  // @route   GET api/statistical/ordersdatachart/:year
   // @desc    Lấy dữ liệu số đơn được đặt theo tháng
   // @access  Private
   async getOrdersDataChart(req, res) {
     const now = new Date();
-    let year = parseInt(req.query.year) || now.getFullYear();
+    let year = parseInt(req.params.year) || now.getFullYear();
     let ordersArray = [];
     for (let i = 0; i < 12; i++) {
       let fromDate = new Date(year, i, 1);
       let toDate = new Date(year, i + 1, 0);
       try {
-        let order = await Order.find({ 
+        let order = await Order.find({
           createdAt: {
-            '$gte': fromDate, '$lte': toDate
-          }});
-        // let monthlyRevenues = order.reduce((total, current) => {
-        //   return total + current.totalMoney;
-        // }, 0);
+            $gte: fromDate,
+            $lte: toDate,
+          },
+        });
         ordersArray.push(order.length);
       } catch (err) {
         return res.status(500).send('Server Error');
@@ -208,21 +169,23 @@ class StatisticalController {
     return res.json(ordersArray);
   }
 
-  // @route   GET api/statistical/revenuesdatachart
+  // @route   GET api/statistical/revenuesdatachart/:year
   // @desc    Lấy dữ liệu doanh thu theo từng tháng
   // @access  Private
   async getRevenuesDataChart(req, res) {
     const now = new Date();
-    let year = parseInt(req.query.year) || now.getFullYear();
+    let year = parseInt(req.params.year) || now.getFullYear();
     let revenuesArray = [];
     for (let i = 0; i < 12; i++) {
       let fromDate = new Date(year, i, 1);
       let toDate = new Date(year, i + 1, 0);
       try {
-        let bill = await Bill.find({ 
+        let bill = await Bill.find({
           deliveriedAt: {
-            '$gte': fromDate, '$lte': toDate
-          }});
+            $gte: fromDate,
+            $lte: toDate,
+          },
+        });
         let monthlyRevenues = bill.reduce((total, current) => {
           return total + current.totalMoney;
         }, 0);

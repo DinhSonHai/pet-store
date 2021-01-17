@@ -1,0 +1,11 @@
+.dashboard {
+  &__wrap {
+    .ant-card-meta-title,
+    .ant-card-meta-description {
+      color: var(--white-color) !important;
+    }
+    .ant-card-meta-title {
+      font-weight: 600;
+    }
+  }
+}

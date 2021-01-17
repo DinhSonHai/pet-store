@@ -101,7 +101,7 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
         <Menu.Item key='frontend' icon={<DesktopOutlined />}>
           <Link to='/?tab=frontend'>Quản lý UI/UX</Link>
         </Menu.Item>
-        { user && user.role === 0 && (
+        {user && user.role === 0 && (
           <Menu.Item key='statistical' icon={<BarChartOutlined />}>
             <Link to='/?tab=statistical'>Thống kê</Link>
           </Menu.Item>
@@ -112,7 +112,7 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps, {})(SiderComponent);

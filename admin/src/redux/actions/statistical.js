@@ -1,111 +1,58 @@
 import api from '../../api';
-import {   GET_ADMIN_STATISTICAL, GET_EMPLOYEE_STATISTICAL, GET_ADMIN_OVERALL_STATISTICAL, GET_CHART_DATA_STATISTICAL, STATISTICAL_ERROR } from '../types';
-import { notification } from 'antd';
+import {
+  GET_DASHBOARD_DATA,
+  GET_CHART_ORDERS_DATA,
+  GET_CHART_REVENUE_DATA,
+} from '../types';
 
-//Lấy dữ liệu thống kê admin có thể xem
-export const loadAdminStatisticalData = () => async (dispatch) => {
+function getData(path) {
+  return new Promise((resolve, reject) => {
+    api
+      .get(path)
+      .then(function (response) {
+        resolve(response.data);
+      })
+      .catch(function (err) {
+        reject(err.error);
+      });
+  });
+}
+
+export const getDashBoardData = () => async (dispatch) => {
   try {
-    const resTodayRevenues = await api.get('/statistical/todayrevenues');
-    const resTodayBills = await api.get('/statistical/todaybills');
-    const resTodaySales = await api.get('/statistical/todaysales');
-    const resNewestOrders = await api.get('/statistical/newestorders');
-
+    const res = await Promise.all([
+      getData('/statistical/todayrevenues'),
+      getData('/statistical/monthlyrevenues'),
+      getData('/statistical/annualrevenues'),
+      getData('/statistical/newestorders'),
+      getData('/statistical/newestreviews'),
+      getData('/statistical/newestcomments'),
+      getData('/statistical/todaybills'),
+      getData('/statistical/todaysales'),
+    ]);
     dispatch({
-      type: GET_ADMIN_STATISTICAL,
-      payload: {
-        todayRevenues: resTodayRevenues.data,
-        todayBills: resTodayBills.data,
-        todaySales: resTodaySales.data,
-        newestOrders: resNewestOrders.data,
-      },
+      type: GET_DASHBOARD_DATA,
+      payload: res,
     });
-  } catch (err) {
-    dispatch({
-      type: STATISTICAL_ERROR,
-    });
-  }
+  } catch (error) {}
 };
 
-//Lấy dữ liệu thống kê nhân viên có thể xem
-export const loadEmployeeStatisticalData = () => async (dispatch) => {
+export const getOrdersChartData = (year) => async (dispatch) => {
   try {
-    const resNewestOrders = await api.get('/statistical/newestorders');
-    const resNewestReviews = await api.get('/statistical/newestreviews');
-    const resNewestComments = await api.get('/statistical/newestcomments');
-    const resTodaySales = await api.get('/statistical/todaysales');
-
+    const res = await api.get(`/statistical/ordersdatachart/${year}`);
     dispatch({
-      type: GET_EMPLOYEE_STATISTICAL,
-      payload: {
-        newestOrders: resNewestOrders.data,
-        newestReviews: resNewestReviews.data,
-        newestComments: resNewestComments.data,
-        todaySales: resTodaySales.data,
-      },
+      type: GET_CHART_ORDERS_DATA,
+      payload: res.data,
     });
-  } catch (err) {
-    dispatch({
-      type: STATISTICAL_ERROR,
-    });
-  }
+  } catch (error) {}
 };
 
-//Lấy dữ liệu thống kê tổng quan admin có thể xem
-export const loadOverallStatisticalData = () => async (dispatch) => {
+export const getRevenuesChartData = (year) => async (dispatch) => {
   try {
-    const resTodayRevenues = await api.get('/statistical/todayrevenues');
-    const resTodayBills = await api.get('/statistical/todaybills');
-    const resTodaySales = await api.get('/statistical/todaysales');
-    const resNewestOrders = await api.get('/statistical/newestorders');
-    const resNewestReviews = await api.get('/statistical/newestreviews');
-    const resNewestComments = await api.get('/statistical/newestcomments');
-    const resMonthlyRevenues = await api.get('/statistical/monthlyrevenues');
-    const resAnnualRevenues = await api.get('/statistical/annualrevenues');
-
+    const res = await api.get(`/statistical/revenuesdatachart/${year}`);
     dispatch({
-      type: GET_ADMIN_OVERALL_STATISTICAL,
-      payload: {
-        todayRevenues: resTodayRevenues.data,
-        todayBills: resTodayBills.data,
-        todaySales: resTodaySales.data,
-        newestOrders: resNewestOrders.data,
-        newestReviews: resNewestReviews.data,
-        newestComments: resNewestComments.data,
-        monthlyRevenues: resMonthlyRevenues.data,
-        annualRevenues: resAnnualRevenues.data
-      },
+      type: GET_CHART_REVENUE_DATA,
+      payload: res.data,
     });
-  } catch (err) {
-    dispatch({
-      type: STATISTICAL_ERROR,
-    });
-  }
-};
-
-//Lấy dữ liệu thống kê biểu đồ
-export const loadChartData = (year) => async (dispatch) => {
-  let resOrdersDataChart = {};
-  let resRevenuesDataChart = {};
-  try {
-    if (year) {
-      resOrdersDataChart = await api.get(`/statistical/ordersdatachart?year=${year}`);
-      resRevenuesDataChart = await api.get(`/statistical/revenuesdatachart?year=${year}`);
-    }
-    else {
-      resOrdersDataChart = await api.get(`/statistical/ordersdatachart?year=${year}`);
-      resRevenuesDataChart = await api.get(`/statistical/revenuesdatachart?year=${year}`);
-    }
-
-    dispatch({
-      type: GET_CHART_DATA_STATISTICAL,
-      payload: {
-        ordersDataChart: resOrdersDataChart.data,
-        revenuesDataChart: resRevenuesDataChart.data,
-      },
-    });
-  } catch (err) {
-    dispatch({
-      type: STATISTICAL_ERROR,
-    });
-  }
+  } catch (error) {}
 };

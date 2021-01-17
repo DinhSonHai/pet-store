@@ -1,76 +1,53 @@
+/* eslint-disable import/no-anonymous-default-export */
 import {
-  GET_ADMIN_STATISTICAL,
-  GET_EMPLOYEE_STATISTICAL,
-  GET_ADMIN_OVERALL_STATISTICAL,
-  GET_CHART_DATA_STATISTICAL,
-  STATISTICAL_ERROR
+  GET_DASHBOARD_DATA,
+  GET_CHART_ORDERS_DATA,
+  GET_CHART_REVENUE_DATA,
 } from '../types';
 
 const initialState = {
-  token: localStorage.getItem('token'),
-  isAuthenticated: null,
-  loading: true,
-  todayRevenues: null,
-  todayBills: null,
-  todaySales: null,
-  newestOrders: null,
-  newestReviews: null,
-  newestComments: null,
-  monthlyRevenues: null,
-  annualRevenues: null,
-  ordersDataChart: [],
+  dashboardData: {
+    todayRevenues: null,
+    todayBills: null,
+    todaySales: null,
+    newestOrders: null,
+    newestReviews: null,
+    newestComments: null,
+    monthlyRevenues: null,
+    annualRevenues: null,
+  },
   revenuesDataChart: [],
+  ordersDataChart: [],
 };
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case GET_ADMIN_STATISTICAL:
+    case GET_DASHBOARD_DATA:
       return {
         ...state,
-        isAuthenticated: true,
-        loading: false,
-        todayRevenues: payload.todayRevenues,
-        todayBills: payload.todayBills,
-        todaySales: payload.todaySales,
-        newestOrders: payload.newestOrders,
+        dashboardData: {
+          ...state.dashboardData,
+          todayRevenues: payload[0].todayRevenues,
+          monthlyRevenues: payload[1].monthlyRevenues,
+          annualRevenues: payload[2].annualRevenues,
+          newestOrders: payload[3].orderCount,
+          newestReviews: payload[4].reviewCount,
+          newestComments: payload[5].commentCount,
+          todayBills: payload[6].billCount,
+          todaySales: payload[7].productCount,
+        },
       };
-    case GET_EMPLOYEE_STATISTICAL:
+    case GET_CHART_ORDERS_DATA:
       return {
         ...state,
-        isAuthenticated: true,
-        loading: false,
-        newestOrders: payload.newestOrders,
-        newestReviews: payload.newestReviews,
-        newestComments: payload.newestComments,
-        todaySales: payload.todaySales
+        ordersDataChart: payload,
       };
-    case GET_ADMIN_OVERALL_STATISTICAL:
+    case GET_CHART_REVENUE_DATA:
       return {
         ...state,
-        isAuthenticated: true,
-        loading: false,
-        todayRevenues: payload.todayRevenues,
-        todayBills: payload.todayBills,
-        todaySales: payload.todaySales,
-        newestOrders: payload.newestOrders,
-        newestReviews: payload.newestReviews,
-        newestComments: payload.newestComments,
-        monthlyRevenues: payload.monthlyRevenues,
-        annualRevenues: payload.annualRevenues,
-        ordersDataChart: payload.ordersDataChart,
-        revenuesDataChart: payload.revenuesDataChart
+        revenuesDataChart: payload,
       };
-    case GET_CHART_DATA_STATISTICAL:
-      return {
-        ...state,
-        isAuthenticated: true,
-        loading: false,
-        ordersDataChart: payload.ordersDataChart,
-        revenuesDataChart: payload.revenuesDataChart
-      };
-    case STATISTICAL_ERROR:
-      return state;
     default:
       return state;
   }

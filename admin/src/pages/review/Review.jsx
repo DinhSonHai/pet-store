@@ -14,7 +14,7 @@ const Review = () => {
   return (
     <section className='review'>
       <Breadcrumb style={{ margin: '1rem 2rem' }}>
-        <Breadcrumb.Item>Quản lý hóa đơn</Breadcrumb.Item>
+        <Breadcrumb.Item>Quản lý bình luận</Breadcrumb.Item>
       </Breadcrumb>
       <div
         className='review__wrap site-layout-background'
