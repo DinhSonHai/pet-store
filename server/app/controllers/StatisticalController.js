@@ -7,10 +7,10 @@ const _ = require('lodash');
 
 class StatisticalController {
 
-  // @route   GET api/statistical/dailyrevenues
-  // @desc    Thống kê doanh thu theo ngày
+  // @route   GET api/statistical/todayrevenues
+  // @desc    Thống kê doanh thu trong ngày hôm nay
   // @access  Private
-  async getDailyRevenues(req, res) {
+  async getTodayRevenues(req, res) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     try {
@@ -20,10 +20,10 @@ class StatisticalController {
           .status(404)
           .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
       }
-      let dailySales = bill.reduce((total, current) => {
+      let todayRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
-      return res.json({ dailySales });
+      return res.json({ todayRevenues });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
@@ -85,10 +85,10 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/dailybills
-  // @desc    Lấy số hóa đơn được bán ra trong ngày
+  // @route   GET api/statistical/todaybills
+  // @desc    Lấy số hóa đơn được bán ra trong ngày hôm nay
   // @access  Private
-  async getDailyBills(req, res) {
+  async getTodayBills(req, res) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     try {
@@ -105,10 +105,10 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/dailysales
-  // @desc    Lấy số sản phẩm được bán ra trong ngày
+  // @route   GET api/statistical/todaysales
+  // @desc    Lấy số sản phẩm được bán ra trong ngày hôm nay
   // @access  Private
-  async getDailySales(req, res) {
+  async getTodaySales(req, res) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     try {

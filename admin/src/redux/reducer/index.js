@@ -5,6 +5,7 @@ import categories from './categories';
 import types from './types';
 import receipts from './receipts';
 import orders from './orders';
+import statistical from './statistical';
 
 export default combineReducers({
   products,
@@ -13,4 +14,5 @@ export default combineReducers({
   types,
   receipts,
   orders,
+  statistical
 });
