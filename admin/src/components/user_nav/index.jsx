@@ -31,7 +31,7 @@ export default ({ user }) => {
       </div>
       <div className='navbar__user--action-connect'></div>
       <span className='navbar__user--role'>
-        {user.role === 2 ? 'Nhân viên' : 'Quản trị'}
+        {user.role === 1 ? 'Nhân viên' : 'Quản trị'}
       </span>
       <img src={user.avatar} alt='' className='navbar__user--avt' />
     </Fragment>

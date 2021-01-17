@@ -38,3 +38,19 @@ export const getProductById = (id) => async (dispatch) => {
     }
   }
 };
+
+//Lấy sản phẩm theo từ khóa
+export const getSearchProductsList = (q, filterValue, page) => async (
+  dispatch
+) => {
+  try {
+    const res = await api.get(
+      `/products/search?q=${q}&sort=${filterValue}&page=${page}`
+    );
+    dispatch({
+      type: GET_ALL_PRODUCTS,
+      payload: res.data,
+    });
+  } catch (err) { }
+};
+

@@ -6,6 +6,7 @@ import types from './types';
 import receipts from './receipts';
 import orders from './orders';
 import bills from './bills';
+import statistical from './statistical';
 
 export default combineReducers({
   products,
@@ -15,4 +16,5 @@ export default combineReducers({
   receipts,
   orders,
   bills,
+  statistical
 });

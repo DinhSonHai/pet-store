@@ -17,12 +17,14 @@ import {
   Order,
   PetsType,
   PetsPost,
+  SearchList
 } from '../pages';
 
 export default function () {
   return (
     <Switch>
       <Route exact path='/' component={Home} />
+      <Route exact path='/pets/search' component={SearchList} />
       <Route exact path='/pets/:type/list/:id' component={PetsList} />
       <Route exact path='/pets/:type/post/:id' component={PetsPost} />
       <Route exact path='/pets/:type/:id' component={PetsType} />

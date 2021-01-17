@@ -269,6 +269,35 @@ class ProductController {
       return res.status(500).send('Server error');
     }
   }
+
+  // @route   GET api/products/search
+  // @desc    Tìm kiếm sản phẩm theo từ khóa
+  // @access  Public
+  async search(req, res) {
+    let q = req.query.q;
+    const regex = new RegExp(q, 'i');
+    const filterStatus = req.query.sort;
+    const page = parseInt(req.query.page) || 1;
+    const query = { productName: { $regex: regex }, isShow: true };
+    const limit = 12;
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    const filterValue =
+      filterStatus === 'undefined'
+        ? { createdAt: -1 }
+        : filterStatus === 'desc'
+        ? { price: -1 }
+        : { price: 1 };
+    try {
+      const products = await Product.find(query).sort(filterValue);
+      return res.json({
+        data: products.slice(start, end),
+        total: products.length,
+      });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
 }
 
 module.exports = new ProductController();
