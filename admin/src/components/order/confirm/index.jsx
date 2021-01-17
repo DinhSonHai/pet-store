@@ -110,6 +110,7 @@ const ConfirmOrders = ({
         <Button
           icon={<SyncOutlined />}
           onClick={() => setUpdateState(!updateState)}
+          disabled={isLoading}
         >
           Cập nhật
         </Button>

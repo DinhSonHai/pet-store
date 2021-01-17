@@ -12,6 +12,7 @@ import {
   TeamOutlined,
   ImportOutlined,
   BarcodeOutlined,
+  CommentOutlined,
 } from '@ant-design/icons';
 
 import './styles.scss';
@@ -72,6 +73,12 @@ const SiderComponent = ({ tabState }) => {
         <Menu.Item key='bill' icon={<BarcodeOutlined />}>
           <Link to='/?tab=bill'>Quản lý hóa đơn</Link>
         </Menu.Item>
+        <Menu.Item key='receipt' icon={<ImportOutlined />}>
+          <Link to='/?tab=receipt'>Quản lý phiếu nhập</Link>
+        </Menu.Item>
+        <Menu.Item key='review' icon={<CommentOutlined />}>
+          <Link to='/?tab=review'>Quản lý bình luận</Link>
+        </Menu.Item>
         <Menu.Item key='user' icon={<UserOutlined />}>
           <Link to='/?tab=user'>Quản lý người dùng</Link>
         </Menu.Item>
@@ -87,9 +94,6 @@ const SiderComponent = ({ tabState }) => {
             <Link to='/?tab=account'>Tài khoản</Link>
           </Menu.Item>
         </SubMenu>
-        <Menu.Item key='receipt' icon={<ImportOutlined />}>
-          <Link to='/?tab=receipt'>Quản lý phiếu nhập</Link>
-        </Menu.Item>
         <Menu.Item key='post' icon={<PaperClipOutlined />}>
           <Link to='/?tab=post'>Quản lý bài đăng</Link>
         </Menu.Item>

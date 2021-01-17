@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, notification, message } from 'antd';
 import { Heart, HeartFill } from '../../icons';
 import { connect } from 'react-redux';
@@ -12,6 +12,9 @@ const FavoriteAction = ({
 }) => {
   const [isFavorite, setIsFavorite] = useState(favoriteState);
   const [isProcessing, setIsProcessing] = useState(false);
+  useEffect(() => {
+    setIsFavorite(favoriteState);
+  }, [favoriteState]);
   const handleClick = async (productId) => {
     if (!isAuthenticated) {
       return notification.open({

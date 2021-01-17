@@ -48,12 +48,12 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
     {
       title: 'Ngày đặt hàng',
       dataIndex: 'orderedAt',
-      render: (value) => <span>{dayjs(value).format('DD/MM/YYYY')}</span>,
+      render: (value) => <span>{dayjs(value).format('HH:mm DD/MM/YYYY')}</span>,
     },
     {
       title: 'Ngày giao',
       dataIndex: 'deliveriedAt',
-      render: (value) => <span>{dayjs(value).format('DD/MM/YYYY')}</span>,
+      render: (value) => <span>{dayjs(value).format('HH:mm DD/MM/YYYY')}</span>,
     },
     {
       title: 'Tổng tiền',

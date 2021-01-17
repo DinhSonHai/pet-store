@@ -4,14 +4,19 @@ const dayjs = require('dayjs');
 const Schema = mongoose.Schema;
 
 const ReviewSchema = new Schema({
+  key: { type: Schema.Types.ObjectId, required: true },
   userId: { type: Schema.Types.ObjectId, ref: 'user' },
   productId: { type: Schema.Types.ObjectId, ref: 'product' },
+  name: { type: String, trim: true },
+  avatar: { type: String, trim: true },
   starRatings: { type: Number },
   comment: { type: String, trim: true },
   commentedAt: { type: Date, default: dayjs().toISOString() },
   replyComment: [
     {
       userReplyId: { type: Schema.Types.ObjectId, ref: 'user' },
+      name: { type: String, trim: true },
+      avatar: { type: String, trim: true },
       replyComment: { type: String, trim: true },
       replyCommentedAt: { type: Date, default: dayjs().toISOString() },
       status: { type: Number, default: 0 },

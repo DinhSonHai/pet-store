@@ -7,16 +7,16 @@ const ReviewController = require('../../app/controllers/ReviewController');
 
 const { validateComment, validateReview } = require('../../helpers/valid');
 
-// @route   PUT api/review/admin/:id/review/:reviewId/approve
+// @route   PUT api/reviews/admin/:reviewId/:productId/approve
 // @desc    Duyệt đánh giá của người dùng
 // @access  Private
 router.put(
-  '/admin/:id/review/:reviewId/approve',
+  '/admin/:reviewId/:productId/approve',
   authAdmin,
   ReviewController.approveReview
 );
 
-// @route   PUT api/review/admin/:id/review/:reviewId/decline
+// @route   PUT api/reviews/admin/:id/review/:reviewId/decline
 // @desc    Từ chối đánh giá của người dùng
 // @access  Private
 router.put(
@@ -25,7 +25,7 @@ router.put(
   ReviewController.declineReview
 );
 
-// @route   PUT api/review/admin/:id/review/:reviewId/comment/:commentId/approve
+// @route   PUT api/reviews/admin/:id/review/:reviewId/comment/:commentId/approve
 // @desc    Duyệt bình luận trong đánh giá của người dùng
 // @access  Private
 router.put(
@@ -34,7 +34,7 @@ router.put(
   ReviewController.approveComment
 );
 
-// @route   PUT api/review/admin/:id/review/:reviewId/comment/:commentId/decline
+// @route   PUT api/reviews/admin/:id/review/:reviewId/comment/:commentId/decline
 // @desc    Từ chối bình luận trong đánh giá của người dùng
 // @access  Private
 router.put(
@@ -43,26 +43,26 @@ router.put(
   ReviewController.declineComment
 );
 
-// @route   GET api/review/admin/:id/review
-// @desc    Lấy tất cả đánh giá của sản phẩm
+// @route   GET api/reviews/admin/reviews
+// @desc    Lấy tất cả đánh giá của các sản phẩm chưa đc duyệt phía admin
 // @access  Private
 router.get(
-  '/admin/:id/review',
+  '/admin/reviews',
   authAdmin,
-  ReviewController.getAllProductReview
+  ReviewController.getAllUnconfirmedReviews
 );
 
-// @route   GET api/review/:id/review
+// @route   GET api/reviews/:id/review
 // @desc    Lấy đánh giá của sản phẩm
 // @access  Public
 router.get('/:id/review', ReviewController.getProductReview);
 
-// @route   POST api/review/:id/review
+// @route   POST api/reviews/:id/review
 // @desc    Đánh giá sản phẩm
 // @access  Private
 router.post('/:id/review', [auth, validateReview], ReviewController.review);
 
-// @route   PUT api/review/:id/review/:reviewId
+// @route   PUT api/reviews/:id/review/:reviewId
 // @desc    Bình luận trên 1 đánh giá
 // @access  Private
 router.put(
@@ -71,7 +71,7 @@ router.put(
   ReviewController.comment
 );
 
-// @route   DELETE api/review/:id/review/:reviewId/comment/:commentId
+// @route   DELETE api/reviews/:id/review/:reviewId/comment/:commentId
 // @desc    Xóa bình luận trên 1 đánh giá
 // @access  Private
 router.delete(
@@ -80,7 +80,7 @@ router.delete(
   ReviewController.deleteComment
 );
 
-// @route   DELETE api/review/:id/review/:reviewId
+// @route   DELETE api/reviews/:id/review/:reviewId
 // @desc    Xóa bình luận
 // @access  Private
 router.delete('/:id/review/:reviewId', auth, ReviewController.deleteReview);

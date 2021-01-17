@@ -28,3 +28,6 @@ export { default as OrderCompleted } from './profile/orders/completed';
 export { default as OrderCanceled } from './profile/orders/canceled';
 export { default as ViewOrder } from './profile/view_order';
 export { default as TrackOrder } from './profile/track_order';
+export { default as DetailDescription } from './pet_details/description';
+export { default as DetailReview } from './pet_details/review';
+export { default as DetailComments } from './pet_details/comments';

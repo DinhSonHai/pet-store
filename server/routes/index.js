@@ -7,7 +7,7 @@ const orders = require('./api/orders');
 const client = require('./api/client');
 const receipts = require('./api/receipts');
 const employee = require('./api/employee');
-const review = require('./api/review');
+const reviews = require('./api/reviews');
 const bills = require('./api/bills');
 
 function route(app) {
@@ -39,7 +39,7 @@ function route(app) {
   app.use('/api/receipts', receipts);
 
   // Review route
-  app.use('/api/review', review);
+  app.use('/api/reviews', reviews);
 
   // Bill route
   app.use('/api/bills', bills);

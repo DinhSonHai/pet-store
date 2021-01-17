@@ -18,6 +18,8 @@ const ProductSchema = new Schema({
   quantity: { type: Number, required: true },
   status: { type: Boolean, default: true },
   starRatings: { type: Number, default: 0 },
+  starsCount: { type: Number, default: 0 },
+  reviewsCount: { type: Number, default: 0 },
   typeId: { type: Schema.Types.ObjectId, ref: 'type' },
   isShow: { type: Boolean, default: true },
   createdAt: { type: Date, default: dayjs().toISOString() },

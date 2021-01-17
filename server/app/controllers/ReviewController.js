@@ -2,39 +2,32 @@ const Review = require('../models/Review');
 const { validationResult } = require('express-validator');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Product = require('../models/Product');
+const User = require('../models/User');
 
 class ReviewController {
-  // @route   GET api/review/admin/:id/review
-  // @desc    Lấy tất cả đánh giá của sản phẩm
+  // @route   GET api/reviews/admin/reviews
+  // @desc    Lấy tất cả đánh giá của các sản phẩm chưa đc duyệt phía admin
   // @access  Private
-  async getAllProductReview(req, res, next) {
+  async getAllUnconfirmedReviews(req, res, next) {
     try {
-      //Lấy tất cả đánh giá của sản phẩm
-      let review = await Review.find({
-        productId: new ObjectId(req.params.id),
+      const reviews = await Review.find({
+        status: 0,
       });
-      if (!review) {
-        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
-      }
-      return res.json(review);
+      return res.json(reviews);
     } catch (err) {
       return res.status(500).send('Server Error');
     }
   }
 
-  // @route   GET api/review/:id/review
-  // @desc    Get all review content of a product
+  // @route   GET api/reviews/:id/review
+  // @desc    Lấy tất cả đánh giá của sản phẩm đã được duyệt phía client
   // @access  Public
   async getProductReview(req, res, next) {
     try {
-      //Lấy tất cả đánh giá của sản phẩm đã được duyệt
       let review = await Review.find({
         productId: new ObjectId(req.params.id),
         status: 1,
       });
-      if (!review) {
-        return res.status(404).json({ msg: 'Chưa có đánh giá nào' });
-      }
       review.forEach((rv) => {
         rv.replyComment = rv.replyComment.filter(
           (comment) => comment.status === 1
@@ -46,35 +39,46 @@ class ReviewController {
     }
   }
 
-  // @route   POST api/review/:id/review
+  // @route   POST api/reviews/:id/review
   // @desc    Review on a product
   // @access  Private
   async review(req, res, next) {
+    //Kiểm tra req.body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const product = await Product.findById(req.params.id);
       if (!product) {
-        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm.' });
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Không tìm thấy sản phẩm.' }] });
       }
-      //Kiểm tra req.body
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại.' }] });
       }
       let { starRatings, comment } = req.body;
       let review = new Review({
-        userId: req.user.id,
+        userId: user._id,
         productId: req.params.id,
+        name: user.name,
+        avatar: user.avatar,
         starRatings,
         comment,
       });
+      review.key = review._id;
       await review.save();
-      return res.json({ msg: 'Gửi đánh giá thành công' });
+      return res.json({ message: 'Gửi đánh giá thành công' });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
   }
 
-  // @route   PUT api/review/:id/review
+  // @route   PUT api/reviews/:id/review
   // @desc    Comment on a review
   // @access  Private
   async comment(req, res, next) {
@@ -101,7 +105,7 @@ class ReviewController {
     }
   }
 
-  // @route   DELETE api/review/:id/review/:reviewId/comment/commentId
+  // @route   DELETE api/reviews/:id/review/:reviewId/comment/commentId
   // @desc    Delete a comment on a review
   // @access  Private
   async deleteComment(req, res, next) {
@@ -132,7 +136,7 @@ class ReviewController {
     }
   }
 
-  // @route   DELETE api/review/:id/review/:reviewId
+  // @route   DELETE api/reviews/:id/review/:reviewId
   // @desc    Delete a review
   // @access  Private
   async deleteReview(req, res, next) {
@@ -144,39 +148,59 @@ class ReviewController {
     }
   }
 
-  // @route   PUT api/review/admin/:id/review/:reviewId/approve
+  // @route   PUT api/reviews/admin/:reviewId/:productId/approve
   // @desc    Duyệt đánh giá của người dùng
   // @access  Private
   async approveReview(req, res) {
+    const { reviewId, productId } = req.params;
     try {
-      let product = await Product.findOne({ _id: req.params.id });
+      const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm này.' });
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Không tìm thấy sản phẩm.' }] });
       }
-      let reviewId = req.params.reviewId;
-      let review = await Review.findById(reviewId);
+      const review = await Review.findById(reviewId);
       if (!review) {
-        return res.status(404).json({ msg: 'Không tìm thấy đánh giá này.' });
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Không tìm thấy đánh giá.' }] });
       }
       let { status } = review;
       // -1: Không phê duyệt đánh giá
       // 0: Đăng đánh giá thành công
       // 1: Đã phê duyệt đánh giá
       if (status === 0 || status === -1) {
-        status = 1;
-        review = await Review.findOneAndUpdate(
-          { _id: reviewId },
-          { $set: { status } },
-          { new: true }
-        );
+        review.status = 1;
+        product.reviewsCount = product.reviewsCount + 1;
+        product.starsCount = product.starsCount + review.starRatings;
+        let num1 = parseInt(product.starsCount / product.reviewsCount);
+        let num2 = product.starsCount / product.reviewsCount;
+        let starRatings = num2 - num1;
+        if (starRatings >= 0.5) {
+          starRatings = num1 + 1;
+        } else {
+          starRatings = num1;
+        }
+        product.starRatings = starRatings;
+        await product.save();
+      } else {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Không thể duyệt đánh giá này.' }] });
       }
-      return res.json(review);
+      await review.save((err, data) => {
+        if (err) {
+          return res.status(400).json({ errors: [{ msg: 'Duyệt thất bại!' }] });
+        }
+        return res.json({ message: 'Duyệt thành công!' });
+      });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
   }
 
-  // @route   PUT api/review/admin/:id/review/:reviewId/decline
+  // @route   PUT api/reviews/admin/:id/review/:reviewId/decline
   // @desc    Từ chối đánh giá của người dùng
   // @access  Private
   async declineReview(req, res) {
@@ -208,7 +232,7 @@ class ReviewController {
     }
   }
 
-  // @route   PUT api/review/admin/:id/review/:reviewId/comment/:commentId/approve
+  // @route   PUT api/reviews/admin/:id/review/:reviewId/comment/:commentId/approve
   // @desc    Duyệt bình luận trong đánh giá của người dùng
   // @access  Private
   async approveComment(req, res) {
@@ -244,7 +268,7 @@ class ReviewController {
     }
   }
 
-  // @route   PUT api/review/admin/:id/review/:reviewId/comment/:commentId/decline
+  // @route   PUT api/reviews/admin/:id/review/:reviewId/comment/:commentId/decline
   // @desc    Từ chối bình luận trong đánh giá của người dùng
   // @access  Private
   async declineComment(req, res) {

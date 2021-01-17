@@ -20,3 +20,4 @@ export { default as PackedOrders } from './order/packed';
 export { default as TransportingOrders } from './order/transporting';
 export { default as ComponentToPrint } from './invoice';
 export { default as OrderModal } from './order_modal';
+export { default as ReviewsProducts } from './review/products';

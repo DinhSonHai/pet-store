@@ -1,0 +1,11 @@
+.pet-details {
+    &__comments {
+        margin-top: 1rem;
+        .ant-card-bordered {
+            border: 1px solid var(--fourthstream-color) !important;
+        }
+    }
+}
+.pet-details__comments--loader {
+    text-align: center;
+}
