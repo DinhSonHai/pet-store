@@ -1,6 +1,7 @@
 import {
   GET_ADMIN_STATISTICAL,
   GET_EMPLOYEE_STATISTICAL,
+  GET_ADMIN_OVERALL_STATISTICAL,
   STATISTICAL_ERROR
 } from '../types';
 
@@ -13,7 +14,9 @@ const initialState = {
   todaySales: null,
   newestOrders: null,
   newestReviews: null,
-  newestComments: null
+  newestComments: null,
+  monthlyRevenues: null,
+  annualRevenues: null
 };
 
 export default function (state = initialState, action) {
@@ -38,6 +41,20 @@ export default function (state = initialState, action) {
         newestReviews: payload.newestReviews,
         newestComments: payload.newestComments,
         todaySales: payload.todaySales
+      };
+    case GET_ADMIN_OVERALL_STATISTICAL:
+      return {
+        ...state,
+        isAuthenticated: true,
+        loading: false,
+        todayRevenues: payload.todayRevenues,
+        todayBills: payload.todayBills,
+        todaySales: payload.todaySales,
+        newestOrders: payload.newestOrders,
+        newestReviews: payload.newestReviews,
+        newestComments: payload.newestComments,
+        monthlyRevenues: payload.monthlyRevenues,
+        annualRevenues: payload.annualRevenues
       };
     case STATISTICAL_ERROR:
       return state;

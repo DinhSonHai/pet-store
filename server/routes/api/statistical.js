@@ -15,6 +15,11 @@ router.get('/todayrevenues', [authAdmin, checkPermission], StatisticalController
 // @access  Admin, Private
 router.get('/monthlyrevenues', [authAdmin, checkPermission], StatisticalController.getMonthlyRevenues);
 
+// @route   GET api/statistical/annualrevenues
+// @desc    Thống kê doanh thu theo năm
+// @access  Admin, Private
+router.get('/annualrevenues', [authAdmin, checkPermission], StatisticalController.getAnnualRevenues);
+
 // @route   GET api/statistical/newestorders
 // @desc    Lấy số đơn hàng mới
 // @access  Private

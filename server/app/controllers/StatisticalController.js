@@ -44,12 +44,39 @@ class StatisticalController {
       if (!bill) {
         return res
           .status(404)
-          .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
+          .json({ errors: [{ msg: 'Doanh thu tháng này vẫn chưa có!' }] });
       }
       let monthlyRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
       return res.json({ monthlyRevenues });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
+  // @route   GET api/statistical/annualrevenues
+  // @desc    Thống kê doanh thu theo năm
+  // @access  Admin, Private
+  async getAnnualRevenues(req, res) {
+    const now = new Date();
+    const fromDate = new Date(now.getFullYear(), 0, 1);
+    console.log(fromDate)
+    const toDate = new Date(now.getFullYear() + 1, 0, 0);
+    try {
+      let bill = await Bill.find({ 
+        deliveriedAt: {
+          '$gte': fromDate, '$lte': toDate
+      }});
+      if (!bill) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Doanh thu năm này vẫn chưa có!' }] });
+      }
+      let annualRevenues = bill.reduce((total, current) => {
+        return total + current.totalMoney;
+      }, 0);
+      return res.json({ annualRevenues });
     } catch (err) {
       return res.status(500).send('Server Error');
     }

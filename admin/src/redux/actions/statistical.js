@@ -1,5 +1,5 @@
 import api from '../../api';
-import {   GET_ADMIN_STATISTICAL, GET_EMPLOYEE_STATISTICAL, STATISTICAL_ERROR } from '../types';
+import {   GET_ADMIN_STATISTICAL, GET_EMPLOYEE_STATISTICAL, GET_ADMIN_OVERALL_STATISTICAL, STATISTICAL_ERROR } from '../types';
 import { notification } from 'antd';
 
 //Lấy dữ liệu thống kê admin có thể xem
@@ -41,6 +41,38 @@ export const loadEmployeeStatisticalData = () => async (dispatch) => {
         newestReviews: resNewestReviews.data,
         newestComments: resNewestComments.data,
         todaySales: resTodaySales.data,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: STATISTICAL_ERROR,
+    });
+  }
+};
+
+//Lấy dữ liệu thống kê tổng quan admin có thể xem
+export const loadOverallStatisticalData = () => async (dispatch) => {
+  try {
+    const resTodayRevenues = await api.get('/statistical/todayrevenues');
+    const resTodayBills = await api.get('/statistical/todaybills');
+    const resTodaySales = await api.get('/statistical/todaysales');
+    const resNewestOrders = await api.get('/statistical/newestorders');
+    const resNewestReviews = await api.get('/statistical/newestreviews');
+    const resNewestComments = await api.get('/statistical/newestcomments');
+    const resMonthlyRevenues = await api.get('/statistical/monthlyrevenues');
+    const resAnnualRevenues = await api.get('/statistical/annualrevenues');
+
+    dispatch({
+      type: GET_ADMIN_OVERALL_STATISTICAL,
+      payload: {
+        todayRevenues: resTodayRevenues.data,
+        todayBills: resTodayBills.data,
+        todaySales: resTodaySales.data,
+        newestOrders: resNewestOrders.data,
+        newestReviews: resNewestReviews.data,
+        newestComments: resNewestComments.data,
+        monthlyRevenues: resMonthlyRevenues.data,
+        annualRevenues: resAnnualRevenues.data
       },
     });
   } catch (err) {
