@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { loadAdminStatisticalData, loadEmployeeStatisticalData } from '../../redux/actions/statistical';
+import { TodayRevenues, TodayBills, TodaySales, NewestOrders, NewestReviews, NewestComments } from '../../icons';
 
 import { Skeleton, Switch, Card, Avatar, Col, Row } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
@@ -11,7 +12,7 @@ import './styles.scss';
 const { Meta } = Card;
 
 const DashBoard = ({
-  statistical: { todayRevenues, todayBills, todaySales, newestOrders },
+  statistical: { todayRevenues, todayBills, todaySales, newestOrders, newestReviews, newestComments },
   auth: { user },
   loadAdminStatisticalData,
   loadEmployeeStatisticalData,
@@ -62,7 +63,7 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://firebasestorage.googleapis.com/v0/b/pet-store-ed9d7.appspot.com/o/todayRevenues.png?alt=media&token=76b05248-8c61-4808-b1a7-cc3c4447e213" />
+                      <TodayRevenues />
                     }
                     title={todayRevenues.todayRevenues.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) || "0đ"}
                     description="Tổng số doanh thu ngày hôm nay"
@@ -82,7 +83,7 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://firebasestorage.googleapis.com/v0/b/pet-store-ed9d7.appspot.com/o/todayBills.png?alt=media&token=4100056f-62f2-4966-9dc9-3d2f25b4b829" />
+                      <TodayBills />
                     }
                     title={todayBills.billCount || "0"}
                     description="Tổng hóa đơn hoàn tất hôm nay"
@@ -102,7 +103,7 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://firebasestorage.googleapis.com/v0/b/pet-store-ed9d7.appspot.com/o/todaySales.png?alt=media&token=7b84b030-d813-456c-adbe-14bb14c65c55" />
+                      <TodaySales />
                     }
                     title={todaySales.productCount || "0"}
                     description="Tổng sản phẩm bán ra hôm nay"
@@ -122,7 +123,7 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://firebasestorage.googleapis.com/v0/b/pet-store-ed9d7.appspot.com/o/newestOrders.png?alt=media&token=4442630f-e191-4705-ade9-53f1b79fa212" />
+                      <NewestOrders />
                     }
                     title={newestOrders.orderCount || "0"}
                     description="Tổng số đơn hàng mới đặt hôm nay"
@@ -135,7 +136,7 @@ const DashBoard = ({
         {/* End admin content */}
 
         {/* Employee content */}
-        { user && user.role === 1 && (<div className="site-card-wrapper">
+        { user && user.role === 1 && newestOrders && newestReviews && newestComments && todaySales && (<div className="site-card-wrapper">
           <Row gutter={16}>
             <Col span={6}>
               <Card
@@ -149,10 +150,10 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                      <NewestOrders />
                     }
-                    title="Card title"
-                    description="This is the description"
+                    title={ newestOrders.orderCount || "0"}
+                    description="Tổng số đơn hàng mới đặt hôm nay"
                   />
                 </Skeleton>
               </Card>
@@ -169,10 +170,10 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                      <NewestReviews />
                     }
-                    title="Card title"
-                    description="This is the description"
+                    title={ newestReviews.reviewCount || "0"}
+                    description="Tổng số đánh giá sản phẩm mới nhất"
                   />
                 </Skeleton>
               </Card>
@@ -189,10 +190,10 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                      <NewestComments />
                     }
-                    title="Card title"
-                    description="This is the description"
+                    title={ newestComments.commentCount || "0"}
+                    description="Tổng số bình luận mới nhất"
                   />
                 </Skeleton>
               </Card>
@@ -209,10 +210,10 @@ const DashBoard = ({
                 <Skeleton loading={loading} avatar active>
                   <Meta
                     avatar={
-                      <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                      <TodaySales />
                     }
-                    title="Card title"
-                    description="This is the description"
+                    title={todaySales.productCount || "0"}
+                    description="Tổng sản phẩm bán ra hôm nay"
                   />
                 </Skeleton>
               </Card>

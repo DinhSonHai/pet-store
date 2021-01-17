@@ -34,9 +34,9 @@ export default function (state = initialState, action) {
         ...state,
         isAuthenticated: true,
         loading: false,
-        newestOrders: payload.newestOrder,
-        newestReviews: payload.newestReview,
-        newestComments: payload.newestComment,
+        newestOrders: payload.newestOrders,
+        newestReviews: payload.newestReviews,
+        newestComments: payload.newestComments,
         todaySales: payload.todaySales
       };
     case STATISTICAL_ERROR:
