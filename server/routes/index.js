@@ -9,6 +9,7 @@ const receipts = require('./api/receipts');
 const employee = require('./api/employee');
 const reviews = require('./api/reviews');
 const bills = require('./api/bills');
+const statistical = require('./api/statistical');
 
 function route(app) {
   //Products route
@@ -43,6 +44,9 @@ function route(app) {
 
   // Bill route
   app.use('/api/bills', bills);
+  
+  // Statistical route
+  app.use('/api/statistical', statistical);
 }
 
 module.exports = route;

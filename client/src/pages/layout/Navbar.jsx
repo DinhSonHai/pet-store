@@ -2,17 +2,18 @@
 import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { CartAction, UserNav, Loader } from '../../components';
 import { getProductsByType } from '../../redux/actions/products';
 import { connect } from 'react-redux';
 import './styles.scss';
+import {withRouter} from 'react-router-dom';
 
 const { Search } = Input;
 
-const NavBar = ({ auth: { isAuthenticated, user, loading } }) => {
+const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
   const onSearch = (value) => {
-    console.log(value);
+    history.push(`/pets/search?q=${value}`);
   };
   return (
     <section className='navbar'>
@@ -38,7 +39,7 @@ const NavBar = ({ auth: { isAuthenticated, user, loading } }) => {
             ) : !isAuthenticated ? (
               <Fragment>
                 <Link to='/signin'>Đăng nhập</Link>
-                <Link to='/signup'>Đăng kí</Link>
+                <Link to='/signup'>Đăng ký</Link>
               </Fragment>
             ) : (
               <div className='navbar__user'>
@@ -92,8 +93,9 @@ const NavBar = ({ auth: { isAuthenticated, user, loading } }) => {
 
 NavBar.propTypes = {
   getProductsByType: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired
 };
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
-export default connect(mapStateToProps, { getProductsByType })(NavBar);
+export default connect(mapStateToProps, { getProductsByType })(withRouter(NavBar));

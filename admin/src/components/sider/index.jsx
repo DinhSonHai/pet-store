@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import {
@@ -20,7 +21,7 @@ import './styles.scss';
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const SiderComponent = ({ tabState }) => {
+const SiderComponent = ({ tabState, auth: { user } }) => {
   const [style, setStyle] = useState({});
   const onCollapse = (collapsed) => {};
   const onBreakpoint = (broken) => {
@@ -100,11 +101,18 @@ const SiderComponent = ({ tabState }) => {
         <Menu.Item key='frontend' icon={<DesktopOutlined />}>
           <Link to='/?tab=frontend'>Quản lý UI/UX</Link>
         </Menu.Item>
-        <Menu.Item key='statistical' icon={<BarChartOutlined />}>
-          <Link to='/?tab=statistical'>Thống kê</Link>
-        </Menu.Item>
+        { user && user.role === 0 && (
+          <Menu.Item key='statistical' icon={<BarChartOutlined />}>
+            <Link to='/?tab=statistical'>Thống kê</Link>
+          </Menu.Item>
+        )}
       </Menu>
     </Sider>
   );
 };
-export default SiderComponent;
+
+const mapStateToProps = (state) => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps, {})(SiderComponent);

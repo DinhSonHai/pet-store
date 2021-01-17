@@ -7,6 +7,7 @@ import receipts from './receipts';
 import orders from './orders';
 import bills from './bills';
 import reviews from './reviews';
+import statistical from './statistical';
 
 export default combineReducers({
   products,
@@ -17,4 +18,5 @@ export default combineReducers({
   orders,
   bills,
   reviews,
+  statistical,
 });

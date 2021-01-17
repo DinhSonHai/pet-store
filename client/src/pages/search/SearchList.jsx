@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { getProductsByType } from '../../redux/actions/products';
+import { getSearchProductsList } from '../../redux/actions/products';
 import { connect } from 'react-redux';
 
 import {
@@ -30,32 +30,35 @@ import queryString from 'query-string';
 import './styles.scss';
 const { Meta } = Card;
 
-const PetsList = ({
+const SearchList = ({
   data: { products, total },
-  getProductsByType,
+  getSearchProductsList,
   match,
   location,
   history,
 }) => {
+  let q = queryString.parse(location.search).q;
   let filter = queryString.parse(location.search).sort;
   let page = queryString.parse(location.search).page;
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     async function getData() {
       setLoading(true);
-      await getProductsByType(match.params.id, filter, page);
+      await getSearchProductsList(q, filter, page);
       setLoading(false);
     }
     getData();
-  }, [getProductsByType, match.params.id, filter, page]);
+  }, [getSearchProductsList, q, filter, page]);
+
   const handlePagination = async (_page) => {
     if (filter) {
       return history.push(
-        `/pets/${match.params.type}/list/${match.params.id}/?sort=${filter}&page=${_page}`
+        `/pets/search?q=${q}&sort=${filter}&page=${_page}`
       );
     }
     return history.push(
-      `/pets/${match.params.type}/list/${match.params.id}/?page=${_page}`
+      `/pets/search?q=${q}&page=${_page}`
     );
   };
   const menu = (
@@ -68,7 +71,7 @@ const PetsList = ({
       </Menu.Item>
       <Menu.Item key='3' icon={<CaretUpOutlined />}>
         <Link
-          to={`/pets/${match.params.type}/list/${match.params.id}/?sort=asc`}
+          to={`/pets/search?q=${q}&sort=asc`}
         >
           {' '}
           Thứ tự theo: giá thấp đến cao
@@ -76,7 +79,7 @@ const PetsList = ({
       </Menu.Item>
       <Menu.Item key='4' icon={<CaretDownOutlined />}>
         <Link
-          to={`/pets/${match.params.type}/list/${match.params.id}/?sort=desc`}
+          to={`/pets/search?q=${q}&sort=desc`}
         >
           {' '}
           Thứ tự theo: giá cao đến thấp
@@ -92,6 +95,7 @@ const PetsList = ({
       }
     }
   };
+
   return (
     <section className='pets'>
       <div className='container'>
@@ -102,7 +106,7 @@ const PetsList = ({
                 Trang chủ
               </Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>
+            {/* <Breadcrumb.Item>
               <Link className='pets__header-title' to='/'>
                 {match.params.type === 'dog'
                   ? 'Chó cảnh'
@@ -112,7 +116,7 @@ const PetsList = ({
                   ? 'Thức ăn'
                   : match.params.type === 'accessories' && 'Phụ kiện'}
               </Link>
-            </Breadcrumb.Item>
+            </Breadcrumb.Item> */}
             {/* <Breadcrumb.Item>
               <span className='pets__header-title'>Chó Alaska</span>
             </Breadcrumb.Item> */}
@@ -153,7 +157,6 @@ const PetsList = ({
                       </p>
                     </Link>
                     <Button
-                      disabled={product.status ? false : true}
                       onClick={() => handleAddToCart(product)}
                       className='addToCart'
                       icon={<AddToCart />}
@@ -178,14 +181,14 @@ const PetsList = ({
       </div>
     </section>
   );
-};
+}
 
-PetsList.propTypes = {
-  getProductsByType: PropTypes.func.isRequired,
+SearchList.propTypes = {
+  getSearchProductsList: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   data: state.products,
 });
 
-export default connect(mapStateToProps, { getProductsByType })(PetsList);
+export default connect(mapStateToProps, { getSearchProductsList })(SearchList);

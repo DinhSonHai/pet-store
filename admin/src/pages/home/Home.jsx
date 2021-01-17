@@ -13,6 +13,7 @@ import {
   Order,
   Bill,
   Review,
+  Statistical,
 } from '../../pages';
 
 import queryString from 'query-string';
@@ -42,6 +43,8 @@ const Home = ({ location }) => {
         return <Bill />;
       case 'review':
         return <Review />;
+      case 'statistical':
+        return <Statistical />;
       default:
         return <DashBoard />;
     }

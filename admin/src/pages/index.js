@@ -12,3 +12,4 @@ export { default as Order } from './order/Order';
 export { default as Invoice } from './invoice/Invoice';
 export { default as Bill } from './bill/Bill';
 export { default as Review } from './review/Review';
+export { default as Statistical } from './statistical/Statistical';
