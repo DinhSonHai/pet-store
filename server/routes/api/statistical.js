@@ -45,4 +45,14 @@ router.get('/todaybills', [authAdmin, checkPermission], StatisticalController.ge
 // @access  Private
 router.get('/todaysales', authAdmin, StatisticalController.getTodaySales);
 
+// @route   GET api/statistical/ordersdatachart
+// @desc    Lấy dữ liệu số đơn được đặt theo từng tháng
+// @access  Private
+router.get('/ordersdatachart', [authAdmin, checkPermission], StatisticalController.getOrdersDataChart);
+
+// @route   GET api/statistical/revenuesdatachart
+// @desc    Lấy dữ liệu doanh thu theo từng tháng
+// @access  Private
+router.get('/revenuesdatachart', [authAdmin, checkPermission], StatisticalController.getRevenuesDataChart);
+
 module.exports = router;

@@ -61,7 +61,6 @@ class StatisticalController {
   async getAnnualRevenues(req, res) {
     const now = new Date();
     const fromDate = new Date(now.getFullYear(), 0, 1);
-    console.log(fromDate)
     const toDate = new Date(now.getFullYear() + 1, 0, 0);
     try {
       let bill = await Bill.find({ 
@@ -181,6 +180,58 @@ class StatisticalController {
     } catch (err) {
       return res.status(500).send('Server Error');
     }
+  }
+
+  // @route   GET api/statistical/ordersdatachart
+  // @desc    Lấy dữ liệu số đơn được đặt theo tháng
+  // @access  Private
+  async getOrdersDataChart(req, res) {
+    const now = new Date();
+    let year = parseInt(req.query.year) || now.getFullYear();
+    let ordersArray = [];
+    for (let i = 0; i < 12; i++) {
+      let fromDate = new Date(year, i, 1);
+      let toDate = new Date(year, i + 1, 0);
+      try {
+        let order = await Order.find({ 
+          createdAt: {
+            '$gte': fromDate, '$lte': toDate
+          }});
+        // let monthlyRevenues = order.reduce((total, current) => {
+        //   return total + current.totalMoney;
+        // }, 0);
+        ordersArray.push(order.length);
+      } catch (err) {
+        return res.status(500).send('Server Error');
+      }
+    }
+    return res.json(ordersArray);
+  }
+
+  // @route   GET api/statistical/revenuesdatachart
+  // @desc    Lấy dữ liệu doanh thu theo từng tháng
+  // @access  Private
+  async getRevenuesDataChart(req, res) {
+    const now = new Date();
+    let year = parseInt(req.query.year) || now.getFullYear();
+    let revenuesArray = [];
+    for (let i = 0; i < 12; i++) {
+      let fromDate = new Date(year, i, 1);
+      let toDate = new Date(year, i + 1, 0);
+      try {
+        let bill = await Bill.find({ 
+          deliveriedAt: {
+            '$gte': fromDate, '$lte': toDate
+          }});
+        let monthlyRevenues = bill.reduce((total, current) => {
+          return total + current.totalMoney;
+        }, 0);
+        revenuesArray.push(monthlyRevenues);
+      } catch (err) {
+        return res.status(500).send('Server Error');
+      }
+    }
+    return res.json(revenuesArray);
   }
 }
 

@@ -1,5 +1,5 @@
 import api from '../../api';
-import {   GET_ADMIN_STATISTICAL, GET_EMPLOYEE_STATISTICAL, GET_ADMIN_OVERALL_STATISTICAL, STATISTICAL_ERROR } from '../types';
+import {   GET_ADMIN_STATISTICAL, GET_EMPLOYEE_STATISTICAL, GET_ADMIN_OVERALL_STATISTICAL, GET_CHART_DATA_STATISTICAL, STATISTICAL_ERROR } from '../types';
 import { notification } from 'antd';
 
 //Lấy dữ liệu thống kê admin có thể xem
@@ -73,6 +73,34 @@ export const loadOverallStatisticalData = () => async (dispatch) => {
         newestComments: resNewestComments.data,
         monthlyRevenues: resMonthlyRevenues.data,
         annualRevenues: resAnnualRevenues.data
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: STATISTICAL_ERROR,
+    });
+  }
+};
+
+//Lấy dữ liệu thống kê biểu đồ
+export const loadChartData = (year) => async (dispatch) => {
+  let resOrdersDataChart = {};
+  let resRevenuesDataChart = {};
+  try {
+    if (year) {
+      resOrdersDataChart = await api.get(`/statistical/ordersdatachart?year=${year}`);
+      resRevenuesDataChart = await api.get(`/statistical/revenuesdatachart?year=${year}`);
+    }
+    else {
+      resOrdersDataChart = await api.get(`/statistical/ordersdatachart?year=${year}`);
+      resRevenuesDataChart = await api.get(`/statistical/revenuesdatachart?year=${year}`);
+    }
+
+    dispatch({
+      type: GET_CHART_DATA_STATISTICAL,
+      payload: {
+        ordersDataChart: resOrdersDataChart.data,
+        revenuesDataChart: resRevenuesDataChart.data,
       },
     });
   } catch (err) {
