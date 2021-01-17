@@ -29,6 +29,32 @@ class StatisticalController {
     }
   }
 
+  // @route   GET api/statistical/monthlyrevenues
+  // @desc    Thống kê doanh thu theo tháng
+  // @access  Admin, Private
+  async getMonthlyRevenues(req, res) {
+    const now = new Date();
+    const fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    try {
+      let bill = await Bill.find({ 
+        deliveriedAt: {
+          '$gte': fromDate, '$lte': toDate
+        }});
+      if (!bill) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Doanh thu hôm nay vẫn chưa có!' }] });
+      }
+      let monthlyRevenues = bill.reduce((total, current) => {
+        return total + current.totalMoney;
+      }, 0);
+      return res.json({ monthlyRevenues });
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+
   // @route   GET api/statistical/newestorders
   // @desc    Lấy số đơn hàng mới
   // @access  Private

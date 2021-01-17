@@ -6,9 +6,14 @@ const checkPermission = require('../../app/middlewares/checkPermission');
 const authAdmin = require('../../app/middlewares/auth_admin');
 
 // @route   GET api/statistical/todayrevenues
-// @desc    Thống kê doanh thu theo ngày
+// @desc    Thống kê doanh thu nagfy hôm nay
 // @access  Admin, Private
 router.get('/todayrevenues', [authAdmin, checkPermission], StatisticalController.getTodayRevenues);
+
+// @route   GET api/statistical/monthlyrevenues
+// @desc    Thống kê doanh thu theo tháng
+// @access  Admin, Private
+router.get('/monthlyrevenues', [authAdmin, checkPermission], StatisticalController.getMonthlyRevenues);
 
 // @route   GET api/statistical/newestorders
 // @desc    Lấy số đơn hàng mới
