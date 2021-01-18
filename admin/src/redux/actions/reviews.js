@@ -11,6 +11,25 @@ export const getAllUncomfirmedReviews = () => async (dispatch) => {
   } catch (err) {}
 };
 
+export const declineReview = (reviewId, productId) => async (dispatch) => {
+  try {
+    const res = await api.put(
+      `/reviews/admin/${reviewId}/${productId}/decline`
+    );
+    dispatch({
+      type: UPDATE_UNCONFIRMED_REVIEWS,
+      payload: reviewId,
+    });
+    message.success(res.data.message);
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) => message.error(error.msg));
+    }
+  }
+};
+
 export const approveReview = (reviewId, productId) => async (dispatch) => {
   try {
     const res = await api.put(

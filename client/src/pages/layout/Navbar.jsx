@@ -2,12 +2,12 @@
 import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from 'antd';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CartAction, UserNav, Loader } from '../../components';
 import { getProductsByType } from '../../redux/actions/products';
 import { connect } from 'react-redux';
 import './styles.scss';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 const { Search } = Input;
 
@@ -93,9 +93,10 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
 
 NavBar.propTypes = {
   getProductsByType: PropTypes.func.isRequired,
-  onSearch: PropTypes.func.isRequired
 };
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
-export default connect(mapStateToProps, { getProductsByType })(withRouter(NavBar));
+export default connect(mapStateToProps, { getProductsByType })(
+  withRouter(NavBar)
+);

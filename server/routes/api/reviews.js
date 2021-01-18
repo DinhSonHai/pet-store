@@ -16,11 +16,11 @@ router.put(
   ReviewController.approveReview
 );
 
-// @route   PUT api/reviews/admin/:id/review/:reviewId/decline
+// @route   PUT api/reviews/admin/:reviewId/:productId/decline
 // @desc    Từ chối đánh giá của người dùng
 // @access  Private
 router.put(
-  '/admin/:id/review/:reviewId/decline',
+  '/admin/:reviewId/:productId/decline',
   authAdmin,
   ReviewController.declineReview
 );

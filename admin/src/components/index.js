@@ -32,3 +32,4 @@ export { default as TodaySalesCard } from './dashboard/today_sales';
 export { default as DashboardLoader } from './dashboard_loader';
 export { default as OrdersChart } from './chart/orders_chart';
 export { default as RevenuesChart } from './chart/revenues_chart';
+export { default as ReviewDetail } from './review/detail';

@@ -25,7 +25,7 @@ const Review = () => {
             tab={
               <span>
                 <UnorderedListOutlined />
-                Chờ xét duyệt trên sản phẩm
+                Chờ xét duyệt đánh giá
               </span>
             }
             key='reviews-products'

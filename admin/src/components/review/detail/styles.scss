@@ -1,0 +1,9 @@
+.review-detail {
+    &__name,
+    &__date,
+    &__content {
+        span {
+            font-weight: 600;
+        }
+    }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Row } from 'antd';
+import { Breadcrumb, Row, Button } from 'antd';
+import { SyncOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { getDashBoardData } from '../../redux/actions/statistical';
 import {
@@ -11,7 +12,6 @@ import {
   NewestCommentsCard,
   TodayBillsCard,
   TodaySalesCard,
-  DashboardLoader,
 } from '../../components';
 import './styles.scss';
 const DashBoard = ({
@@ -28,6 +28,7 @@ const DashBoard = ({
   },
 }) => {
   const [loading, setLoading] = useState(false);
+  const [updateState, setUpdateState] = useState(false);
   useEffect(() => {
     async function getData() {
       setLoading(true);
@@ -35,56 +36,62 @@ const DashBoard = ({
       setLoading(false);
     }
     getData();
-  }, [getDashBoardData]);
+  }, [getDashBoardData, updateState]);
 
   return (
     <section className='dashboard'>
-      <Breadcrumb style={{ margin: '1rem 2rem' }}>
-        <Breadcrumb.Item>Trang chủ quản trị</Breadcrumb.Item>
-      </Breadcrumb>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Breadcrumb style={{ margin: '1rem 2rem' }}>
+          <Breadcrumb.Item>Trang chủ quản trị</Breadcrumb.Item>
+        </Breadcrumb>
+        <Button
+          icon={<SyncOutlined />}
+          onClick={() => setUpdateState(!updateState)}
+          disabled={loading}
+          type='primary'
+        >
+          Cập nhật
+        </Button>
+      </div>
       <div
         className='dashboard__wrap site-layout-background'
         style={{ padding: '1.5rem', minHeight: '100vh' }}
       >
-        {loading ? (
-          <DashboardLoader />
-        ) : (
-          <Row gutter={[16, 16]}>
-            <TodayRevenuesCard
-              loading={loading}
-              todayRevenues={todayRevenues}
-            />
+        <Row gutter={[16, 16]}>
+          <TodayRevenuesCard loading={loading} todayRevenues={todayRevenues} />
 
-            <MonthRevenuesCard
-              loading={loading}
-              monthlyRevenues={monthlyRevenues}
-            />
+          <MonthRevenuesCard
+            loading={loading}
+            monthlyRevenues={monthlyRevenues}
+          />
 
-            <AnnualRevenuesCard
-              loading={loading}
-              annualRevenues={annualRevenues}
-            />
+          <AnnualRevenuesCard
+            loading={loading}
+            annualRevenues={annualRevenues}
+          />
 
-            <TodayNewestOrdersCard
-              loading={loading}
-              newestOrders={newestOrders}
-            />
+          <TodayNewestOrdersCard
+            loading={loading}
+            newestOrders={newestOrders}
+          />
 
-            <NewestReviewsCard
-              loading={loading}
-              newestReviews={newestReviews}
-            />
+          <NewestReviewsCard loading={loading} newestReviews={newestReviews} />
 
-            <NewestCommentsCard
-              loading={loading}
-              newestComments={newestComments}
-            />
+          <NewestCommentsCard
+            loading={loading}
+            newestComments={newestComments}
+          />
 
-            <TodayBillsCard loading={loading} todayBills={todayBills} />
+          <TodayBillsCard loading={loading} todayBills={todayBills} />
 
-            <TodaySalesCard loading={loading} todaySales={todaySales} />
-          </Row>
-        )}
+          <TodaySalesCard loading={loading} todaySales={todaySales} />
+        </Row>
       </div>
     </section>
   );

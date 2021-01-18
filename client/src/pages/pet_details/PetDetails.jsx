@@ -2,7 +2,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card, Rate, Button, message, Tabs } from 'antd';
+import { Row, Col, Card, Rate, Button, message, Tabs, Breadcrumb } from 'antd';
 import { MenuOutlined, StarOutlined } from '@ant-design/icons';
 import { Carousel } from 'react-responsive-carousel';
 import { AddToCartDetail } from '../../icons';
@@ -20,6 +20,7 @@ import { getProductById } from '../../redux/actions/products';
 import { addItem } from '../../utils/cart';
 import { Loader } from '../../components';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 const { TabPane } = Tabs;
 const PetDetails = ({
   getProductById,
@@ -51,7 +52,16 @@ const PetDetails = ({
   return (
     <section className='pet-details'>
       <div className='container'>
-        <h1 className='pet-details__title'>Chi tiết</h1>
+        <Breadcrumb style={{ marginBottom: '1rem' }}>
+          <Breadcrumb.Item>
+            <Link className='petsType__header-title' to='/'>
+              Trang chủ
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <span className='petsType__header-title'>Chi tiết</span>
+          </Breadcrumb.Item>
+        </Breadcrumb>
         <div className='pet-details__content'>
           {loading || !data ? (
             <Loader className={'loader'} />
@@ -63,8 +73,10 @@ const PetDetails = ({
                     <Carousel autoPlay>
                       {data.images.map((img, index) => (
                         <img
-                          width='100%'
-                          height='100%'
+                          style={{
+                            maxWidth: '100%',
+                            height: 'auto',
+                          }}
                           key={index}
                           src={img}
                           alt='No_Image'

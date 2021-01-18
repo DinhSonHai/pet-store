@@ -72,7 +72,10 @@ class ReviewController {
       });
       review.key = review._id;
       await review.save();
-      return res.json({ message: 'Gửi đánh giá thành công' });
+      return res.json({
+        message:
+          'Gửi đánh giá thành công!. Đánh giá của bạn sẽ được phê duyệt phụ thuộc vào nhân phẩm của bạn',
+      });
     } catch (err) {
       return res.status(500).send('Server Error');
     }
@@ -200,33 +203,29 @@ class ReviewController {
     }
   }
 
-  // @route   PUT api/reviews/admin/:id/review/:reviewId/decline
+  // @route   PUT api/reviews/admin/:reviewId/:productId/decline
   // @desc    Từ chối đánh giá của người dùng
   // @access  Private
   async declineReview(req, res) {
     try {
-      let product = await Product.findById({ _id: req.params.id });
+      let product = await Product.findById(req.params.productId);
       if (!product) {
-        return res.status(404).json({ msg: 'Không tìm thấy sản phẩm này.' });
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Không tìm thấy sản phẩm này.' }] });
       }
-      let reviewId = req.params.reviewId;
-      let review = await Review.findById(reviewId);
+      let review = await Review.findById(req.params.reviewId);
       if (!review) {
-        return res.status(404).json({ msg: 'Không tìm thấy đánh giá này.' });
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Không tìm thấy đánh giá này.' }] });
       }
-      let { status } = review;
-      // -1: Không phê duyệt đánh giá
-      // 0: Đăng đánh giá thành công
-      // 1: Đã phê duyệt đánh giá
-      if ((status = 0 || status === 1)) {
-        status = -1;
-        review = await Review.findOneAndUpdate(
-          { _id: reviewId },
-          { $set: { status } },
-          { new: true }
-        );
-      }
-      return res.json(review);
+      await review.remove((err, data) => {
+        if (err) {
+          return res.status(400).json({ errors: [{ msg: 'Hủy thất bại!' }] });
+        }
+        return res.json({ message: 'Hủy thành công!' });
+      });
     } catch (err) {
       return res.status(500).send('Server Error');
     }

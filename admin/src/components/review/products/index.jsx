@@ -4,6 +4,7 @@ import {
   getAllUncomfirmedReviews,
   approveReview,
 } from '../../../redux/actions/reviews';
+import { ReviewDetail } from '../../../components';
 import { Button, Table, Tooltip, message } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -15,6 +16,8 @@ const ReviewsProducts = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [updateState, setUpdateState] = useState(false);
+  const [view, setView] = useState(false);
+  const [data, setData] = useState(null);
   const columns = [
     {
       title: 'Avatar',
@@ -67,7 +70,16 @@ const ReviewsProducts = ({
             >
               Duyệt
             </Button>{' '}
-            |<Button type='link'>Chi tiết</Button>
+            |
+            <Button
+              type='link'
+              onClick={() => {
+                setData(record);
+                setView(true);
+              }}
+            >
+              Chi tiết
+            </Button>
           </Fragment>
         );
       },
@@ -112,6 +124,7 @@ const ReviewsProducts = ({
           showSizeChanger: false,
         }}
       />
+      {view && <ReviewDetail data={data} setView={setView} />}
     </Fragment>
   );
 };
