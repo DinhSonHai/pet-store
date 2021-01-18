@@ -1,4 +1,5 @@
 import api from '../../api';
+import { loadUser } from './auth';
 import { notification, message } from 'antd';
 
 // Đặt hàng vai trò khách
@@ -27,6 +28,7 @@ export const orderProducts = (data) => async (dispatch) => {
 export const orderProductsAuth = (data) => async (dispatch) => {
   try {
     const res = await api.post('/orders/auth', data);
+    dispatch(loadUser());
     notification.open({
       message: 'Đặt hàng Thành công!',
       description: res.data.message,

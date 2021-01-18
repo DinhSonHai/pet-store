@@ -26,7 +26,7 @@ const PetsPost = ({ match, getTypeById, types: { type } }) => {
           <Loader className={'pets-post-loader'} />
         ) : (
           <CKEditor
-            data={type.content}
+            data={type.content || ''}
             config={{
               toolbar: false,
             }}

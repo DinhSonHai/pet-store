@@ -5,7 +5,11 @@ const authAdmin = require('../../app/middlewares/auth_admin');
 const checkPermission = require('../../app/middlewares/checkPermission');
 const ReviewController = require('../../app/controllers/ReviewController');
 
-const { validateComment, validateReview } = require('../../helpers/valid');
+const {
+  validateComment,
+  validateReview,
+  validateCommentAdmin,
+} = require('../../helpers/valid');
 
 // @route   PUT api/reviews/admin/:reviewId/:productId/approve
 // @desc    Duyệt đánh giá của người dùng
@@ -62,27 +66,35 @@ router.get('/:id/review', ReviewController.getProductReview);
 // @access  Private
 router.post('/:id/review', [auth, validateReview], ReviewController.review);
 
-// @route   PUT api/reviews/:id/review/:reviewId
-// @desc    Bình luận trên 1 đánh giá
+// @route   PUT api/reviews/:reviewId/review/:productId
+// @desc    Comment on a review client
 // @access  Private
 router.put(
-  '/:id/review/:reviewId',
+  '/:reviewId/review/:productId',
   [auth, validateComment],
   ReviewController.comment
 );
-
-// @route   DELETE api/reviews/:id/review/:reviewId/comment/:commentId
-// @desc    Xóa bình luận trên 1 đánh giá
+// @route   PUT api/reviews/:reviewId/response/:productId
+// @desc    Response on a review admin
 // @access  Private
-router.delete(
-  '/:id/review/:reviewId/comment/:commentId',
-  auth,
-  ReviewController.deleteComment
+router.put(
+  '/:reviewId/response/:productId',
+  [authAdmin, validateCommentAdmin],
+  ReviewController.response
 );
 
-// @route   DELETE api/reviews/:id/review/:reviewId
-// @desc    Xóa bình luận
-// @access  Private
-router.delete('/:id/review/:reviewId', auth, ReviewController.deleteReview);
+// // @route   DELETE api/reviews/:id/review/:reviewId/comment/:commentId
+// // @desc    Xóa bình luận trên 1 đánh giá
+// // @access  Private
+// router.delete(
+//   '/:id/review/:reviewId/comment/:commentId',
+//   auth,
+//   ReviewController.deleteComment
+// );
+
+// // @route   DELETE api/reviews/:id/review/:reviewId
+// // @desc    Xóa bình luận
+// // @access  Private
+// router.delete('/:id/review/:reviewId', auth, ReviewController.deleteReview);
 
 module.exports = router;

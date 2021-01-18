@@ -68,7 +68,7 @@ const PetDetails = ({
           ) : (
             <Fragment>
               <div className='pet-details__wrap'>
-                <Row gutter={[16, 16]}>
+                <Row gutter={[16, 32]}>
                   <Col xs={24} sm={24} md={12} lg={12}>
                     <Carousel autoPlay>
                       {data.images.map((img, index) => (
@@ -95,7 +95,7 @@ const PetDetails = ({
                             favoriteState={
                               user
                                 ? user.favoriteProducts.some(
-                                    (p) => p === data._id
+                                    (p) => p.toString() === data._id.toString()
                                   )
                                 : null
                             }

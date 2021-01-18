@@ -5,7 +5,7 @@ const DetailDescription = ({ desc }) => {
   return (
     <section className='pet-details__description'>
       <CKEditor
-        data={desc}
+        data={desc || ''}
         config={{
           toolbar: false,
         }}

@@ -104,4 +104,9 @@ router.put('/favorite', auth, AuthController.favoriteProduct);
 // @access  Private
 router.get('/favorite', auth, AuthController.getFavoriteProducts);
 
+// @route   GET api/auth/purchased
+// @desc    Lấy sản phẩm đã mua
+// @access  Private
+router.get('/purchased', auth, AuthController.getPurchasedProducts);
+
 module.exports = router;

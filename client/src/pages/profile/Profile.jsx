@@ -7,6 +7,7 @@ import {
   ProfileAddress,
   ProfileWishlist,
   ProfileOrder,
+  ProfilePurchased,
 } from '../../components';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
@@ -41,6 +42,8 @@ const Profile = ({ location, auth: { user } }) => {
                 <ProfileWishlist />
               ) : tabState === 'orders' ? (
                 <ProfileOrder />
+              ) : tabState === 'purchased' ? (
+                <ProfilePurchased />
               ) : (
                 !tabState && <ProfileInfo />
               )}

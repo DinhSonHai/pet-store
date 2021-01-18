@@ -622,8 +622,7 @@ class AuthController {
             errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
           });
         }
-        updateUser.password = undefined;
-        return res.json(updateUser);
+        return res.json({ message: 'Cập nhật thành công' });
       });
     } catch (err) {
       return res.status(500).send('Server Error');
@@ -733,8 +732,7 @@ class AuthController {
                 ],
               });
             }
-            updateUser.password = undefined;
-            return res.json(updateUser);
+            return res.json({ message: 'Cập nhật thành công' });
           });
         })
         .catch((err) =>
@@ -779,8 +777,7 @@ class AuthController {
             errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
           });
         }
-        updateUser.password = undefined;
-        return res.json(updateUser);
+        return res.json({ message: 'Cập nhật thành công' });
       });
     } catch (err) {
       return res.status(500).send('Server Error');
@@ -895,8 +892,7 @@ class AuthController {
                 ],
               });
             }
-            updateUser.password = undefined;
-            return res.json(updateUser);
+            return res.json({ message: 'Cập nhật thành công' });
           });
         })
         .catch((err) =>
@@ -928,7 +924,9 @@ class AuthController {
           .status(404)
           .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
       }
-      let isHave = user.favoriteProducts.includes(productId);
+      const isHave = user.favoriteProducts.some(
+        (item) => item.toString() === productId.toString()
+      );
       if (isHave) {
         const index = user.favoriteProducts.indexOf(productId);
         user.favoriteProducts.splice(index, 1);
@@ -982,6 +980,45 @@ class AuthController {
         return res.json(getFavoriteProducts);
       }
       return res.json(getFavoriteProducts);
+    } catch (err) {
+      return res.status(500).send('Server Error');
+    }
+  }
+  // @route   GET api/auth/purchased
+  // @desc    Lấy sản phẩm đã mua
+  // @access  Private
+  async getPurchasedProducts(req, res) {
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+      }
+      let length = user.purchasedProducts.length;
+      let getPurchasedProducts = [];
+      if (length > 0) {
+        for (let i = 0; i < length; ++i) {
+          let product = await Product.findById(user.favoriteProducts[i]);
+          if (!product) {
+            return res
+              .status(404)
+              .json({ errors: [{ msg: 'Sản phẩm không tồn tại!' }] });
+          }
+          getPurchasedProducts = [
+            {
+              _id: product._id,
+              productName: product.productName,
+              price: product.price,
+              image: product.images[0],
+              starRatings: product.starRatings,
+            },
+            ...getPurchasedProducts,
+          ];
+        }
+        return res.json(getPurchasedProducts);
+      }
+      return res.json(getPurchasedProducts);
     } catch (err) {
       return res.status(500).send('Server Error');
     }

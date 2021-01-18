@@ -6,6 +6,7 @@ import {
   ContainerOutlined,
   ShopOutlined,
   HeartOutlined,
+  DollarOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import './styles.scss';
@@ -42,6 +43,14 @@ export default ({ tab }) => {
           to='/profile/?tab=wishlist'
         >
           <HeartOutlined /> Sản phẩm ưa thích
+        </Link>
+      </span>
+      <span>
+        <Link
+          style={tab === 'purchased' ? styleState : {}}
+          to='/profile/?tab=purchased'
+        >
+          <DollarOutlined /> Sản phẩm đã mua
         </Link>
       </span>
     </Card>

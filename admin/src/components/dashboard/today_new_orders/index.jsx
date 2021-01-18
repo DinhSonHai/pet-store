@@ -16,7 +16,7 @@ const TodayNewestOrdersCard = ({ loading, newestOrders }) => {
           <Meta
             avatar={<NewestOrders />}
             title={newestOrders || '0'}
-            description={`Hóa đơn chờ xét duyệt`}
+            description={`Đơn hàng chờ xét duyệt`}
           />
         </Skeleton>
       </Card>

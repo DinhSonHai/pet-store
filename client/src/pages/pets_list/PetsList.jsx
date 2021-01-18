@@ -16,8 +16,6 @@ import {
   Pagination,
 } from 'antd';
 import {
-  HeartOutlined,
-  StarOutlined,
   CaretDownOutlined,
   CaretUpOutlined,
   DownOutlined,
@@ -60,12 +58,6 @@ const PetsList = ({
   };
   const menu = (
     <Menu>
-      <Menu.Item key='1' icon={<StarOutlined />}>
-        Thứ tự theo: điểm đánh giá
-      </Menu.Item>
-      <Menu.Item key='2' icon={<HeartOutlined />}>
-        Thứ tự theo: mức độ yêu thích
-      </Menu.Item>
       <Menu.Item key='3' icon={<CaretUpOutlined />}>
         <Link
           to={`/pets/${match.params.type}/list/${match.params.id}/?sort=asc`}

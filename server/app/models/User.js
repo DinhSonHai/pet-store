@@ -33,6 +33,7 @@ const UserSchema = new Schema({
     default: '',
   },
   favoriteProducts: [{ type: Schema.Types.ObjectId, ref: 'product' }],
+  purchasedProducts: [{ type: Schema.Types.ObjectId, ref: 'product' }],
   resetPasswordLink: {
     type: String,
     default: '',

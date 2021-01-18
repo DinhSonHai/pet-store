@@ -13,6 +13,7 @@ export { default as ProfileAddress } from './profile/address';
 export { default as ProfileInfo } from './profile/user_info';
 export { default as ProfileOrder } from './profile/orders';
 export { default as ProfileWishlist } from './profile/wishlist';
+export { default as ProfilePurchased } from './profile/purchased';
 export { default as Loader } from './loader';
 export { default as ProgressBar } from './upload';
 export { default as AddressModal } from './modal/address';

@@ -193,10 +193,27 @@ module.exports.validateReview = [
     .notEmpty()
     .isFloat({ min: 0, max: 5 })
     .withMessage('Số đánh giá phải nằm trong khoảng từ 0 đến 5'),
-  check('comment', 'Vui lòng nhập bình luận').notEmpty(),
+  check('comment', 'Vui lòng nhập bình luận')
+    .notEmpty()
+    .isLength({
+      min: 2,
+      max: 1000,
+    })
+    .withMessage('Đáng giá tối thiểu 2 kí tự và tối ta 1000 kí tự'),
 ];
 
 // Valid comment on review content
 module.exports.validateComment = [
+  check('replyComment', 'Vui lòng nhập bình luận')
+    .notEmpty()
+    .isLength({
+      min: 2,
+      max: 1000,
+    })
+    .withMessage('Đáng giá tối thiểu 2 kí tự và tối ta 1000 kí tự'),
+];
+
+// Valid comment on review content
+module.exports.validateCommentAdmin = [
   check('replyComment', 'Vui lòng nhập bình luận').notEmpty(),
 ];

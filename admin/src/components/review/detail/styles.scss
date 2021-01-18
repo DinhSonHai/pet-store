@@ -1,9 +1,18 @@
 .review-detail {
     &__name,
     &__date,
-    &__content {
+    &__content,
+    &__product {
         span {
             font-weight: 600;
+        }
+    }
+    &__name {
+        margin-bottom: 1em;
+    }
+    &__product {
+        i {
+            color: var(--mainstream-color);
         }
     }
 }

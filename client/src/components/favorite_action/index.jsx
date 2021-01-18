@@ -27,10 +27,10 @@ const FavoriteAction = ({
     }
     setIsProcessing(true);
     const res = await updateFavorite(productId);
+    setIsProcessing(false);
     if (!res) {
       message.success('Đã thêm sản phẩm vào mục yêu thích.');
     }
-    setIsProcessing(false);
     if (isFavorite) {
       setIsFavorite(false);
       return;

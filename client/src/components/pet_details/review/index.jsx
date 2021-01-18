@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Form, Input, Button, Card, Rate, message, notification } from 'antd';
+import { LoginOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { review } from '../../../redux/actions/review';
 import './styles.scss';
 
@@ -11,9 +13,10 @@ const desc = [
   'Hài lòng',
   'Rất hài lòng',
 ];
-const DetailReview = ({ auth: { isAuthenticated }, id, review }) => {
+const DetailReview = ({ auth: { isAuthenticated, user }, id, review }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [star, setStar] = useState(5);
+  const history = useHistory();
   const onChange = (value) => {
     setStar(value);
   };
@@ -40,38 +43,80 @@ const DetailReview = ({ auth: { isAuthenticated }, id, review }) => {
   return (
     <section className='pet-details__review'>
       <Card>
-        <Form
-          layout='vertical'
-          name='normal_review'
-          size='large'
-          onFinish={onFinish}
-        >
-          <Form.Item>
-            <Rate tooltips={desc} defaultValue={star} onChange={onChange} />
-            {star ? (
-              <span className='ant-rate-text'>{desc[star - 1]}</span>
-            ) : (
-              ''
-            )}
-          </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: 'Vui lòng nhập nội dung!',
-              },
-            ]}
-            name='comment'
-            label='Nội dung'
+        {isAuthenticated ? (
+          <Form
+            layout='vertical'
+            name='normal_review'
+            size='large'
+            onFinish={onFinish}
           >
-            <Input.TextArea rows={4} placeholder='Nội dung' />
-          </Form.Item>
-          <Form.Item style={{ textAlign: 'right' }}>
-            <Button type='primary' htmlType='submit' loading={confirmLoading}>
-              Gửi đánh giá
+            <Form.Item>
+              <Rate tooltips={desc} defaultValue={star} onChange={onChange} />
+              {star ? (
+                <span className='ant-rate-text'>{desc[star - 1]}</span>
+              ) : (
+                ''
+              )}
+            </Form.Item>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng nhập nội dung!',
+                },
+              ]}
+              name='comment'
+              label='Nội dung'
+            >
+              <Input.TextArea
+                disabled={
+                  user &&
+                  !user.purchasedProducts.some(
+                    (p) => p.toString() === id.toString()
+                  )
+                }
+                rows={4}
+                placeholder='Nội dung'
+              />
+            </Form.Item>
+            <Form.Item style={{ textAlign: 'right' }}>
+              {user &&
+              user.purchasedProducts.some(
+                (p) => p.toString() === id.toString()
+              ) ? (
+                <Button
+                  type='primary'
+                  htmlType='submit'
+                  loading={confirmLoading}
+                >
+                  Gửi đánh giá
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    notification.open({
+                      message: 'Thông báo',
+                      description:
+                        'Bạn chưa mua sản phẩm này nên không thể đánh giá!',
+                    });
+                  }}
+                >
+                  {`Bạn chưa mua sản phẩm này :(`}
+                </Button>
+              )}
+            </Form.Item>
+          </Form>
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            <Button
+              icon={<LoginOutlined />}
+              type='dashed'
+              onClick={() => history.push('/signin')}
+            >
+              Đăng nhập để đánh giá
             </Button>
-          </Form.Item>
-        </Form>
+          </div>
+        )}
       </Card>
     </section>
   );

@@ -65,7 +65,9 @@ const ReviewsProducts = ({
         return (
           <Fragment>
             <Button
-              onClick={() => handleApproveReview(record._id, record.productId)}
+              onClick={() =>
+                handleApproveReview(record._id, record.productId._id)
+              }
               type='link'
             >
               Duyệt
@@ -124,7 +126,13 @@ const ReviewsProducts = ({
           showSizeChanger: false,
         }}
       />
-      {view && <ReviewDetail data={data} setView={setView} />}
+      {view && (
+        <ReviewDetail
+          approveReview={approveReview}
+          data={data}
+          setView={setView}
+        />
+      )}
     </Fragment>
   );
 };

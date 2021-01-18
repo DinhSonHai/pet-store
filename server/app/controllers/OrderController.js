@@ -581,6 +581,15 @@ class OrderController {
               errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
             });
           }
+          const isPurchased = user.purchasedProducts.some(
+            (item) => item.toString() === product._id.toString()
+          );
+          if (!isPurchased) {
+            user.purchasedProducts = [
+              product._id.toString(),
+              ...user.purchasedProducts,
+            ];
+          }
           product.quantity = product.quantity - cart[i].amount;
           if (product.quantity <= 0) {
             product.status = false;
@@ -595,6 +604,7 @@ class OrderController {
             price: product.price,
           });
           detail.key = detail._id;
+          await user.save();
           await detail.save();
           await product.save();
         }

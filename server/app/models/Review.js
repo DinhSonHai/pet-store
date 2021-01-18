@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const ReviewSchema = new Schema({
   key: { type: Schema.Types.ObjectId, required: true },
-  userId: { type: Schema.Types.ObjectId, ref: 'user' },
+  userId: { type: Schema.Types.ObjectId, ref: 'user', default: null },
   productId: { type: Schema.Types.ObjectId, ref: 'product' },
   name: { type: String, trim: true },
   avatar: { type: String, trim: true },
@@ -14,7 +14,12 @@ const ReviewSchema = new Schema({
   commentedAt: { type: Date, default: dayjs().toISOString() },
   replyComment: [
     {
-      userReplyId: { type: Schema.Types.ObjectId, ref: 'user' },
+      userReplyId: { type: Schema.Types.ObjectId, ref: 'user', default: null },
+      adminReplyId: {
+        type: Schema.Types.ObjectId,
+        ref: 'employee',
+        default: null,
+      },
       name: { type: String, trim: true },
       avatar: { type: String, trim: true },
       replyComment: { type: String, trim: true },

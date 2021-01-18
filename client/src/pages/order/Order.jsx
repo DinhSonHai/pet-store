@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Col, Row, Card, Button, Radio } from 'antd';
 import equal from 'fast-deep-equal';
 import { connect } from 'react-redux';
+import { CaretLeftOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import { orderProducts, orderProductsAuth } from '../../redux/actions/order';
 import PropTypes from 'prop-types';
 import store from '../../store';
@@ -140,7 +142,15 @@ const Order = ({
             </Card>
           </Col>
           <Col xs={24} sm={24} md={24} lg={9} className='order__order'>
-            <Card title='Đơn hàng'>
+            <Card
+              extra={
+                <div className='checkout__update-cart'>
+                  <CaretLeftOutlined />
+                  <Link to='/checkout'>Sửa địa chỉ</Link>
+                </div>
+              }
+              title='Đơn hàng'
+            >
               <div className='order__products'>
                 {cartState.map((item) => (
                   <div key={item._id} className='order__products--content'>

@@ -16,8 +16,6 @@ import {
   Pagination,
 } from 'antd';
 import {
-  HeartOutlined,
-  StarOutlined,
   CaretDownOutlined,
   CaretUpOutlined,
   DownOutlined,
@@ -53,34 +51,20 @@ const SearchList = ({
 
   const handlePagination = async (_page) => {
     if (filter) {
-      return history.push(
-        `/pets/search?q=${q}&sort=${filter}&page=${_page}`
-      );
+      return history.push(`/pets/search?q=${q}&sort=${filter}&page=${_page}`);
     }
-    return history.push(
-      `/pets/search?q=${q}&page=${_page}`
-    );
+    return history.push(`/pets/search?q=${q}&page=${_page}`);
   };
   const menu = (
     <Menu>
-      <Menu.Item key='1' icon={<StarOutlined />}>
-        Thứ tự theo: điểm đánh giá
-      </Menu.Item>
-      <Menu.Item key='2' icon={<HeartOutlined />}>
-        Thứ tự theo: mức độ yêu thích
-      </Menu.Item>
       <Menu.Item key='3' icon={<CaretUpOutlined />}>
-        <Link
-          to={`/pets/search?q=${q}&sort=asc`}
-        >
+        <Link to={`/pets/search?q=${q}&sort=asc`}>
           {' '}
           Thứ tự theo: giá thấp đến cao
         </Link>
       </Menu.Item>
       <Menu.Item key='4' icon={<CaretDownOutlined />}>
-        <Link
-          to={`/pets/search?q=${q}&sort=desc`}
-        >
+        <Link to={`/pets/search?q=${q}&sort=desc`}>
           {' '}
           Thứ tự theo: giá cao đến thấp
         </Link>
@@ -181,7 +165,7 @@ const SearchList = ({
       </div>
     </section>
   );
-}
+};
 
 SearchList.propTypes = {
   getSearchProductsList: PropTypes.func.isRequired,
