@@ -14,6 +14,7 @@ import {
   Breadcrumb,
   message,
   Pagination,
+  Tooltip,
 } from 'antd';
 import {
   CaretDownOutlined,
@@ -144,7 +145,14 @@ const PetsList = ({
                         />
                       </div>
                       <div>
-                        <p className='pets__name'>{product.productName}</p>
+                        <p className='pets__name'>
+                          <Tooltip
+                            placement='topLeft'
+                            title={product.productName}
+                          >
+                            {product.productName}
+                          </Tooltip>
+                        </p>
                         <p className='pets__price'>
                           {parseInt(product.price).toLocaleString('vi-VN', {
                             style: 'currency',

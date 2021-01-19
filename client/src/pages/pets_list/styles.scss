@@ -10,6 +10,9 @@
     font-size: 0.9rem;
   }
   &__name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 1rem;
     color: var(--dark-second-color);
   }
