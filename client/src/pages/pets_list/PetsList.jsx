@@ -26,7 +26,6 @@ import { Loader } from '../../components';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import './styles.scss';
-const { Meta } = Card;
 
 const PetsList = ({
   data: { products, total },
@@ -125,7 +124,15 @@ const PetsList = ({
               products.map((product) => (
                 <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
                   <Card hoverable>
-                    <Link to={`/pet/${product._id}`}>
+                    <Link
+                      style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}
+                      to={`/pet/${product._id}`}
+                    >
                       <div
                         style={{ textAlign: 'center', marginBottom: '1.5rem' }}
                       >
@@ -136,22 +143,24 @@ const PetsList = ({
                           src={product.images[0]}
                         />
                       </div>
-                      <Meta title={product.productName} />
-                      <p className='pets__price'>
-                        {parseInt(product.price).toLocaleString('vi-VN', {
-                          style: 'currency',
-                          currency: 'VND',
-                        })}
-                      </p>
+                      <div>
+                        <p className='pets__name'>{product.productName}</p>
+                        <p className='pets__price'>
+                          {parseInt(product.price).toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                          })}
+                        </p>
+                      </div>
                     </Link>
-                    <Button
-                      disabled={product.status ? false : true}
-                      onClick={() => handleAddToCart(product)}
-                      className='addToCart'
-                      icon={<AddToCart />}
-                      type='primary'
-                    />
                   </Card>
+                  <Button
+                    disabled={product.status ? false : true}
+                    onClick={() => handleAddToCart(product)}
+                    className='addToCart'
+                    icon={<AddToCart />}
+                    type='primary'
+                  />
                 </Col>
               ))
             )}

@@ -9,7 +9,10 @@
   &__header-title {
     font-size: 0.9rem;
   }
-
+  &__name {
+    font-size: 1rem;
+    color: var(--dark-second-color);
+  }
   &__price {
     font-weight: 600;
     font-size: 1.2rem;
@@ -28,8 +31,10 @@
     z-index: 1;
   }
   .ant-card {
+    height: 100% !important;
     // box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.1);
     .ant-card-body {
+      height: 100% !important;
       position: relative;
       .ant-card-meta-title {
         font-weight: 300;
