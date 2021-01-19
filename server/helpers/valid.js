@@ -13,15 +13,8 @@ module.exports.validateSignUp = [
     .notEmpty()
     .isEmail()
     .withMessage('Vui lòng nhập email hợp lệ'),
-  check('password', 'Vui lòng nhập mật khẩu')
-    .notEmpty()
-    .isLength({
-      min: 6,
-      max: 32,
-    })
-    .withMessage('Độ dài của mật khẩu phải nằm trong khoảng từ 6 đến 32 ký tự')
-    .matches(/\d/)
-    .withMessage('Mật khẩu phải bao gồm số'),
+  check('password', 'Mật khẩu phải có ít nhất 8 ký tự, 1 ký tự in hoa, 1 ký tự thường và 1 ký tự đặc biệt')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, ""),
   check('phoneNumber', 'Vui lòng nhập số điện thoại hợp lệ')
     .isNumeric()
     .notEmpty()
