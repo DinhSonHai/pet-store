@@ -122,6 +122,7 @@ const ReviewDetail = ({
             onClick={() => handleApprove(data._id, data.productId._id)}
             type='primary'
             style={{ marginRight: '1rem' }}
+            loading={confirmLoading}
           >
             Duyệt
           </Button>

@@ -20,11 +20,11 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      await getAllBills();
+      await getAllBills(filter, page);
       setIsLoading(false);
     }
     getData();
-  }, [getAllBills]);
+  }, [getAllBills, filter, page]);
 
   const handlePagination = async (_page) => {
     if (filter) {

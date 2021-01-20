@@ -999,7 +999,7 @@ class AuthController {
       let getPurchasedProducts = [];
       if (length > 0) {
         for (let i = 0; i < length; ++i) {
-          let product = await Product.findById(user.favoriteProducts[i]);
+          let product = await Product.findById(user.purchasedProducts[i]);
           if (!product) {
             return res
               .status(404)
