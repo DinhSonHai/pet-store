@@ -63,6 +63,13 @@ body {
 .navbar__user--menu {
   margin: 0;
 }
+.navbar__search--menu {
+  margin-top: 2rem;
+}
+.profile__select {
+  margin: 0 0 1.5rem;
+  display: none;
+}
 @media only screen and (max-width: 768px) {
   .navbar__search,
   .navbar__wrap,
@@ -76,7 +83,8 @@ body {
   .home {
     margin-top: 4.75rem !important;
   }
-  .menu-responsive {
+  .menu-responsive,
+  .profile__select {
     display: block !important;
   }
   .container {

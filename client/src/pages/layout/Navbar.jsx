@@ -121,6 +121,13 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
         onClose={onClose}
         visible={visible}
       >
+        <div className='navbar__search--menu'>
+          <Search
+            placeholder='Nhập thú cưng cần tìm...'
+            onSearch={onSearch}
+            enterButton
+          />
+        </div>
         {loading ? (
           <Loader className={''} />
         ) : !isAuthenticated ? (
