@@ -19,8 +19,7 @@
   padding: 0;
 }
 body {
-  font-family: Arial, Helvetica, sans-serif !important;
-  /* font-family: "Lato", sans-serif !important; */
+  font-family: "Muli", sans-serif !important;
   font-size: 1rem !important;
   line-height: 1.6 !important;
   color: var(--dark-second-color) !important;
@@ -35,6 +34,11 @@ body {
 .ant-table-thead tr th {
   font-weight: 600 !important;
 }
+.ck {
+  span {
+    font-family: "Muli", sans-serif !important;
+  }
+}
 .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
 .ck.ck-editor__main > .ck-editor__editable.ck-focused,
 .ck.ck-toolbar {
@@ -45,5 +49,37 @@ body {
   ul,
   ol {
     padding-left: 1.5rem !important;
+  }
+}
+.menu-responsive {
+  display: none !important;
+}
+.menu-showed-responsive {
+  a {
+    display: block;
+    margin: 0 0 1rem 0.5rem;
+  }
+}
+.navbar__user--menu {
+  margin: 0;
+}
+@media only screen and (max-width: 768px) {
+  .navbar__search,
+  .navbar__wrap,
+  .navbar__info--sign,
+  .navbar__user {
+    display: none !important;
+  }
+  .logo {
+    margin: auto;
+  }
+  .home {
+    margin-top: 4.75rem !important;
+  }
+  .menu-responsive {
+    display: block !important;
+  }
+  .container {
+    margin: 5.5rem auto 3rem auto;
   }
 }

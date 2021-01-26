@@ -17,8 +17,6 @@ import {
 } from '../../pages';
 
 import queryString from 'query-string';
-import './styles.scss';
-
 const { Content } = Layout;
 
 const Home = ({ location }) => {
