@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
-import { UnorderedListOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined } from '@ant-design/icons';
 import { ReviewsProducts } from '../../components';
 
 const { TabPane } = Tabs;
@@ -29,17 +29,6 @@ const Review = () => {
               </span>
             }
             key='reviews-products'
-          >
-            <ReviewsProducts tabChange={tabChange} />
-          </TabPane>
-          <TabPane
-            tab={
-              <span>
-                <CheckCircleOutlined />
-                Đánh giá đã xét duyệt
-              </span>
-            }
-            key='approved'
           >
             <ReviewsProducts tabChange={tabChange} />
           </TabPane>
