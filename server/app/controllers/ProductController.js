@@ -275,10 +275,9 @@ class ProductController {
   // @access  Public
   async search(req, res) {
     let q = req.query.q;
-    const regex = new RegExp(q, 'i');
     const filterStatus = req.query.sort;
     const page = parseInt(req.query.page) || 1;
-    const query = { productName: { $regex: regex }, isShow: true };
+    const query = { $text: { $search: q }, isShow: true };
     const limit = 12;
     const start = (page - 1) * limit;
     const end = page * limit;

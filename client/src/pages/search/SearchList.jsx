@@ -14,6 +14,8 @@ import {
   Breadcrumb,
   message,
   Pagination,
+  Rate,
+  Tooltip,
 } from 'antd';
 import {
   CaretDownOutlined,
@@ -26,7 +28,6 @@ import { Loader } from '../../components';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import './styles.scss';
-const { Meta } = Card;
 
 const SearchList = ({
   data: { products, total },
@@ -121,7 +122,15 @@ const SearchList = ({
               products.map((product) => (
                 <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
                   <Card hoverable>
-                    <Link to={`/pet/${product._id}`}>
+                    <Link
+                      style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}
+                      to={`/pet/${product._id}`}
+                    >
                       <div
                         style={{ textAlign: 'center', marginBottom: '1.5rem' }}
                       >
@@ -132,21 +141,44 @@ const SearchList = ({
                           src={product.images[0]}
                         />
                       </div>
-                      <Meta title={product.productName} />
-                      <p className='pets__price'>
-                        {parseInt(product.price).toLocaleString('vi-VN', {
-                          style: 'currency',
-                          currency: 'VND',
-                        })}
-                      </p>
+                      <div>
+                        <p className='pets__name'>
+                          <Tooltip
+                            placement='topLeft'
+                            title={product.productName}
+                          >
+                            {product.productName}
+                          </Tooltip>
+                        </p>
+                        <p className='pets__price'>
+                          {parseInt(product.price).toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                          })}
+                        </p>
+                        <div>
+                          <Rate
+                            style={{ fontSize: '1rem' }}
+                            disabled
+                            defaultValue={product.starRatings}
+                          />
+                          <span
+                            style={{ fontSize: '1rem' }}
+                            className='ant-rate-text'
+                          >
+                            {`${product.reviewsCount} đánh giá`}
+                          </span>
+                        </div>
+                      </div>
                     </Link>
-                    <Button
-                      onClick={() => handleAddToCart(product)}
-                      className='addToCart'
-                      icon={<AddToCart />}
-                      type='primary'
-                    />
                   </Card>
+                  <Button
+                    disabled={product.status ? false : true}
+                    onClick={() => handleAddToCart(product)}
+                    className='addToCart'
+                    icon={<AddToCart />}
+                    type='primary'
+                  />
                 </Col>
               ))
             )}

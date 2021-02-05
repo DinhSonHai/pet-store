@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
   key: { type: Schema.Types.ObjectId, required: true },
-  productName: { type: String, required: true, trim: true },
+  productName: { type: String, required: true, trim: true, text: true },
   age: { type: String, trim: true, default: '' },
   gender: { type: Number, default: 0 },
   color: { type: String, trim: true, default: '' },
