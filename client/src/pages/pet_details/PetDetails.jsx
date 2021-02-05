@@ -64,7 +64,7 @@ const PetDetails = ({
         </Breadcrumb>
         <div className='pet-details__content'>
           {loading || !data ? (
-            <Loader className={'loader'} />
+            <Loader className={'loader-inside'} />
           ) : (
             <Fragment>
               <div className='pet-details__wrap'>

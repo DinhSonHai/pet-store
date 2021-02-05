@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { timeSince } from '../../../utils/timesince.js';
 import './styles.scss';
 
-const ExampleComment = ({ user, item, isAuthenticated }) => (
+const ExampleComment = ({ item }) => (
   <Fragment>
     <Rate
       style={{ fontSize: '0.75rem' }}
@@ -15,11 +15,6 @@ const ExampleComment = ({ user, item, isAuthenticated }) => (
       defaultValue={item.starRatings}
     />
     <Comment
-      actions={
-        (user && user._id === item.userId) || !isAuthenticated
-          ? null
-          : [<span key='comment-nested-reply-to'>Reply to</span>]
-      }
       author={<p>{item.name}</p>}
       avatar={<Avatar src={item.avatar} alt='Avatar' />}
       content={<p>{item.comment}</p>}

@@ -15,6 +15,7 @@ import {
   message,
   Pagination,
   Tooltip,
+  Rate,
 } from 'antd';
 import {
   CaretDownOutlined,
@@ -120,7 +121,7 @@ const PetsList = ({
         <div className='pets-list'>
           <Row gutter={[16, 16]}>
             {loading || !products ? (
-              <Loader className={'loader'} />
+              <Loader className={'loader-inside'} />
             ) : (
               products.map((product) => (
                 <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
@@ -159,6 +160,19 @@ const PetsList = ({
                             currency: 'VND',
                           })}
                         </p>
+                        <div>
+                          <Rate
+                            style={{ fontSize: '1rem' }}
+                            disabled
+                            defaultValue={product.starRatings}
+                          />
+                          <span
+                            style={{ fontSize: '1rem' }}
+                            className='ant-rate-text'
+                          >
+                            {`${product.reviewsCount} đánh giá`}
+                          </span>
+                        </div>
                       </div>
                     </Link>
                   </Card>

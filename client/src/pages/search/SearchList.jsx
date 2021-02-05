@@ -116,7 +116,7 @@ const SearchList = ({
         <div className='pets-list'>
           <Row gutter={[16, 16]}>
             {loading || !products ? (
-              <Loader className={'loader'} />
+              <Loader className={'loader-inside'} />
             ) : (
               products.map((product) => (
                 <Col key={product._id} xs={24} sm={12} md={8} lg={6}>

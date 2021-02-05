@@ -49,7 +49,7 @@ const PetsType = ({ getTypesByCatId, match, types: { types } }) => {
           </Breadcrumb>
         </div>
         {isLoading ? (
-          <Loader className={'loader'} />
+          <Loader className={'loader-inside'} />
         ) : (
           <div className='petsType__content'>
             <Row gutter={[16, 16]}>
