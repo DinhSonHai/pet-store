@@ -58,7 +58,12 @@ const PetsType = ({ getTypesByCatId, match, types: { types } }) => {
                   <Link to={redirectUrl(item._id)}>
                     <Card bordered={false} hoverable>
                       <div
-                        style={{ textAlign: 'center', marginBottom: '1.5rem' }}
+                        style={{
+                          textAlign: 'center',
+                          marginBottom: '1.5rem',
+                          display: 'block',
+                          minHeight: '250px',
+                        }}
                       >
                         <img
                           width='100%'

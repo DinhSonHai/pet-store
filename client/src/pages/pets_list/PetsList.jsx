@@ -136,7 +136,12 @@ const PetsList = ({
                       to={`/pet/${product._id}`}
                     >
                       <div
-                        style={{ textAlign: 'center', marginBottom: '1.5rem' }}
+                        style={{
+                          textAlign: 'center',
+                          marginBottom: '1.5rem',
+                          display: 'block',
+                          minHeight: '250px',
+                        }}
                       >
                         <img
                           width='100%'
