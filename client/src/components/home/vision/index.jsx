@@ -12,7 +12,7 @@ export default () => {
             { xs: 16, sm: 16, md: 16, lg: 26 },
           ]}
         >
-          <Col xs={12} sm={12} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Payment />
@@ -24,7 +24,7 @@ export default () => {
               </p>
             </Card>
           </Col>
-          <Col xs={12} sm={12} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Call />
@@ -36,7 +36,7 @@ export default () => {
               </p>
             </Card>
           </Col>
-          <Col xs={12} sm={12} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Shipped />
@@ -48,7 +48,7 @@ export default () => {
               </p>
             </Card>
           </Col>
-          <Col xs={12} sm={12} md={12} lg={6}>
+          <Col xs={24} sm={12} md={12} lg={6}>
             <Card bordered={false}>
               <p style={{ height: '3rem' }}>
                 <Reputation />

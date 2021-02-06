@@ -120,7 +120,7 @@ const SearchList = ({
               <Loader className={'loader-inside'} />
             ) : (
               products.map((product) => (
-                <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
+                <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
                   <Card hoverable>
                     <Link
                       style={{
