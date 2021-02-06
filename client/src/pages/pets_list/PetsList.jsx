@@ -124,7 +124,7 @@ const PetsList = ({
               <Loader className={'loader-inside'} />
             ) : (
               products.map((product) => (
-                <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
+                <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
                   <Card hoverable>
                     <Link
                       style={{
@@ -135,14 +135,7 @@ const PetsList = ({
                       }}
                       to={`/pet/${product._id}`}
                     >
-                      <div
-                        style={{
-                          textAlign: 'center',
-                          marginBottom: '1.5rem',
-                          display: 'block',
-                          minHeight: '250px',
-                        }}
-                      >
+                      <div className='pets-list__wrap'>
                         <img
                           width='100%'
                           height='100%'
@@ -159,25 +152,25 @@ const PetsList = ({
                             {product.productName}
                           </Tooltip>
                         </p>
+                        <div>
+                          <Rate
+                            style={{ fontSize: '0.85rem' }}
+                            disabled
+                            defaultValue={product.starRatings}
+                          />
+                          <span
+                            style={{ fontSize: '0.85rem' }}
+                            className='ant-rate-text'
+                          >
+                            {`(${product.reviewsCount})`}
+                          </span>
+                        </div>
                         <p className='pets__price'>
                           {parseInt(product.price).toLocaleString('vi-VN', {
                             style: 'currency',
                             currency: 'VND',
                           })}
                         </p>
-                        <div>
-                          <Rate
-                            style={{ fontSize: '1rem' }}
-                            disabled
-                            defaultValue={product.starRatings}
-                          />
-                          <span
-                            style={{ fontSize: '1rem' }}
-                            className='ant-rate-text'
-                          >
-                            {`${product.reviewsCount} đánh giá`}
-                          </span>
-                        </div>
                       </div>
                     </Link>
                   </Card>

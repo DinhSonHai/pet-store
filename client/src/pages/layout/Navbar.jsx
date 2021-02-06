@@ -2,7 +2,7 @@
 import { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Button, Drawer, Divider, Menu } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { CartAction, UserNav, Loader } from '../../components';
 import { getProductsByType } from '../../redux/actions/products';
@@ -51,9 +51,14 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
             </div>
             <div className='navbar__search'>
               <Search
-                placeholder='Nhập thú cưng cần tìm...'
+                size='large'
+                placeholder='Nhập nội dung cần tìm...'
                 onSearch={onSearch}
-                enterButton
+                enterButton={
+                  <Button icon={<SearchOutlined />} type='primary'>
+                    Tìm kiếm
+                  </Button>
+                }
               />
             </div>
           </div>

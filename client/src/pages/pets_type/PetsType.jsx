@@ -61,8 +61,6 @@ const PetsType = ({ getTypesByCatId, match, types: { types } }) => {
                         style={{
                           textAlign: 'center',
                           marginBottom: '1.5rem',
-                          display: 'block',
-                          minHeight: '250px',
                         }}
                       >
                         <img

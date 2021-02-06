@@ -15,8 +15,13 @@ export default () => {
           luôn trong tình trạng khỏe mạnh, sạch sẽ.
         </h4>
         <div className='services__content'>
-          <Row gutter={[28, 28]}>
-            <Col xs={24} sm={24} md={12} lg={8}>
+          <Row
+            gutter={[
+              { xs: 16, sm: 16, md: 16, lg: 26 },
+              { xs: 16, sm: 16, md: 16, lg: 26 },
+            ]}
+          >
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card hoverable={true}>
                 <p className='services__content--icon'>
                   <PetHealthy />
@@ -28,7 +33,7 @@ export default () => {
                 </p>
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card hoverable={true}>
                 <p className='services__content--icon'>
                   <PetWash />
@@ -42,7 +47,7 @@ export default () => {
                 </p>
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={8}>
+            <Col xs={24} sm={12} md={12} lg={8}>
               <Card hoverable={true}>
                 <p className='services__content--icon'>
                   <PetCut />

@@ -135,8 +135,6 @@ const SearchList = ({
                         style={{
                           textAlign: 'center',
                           marginBottom: '1.5rem',
-                          display: 'block',
-                          minHeight: '250px',
                         }}
                       >
                         <img
@@ -155,25 +153,25 @@ const SearchList = ({
                             {product.productName}
                           </Tooltip>
                         </p>
+                        <div>
+                          <Rate
+                            style={{ fontSize: '0.85rem' }}
+                            disabled
+                            defaultValue={product.starRatings}
+                          />
+                          <span
+                            style={{ fontSize: '0.85rem' }}
+                            className='ant-rate-text'
+                          >
+                            {`(${product.reviewsCount})`}
+                          </span>
+                        </div>
                         <p className='pets__price'>
                           {parseInt(product.price).toLocaleString('vi-VN', {
                             style: 'currency',
                             currency: 'VND',
                           })}
                         </p>
-                        <div>
-                          <Rate
-                            style={{ fontSize: '1rem' }}
-                            disabled
-                            defaultValue={product.starRatings}
-                          />
-                          <span
-                            style={{ fontSize: '1rem' }}
-                            className='ant-rate-text'
-                          >
-                            {`${product.reviewsCount} đánh giá`}
-                          </span>
-                        </div>
                       </div>
                     </Link>
                   </Card>
