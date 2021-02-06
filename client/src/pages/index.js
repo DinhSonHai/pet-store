@@ -16,3 +16,4 @@ export { default as Checkout } from './checkout/Checkout';
 export { default as Order } from './order/Order';
 export { default as PetsType } from './pets_type/PetsType';
 export { default as PetsPost } from './pets_post/PetsPost';
+export { default as NotFound } from './layout/NotFound';

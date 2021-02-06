@@ -17,7 +17,8 @@ import {
   Order,
   PetsType,
   PetsPost,
-  SearchList
+  SearchList,
+  NotFound,
 } from '../pages';
 
 export default function () {
@@ -39,6 +40,7 @@ export default function () {
       <PrivateRoute exact path='/profile' component={Profile} />
       <CheckoutRoute exact path='/checkout' component={Checkout} />
       <CheckoutRoute exact path='/order' component={Order} />
+      <Route component={NotFound} />
     </Switch>
   );
 }

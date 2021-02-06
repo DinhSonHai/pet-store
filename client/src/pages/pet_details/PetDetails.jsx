@@ -12,8 +12,6 @@ import {
   DetailReview,
   DetailComments,
 } from '../../components';
-
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.scss';
 
 import { getProductById } from '../../redux/actions/products';
