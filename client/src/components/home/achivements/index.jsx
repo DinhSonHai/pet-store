@@ -8,7 +8,7 @@ export default () => {
       <div className='achivements__wrap container'>
         <Row
           gutter={[
-            { xs: 16, sm: 16, md: 16, lg: 26 },
+            { xs: 8, sm: 16, md: 16, lg: 26 },
             { xs: 32, sm: 32, md: 32 },
           ]}
         >

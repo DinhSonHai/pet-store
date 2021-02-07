@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import './styles.scss';
-import Slider from 'infinite-react-carousel';
+import { Carousel } from 'react-responsive-carousel';
 import Customer_01 from '../../../img/testimonials-1.jpg';
 import Customer_02 from '../../../img/testimonials-2.jpg';
 import Customer_03 from '../../../img/testimonials-3.jpg';
@@ -8,18 +8,19 @@ import Customer_04 from '../../../img/testimonials-4.jpg';
 import Customer_05 from '../../../img/testimonials-5.jpg';
 
 export default () => {
-  const settings = {
-    arrows: false,
-    arrowsBlock: false,
-    autoplay: true,
-    dots: true,
-    autoplaySpeed: 5000,
-    adaptiveHeight: true,
-  };
   return (
     <section className='customer'>
       <div className='customer__wrap container'>
-        <Slider {...settings}>
+        <Carousel
+          interval={4000}
+          transitionTime={1000}
+          showStatus={false}
+          renderThumbs={() => null}
+          showArrows={false}
+          autoPlay={true}
+          swipeable={true}
+          infiniteLoop={true}
+        >
           <div className='customer__content'>
             <img src={Customer_01} alt='Alt' className='customer__avt' />
             <h1 className='customer__name'>Đức Đào</h1>
@@ -65,7 +66,7 @@ export default () => {
               anim magna sunt elit fore quem dolore labore illum veniam."
             </p>
           </div>
-        </Slider>
+        </Carousel>
       </div>
     </section>
   );

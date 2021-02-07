@@ -52,7 +52,12 @@ const PetsType = ({ getTypesByCatId, match, types: { types } }) => {
           <Loader className={'loader-inside'} />
         ) : (
           <div className='petsType__content'>
-            <Row gutter={[16, 16]}>
+            <Row
+              gutter={[
+                { xs: 8, sm: 16, md: 16, lg: 16 },
+                { xs: 8, sm: 16, md: 16, lg: 16 },
+              ]}
+            >
               {types.map((item) => (
                 <Col key={item._id} xs={12} sm={8} md={6} lg={6}>
                   <Link to={redirectUrl(item._id)}>

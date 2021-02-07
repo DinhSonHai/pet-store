@@ -22,8 +22,8 @@ export default () => {
         <div className='category__content'>
           <Row
             gutter={[
-              { xs: 16, sm: 16, md: 16, lg: 26 },
-              { xs: 16, sm: 16, md: 16, lg: 26 },
+              { xs: 8, sm: 16, md: 16, lg: 26 },
+              { xs: 8, sm: 16, md: 16, lg: 26 },
             ]}
           >
             <Col xs={12} sm={12} md={8} lg={6}>

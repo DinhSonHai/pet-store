@@ -44,11 +44,11 @@ export default () => {
                   </div>
                   <div className='about__mission-content'>
                     <p className='about__mission-content--title'>
-                      Ullamco laboris nisi ut aliquip consequat
+                      Chất lượng dịch vụ hàng đầu
                     </p>
                     <p className='about__mission-content--desc'>
-                      Magni facilis facilis repellendus cum excepturi quaerat
-                      praesentium libre trade
+                      PetStore. cung cấp các dịch vụ chất lượng và uy tín, đảm
+                      bảo hài lòng khách hàng
                     </p>
                   </div>
                 </div>
@@ -60,11 +60,11 @@ export default () => {
                   </div>
                   <div className='about__mission-content'>
                     <p className='about__mission-content--title'>
-                      Ullamco laboris nisi ut aliquip consequat
+                      Tiên phong về mua bán thú cưng
                     </p>
                     <p className='about__mission-content--desc'>
-                      Magni facilis facilis repellendus cum excepturi quaerat
-                      praesentium libre trade
+                      PetStore. tự hào là đơn vị mua bán thú cưng đầu tiên cũng
+                      như lớn nhất Việt Nam
                     </p>
                   </div>
                 </div>

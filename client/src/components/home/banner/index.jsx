@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Link } from 'react-router-dom';
 import { Row, Col } from 'antd';
-import Slider from 'infinite-react-carousel';
+import { Carousel } from 'react-responsive-carousel';
 import './styles.scss';
 
 const bannerList = [
@@ -18,32 +18,41 @@ const bannerListSide = [
   'https://petshopsaigon.vn/wp-content/uploads/2020/06/suc-khoe-cho-meo-banner.jpg',
 ];
 export default () => {
-  const settings = {
-    arrows: false,
-    arrowsBlock: false,
-    autoplay: true,
-    dots: true,
-    autoplaySpeed: 4000,
-    adaptiveHeight: true,
-  };
   return (
     <section className='banner'>
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={14}>
-          <Slider {...settings}>
-            {bannerList.map((imageUrl, index) => (
-              <Link
-                style={{ display: 'block', height: '100%' }}
-                key={index}
-                to='/'
-              >
-                <img width='100%' height='100%' src={imageUrl} alt='No_Image' />
-              </Link>
+          <Carousel
+            interval={4000}
+            transitionTime={1000}
+            showStatus={false}
+            renderThumbs={() => null}
+            showArrows={true}
+            autoPlay={true}
+            swipeable={true}
+            infiniteLoop={true}
+          >
+            {bannerList.map((img, index) => (
+              <div key={index}>
+                <img
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                  }}
+                  src={img}
+                  alt='No_Image'
+                />
+              </div>
             ))}
-          </Slider>
+          </Carousel>
         </Col>
         <Col xs={24} lg={10}>
-          <Row gutter={[16, 16]}>
+          <Row
+            gutter={[
+              { xs: 8, sm: 16, md: 16, lg: 16 },
+              { xs: 8, sm: 16, md: 16, lg: 16 },
+            ]}
+          >
             {bannerListSide.map((imageUrl, index) => (
               <Col key={index} xs={12} lg={12}>
                 <Link to='/'>

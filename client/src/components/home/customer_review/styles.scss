@@ -27,10 +27,16 @@
       font-weight: 600;
     }
   }
+  .carousel .slide {
+    background: none !important;
+  }
+  .control-dots {
+    bottom: -1rem;
+  }
   &__avt {
-    border-radius: 50%;
-    border: 6px solid rgba(255, 255, 255, 0.15);
-    width: 100px;
-    margin-bottom: 0.5rem;
+    border-radius: 50% !important;
+    border: 6px solid rgba(255, 255, 255, 0.15) !important;
+    width: 100px !important;
+    margin-bottom: 0.5rem !important;
   }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Button, Drawer, Divider, Menu } from 'antd';
+import { Input, Button, Drawer, Divider, Menu, message } from 'antd';
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { CartAction, UserNav, Loader } from '../../components';
@@ -14,6 +14,9 @@ const { Search } = Input;
 const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
 const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
   const onSearch = (value) => {
+    if (!value) {
+      return message.error('Vui lòng nhập nội dung cần tìm!');
+    }
     history.push(`/pets/search?q=${value}`);
   };
   const [visible, setVisible] = useState(false);
@@ -128,7 +131,7 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
       >
         <div className='navbar__search--menu'>
           <Search
-            placeholder='Nhập thú cưng cần tìm...'
+            placeholder='Nhập nội dung cần tìm...'
             onSearch={onSearch}
             enterButton
           />

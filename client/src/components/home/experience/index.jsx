@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import './styles.scss';
-import { Row, Col, Card } from 'antd';
+import { Row, Col } from 'antd';
 import Ex_01 from '../../../img/ex-01.png';
 import Ex_02 from '../../../img/ex-02.png';
 import Ex_03 from '../../../img/ex-03.png';
@@ -21,72 +21,65 @@ export default () => {
           PetShop.
         </h4>
         <div className='experience__content'>
-          <Row gutter={[0, 0]}>
-            <Col xs={24} sm={12} md={12} lg={8}>
-              <Card bordered={false}>
-                <img
-                  src={Ex_03}
-                  width='100%'
-                  height='100%'
-                  alt=''
-                  className='experience__image'
-                />
-              </Card>
+          <Row
+            gutter={[
+              { xs: 8, sm: 16, md: 16, lg: 16 },
+              { xs: 8, sm: 16, md: 16, lg: 16 },
+            ]}
+          >
+            <Col xs={12} sm={12} md={12} lg={8}>
+              <img
+                src={Ex_03}
+                width='100%'
+                height='100%'
+                alt=''
+                className='experience__image'
+              />
             </Col>
-            <Col xs={24} sm={12} md={12} lg={8}>
-              <Card bordered={false}>
-                <img
-                  src={Ex_05}
-                  width='100%'
-                  height='100%'
-                  alt=''
-                  className='experience__image'
-                />
-              </Card>
+            <Col xs={12} sm={12} md={12} lg={8}>
+              <img
+                src={Ex_05}
+                width='100%'
+                height='100%'
+                alt=''
+                className='experience__image'
+              />
             </Col>
-            <Col xs={24} sm={12} md={12} lg={8}>
-              <Card bordered={false}>
-                <img
-                  src={Ex_01}
-                  width='100%'
-                  height='100%'
-                  alt=''
-                  className='experience__image'
-                />
-              </Card>
+            <Col xs={12} sm={12} md={12} lg={8}>
+              <img
+                src={Ex_01}
+                width='100%'
+                height='100%'
+                alt=''
+                className='experience__image'
+              />
             </Col>
-            <Col xs={24} sm={12} md={12} lg={8}>
-              <Card bordered={false}>
-                <img
-                  src={Ex_02}
-                  width='100%'
-                  height='100%'
-                  alt=''
-                  className='experience__image'
-                />
-              </Card>
+            <Col xs={12} sm={12} md={12} lg={8}>
+              <img
+                src={Ex_02}
+                width='100%'
+                height='100%'
+                alt=''
+                className='experience__image'
+              />
             </Col>
-            <Col xs={24} sm={12} md={12} lg={8}>
-              <Card bordered={false}>
-                <img
-                  src={Ex_04}
-                  width='100%'
-                  height='100%'
-                  alt=''
-                  className='experience__image'
-                />
-              </Card>
+            <Col xs={12} sm={12} md={12} lg={8}>
+              <img
+                src={Ex_04}
+                width='100%'
+                height='100%'
+                alt=''
+                className='experience__image'
+              />
             </Col>
-            <Col xs={24} sm={12} md={12} lg={8}>
-              <Card bordered={false}>
-                <img
-                  src={Ex_06}
-                  width='100%'
-                  height='100%'
-                  alt=''
-                  className='experience__image'
-                />
-              </Card>
+            <Col xs={12} sm={12} md={12} lg={8}>
+              <img
+                src={Ex_06}
+                width='100%'
+                height='100%'
+                alt=''
+                className='experience__image'
+              />
             </Col>
           </Row>
         </div>

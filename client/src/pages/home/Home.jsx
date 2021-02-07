@@ -4,7 +4,7 @@ import {
   AboutUs,
   Achivements,
   Services,
-  // Customer,
+  Customer,
   Experience,
   Category,
 } from '../../components';
@@ -19,7 +19,7 @@ function Home(props) {
       <Achivements />
       <Category />
       <Services />
-      {/* <Customer /> */}
+      <Customer />
       <Experience />
     </section>
   );

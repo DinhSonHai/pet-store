@@ -119,7 +119,12 @@ const PetsList = ({
           </div>
         </div>
         <div className='pets-list'>
-          <Row gutter={[16, 16]}>
+          <Row
+            gutter={[
+              { xs: 4, sm: 8, md: 16, lg: 16 },
+              { xs: 4, sm: 8, md: 16, lg: 16 },
+            ]}
+          >
             {loading || !products ? (
               <Loader className={'loader-inside'} />
             ) : (
