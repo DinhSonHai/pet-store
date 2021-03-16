@@ -1,7 +1,7 @@
 import { Modal, Button, Card } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { UPDATE_AUTH_ADDRESS } from '../../../redux/types';
-import store from '../../../store';
+import store from '../../../app/store';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 

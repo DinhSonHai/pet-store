@@ -47,7 +47,7 @@ export default () => {
             </p>
             <p>
               {' '}
-              <Link className='footer__link--item' to='/pets'>
+              <Link className='footer__link--item' to='/products'>
                 <RightOutlined style={{ fontSize: '0.75rem' }} /> Thú cưng
               </Link>
             </p>

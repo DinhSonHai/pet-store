@@ -1,0 +1,42 @@
+.customer {
+  padding: 5rem 0;
+  background-attachment: fixed !important;
+  background: url("../../../assets/img/customer_background.png");
+  background-position: center center;
+  background-size: cover;
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+  }
+  &__wrap.container {
+    margin: 0 auto;
+  }
+  &__content {
+    text-align: center;
+    h1,
+    p {
+      color: var(--white-color);
+    }
+    h1 {
+      font-weight: 600;
+    }
+  }
+  .carousel .slide {
+    background: none !important;
+  }
+  .control-dots {
+    bottom: -1rem;
+  }
+  &__avt {
+    border-radius: 50% !important;
+    border: 6px solid rgba(255, 255, 255, 0.15) !important;
+    width: 100px !important;
+    margin-bottom: 0.5rem !important;
+  }
+}

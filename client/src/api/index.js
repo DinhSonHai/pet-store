@@ -1,5 +1,11 @@
 import axios from 'axios';
-import store from '../store';
+import store from '../app/store';
+import addressAPI from './addressAPI';
+import authAPI from './authAPI';
+import orderAPI from './orderAPI';
+import productAPI from './productAPI';
+import reviewAPI from './reviewAPI';
+import typeAPI from './typeAPI';
 import { LOGOUT, CLEAR_PROFILE } from '../redux/types';
 
 const api = axios.create({
@@ -25,5 +31,5 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-
+export { addressAPI, authAPI, orderAPI, productAPI, reviewAPI, typeAPI };
 export default api;

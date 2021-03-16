@@ -1,4 +1,4 @@
-import store from '../store';
+import store from '../app/store';
 import { UPDATE_CART, REMOVE_CART } from '../redux/types';
 import { message } from 'antd';
 export const addItem = (item) => {

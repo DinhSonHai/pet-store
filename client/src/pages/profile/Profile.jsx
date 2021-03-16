@@ -1,14 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useState, useEffect } from 'react';
 import { Row, Col, Select } from 'antd';
-import { ProfileSide } from '../../components';
-import {
-  ProfileInfo,
-  ProfileAddress,
-  ProfileWishlist,
-  ProfileOrder,
-  ProfilePurchased,
-} from '../../components';
+import ProfileSide from './side';
+import ProfilePurchased from './purchased';
+import ProfileOrder from './orders';
+import ProfileWishlist from './wishlist';
+import ProfileAddress from './address';
+import ProfileInfo from './info';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
 import './styles.scss';

@@ -7,7 +7,7 @@ import { CaretLeftOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { orderProducts, orderProductsAuth } from '../../redux/actions/order';
 import PropTypes from 'prop-types';
-import store from '../../store';
+import store from '../../app/store';
 import {
   REMOVE_CART,
   UPDATE_GUEST_INFO,

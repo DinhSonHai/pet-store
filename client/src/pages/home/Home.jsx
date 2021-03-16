@@ -1,13 +1,11 @@
-import {
-  Banner,
-  Vision,
-  AboutUs,
-  Achivements,
-  Services,
-  Customer,
-  Experience,
-  Category,
-} from '../../components';
+import Banner from './banner';
+import Vision from './vision';
+import Achivements from './achivements';
+import Categories from './categories';
+import About from './about_us';
+import Services from './services';
+import CustomerReview from './customer_review';
+import CustomerExperience from './experience';
 import './styles.scss';
 
 function Home(props) {
@@ -15,12 +13,12 @@ function Home(props) {
     <section className='home'>
       <Banner />
       <Vision />
-      <AboutUs />
+      <About />
       <Achivements />
-      <Category />
+      <Categories />
       <Services />
-      <Customer />
-      <Experience />
+      <CustomerReview />
+      <CustomerExperience />
     </section>
   );
 }

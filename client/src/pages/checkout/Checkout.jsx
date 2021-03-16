@@ -1,15 +1,13 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Col, Row } from 'antd';
-import {
-  CheckoutFormGuest,
-  CheckoutOrder,
-  CheckoutAddress,
-  CheckoutFormAuth,
-} from '../../components';
+import CheckoutFormGuest from './form_guest';
+import CheckoutOrder from './order';
+import CheckoutAddress from './address';
+import CheckoutFormAuth from './form_auth';
 import equal from 'fast-deep-equal';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import store from '../../store';
+import store from '../../app/store';
 import { REMOVE_CART } from '../../redux/types';
 import './styles.scss';
 const Checkout = ({ cartState, history, auth: { isAuthenticated, user } }) => {

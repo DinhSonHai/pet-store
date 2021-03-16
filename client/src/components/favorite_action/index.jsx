@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button, notification, message } from 'antd';
-import { Heart, HeartFill } from '../../icons';
+import { Button } from 'antd';
+import { notifyActions } from '../../utils/notify';
+import { Heart, HeartFill } from '../../assets/icons';
 import { connect } from 'react-redux';
 import { updateFavorite } from '../../redux/actions/auth';
 
@@ -17,10 +18,10 @@ const FavoriteAction = ({
   }, [favoriteState]);
   const handleClick = async (productId) => {
     if (!isAuthenticated) {
-      return notification.open({
-        message: 'Thông báo!',
-        description: 'Bạn cần đăng nhập để thực hiện thao tác này!',
-      });
+      return notifyActions(
+        'error',
+        'Bạn cần đăng nhập để thực hiện thao tác này!'
+      );
     }
     if (!productId) {
       return;
@@ -29,7 +30,7 @@ const FavoriteAction = ({
     const res = await updateFavorite(productId);
     setIsProcessing(false);
     if (!res) {
-      message.success('Đã thêm sản phẩm vào mục yêu thích.');
+      notifyActions('success', 'Đã thêm sản phẩm vào mục yêu thích.');
     }
     if (isFavorite) {
       setIsFavorite(false);

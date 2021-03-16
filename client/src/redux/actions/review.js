@@ -1,41 +1,20 @@
-import api from '../../api';
-import { notification } from 'antd';
+import { reviewAPI } from '../../api';
+import { notifySuccess, notifyErrors } from '../../utils/notify';
 
 export const review = (data, id) => async (dispatch) => {
   try {
-    const res = await api.post(`/reviews/${id}/review`, data);
-    notification.open({
-      message: 'Thông báo',
-      description: res.data.message,
-    });
+    const res = await reviewAPI.review(data, id);
+    notifySuccess(res.data.message);
   } catch (err) {
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) =>
-        notification.open({
-          message: 'Lỗi!',
-          description: error.msg,
-        })
-      );
-    }
+    notifyErrors(err);
   }
 };
 
 export const getReviewByProductId = (id) => async (dispatch) => {
   try {
-    const res = await api.get(`/reviews/${id}/review`);
+    const res = await reviewAPI.get_reviews(id);
     return res.data;
   } catch (err) {
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) =>
-        notification.open({
-          message: 'Lỗi!',
-          description: error.msg,
-        })
-      );
-    }
+    notifyErrors(err);
   }
 };

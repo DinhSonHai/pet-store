@@ -5,7 +5,7 @@ import { removeItem, setAmount } from '../../utils/cart';
 import equal from 'fast-deep-equal';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import '../../store';
+import '../../app/store';
 import './styles.scss';
 
 const CartHome = ({ cartState, history }) => {
@@ -53,7 +53,7 @@ const CartHome = ({ cartState, history }) => {
                         <div className='cart__product--info'>
                           <Link
                             className='cart__product--name'
-                            to={`/pet/${item._id}`}
+                            to={`/product/${item._id}`}
                           >
                             {item.productName}
                           </Link>

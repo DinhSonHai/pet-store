@@ -1,46 +1,44 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Route, Switch } from 'react-router-dom';
 import { PrivateRoute, AuthRoute, CheckoutRoute } from '../routes';
-import {
-  PetsList,
-  CartHome,
-  PetDetails,
-  Home,
-  Signin,
-  Signup,
-  Activate,
-  SignOut,
-  Forgot,
-  Reset,
-  Profile,
-  Checkout,
-  Order,
-  PetsType,
-  PetsPost,
-  SearchList,
-  NotFound,
-} from '../pages';
+import * as pages from '../pages';
 
 export default function () {
   return (
     <Switch>
-      <Route exact path='/' component={Home} />
-      <Route exact path='/pets/search' component={SearchList} />
-      <Route exact path='/pets/:type/list/:id' component={PetsList} />
-      <Route exact path='/pets/:type/post/:id' component={PetsPost} />
-      <Route exact path='/pets/:type/:id' component={PetsType} />
-      <Route exact path='/cart' component={CartHome} />
-      <Route exact path='/pet/:id' component={PetDetails} />
-      <AuthRoute exact path='/signin' component={Signin} />
-      <AuthRoute exact path='/signup' component={Signup} />
-      <PrivateRoute exact path='/signout' component={SignOut} />
-      <AuthRoute exact path='/auth/activate/:token' component={Activate} />
-      <AuthRoute exact path='/forget' component={Forgot} />
-      <AuthRoute exact path='/auth/resetpassword/:token' component={Reset} />
-      <PrivateRoute exact path='/profile' component={Profile} />
-      <CheckoutRoute exact path='/checkout' component={Checkout} />
-      <CheckoutRoute exact path='/order' component={Order} />
-      <Route component={NotFound} />
+      <Route exact path='/' component={pages.Home} />
+      <Route exact path='/products/search' component={pages.SearchList} />
+      <Route
+        exact
+        path='/products/:type/list/:id'
+        component={pages.ProductList}
+      />
+      <Route
+        exact
+        path='/products/:type/post/:id'
+        component={pages.ProductPost}
+      />
+      <Route exact path='/products/:type/:id' component={pages.ProductType} />
+      <Route exact path='/cart' component={pages.CartHome} />
+      <Route exact path='/product/:id' component={pages.ProductDetails} />
+      <AuthRoute exact path='/signin' component={pages.Signin} />
+      <AuthRoute exact path='/signup' component={pages.Signup} />
+      <PrivateRoute exact path='/signout' component={pages.SignOut} />
+      <AuthRoute
+        exact
+        path='/auth/activate/:token'
+        component={pages.Activate}
+      />
+      <AuthRoute exact path='/forget' component={pages.Forgot} />
+      <AuthRoute
+        exact
+        path='/auth/resetpassword/:token'
+        component={pages.Reset}
+      />
+      <PrivateRoute exact path='/profile' component={pages.Profile} />
+      <CheckoutRoute exact path='/checkout' component={pages.Checkout} />
+      <CheckoutRoute exact path='/order' component={pages.Order} />
+      <Route component={pages.NotFound} />
     </Switch>
   );
 }

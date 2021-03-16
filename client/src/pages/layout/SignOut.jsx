@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
 import { Button } from 'antd';
-import store from '../../store.js';
+import store from '../../app/store.js';
 import { LOGOUT, CLEAR_CHECKOUT_INFO, REMOVE_CART } from '../../redux/types';
 export default ({ history }) => {
   return (

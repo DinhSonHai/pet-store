@@ -1,7 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Button, Drawer, Divider, Menu, message } from 'antd';
+import { Input, Button, Drawer, Divider, Menu } from 'antd';
+import { notifyActions } from '../../utils/notify';
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { CartAction, UserNav, Loader } from '../../components';
@@ -15,9 +16,9 @@ const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
 const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
   const onSearch = (value) => {
     if (!value) {
-      return message.error('Vui lòng nhập nội dung cần tìm!');
+      return notifyActions('error', 'Vui lòng nhập nội dung cần tìm!');
     }
-    history.push(`/pets/search?q=${value}`);
+    history.push(`/products/search?q=${value}`);
   };
   const [visible, setVisible] = useState(false);
   const [openKeys, setOpenKeys] = useState(['sub1']);
@@ -93,25 +94,25 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/dog/5f9d1f0f92c1c0b400863677`}
+            to={`/products/dog/5f9d1f0f92c1c0b400863677`}
           >
             Chó cảnh
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/cat/5f9d1f1d92c1c0b400863843`}
+            to={`/products/cat/5f9d1f1d92c1c0b400863843`}
           >
             Mèo cảnh
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/food/5ff00f72488a9a35bcb5d1dc`}
+            to={`/products/food/5ff00f72488a9a35bcb5d1dc`}
           >
             Thức ăn
           </Link>
           <Link
             className='navbar__wrap-actions--link'
-            to={`/pets/accessories/5ff01f04d5b5e035d8ed9f67`}
+            to={`/products/accessories/5ff01f04d5b5e035d8ed9f67`}
           >
             Phụ kiện
           </Link>
@@ -193,25 +194,25 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
         </Link>
         <Link
           className='navbar__wrap-actions--link'
-          to={`/pets/dog/5f9d1f0f92c1c0b400863677`}
+          to={`/products/dog/5f9d1f0f92c1c0b400863677`}
         >
           Chó cảnh
         </Link>
         <Link
           className='navbar__wrap-actions--link'
-          to={`/pets/cat/5f9d1f1d92c1c0b400863843`}
+          to={`/products/cat/5f9d1f1d92c1c0b400863843`}
         >
           Mèo cảnh
         </Link>
         <Link
           className='navbar__wrap-actions--link'
-          to={`/pets/food/5ff00f72488a9a35bcb5d1dc`}
+          to={`/products/food/5ff00f72488a9a35bcb5d1dc`}
         >
           Thức ăn
         </Link>
         <Link
           className='navbar__wrap-actions--link'
-          to={`/pets/accessories/5ff01f04d5b5e035d8ed9f67`}
+          to={`/products/accessories/5ff01f04d5b5e035d8ed9f67`}
         >
           Phụ kiện
         </Link>

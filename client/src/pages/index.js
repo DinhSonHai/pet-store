@@ -1,7 +1,7 @@
 export { default as CartHome } from './cart/CartHome';
 export { default as SearchList } from './search/SearchList';
-export { default as PetsList } from './pets_list/PetsList';
-export { default as PetDetails } from './pet_details/PetDetails';
+export { default as ProductList } from './product_list/ProductList';
+export { default as ProductDetails } from './product_details/ProductDetails';
 export { default as Navbar } from './layout/Navbar';
 export { default as Home } from './home/Home';
 export { default as Footer } from './layout/Footer';
@@ -14,6 +14,6 @@ export { default as Reset } from './reset/Reset';
 export { default as Profile } from './profile/Profile';
 export { default as Checkout } from './checkout/Checkout';
 export { default as Order } from './order/Order';
-export { default as PetsType } from './pets_type/PetsType';
-export { default as PetsPost } from './pets_post/PetsPost';
+export { default as ProductType } from './product_type/ProductType';
+export { default as ProductPost } from './product_post/ProductPost';
 export { default as NotFound } from './layout/NotFound';

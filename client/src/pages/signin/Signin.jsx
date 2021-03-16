@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { login, loginGoogle, loginFacebook } from '../../redux/actions/auth';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-import { GooglePlus, Facebook } from '../../icons';
+import { GooglePlus, Facebook } from '../../assets/icons';
 import {
   REACT_APP_GOOGLE_CLIENT,
   REACT_APP_FACEBOOK_CLIENT,

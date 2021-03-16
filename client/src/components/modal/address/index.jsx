@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { Modal, Button, Select, Form, Input, Checkbox } from 'antd';
-import { getProvince, getWard, getTown } from '../../../api/address';
+import { addressAPI } from '../../../api';
 import { connect } from 'react-redux';
 import { addAdress, updateAdress } from '../../../redux/actions/auth';
 import PropTypes from 'prop-types';
@@ -35,16 +35,19 @@ const AddressModal = ({
       form.resetFields();
     }
     async function Get_Province() {
-      const data = await getProvince();
-      setProvince(data);
+      const res = await addressAPI.get_province();
+      setProvince(res.data);
     }
     async function getData() {
       const { p_id, w_id, t_id } = item;
       if (edit && p_id && w_id) {
         setIsProcessing(true);
-        const res = await Promise.all([getWard(p_id), getTown(w_id)]);
-        setWard(res[0]);
-        setTown(res[1]);
+        const res = await Promise.all([
+          addressAPI.get_ward(p_id),
+          addressAPI.get_town(w_id),
+        ]);
+        setWard(res[0].data);
+        setTown(res[1].data);
         setCountryState({ ...countryState, p: p_id, w: w_id, t: t_id });
         setIsProcessing(false);
       }
@@ -67,8 +70,8 @@ const AddressModal = ({
     });
     let id = parseInt(values);
     setIsProcessing(true);
-    const data = await getWard(id);
-    setWard(data);
+    const res = await addressAPI.get_ward(id);
+    setWard(res.data);
     setCountryState({ ...countryState, p: id });
     if (countryState.w || countryState.t) {
       setCountryState({ ...countryState, w: null, t: null });
@@ -84,8 +87,8 @@ const AddressModal = ({
     });
     let id = parseInt(values);
     setIsProcessing(true);
-    const data = await getTown(id);
-    setTown(data);
+    const res = await addressAPI.get_town(id);
+    setTown(res.data);
     setCountryState({ ...countryState, w: id });
     if (countryState.t) {
       setCountryState({ ...countryState, t: null });

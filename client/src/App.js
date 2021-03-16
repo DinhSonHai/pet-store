@@ -5,45 +5,12 @@ import { Navbar, Footer } from './pages';
 import { Routes } from './routes';
 import MessengerCustomerChat from 'react-messenger-customer-chat';
 import { Provider } from 'react-redux';
-import store from './store';
-import setAuthToken from './auth/setAuthToken';
-import { loadUser } from './redux/actions/auth';
-import {
-  LOGOUT,
-  CLEAR_CHECKOUT_INFO,
-  CART_LOADER,
-  REMOVE_CART,
-} from './redux/types';
+import store from './app/store';
+import initApp from './app/init';
 import { REACT_APP_FACEBOOK_CLIENT } from './config/login';
-import api from './api';
 function App() {
   useEffect(() => {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token);
-    }
-    let cartState = JSON.parse(localStorage.getItem('cart'));
-    if (cartState && cartState.length > 0) {
-      store.dispatch({
-        type: CART_LOADER,
-        payload: { cartState, isHaveCart: true },
-      });
-    }
-    store.dispatch(loadUser());
-    window.addEventListener('storage', () => {
-      let cart = JSON.parse(localStorage.getItem('cart'));
-      if (!cart || cart.length <= 0) {
-        store.dispatch({ type: REMOVE_CART });
-      }
-      if (
-        !localStorage.token ||
-        api.defaults.headers.common['x-auth-token'] !== localStorage.token
-      ) {
-        store.dispatch({ type: LOGOUT });
-        store.dispatch({ type: REMOVE_CART });
-        store.dispatch({ type: CLEAR_CHECKOUT_INFO });
-        localStorage.removeItem('cart');
-      }
-    });
+    initApp();
   }, []);
   return (
     <Provider store={store}>

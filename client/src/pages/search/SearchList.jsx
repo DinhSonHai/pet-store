@@ -22,7 +22,7 @@ import {
   CaretUpOutlined,
   DownOutlined,
 } from '@ant-design/icons';
-import { AddToCart } from '../../icons';
+import { AddToCart } from '../../assets/icons';
 import { addItem } from '../../utils/cart';
 import { Loader } from '../../components';
 import { Link } from 'react-router-dom';
@@ -52,20 +52,22 @@ const SearchList = ({
 
   const handlePagination = async (_page) => {
     if (filter) {
-      return history.push(`/pets/search?q=${q}&sort=${filter}&page=${_page}`);
+      return history.push(
+        `/products/search?q=${q}&sort=${filter}&page=${_page}`
+      );
     }
-    return history.push(`/pets/search?q=${q}&page=${_page}`);
+    return history.push(`/products/search?q=${q}&page=${_page}`);
   };
   const menu = (
     <Menu>
       <Menu.Item key='3' icon={<CaretUpOutlined />}>
-        <Link to={`/pets/search?q=${q}&sort=asc`}>
+        <Link to={`/products/search?q=${q}&sort=asc`}>
           {' '}
           Thứ tự theo: giá thấp đến cao
         </Link>
       </Menu.Item>
       <Menu.Item key='4' icon={<CaretDownOutlined />}>
-        <Link to={`/pets/search?q=${q}&sort=desc`}>
+        <Link to={`/products/search?q=${q}&sort=desc`}>
           {' '}
           Thứ tự theo: giá cao đến thấp
         </Link>
@@ -82,31 +84,17 @@ const SearchList = ({
   };
 
   return (
-    <section className='pets'>
+    <section className='products'>
       <div className='container'>
-        <div className='pets__header'>
+        <div className='products__header'>
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Link className='pets__header-title' to='/'>
+              <Link className='products__header-title' to='/'>
                 Trang chủ
               </Link>
             </Breadcrumb.Item>
-            {/* <Breadcrumb.Item>
-              <Link className='pets__header-title' to='/'>
-                {match.params.type === 'dog'
-                  ? 'Chó cảnh'
-                  : match.params.type === 'cat'
-                  ? 'Mèo cảnh'
-                  : match.params.type === 'food'
-                  ? 'Thức ăn'
-                  : match.params.type === 'accessories' && 'Phụ kiện'}
-              </Link>
-            </Breadcrumb.Item> */}
-            {/* <Breadcrumb.Item>
-              <span className='pets__header-title'>Chó Alaska</span>
-            </Breadcrumb.Item> */}
           </Breadcrumb>
-          <div className='pets__header-filter'>
+          <div className='products__header-filter'>
             <Dropdown disabled={loading} overlay={menu}>
               <Button>
                 Mới nhất <DownOutlined />
@@ -114,7 +102,7 @@ const SearchList = ({
             </Dropdown>
           </div>
         </div>
-        <div className='pets-list'>
+        <div className='products-list'>
           <Row
             gutter={[
               { xs: 4, sm: 8, md: 16, lg: 16 },
@@ -134,7 +122,7 @@ const SearchList = ({
                         flexDirection: 'column',
                         justifyContent: 'space-between',
                       }}
-                      to={`/pet/${product._id}`}
+                      to={`/product/${product._id}`}
                     >
                       <div
                         style={{
@@ -150,7 +138,7 @@ const SearchList = ({
                         />
                       </div>
                       <div>
-                        <p className='pets__name'>
+                        <p className='products__name'>
                           <Tooltip
                             placement='topLeft'
                             title={product.productName}
@@ -171,7 +159,7 @@ const SearchList = ({
                             {`(${product.reviewsCount})`}
                           </span>
                         </div>
-                        <p className='pets__price'>
+                        <p className='products__price'>
                           {parseInt(product.price).toLocaleString('vi-VN', {
                             style: 'currency',
                             currency: 'VND',
