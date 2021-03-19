@@ -1,4 +1,3 @@
-import api from '../../api';
 import {
   GET_CONFIRM_ORDERS,
   GET_PICKUP_ORDERS,
@@ -11,13 +10,14 @@ import {
   UPDATE_PACKED_ORDERS,
   UPDATE_TRANSPORTING_ORDERS,
 } from '../types';
-import { message } from 'antd';
+import { orderAPI } from '../../api';
+import { notifyActions } from '../../utils/notify';
 
 // Lấy các đơn hàng theo trạng thái phía admin
 export const getOrdersByStatus = (status) => async (dispatch) => {
   let st = parseInt(status);
   try {
-    const res = await api.get(`orders/${st}/admin`);
+    const res = await orderAPI.get_by_status(st);
     dispatch({
       type:
         st === 0
@@ -37,7 +37,7 @@ export const getOrdersByStatus = (status) => async (dispatch) => {
 // Lấy chi tiết đơn hàng theo orderId phía admin
 export const getOrdersDetail = (id) => async (dispatch) => {
   try {
-    const res = await api.get(`/orders/detail/admin/${id}`);
+    const res = await orderAPI.get_details(id);
     return res.data;
   } catch (err) {}
 };
@@ -46,18 +46,18 @@ export const getOrdersDetail = (id) => async (dispatch) => {
 export const cancelOrder = (id, status) => async (dispatch) => {
   let st = parseInt(status);
   try {
-    const res = await api.put(`/orders/admin/${id}`);
+    const res = await orderAPI.cancel_order(id);
     dispatch({
       type: st === 0 ? UPDATE_CONFIRM_ORDERS : st === 1 && UPDATE_PICKUP_ORDERS,
       payload: id,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
     return true;
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -65,13 +65,13 @@ export const cancelOrder = (id, status) => async (dispatch) => {
 // Lấy đơn hàng theo orderId phía admin
 export const getOrder = (id) => async (dispatch) => {
   try {
-    const res = await api.get(`/orders/admin/${id}`);
+    const res = await orderAPI.get_by_id(id);
     return res.data;
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -80,7 +80,7 @@ export const getOrder = (id) => async (dispatch) => {
 export const updateOrderStatus = (id, status) => async (dispatch) => {
   let st = parseInt(status);
   try {
-    const res = await api.put(`/orders/${id}`);
+    const res = await orderAPI.update(id);
     dispatch({
       type:
         st === 0
@@ -94,12 +94,12 @@ export const updateOrderStatus = (id, status) => async (dispatch) => {
           : st === 4 && UPDATE_TRANSPORTING_ORDERS,
       payload: id,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -107,14 +107,14 @@ export const updateOrderStatus = (id, status) => async (dispatch) => {
 // Đặt hàng
 export const adminOrder = (data) => async (dispatch) => {
   try {
-    const res = await api.post('/orders/admin', data);
-    message.success(res.data.message);
+    const res = await orderAPI.order(data);
+    notifyActions('success', res.data.message);
     return true;
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };

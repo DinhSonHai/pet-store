@@ -1,5 +1,14 @@
 import axios from 'axios';
-import store from '../store';
+import store from '../app/store';
+import authAPI from './authAPI';
+import billAPI from './billAPI';
+import categoryAPI from './categoryAPI';
+import orderAPI from './orderAPI';
+import productAPI from './productAPI';
+import receiptAPI from './receiptAPI';
+import reviewAPI from './reviewAPI';
+import statisticalAPI from './statisticalAPI';
+import typeAPI from './typeAPI';
 import { LOGOUT } from '../redux/types';
 
 const api = axios.create({
@@ -24,5 +33,15 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-
+export {
+  authAPI,
+  billAPI,
+  categoryAPI,
+  orderAPI,
+  productAPI,
+  receiptAPI,
+  reviewAPI,
+  statisticalAPI,
+  typeAPI,
+};
 export default api;

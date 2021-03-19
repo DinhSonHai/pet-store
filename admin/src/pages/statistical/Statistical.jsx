@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Breadcrumb, Select } from 'antd';
-import { OrdersChart, RevenuesChart } from '../../components';
+import OrdersChart from './orders_chart';
+import RevenuesChart from './revenues_chart';
 import dayjs from 'dayjs';
 import './styles.scss';
 const { Option } = Select;

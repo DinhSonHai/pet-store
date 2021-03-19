@@ -3,16 +3,14 @@ import { Breadcrumb, Row, Button } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { getDashBoardData } from '../../redux/actions/statistical';
-import {
-  TodayRevenuesCard,
-  MonthRevenuesCard,
-  AnnualRevenuesCard,
-  TodayNewestOrdersCard,
-  NewestReviewsCard,
-  NewestCommentsCard,
-  TodayBillsCard,
-  TodaySalesCard,
-} from '../../components';
+import TodayRevenuesCard from './today_revenues';
+import MonthRevenuesCard from './month_revenues';
+import AnnualRevenuesCard from './annual_revenues';
+import TodayNewestOrdersCard from './today_new_orders';
+import NewestReviewsCard from './new_reviews';
+import NewestCommentsCard from './new_comments';
+import TodayBillsCard from './today_bills';
+import TodaySalesCard from './today_sales';
 import './styles.scss';
 const DashBoard = ({
   getDashBoardData,

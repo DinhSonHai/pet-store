@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
-import { ProductList, ProductRemoved, ProductAddForm } from '../../components';
+import ProductList from './list';
+import ProductRemoved from './removed';
+import ProductAddForm from './add_form';
 import {
   UnorderedListOutlined,
   DeleteOutlined,

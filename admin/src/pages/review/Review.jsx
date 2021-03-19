@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
 import { UnorderedListOutlined } from '@ant-design/icons';
-import { ReviewsProducts } from '../../components';
+import ReviewsProducts from './products';
 
 const { TabPane } = Tabs;
 

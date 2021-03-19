@@ -1,16 +1,15 @@
-import api from '../../api';
 import {
   GET_ALL_PRODUCTS,
   REMOVE_PRODUCT,
   RESTORE_PRODUCT,
   GET_ALL_PRODUCTS_REMOVED,
 } from '../types';
-import { message } from 'antd';
-
+import { productAPI } from '../../api';
+import { notifyActions } from '../../utils/notify';
 // get all products
 export const getAllProducts = (filter, page) => async (dispatch) => {
   try {
-    const res = await api.get(`/products/?sort=${filter}&page=${page}`);
+    const res = await productAPI.get_all(filter, page);
     dispatch({
       type: GET_ALL_PRODUCTS,
       payload: res.data,
@@ -21,13 +20,13 @@ export const getAllProducts = (filter, page) => async (dispatch) => {
 // create product
 export const createProduct = (data) => async (dispatch) => {
   try {
-    const res = await api.post('/products', data);
-    message.success(res.data.message);
+    const res = await productAPI.create(data);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -35,13 +34,13 @@ export const createProduct = (data) => async (dispatch) => {
 // edit product
 export const editProduct = (data) => async (dispatch) => {
   try {
-    const res = await api.put('/products', data);
-    message.success(res.data.message);
+    const res = await productAPI.update(data);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -49,17 +48,17 @@ export const editProduct = (data) => async (dispatch) => {
 // remove product
 export const removeProduct = (id) => async (dispatch) => {
   try {
-    const res = await api.delete(`/products/${id}`);
+    const res = await productAPI.remove(id);
     dispatch({
       type: REMOVE_PRODUCT,
       payload: id,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -67,17 +66,17 @@ export const removeProduct = (id) => async (dispatch) => {
 // restore product
 export const restoreProduct = (id) => async (dispatch) => {
   try {
-    const res = await api.patch(`/products/${id}/restore`);
+    const res = await productAPI.restore(id);
     dispatch({
       type: RESTORE_PRODUCT,
       payload: id,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -85,7 +84,7 @@ export const restoreProduct = (id) => async (dispatch) => {
 // get all removed products
 export const getRemovedProducts = (page) => async (dispatch) => {
   try {
-    const res = await api.get(`/products/deleted/?page=${page}`);
+    const res = await productAPI.get_removed(page);
     dispatch({
       type: GET_ALL_PRODUCTS_REMOVED,
       payload: res.data,

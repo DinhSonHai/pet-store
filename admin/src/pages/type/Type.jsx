@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
-import { TypeList, TypeRemoved, TypeAddForm } from '../../components';
+import TypeAddForm from './add_form';
+import TypeList from './list';
+import TypeRemoved from './removed';
 import {
   UnorderedListOutlined,
   DeleteOutlined,

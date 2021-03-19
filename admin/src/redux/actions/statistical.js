@@ -1,35 +1,13 @@
-import api from '../../api';
 import {
   GET_DASHBOARD_DATA,
   GET_CHART_ORDERS_DATA,
   GET_CHART_REVENUE_DATA,
 } from '../types';
-
-function getData(path) {
-  return new Promise((resolve, reject) => {
-    api
-      .get(path)
-      .then(function (response) {
-        resolve(response.data);
-      })
-      .catch(function (err) {
-        reject(err.error);
-      });
-  });
-}
+import { statisticalAPI } from '../../api';
 
 export const getDashBoardData = () => async (dispatch) => {
   try {
-    const res = await Promise.all([
-      getData('/statistical/todayrevenues'),
-      getData('/statistical/monthlyrevenues'),
-      getData('/statistical/annualrevenues'),
-      getData('/statistical/newestorders'),
-      getData('/statistical/newestreviews'),
-      getData('/statistical/newestcomments'),
-      getData('/statistical/todaybills'),
-      getData('/statistical/todaysales'),
-    ]);
+    const res = await statisticalAPI.get_dasgboard_data();
     dispatch({
       type: GET_DASHBOARD_DATA,
       payload: res,
@@ -39,7 +17,7 @@ export const getDashBoardData = () => async (dispatch) => {
 
 export const getOrdersChartData = (year) => async (dispatch) => {
   try {
-    const res = await api.get(`/statistical/ordersdatachart/${year}`);
+    const res = await statisticalAPI.get_orders_data(year);
     dispatch({
       type: GET_CHART_ORDERS_DATA,
       payload: res.data,
@@ -49,7 +27,7 @@ export const getOrdersChartData = (year) => async (dispatch) => {
 
 export const getRevenuesChartData = (year) => async (dispatch) => {
   try {
-    const res = await api.get(`/statistical/revenuesdatachart/${year}`);
+    const res = await statisticalAPI.get_revenues_data(year);
     dispatch({
       type: GET_CHART_REVENUE_DATA,
       payload: res.data,

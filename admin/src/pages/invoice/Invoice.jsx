@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import ReactToPrint from 'react-to-print';
-import { ComponentToPrint, Loader } from '../../components';
+import { Loader } from '../../components';
+import ComponentToPrint from './print';
 import { Button, message } from 'antd';
 import api from '../../api';
 

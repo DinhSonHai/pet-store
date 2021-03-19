@@ -1,11 +1,11 @@
-import api from '../../api';
 import { LOGIN_SUCCESS, USER_LOADED, AUTH_ERROR } from '../types';
-import { notification } from 'antd';
+import { authAPI } from '../../api';
+import { notifySuccess, notifyErrors } from '../../utils/notify';
 
 // Load User
 export const loadUser = () => async (dispatch) => {
   try {
-    const res = await api.get('/employee/user');
+    const res = await authAPI.get_user();
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -20,28 +20,16 @@ export const loadUser = () => async (dispatch) => {
 // Register User
 export const register = (formData) => async (dispatch) => {
   try {
-    const res = await api.post('/employee/signup', formData);
-    notification.open({
-      message: 'Đăng ký thành công!',
-      description: res.data.message,
-    });
+    const res = await authAPI.register(formData);
+    notifySuccess(res.data.message);
   } catch (err) {
-    const errors = err.response.data.errors;
-    if (errors) {
-      errors.forEach((error) =>
-        notification.open({
-          message: 'Lỗi!',
-          description: error.msg,
-        })
-      );
-    }
+    notifyErrors(err);
   }
 };
 // Login User
 export const login = (email, password) => async (dispatch) => {
-  const body = { email, password };
   try {
-    const res = await api.post('/employee/signin', body);
+    const res = await authAPI.login(email, password);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
@@ -49,15 +37,6 @@ export const login = (email, password) => async (dispatch) => {
     dispatch(loadUser());
     return true;
   } catch (err) {
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) =>
-        notification.open({
-          message: 'Lỗi!',
-          description: error.msg,
-        })
-      );
-    }
+    notifyErrors(err);
   }
 };

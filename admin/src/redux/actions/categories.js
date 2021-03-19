@@ -1,4 +1,3 @@
-import api from '../../api';
 import {
   GET_ALL_CATEGORIES,
   CREATE_CATEGORY,
@@ -7,12 +6,13 @@ import {
   RESTORE_CATEGORY,
   GET_ALL_CATEGORIES_REMOVED,
 } from '../types';
-import { message } from 'antd';
+import { notifyActions } from '../../utils/notify';
+import { categoryAPI } from '../../api';
 
 // get all categories
 export const getAllCategories = () => async (dispatch) => {
   try {
-    const res = await api.get('/categories');
+    const res = await categoryAPI.get_all();
     dispatch({
       type: GET_ALL_CATEGORIES,
       payload: res.data,
@@ -23,17 +23,16 @@ export const getAllCategories = () => async (dispatch) => {
 // create category
 export const createCategory = (data) => async (dispatch) => {
   try {
-    const res = await api.post('/categories', data);
+    const res = await categoryAPI.create(data);
     dispatch({
       type: CREATE_CATEGORY,
       payload: res.data.data,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
-
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -41,17 +40,16 @@ export const createCategory = (data) => async (dispatch) => {
 // edit category
 export const editCategory = (data) => async (dispatch) => {
   try {
-    const res = await api.put('/categories', data);
+    const res = await categoryAPI.update(data);
     dispatch({
       type: EDIT_CATEGORY,
       payload: res.data.data,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
-
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -59,17 +57,16 @@ export const editCategory = (data) => async (dispatch) => {
 // remove category
 export const removeCategory = (id) => async (dispatch) => {
   try {
-    const res = await api.delete(`/categories/${id}`);
+    const res = await categoryAPI.remove(id);
     dispatch({
       type: REMOVE_CATEGORY,
       payload: id,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
-
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -77,17 +74,16 @@ export const removeCategory = (id) => async (dispatch) => {
 // restore category
 export const restoreCategory = (id) => async (dispatch) => {
   try {
-    const res = await api.patch(`/categories/${id}/restore`);
+    const res = await categoryAPI.restore(id);
     dispatch({
       type: RESTORE_CATEGORY,
       payload: id,
     });
-    message.success(res.data.message);
+    notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
-
     if (errors) {
-      errors.forEach((error) => message.error(error.msg));
+      errors.forEach((error) => notifyActions('error', error.msg));
     }
   }
 };
@@ -95,7 +91,7 @@ export const restoreCategory = (id) => async (dispatch) => {
 // get all removed categories
 export const getRemovedCategories = () => async (dispatch) => {
   try {
-    const res = await api.get(`/categories/deleted`);
+    const res = await categoryAPI.get_removed();
     dispatch({
       type: GET_ALL_CATEGORIES_REMOVED,
       payload: res.data,

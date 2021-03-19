@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
-import {
-  ConfirmOrders,
-  PickUpOrders,
-  PackingOrders,
-  PackedOrders,
-  TransportingOrders,
-} from '../../components';
+import ConfirmOrders from './confirm';
+import PickUpOrders from './pickup';
+import PackingOrders from './packing';
+import PackedOrders from './packed';
+import TransportingOrders from './transporting';
 const { TabPane } = Tabs;
 const Order = () => {
   const [tabChange, setTabChange] = useState('confirm');
