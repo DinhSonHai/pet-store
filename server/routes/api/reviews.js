@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../app/middlewares/auth');
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 const checkPermission = require('../../app/middlewares/checkPermission');
 const ReviewController = require('../../app/controllers/ReviewController');
 

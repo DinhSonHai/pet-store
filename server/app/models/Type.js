@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const dayjs = require('dayjs');
 const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
@@ -10,7 +9,7 @@ const TypeSchema = new Schema({
   typeImg: { type: String, trim: true },
   content: { type: String, trim: true },
   categoryId: { type: Schema.Types.ObjectId, ref: 'category', required: true },
-  createdAt: { type: Date, default: dayjs().toISOString() },
+  createdAt: { type: Date, default: new Date().toISOString() },
 });
 
 TypeSchema.plugin(mongooseDelete, {

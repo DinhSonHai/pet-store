@@ -3,7 +3,7 @@ const router = express.Router();
 
 const CategoryController = require('../../app/controllers/CategoryController');
 const checkPermission = require('../../app/middlewares/checkPermission');
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 
 // @route   GET api/categories
 // @desc    Lấy tất cả danh mục

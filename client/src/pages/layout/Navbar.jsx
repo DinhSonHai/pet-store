@@ -5,11 +5,11 @@ import { Input, Button, Drawer, Divider, Menu } from 'antd';
 import { notifyActions } from '../../utils/notify';
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { CartAction, UserNav, Loader } from '../../components';
+import { CartAction, UserNav, Loader, VoiceSearch } from '../../components';
 import { getProductsByType } from '../../redux/actions/products';
 import { connect } from 'react-redux';
-import './styles.scss';
 import { withRouter } from 'react-router-dom';
+import './styles.scss';
 const { SubMenu } = Menu;
 const { Search } = Input;
 const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
@@ -38,6 +38,7 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
   const onClose = () => {
     setVisible(false);
   };
+
   return (
     <section className='navbar'>
       <div className='navbar__info'>
@@ -64,6 +65,7 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
                   </Button>
                 }
               />
+              <VoiceSearch />
             </div>
           </div>
           <div className='navbar__info-social'>

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const EmployeeController = require('../../app/controllers/EmployeeController');
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 const checkPermission = require('../../app/middlewares/checkPermission');
 const { validateSignUp, validateSignIn } = require('../../helpers/valid');
 

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const dayjs = require('dayjs');
 
 const Schema = mongoose.Schema;
 
@@ -11,7 +10,7 @@ const ReviewSchema = new Schema({
   avatar: { type: String, trim: true },
   starRatings: { type: Number },
   comment: { type: String, trim: true },
-  commentedAt: { type: Date, default: dayjs().toISOString() },
+  commentedAt: { type: Date, default: new Date().toISOString() },
   replyComment: [
     {
       userReplyId: { type: Schema.Types.ObjectId, ref: 'user', default: null },
@@ -23,7 +22,7 @@ const ReviewSchema = new Schema({
       name: { type: String, trim: true },
       avatar: { type: String, trim: true },
       replyComment: { type: String, trim: true },
-      replyCommentedAt: { type: Date, default: dayjs().toISOString() },
+      replyCommentedAt: { type: Date, default: new Date().toISOString() },
       status: { type: Number, default: 0 },
     },
   ],

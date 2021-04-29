@@ -7,10 +7,14 @@ import {
   CLEAR_CHECKOUT_INFO,
   CART_LOADER,
   REMOVE_CART,
+  AUTH_ERROR,
 } from '../redux/types';
 const initApp = () => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
+    store.dispatch(loadUser());
+  } else {
+    store.dispatch({ type: AUTH_ERROR });
   }
   let cartState = JSON.parse(localStorage.getItem('cart'));
   if (cartState && cartState.length > 0) {
@@ -19,7 +23,6 @@ const initApp = () => {
       payload: { cartState, isHaveCart: true },
     });
   }
-  store.dispatch(loadUser());
   window.addEventListener('storage', () => {
     let cart = JSON.parse(localStorage.getItem('cart'));
     if (!cart || cart.length <= 0) {

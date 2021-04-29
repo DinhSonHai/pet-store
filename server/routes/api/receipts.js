@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ReceiptController = require('../../app/controllers/ReceiptController');
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 
 // @route   GET api/receipts
 // @desc    Lấy tất cả phiếu nhập

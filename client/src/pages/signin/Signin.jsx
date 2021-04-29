@@ -74,10 +74,6 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
             <Form
               name='normal_login'
               className='login-form'
-              initialValues={{
-                remember: true,
-                size: 'large',
-              }}
               size='large'
               onFinish={onFinish}
             >

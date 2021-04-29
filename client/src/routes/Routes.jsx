@@ -20,7 +20,11 @@ export default function () {
       />
       <Route exact path='/products/:type/:id' component={pages.ProductType} />
       <Route exact path='/cart' component={pages.CartHome} />
-      <Route exact path='/product/:id' component={pages.ProductDetails} />
+      <Route
+        exact
+        path='/product/:productName/:id'
+        component={pages.ProductDetails}
+      />
       <AuthRoute exact path='/signin' component={pages.Signin} />
       <AuthRoute exact path='/signup' component={pages.Signup} />
       <PrivateRoute exact path='/signout' component={pages.SignOut} />

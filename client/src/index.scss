@@ -8,7 +8,7 @@
   --dark-color: #363c44;
   --dark-second-color: #4a4a4a;
   --light-color: #f0f0f0;
-  --white-color: #fff;
+  --white-color: #ffffff;
   --gray-color: #a0a0a0;
   --second-btn-color: #fdd835;
   --danger-color: #dc3545;
@@ -20,10 +20,11 @@
   padding: 0;
 }
 body {
-  font-family: 'Muli', sans-serif !important;
+  font-family: "Muli", sans-serif !important;
   font-size: 1rem !important;
   line-height: 1.6 !important;
   color: var(--dark-second-color) !important;
+  height: fit-content !important;
 }
 
 .container {
@@ -37,7 +38,7 @@ body {
 }
 .ck {
   span {
-    font-family: 'Muli', sans-serif !important;
+    font-family: "Muli", sans-serif !important;
   }
 }
 .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),

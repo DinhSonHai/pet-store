@@ -6,3 +6,4 @@ export { default as AddressModal } from './modal/address';
 export { default as ConfirmModal } from './modal/confirm';
 export { default as CheckoutAddressModal } from './modal/checkout_address';
 export { default as FavoriteAction } from './favorite_action';
+export { default as VoiceSearch } from './voice_search';

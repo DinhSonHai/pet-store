@@ -3,7 +3,7 @@ const router = express.Router();
 
 const TypeController = require('../../app/controllers/TypeController');
 const checkPermission = require('../../app/middlewares/checkPermission');
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 
 // @route   GET api/types
 // @desc    Lấy tất cả loại sản phẩm

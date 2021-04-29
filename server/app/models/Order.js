@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const dayjs = require('dayjs');
 
 const Schema = mongoose.Schema;
 
@@ -16,7 +15,7 @@ const OrderSchema = new Schema({
   note: { type: String, trim: true },
   deliveryState: { type: Number, default: 0 },
   paymentState: { type: Number, default: 0 },
-  createdAt: { type: Date, default: dayjs().toISOString() },
+  createdAt: { type: Date, default: new Date().toISOString() },
   confirmedAt: { type: Date, default: null },
   pickedUpAt: { type: Date, default: null },
   packedAt: { type: Date, default: null },

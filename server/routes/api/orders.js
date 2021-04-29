@@ -9,7 +9,7 @@ const {
   validateOrderAdmin,
 } = require('../../helpers/valid');
 const auth = require('../../app/middlewares/auth');
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 
 // @route   GET api/orders/auth/:id
 // @desc    Lấy đơn hàng theo id phía người dùng

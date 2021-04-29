@@ -3,7 +3,7 @@ const router = express.Router();
 
 const StatisticalController = require('../../app/controllers/StatisticalController');
 const checkPermission = require('../../app/middlewares/checkPermission');
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 
 // @route   GET api/statistical/todayrevenues
 // @desc    Thống kê doanh thu nagfy hôm nay

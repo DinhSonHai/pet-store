@@ -138,7 +138,7 @@ const ProductList = ({
                         flexDirection: 'column',
                         justifyContent: 'space-between',
                       }}
-                      to={`/product/${product._id}`}
+                      to={`/product/${product.productName}/${product._id}`}
                     >
                       <div className='products-list__wrap'>
                         <img

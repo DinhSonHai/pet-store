@@ -32,7 +32,6 @@ import './styles.scss';
 const SearchList = ({
   data: { products, total },
   getSearchProductsList,
-  match,
   location,
   history,
 }) => {
@@ -40,7 +39,6 @@ const SearchList = ({
   let filter = queryString.parse(location.search).sort;
   let page = queryString.parse(location.search).page;
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     async function getData() {
       setLoading(true);

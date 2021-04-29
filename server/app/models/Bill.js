@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const dayjs = require('dayjs');
 
 const Schema = mongoose.Schema;
 
@@ -14,8 +13,8 @@ const BillSchema = new Schema({
   totalMoney: { type: Number, required: true },
   status: { type: Boolean, default: true },
   note: { type: String, trim: true },
-  orderedAt: { type: Date, default: dayjs().toISOString() },
-  deliveriedAt: { type: Date, default: dayjs().toISOString() },
+  orderedAt: { type: Date, default: new Date().toISOString() },
+  deliveriedAt: { type: Date, default: new Date().toISOString() },
 });
 
 module.exports = mongoose.model('bill', BillSchema);

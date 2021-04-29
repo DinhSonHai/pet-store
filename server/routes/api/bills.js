@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authAdmin = require('../../app/middlewares/auth_admin');
+const authAdmin = require('../../app/middlewares/authAdmin');
 const BillController = require('../../app/controllers/BillController');
 
 // @route   GET api/bills
