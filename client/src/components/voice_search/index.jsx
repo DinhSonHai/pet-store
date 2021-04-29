@@ -6,7 +6,6 @@ import SpeechRecognition, {
 import { debounce } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { MicroPhone } from '../../assets/icons';
-import microPhoneIcon from '../../assets/svg/microphone.svg';
 import './styles.scss';
 const VoiceSearch = () => {
   const history = useHistory();
@@ -58,13 +57,9 @@ const VoiceSearch = () => {
               ref={microphoneRef}
               onClick={handleStop}
             >
-              <img
-                src={microPhoneIcon}
-                className='microphone-icon'
-                alt='mcmcm'
-              />
+              <MicroPhone size={42} color='#4a4a4a' />
             </div>
-            <div className='microphone-status'>Đang nghe.........</div>
+            <div className='microphone-status'>Đang nghe...</div>
           </div>
         </div>
       )}

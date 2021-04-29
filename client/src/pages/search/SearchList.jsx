@@ -11,7 +11,6 @@ import {
   Menu,
   Dropdown,
   Button,
-  Breadcrumb,
   message,
   Pagination,
   Rate,
@@ -85,13 +84,7 @@ const SearchList = ({
     <section className='products'>
       <div className='container'>
         <div className='products__header'>
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Link className='products__header-title' to='/'>
-                Trang chủ
-              </Link>
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          {`Kết quả tìm kiếm cho "${q}" (${products.length})`}
           <div className='products__header-filter'>
             <Dropdown disabled={loading} overlay={menu}>
               <Button>
@@ -120,7 +113,7 @@ const SearchList = ({
                         flexDirection: 'column',
                         justifyContent: 'space-between',
                       }}
-                      to={`/product/${product._id}`}
+                      to={`/product/${product.productName}/${product._id}`}
                     >
                       <div
                         style={{
