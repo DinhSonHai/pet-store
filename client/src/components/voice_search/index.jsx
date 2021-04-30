@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Fragment, useState, useRef, useEffect, useCallback } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition';
@@ -11,7 +11,6 @@ const VoiceSearch = () => {
   const history = useHistory();
   const { transcript, resetTranscript } = useSpeechRecognition();
   const [isListening, setIsListening] = useState(false);
-  const microphoneRef = useRef(null);
   useEffect(() => {
     if (transcript) {
       debouncedSave(transcript);
@@ -22,7 +21,7 @@ const VoiceSearch = () => {
       handleStop();
       resetTranscript();
       history.push(`/products/search?q=${value}`);
-    }, 800),
+    }, 500),
     []
   );
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
@@ -54,7 +53,6 @@ const VoiceSearch = () => {
           <div className='mircophone-container'>
             <div
               className='microphone-icon-container listening'
-              ref={microphoneRef}
               onClick={handleStop}
             >
               <MicroPhone size={42} color='#4a4a4a' />
