@@ -53,7 +53,7 @@ const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
     }
     if (edit) {
       setConfirmLoading(true);
-      await editType({ ...values, typeImg: images[0], content, id: item._id });
+      await editType(item._id, { ...values, typeImg: images[0], content });
       setConfirmLoading(false);
       return;
     }

@@ -1,4 +1,7 @@
 const Category = require('../models/Category');
+const crudService = require('../../services/crud');
+const statusCode = require('../../constants/statusCode.json');
+const message = require('../../constants/message.json').crud;
 
 class CategoryController {
   // @route   GET api/categories
@@ -6,11 +9,10 @@ class CategoryController {
   // @access  Public
   async getAll(req, res, next) {
     try {
-      const categories = await Category.find();
-      return res.json(categories);
+      const categories = await crudService.getAll(Category);
+      return res.status(statusCode.success).json(categories);
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   GET api/categories/:id
@@ -18,69 +20,71 @@ class CategoryController {
   // @access  Public
   async getById(req, res, next) {
     try {
-      const cat = await Category.findById(req.params.id);
+      const cat = await crudService.getById(Category, req.params.id);
       if (!cat) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       return res.json(cat);
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
   // @route   POST api/categories
   // @desc    Tạo danh mục
   // @access  Private
-  async Add(req, res, next) {
+  async create(req, res, next) {
     const { categoryName } = req.body;
     if (!categoryName) {
       return res
-        .status(400)
-        .json({ errors: [{ msg: 'Danh mục không được trống!' }] });
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: 'Tên danh mục không được trống!' }] });
     }
     try {
-      const cat = new Category({
-        categoryName,
-      });
-      cat.key = cat._id;
-      await cat.save((err, data) => {
-        if (err) {
-          return res.status(400).json({ errors: [{ msg: 'Thêm thất bại!' }] });
-        }
-        return res.json({ data, message: 'Thêm thành công' });
-      });
+      const status = await crudService.create(Category, req.body);
+      if (status) {
+        return res
+          .status(statusCode.success)
+          .json({ message: message.createSuccess });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.createFail }] });
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
-  // @route   PUT api/categories
+  // @route   PUT api/categories/:id
   // @desc    Sửa danh mục
   // @access  Private
-  async editById(req, res, next) {
-    const { id, categoryName } = req.body;
+  async update(req, res, next) {
+    const { categoryName } = req.body;
     if (!categoryName) {
       return res
-        .status(400)
+        .status(statusCode.badRequest)
         .json({ errors: [{ msg: 'Danh mục không được trống!' }] });
     }
     try {
-      const cat = await Category.findById(id);
+      const cat = await crudService.getById(Category, req.params.id);
       if (!cat) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
-      cat.categoryName = categoryName;
-      await cat.save((err, data) => {
-        if (err) {
-          return res.status(400).json({ errors: [{ msg: 'Sửa thất bại!' }] });
-        }
-        return res.json({ data, message: 'Sửa thành công' });
-      });
+      const status = await crudService.update(cat, req.body);
+      if (status) {
+        return res
+          .status(statusCode.success)
+          .json({ data, message: message.updateSuccess });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.updateFail }] });
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -89,14 +93,23 @@ class CategoryController {
   // @access  Private
   async softDelete(req, res) {
     try {
-      let cat = await Category.findById(req.params.id);
+      let cat = await crudService.getById(Category, req.params.id);
       if (!cat) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
-      await Category.delete({ _id: req.params.id });
-      return res.json({ message: 'Xóa thành công' });
-    } catch (error) {
-      return res.status(500).send('Server error');
+      const status = await crudService.remove(Category, req.params.id);
+      if (status) {
+        return res
+          .status(statusCode.success)
+          .json({ message: message.removeSuccess });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.removeFail }] });
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 
@@ -107,10 +120,19 @@ class CategoryController {
     try {
       let cat = await Category.findDeleted({ _id: req.params.id });
       if (!cat) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
-      await Category.restore({ _id: req.params.id });
-      return res.json({ message: 'Khôi phục thành công' });
+      const status = await crudService.restore(Category, req.params.id);
+      if (status) {
+        return res
+          .status(statusCode.success)
+          .json({ message: message.restoreSuccess });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.restoreFail }] });
     } catch (error) {
       return res.status(500).send('Server error');
     }
@@ -122,9 +144,9 @@ class CategoryController {
   async getDeleted(req, res) {
     try {
       const cat = await Category.findDeleted({});
-      return res.json(cat);
-    } catch (error) {
-      return res.status(500).send('Server error');
+      return res.status(statusCode.success).json(cat);
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 }

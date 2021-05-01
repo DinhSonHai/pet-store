@@ -38,9 +38,9 @@ export const createCategory = (data) => async (dispatch) => {
 };
 
 // edit category
-export const editCategory = (data) => async (dispatch) => {
+export const editCategory = (id, data) => async (dispatch) => {
   try {
-    const res = await categoryAPI.update(data);
+    const res = await categoryAPI.update(id, data);
     dispatch({
       type: EDIT_CATEGORY,
       payload: res.data.data,

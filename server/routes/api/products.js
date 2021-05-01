@@ -35,27 +35,22 @@ router.get('/:id', ProductController.getById);
 // @access  Public
 router.get('/types/:typeId', ProductController.getByTypeId);
 
-// @route   GET api/products/categories/:categoryId
-// @desc    Lấy tất cả sản phẩm theo categoryId
-// @access  Public
-router.get('/categories/:categoryId', ProductController.getByCategoryId);
-
 // @route   POST api/products
 // @desc    Tạo sản phẩm
 // @access  Private
 router.post(
   '/',
   [authAdmin, checkPermission, validateCreateProductInfo],
-  ProductController.add
+  ProductController.create
 );
 
-// @route   PUT api/products
+// @route   PUT api/products/:id
 // @desc    Cập nhật sản phẩm
 // @access  Private
 router.put(
-  '/',
+  '/:id',
   [authAdmin, checkPermission, validateUpdateProductInfo],
-  ProductController.edit
+  ProductController.update
 );
 
 // @route   DELETE api/products/:id

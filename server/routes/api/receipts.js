@@ -16,6 +16,6 @@ router.get('/:id', authAdmin, ReceiptController.getAllDetail);
 // @route   POST api/receipts
 // @desc    Tạo phiếu nhập
 // @access  Private
-router.post('/', authAdmin, ReceiptController.add);
+router.post('/', authAdmin, ReceiptController.create);
 
 module.exports = router;

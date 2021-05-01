@@ -1,25 +1,41 @@
-process.env['NODE_CONFIG_DIR'] = __dirname;
 const { validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const shortid = require('shortid');
-const config = require('config');
 const nodemailer = require('nodemailer');
-const dayjs = require('dayjs');
 const axios = require('axios');
-const client = new OAuth2Client(config.get('GOOGLE_CLIENT'));
+const {
+  jwtSignUpSecret,
+  jwtSignInSecret,
+  jwtResetPasswordSecret,
+  GOOGLE_CLIENT,
+  NODEMAILER_EMAIL,
+  NODEMAILER_PASSWORD,
+  CLIENT_URL,
+} = require('../../config/default.json');
+const client = new OAuth2Client(GOOGLE_CLIENT);
+const hashString = require('../../helpers/hashString');
+const statusCode = require('../../constants/statusCode.json');
+const message = require('../../constants/message.json').user;
+const crudService = require('../../services/crud');
+const generateToken = require('../../helpers/generateToken');
 
 const User = require('../models/User');
 const Product = require('../models/Product');
 
-// const api = axios.default.create({
-//   headers: {
-//     Accept: 'application/json',
-//     'Content-Type': 'application/json',
-//   },
-// });
+function getData(path) {
+  return new Promise((resolve, reject) => {
+    axios.default
+      .get(path)
+      .then(function (response) {
+        resolve(response.data.results);
+      })
+      .catch(function (err) {
+        reject(err.error);
+      });
+  });
+}
 class AuthController {
   // @route   GET api/auth/user
   // @desc    Lấy thông tin người dùng
@@ -31,13 +47,13 @@ class AuthController {
         '-resetPasswordLink',
       ]);
       if (!user) {
-        return res.status(404).json({
-          errors: [{ msg: 'Người dùng không tồn tại' }],
+        return res.status(statusCode.notFound).json({
+          errors: [{ msg: message.notFound }],
         });
       }
       return res.json(user);
     } catch (error) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -45,10 +61,9 @@ class AuthController {
   // @desc    Đăng ký tài khoản
   // @access  Public
   async signUp(req, res) {
-    //Validate request body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
 
     const {
@@ -61,24 +76,12 @@ class AuthController {
     } = req.body;
 
     try {
-      // Kiểm tra xem người dùng đã tồn tại chưa
-      let user = await User.findOne({ email });
+      let user = await crudService.getUnique(User, { email });
       if (user) {
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'Địa chỉ email này đã được đăng ký' }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.emailExist }] });
       }
-      // const checkVerifiedEmail = await api.get(
-      //   `https://app.verify-email.org/api/v1/${config.get(
-      //     'CHECK_VERIFIED_MAIL'
-      //   )}/verify/${email}`
-      // );
-      // const { status } = checkVerifiedEmail.data;
-      // if (!status || status === 0) {
-      //   return res.status(400).json({
-      //     errors: [{ msg: 'Vui lòng sử dụng email đã được kích hoạt' }],
-      //   });
-      // }
       const payload = {
         user: {
           name,
@@ -89,52 +92,41 @@ class AuthController {
           phoneNumber,
         },
       };
-
-      //Generate token
-      const token = jwt.sign(payload, config.get('jwtSignUpSecret'), {
-        expiresIn: '1d',
-      });
-
-      //Gửi link kích hoạt tài khoản đến email
+      const token = generateToken(payload, jwtSignUpSecret, '1d');
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: config.get('NODEMAILER_EMAIL'),
-          pass: config.get('NODEMAILER_PASSWORD'),
+          user: NODEMAILER_EMAIL,
+          pass: NODEMAILER_PASSWORD,
         },
       });
-
       const content = `
         <h1>Hãy nhấn vào đường dẫn này để kích hoạt tài khoản của bạn</h1>
-        <p>${config.get('CLIENT_URL')}/auth/activate/${token}</p>
+        <p>${CLIENT_URL}/auth/activate/${token}</p>
         <hr/>
         <p>Hãy cẩn thận, email này chứa thông tin về tài khoản của bạn</p>
-        <p>${config.get('CLIENT_URL')}</p>
+        <p>${CLIENT_URL}</p>
       `;
-
-      //step 2
       const mailOptions = {
-        from: config.get('NODEMAILER_EMAIL'),
+        from: NODEMAILER_EMAIL,
         to: email,
         subject: 'Thông báo kích hoạt tài khoản',
         html: content,
       };
-
-      //step 3
       transporter
         .sendMail(mailOptions)
         .then(() => {
-          return res.json({
+          return res.status(statusCode.success).json({
             message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để kích hoạt tài khoản`,
           });
         })
         .catch((err) => {
-          return res.status(400).json({
+          return res.status(statusCode.badRequest).json({
             errors: [{ msg: err.message }],
           });
         });
     } catch (error) {
-      return res.status(500).send('Server error');
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 
@@ -144,8 +136,7 @@ class AuthController {
   async activate(req, res) {
     const { token } = req.body;
     try {
-      //Xác thực token có hợp lệ không
-      const decoded = jwt.verify(token, config.get('jwtSignUpSecret'));
+      const decoded = jwt.verify(token, jwtSignUpSecret);
       const {
         name,
         email,
@@ -154,12 +145,11 @@ class AuthController {
         dateOfBirth,
         phoneNumber,
       } = decoded.user;
-      //Kiểm tra xem tài khoản đã được kích hoạt chưa
-      let user = await User.findOne({ email: email });
+      let user = await crudService.getUnique(User, { email });
       if (user) {
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'Tài khoản đã được kích hoạt!' }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.alreadyActive }] });
       }
 
       user = new User({
@@ -170,26 +160,24 @@ class AuthController {
         dateOfBirth,
         phoneNumber,
       });
-      //Mã hóa mật khẩu
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      //Định dạng lại ngày
-      user.dateOfBirth = dayjs(user.dateOfBirth).toISOString();
-      //Lưu tài khoản vào csdl
+      const hashedPassword = await hashString(password);
+      user.password = hashedPassword;
+      user.dateOfBirth = new Date(user.dateOfBirth).toISOString();
       await user.save((err, data) => {
         if (!err) {
-          return res.json({ message: 'Kích hoạt tài khoản thành công!' });
+          return res
+            .status(statusCode.success)
+            .json({ message: message.activeSuccess });
         }
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'Kích hoạt tài khoản thất bại!' }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.activeFail }] });
       });
     } catch (error) {
-      return res.status(401).json({
+      return res.status(statusCode.badRequest).json({
         errors: [
           {
-            msg:
-              'Link kích hoạt tài khoản đã hết hạn, vui lòng thực hiện lại thao tác.',
+            msg: message.activeExpired,
           },
         ],
       });
@@ -202,43 +190,32 @@ class AuthController {
   async signIn(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
     const { email, password } = req.body;
     try {
-      //Lấy thông tin user theo email
-      let user = await User.findOne({ email });
+      let user = await crudService.getUnique(User, { email });
       if (!user) {
-        return res.status(400).json({
-          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
+        return res.status(statusCode.badRequest).json({
+          errors: [{ msg: message.loginFail }],
         });
       }
-      //Kiểm tra mật khẩu
       const isMatch = await user.checkPassword(password);
       if (!isMatch) {
-        return res.status(400).json({
-          errors: [{ msg: 'Email hoặc mật khẩu không hợp lệ!' }],
+        return res.status(statusCode.badRequest).json({
+          errors: [{ msg: message.loginFail }],
         });
       }
-      //Tạo payload cho token
       const payload = {
         user: {
           id: user._id,
           role: user.role,
         },
       };
-      //Trả về token
-      jwt.sign(
-        payload,
-        config.get('jwtSignInSecret'),
-        { expiresIn: '7d' },
-        (err, token) => {
-          if (err) throw err;
-          return res.json({ token });
-        }
-      );
+      const token = generateToken(payload, jwtSignInSecret, '7d');
+      return res.status(statusCode.success).json({ token });
     } catch (error) {
-      return res.status(500).send('Server error');
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 
@@ -258,7 +235,7 @@ class AuthController {
         name,
         picture: { data },
       } = facebookRes.data;
-      const user = await User.findOne({ email });
+      const user = await crudService.getUnique(User, { email });
       if (user) {
         const payload = {
           user: {
@@ -266,20 +243,10 @@ class AuthController {
             role: user.role,
           },
         };
-        jwt.sign(
-          payload,
-          config.get('jwtSignInSecret'),
-          { expiresIn: '7d' },
-          (err, token) => {
-            if (err) throw err;
-            return res.json({ token });
-          }
-        );
-        return;
+        const token = generateToken(payload, jwtSignInSecret, '7d');
+        return res.status(statusCode.success).json({ token });
       }
-      let newPassword = shortid.generate();
-      const salt = await bcrypt.genSalt(10);
-      let hashedPassword = await bcrypt.hash(newPassword, salt);
+      const hashedPassword = await hashString(shortid.generate());
       const newUser = new User({
         name,
         email,
@@ -288,8 +255,8 @@ class AuthController {
       });
       await newUser.save((err, userData) => {
         if (err) {
-          return res.status(400).json({
-            errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.error }],
           });
         }
         const payload = {
@@ -298,20 +265,11 @@ class AuthController {
             role: userData.role,
           },
         };
-        jwt.sign(
-          payload,
-          config.get('jwtSignInSecret'),
-          { expiresIn: '7d' },
-          (err, token) => {
-            if (err) throw err;
-            return res.json({ token });
-          }
-        );
+        const token = generateToken(payload, jwtSignInSecret, '7d');
+        return res.status(statusCode.success).json({ token });
       });
     } catch (err) {
-      return res.status(400).json({
-        errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
-      });
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
   // @route   POST api/auth/googlelogin
@@ -324,12 +282,12 @@ class AuthController {
     }
     try {
       client
-        .verifyIdToken({ idToken, audience: config.get('GOOGLE_CLIENT') })
+        .verifyIdToken({ idToken, audience: GOOGLE_CLIENT })
         .then(async (response) => {
           const { email_verified, name, email, picture } = response.payload;
 
           if (email_verified) {
-            const user = await User.findOne({ email });
+            const user = await crudService.getUnique(User, { email });
             if (user) {
               const payload = {
                 user: {
@@ -337,20 +295,10 @@ class AuthController {
                   role: user.role,
                 },
               };
-              jwt.sign(
-                payload,
-                config.get('jwtSignInSecret'),
-                { expiresIn: '7d' },
-                (err, token) => {
-                  if (err) throw err;
-                  return res.json({ token });
-                }
-              );
-              return;
+              const token = generateToken(payload, jwtSignInSecret, '7d');
+              return res.status(statusCode.success).json({ token });
             }
-            let newPassword = shortid.generate();
-            const salt = await bcrypt.genSalt(10);
-            let hashedPassword = await bcrypt.hash(newPassword, salt);
+            const hashedPassword = await hashString(shortid.generate());
             const newUser = new User({
               name,
               email,
@@ -359,8 +307,8 @@ class AuthController {
             });
             await newUser.save((err, userData) => {
               if (err) {
-                return res.status(400).json({
-                  errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
+                return res.status(statusCode.badRequest).json({
+                  errors: [{ msg: message.error }],
                 });
               }
               const payload = {
@@ -369,30 +317,21 @@ class AuthController {
                   role: userData.role,
                 },
               };
-              jwt.sign(
-                payload,
-                config.get('jwtSignInSecret'),
-                { expiresIn: '7d' },
-                (err, token) => {
-                  if (err) throw err;
-                  return res.json({ token });
-                }
-              );
+              const token = generateToken(payload, jwtSignInSecret, '7d');
+              return res.status(statusCode.success).json({ token });
             });
           } else {
-            return res.status(400).json({
+            return res.status(statusCode.badRequest).json({
               errors: [
                 {
-                  msg: 'Tài khoản google của bạn chưa được xác thực!',
+                  msg: message.invalidGoogleAccount,
                 },
               ],
             });
           }
         });
     } catch (err) {
-      return res.status(400).json({
-        errors: [{ msg: 'Đăng nhập thất bại, vui lòng thử lại!' }],
-      });
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 
@@ -402,16 +341,15 @@ class AuthController {
   async forgotPassword(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
     const { email } = req.body;
     try {
-      //Kiểm tra tài khoản có tồn tại hay không
-      let user = await User.findOne({ email });
+      let user = await crudService.getUnique(User, { email });
 
       if (!user) {
-        return res.status(400).json({
-          errors: [{ msg: 'Không tìm thấy tài khoản khớp với email của bạn' }],
+        return res.status(statusCode.badRequest).json({
+          errors: [{ msg: message.notFound }],
         });
       }
       const payload = {
@@ -419,55 +357,48 @@ class AuthController {
           id: user._id,
         },
       };
-
-      const token = jwt.sign(payload, config.get('jwtResetPasswordSecret'), {
-        expiresIn: '1d',
-      });
-
+      const token = generateToken(payload, jwtResetPasswordSecret, '15m');
       await user.updateOne({
         resetPasswordLink: token,
       });
 
-      //Gửi link đặt lại mật khẩu đến email
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: config.get('NODEMAILER_EMAIL'),
-          pass: config.get('NODEMAILER_PASSWORD'),
+          user: NODEMAILER_EMAIL,
+          pass: NODEMAILER_PASSWORD,
         },
       });
 
       const content = `
         <h1>Hãy nhấn vào đường dẫn này để đặt lại mật khẩu cho tài khoản của bạn</h1>
-        <p>${config.get('CLIENT_URL')}/auth/resetpassword/${token}</p>
+        <p>${CLIENT_URL}/auth/resetpassword/${token}</p>
         <hr/>
         <p>Hãy cẩn thận, email này chứa thông tin về tài khoản của bạn</p>
-        <p>${config.get('CLIENT_URL')}</p>
+        <p>${CLIENT_URL}</p>
       `;
 
-      //step 2
       const mailOptions = {
-        from: config.get('NODEMAILER_EMAIL'),
+        from: NODEMAILER_EMAIL,
         to: email,
         subject: 'Thông báo đặt lại mật khẩu cho tài khoản',
         html: content,
       };
 
-      //step 3
       transporter
         .sendMail(mailOptions)
         .then(() => {
-          return res.json({
+          return res.status(statusCode.success).json({
             message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để đặt lại mật khẩu cho tài khoản`,
           });
         })
         .catch((err) => {
-          return res.status(400).json({
+          return res.status(statusCode.badRequest).json({
             errors: [{ msg: err.message }],
           });
         });
-    } catch (error) {
-      return res.status(500).send('Server error');
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 
@@ -477,54 +408,43 @@ class AuthController {
   async resetPassword(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
     const { password, resetPasswordLink } = req.body;
     try {
       let user_id;
-      jwt.verify(
-        resetPasswordLink,
-        config.get('jwtResetPasswordSecret'),
-        (err, decoded) => {
-          user_id = decoded.user.id;
-          if (err) {
-            return res.status(400).json({
-              errors: [
-                {
-                  msg:
-                    'Link reset hết hạn, vui lòng quay lại trang quên mật khẩu và thực hiện lại thao tác.',
-                },
-              ],
-            });
-          }
+      jwt.verify(resetPasswordLink, jwtResetPasswordSecret, (err, decoded) => {
+        user_id = decoded.user.id;
+        if (err) {
+          return res.status(statusCode.badRequest).json({
+            errors: [
+              {
+                msg: message.activeExpired,
+              },
+            ],
+          });
         }
-      );
-      //Kiểm tra tài khoản được thay đổi mật khẩu
-      let user = await User.findById(user_id);
-      //Kiểm tra có tài khoản nào cần được đặt lại mật khẩu không
+      });
+      let user = await crudService.getById(User, user_id);
       if (!user.resetPasswordLink) {
-        return res.status(400).json({
+        return res.status(statusCode.badRequest).json({
           errors: [
             {
-              msg:
-                'Link reset đã được sử dụng, vui lòng quay lại trang quên mật khẩu và thực hiện lại thao tác.',
+              msg: message.activeExpired,
             },
           ],
         });
       }
       if (user.resetPasswordLink !== resetPasswordLink) {
-        return res.status(400).json({
+        return res.status(statusCode.badRequest).json({
           errors: [
             {
-              msg:
-                'Token không hợp lệ!, vui lòng quay lại trang quên mật khẩu và thực hiện lại thao tác.',
+              msg: message.activeExpired,
             },
           ],
         });
       }
-      const salt = await bcrypt.genSalt(10);
-
-      const hashPassword = await bcrypt.hash(password, salt);
+      const hashPassword = await hashString(password);
       const updatedFields = {
         password: hashPassword,
         resetPasswordLink: '',
@@ -534,16 +454,16 @@ class AuthController {
 
       user.save((err, result) => {
         if (err) {
-          return res.status(400).json({
-            errors: [{ msg: 'Xảy ra lỗi khi reset password, hãy thử lại!' }],
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.resetPasswordFail }],
           });
         }
-        return res.json({
-          message: `Reset password thành công!, bạn có thể đăng nhập với mật khẩu mới.`,
+        return res.status(statusCode.success).json({
+          message: message.resetPasswordSuccess,
         });
       });
-    } catch (error) {
-      return res.status(500).send('Server error');
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
   // @route   PUT api/auth/update_user
@@ -552,7 +472,7 @@ class AuthController {
   async updateUserInfo(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
     const {
       name,
@@ -564,11 +484,11 @@ class AuthController {
       dateOfBirth,
     } = req.body;
     try {
-      let user = await User.findById(req.user.id);
+      let user = await crudService.getById(User, req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
 
       if (name && name !== user.name) {
@@ -584,13 +504,13 @@ class AuthController {
         const isMatch = await user.checkPassword(password_old);
         if (!isMatch) {
           return res
-            .status(400)
-            .json({ errors: [{ msg: 'Mật khẩu cũ không chính xác!' }] });
+            .status(statusCode.badRequest)
+            .json({ errors: [{ msg: message.wrongPass }] });
         }
       }
       if (password && password !== user.password) {
         if (password.length < 6 || password.length > 32) {
-          return res.status(400).json({
+          return res.status(statusCode.badRequest).json({
             errors: [
               {
                 msg:
@@ -601,11 +521,11 @@ class AuthController {
         }
         if (!/\d/.test(password)) {
           return res
-            .status(400)
+            .status(statusCode.badRequest)
             .json({ errors: [{ msg: 'Mật khẩu phải bao gồm số' }] });
         }
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
+        const hashedPassword = await hashString(password);
+        user.password = hashedPassword;
       }
       if (avatar && avatar !== user.avatar) {
         user.avatar = avatar;
@@ -614,40 +534,30 @@ class AuthController {
         dateOfBirth &&
         dateOfBirth.toString() !== user.dateOfBirth.toString()
       ) {
-        user.dateOfBirth = dateOfBirth;
+        user.dateOfBirth = new Date(dateOfBirth).toISOString();
       }
       user.save((err, updateUser) => {
         if (err) {
-          return res.status(400).json({
-            errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.updateFail }],
           });
         }
-        return res.json({ message: 'Cập nhật thành công' });
+        return res
+          .status(statusCode.success)
+          .json({ message: message.updateSuccess });
       });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
   // @route   PUT api/auth/add_address
   // @desc    Thêm địa chỉ người dùng
   // @access  Private
-  async AddUserAddress(req, res, next) {
-    function getData(path) {
-      return new Promise((resolve, reject) => {
-        axios.default
-          .get(path)
-          .then(function (response) {
-            resolve(response.data.results);
-          })
-          .catch(function (err) {
-            reject(err.error);
-          });
-      });
-    }
+  async addUserAddress(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
     const {
       provinceState,
@@ -657,11 +567,11 @@ class AuthController {
       isDefault,
     } = req.body;
     try {
-      let user = await User.findById(req.user.id);
+      let user = await crudService.getById(User, req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       Promise.all([
         getData(`https://vapi.vnappmob.com/api/province`),
@@ -726,44 +636,42 @@ class AuthController {
           }
           user.save((err, updateUser) => {
             if (err) {
-              return res.status(400).json({
-                errors: [
-                  { msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' },
-                ],
+              return res.status(statusCode.badRequest).json({
+                errors: [{ msg: message.updateFail }],
               });
             }
-            return res.json({ message: 'Cập nhật thành công' });
+            return res
+              .status(statusCode.success)
+              .json({ message: message.updateSuccess });
           });
         })
         .catch((err) =>
-          res.status(400).json({
-            errors: [
-              { msg: 'Có lỗi xảy ra, hãy reload lại trang và thử lại!' },
-            ],
+          res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.error }],
           })
         );
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
   // @route   PUT api/auth/remove_address
   // @desc    Xóa địa chỉ người dùng
   // @access  Private
-  async RemoveUserAddress(req, res, next) {
+  async removeUserAddress(req, res, next) {
     const { address_id } = req.body;
     try {
-      let user = await User.findById(req.user.id);
+      let user = await crudService.getById(User, req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       let findedAdress = user.address.find(
         (item) => item._id.toString() === address_id
       );
       if (!findedAdress) {
-        return res.status(400).json({
+        return res.status(statusCode.notFound).json({
           errors: [{ msg: 'Địa chỉ không tồn tại!' }],
         });
       }
@@ -773,36 +681,24 @@ class AuthController {
       user.address = removedAddress;
       await user.save((err, updateUser) => {
         if (err) {
-          return res.status(400).json({
-            errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.updateFail }],
           });
         }
-        return res.json({ message: 'Cập nhật thành công' });
+        return res.json({ message: message.updateSuccess });
       });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
   // @route   PUT api/auth/update_address
   // @desc    Cập nhật địa chỉ người dùng
   // @access  Private
-  async UpdateUserAddress(req, res, next) {
-    function getData(path) {
-      return new Promise((resolve, reject) => {
-        axios.default
-          .get(path)
-          .then(function (response) {
-            resolve(response.data.results);
-          })
-          .catch(function (err) {
-            reject(err.error);
-          });
-      });
-    }
+  async updateUserAddress(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
     const {
       provinceState,
@@ -813,11 +709,11 @@ class AuthController {
       address_id,
     } = req.body;
     try {
-      let user = await User.findById(req.user.id);
+      let user = await crudService.getById(User, req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       let index;
       let findedAdress = user.address.find((item, i) => {
@@ -825,7 +721,7 @@ class AuthController {
         return item._id.toString() === address_id;
       });
       if (!findedAdress) {
-        return res.status(400).json({
+        return res.status(statusCode.notFound).json({
           errors: [{ msg: 'Địa chỉ không tồn tại!' }],
         });
       }
@@ -884,26 +780,24 @@ class AuthController {
             };
           }
           user.address[index] = upadateAddress;
-          user.save((err, updateUser) => {
+          user.save((err, _) => {
             if (err) {
-              return res.status(400).json({
-                errors: [
-                  { msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' },
-                ],
+              return res.status(statusCode.badRequest).json({
+                errors: [{ msg: message.updateFail }],
               });
             }
-            return res.json({ message: 'Cập nhật thành công' });
+            return res
+              .status(statusCode.success)
+              .json({ message: message.updateSuccess });
           });
         })
         .catch((err) =>
-          res.status(400).json({
-            errors: [
-              { msg: 'Có lỗi xảy ra, hãy reload lại trang và thử lại!' },
-            ],
+          res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.error }],
           })
         );
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   PUT api/auth/favorite
@@ -912,17 +806,19 @@ class AuthController {
   async favoriteProduct(req, res) {
     const { productId } = req.body;
     try {
-      const product = await Product.findById(productId);
+      const [product, user] = await Promise.all([
+        crudService.getById(Product, productId),
+        crudService.getById(User, req.user.id),
+      ]);
       if (!product) {
         return res
-          .status(404)
+          .status(statusCode.notFound)
           .json({ errors: [{ msg: 'Sản phẩm không tồn tại!' }] });
       }
-      const user = await User.findById(req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       const isHave = user.favoriteProducts.some(
         (item) => item.toString() === productId.toString()
@@ -933,16 +829,16 @@ class AuthController {
       } else {
         user.favoriteProducts = [productId, ...user.favoriteProducts];
       }
-      user.save((err, updatedUser) => {
+      user.save((err, _) => {
         if (err) {
-          return res.status(400).json({
-            errors: [{ msg: 'Lỗi, không thể cập nhật dữ liệu người dùng!' }],
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.updateFail }],
           });
         }
-        return res.json({ check: isHave });
+        return res.status(statusCode.success).json({ check: isHave });
       });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   GET api/auth/favorite
@@ -950,21 +846,29 @@ class AuthController {
   // @access  Private
   async getFavoriteProducts(req, res) {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await crudService.getById(User, req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       let length = user.favoriteProducts.length;
       let getFavoriteProducts = [];
       if (length > 0) {
         for (let i = 0; i < length; ++i) {
-          let product = await Product.findById(user.favoriteProducts[i]);
+          let product = await crudService.getById(
+            Product,
+            user.favoriteProducts[i]
+          );
           if (!product) {
-            return res
-              .status(404)
-              .json({ errors: [{ msg: 'Sản phẩm không tồn tại!' }] });
+            product = {
+              _id: user.purchasedProducts[i],
+              productName: 'Sản phẩm không tồn tại!',
+              price: 0,
+              image:
+                'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg',
+              starRatings: 0,
+            };
           }
           getFavoriteProducts = [
             {
@@ -977,11 +881,11 @@ class AuthController {
             ...getFavoriteProducts,
           ];
         }
-        return res.json(getFavoriteProducts);
+        return res.status(statusCode.success).json(getFavoriteProducts);
       }
-      return res.json(getFavoriteProducts);
+      return res.status(statusCode.success).json(getFavoriteProducts);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   GET api/auth/purchased
@@ -989,21 +893,29 @@ class AuthController {
   // @access  Private
   async getPurchasedProducts(req, res) {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await crudService.getById(User, req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       let length = user.purchasedProducts.length;
       let getPurchasedProducts = [];
       if (length > 0) {
         for (let i = 0; i < length; ++i) {
-          let product = await Product.findById(user.purchasedProducts[i]);
+          let product = await crudService.getById(
+            Product,
+            user.purchasedProducts[i]
+          );
           if (!product) {
-            return res
-              .status(404)
-              .json({ errors: [{ msg: 'Sản phẩm không tồn tại!' }] });
+            product = {
+              _id: user.purchasedProducts[i],
+              productName: 'Sản phẩm không tồn tại!',
+              price: 0,
+              image:
+                'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg',
+              starRatings: 0,
+            };
           }
           getPurchasedProducts = [
             {
@@ -1016,11 +928,11 @@ class AuthController {
             ...getPurchasedProducts,
           ];
         }
-        return res.json(getPurchasedProducts);
+        return res.status(statusCode.success).json(getPurchasedProducts);
       }
-      return res.json(getPurchasedProducts);
+      return res.status(statusCode.success).json(getPurchasedProducts);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 }

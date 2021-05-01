@@ -33,9 +33,9 @@ export const createType = (data) => async (dispatch) => {
 };
 
 // edit type
-export const editType = (data) => async (dispatch) => {
+export const editType = (id, data) => async (dispatch) => {
   try {
-    const res = await typeAPI.update(data);
+    const res = await typeAPI.update(id, data);
     notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;

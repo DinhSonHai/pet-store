@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
-const config = require('config');
+const { jwtSignInSecret } = require('../../config/default.json');
+const statusCode = require('../../constants/statusCode.json');
+const message = require('../../constants/message.json').user;
 
 module.exports = function (req, res, next) {
   //Lấy token từ header
@@ -7,23 +9,18 @@ module.exports = function (req, res, next) {
 
   //Kiểm tra có tồn tại token trong header không
   if (!token) {
-    return res.status(401).json({
-      errors: [{ msg: 'Bạn cần đăng nhập để thực hiện thao tác này!' }],
+    return res.status(statusCode.unauthorized).json({
+      errors: [{ msg: message.noToken }],
     });
   }
-
   //Xác thực token
   try {
-    const decoded = jwt.verify(token, config.get('jwtSignInSecret'));
-    const { role } = decoded.user;
-    if (!role || role !== 2) {
-      return res.status(401).json({
-        errors: [{ msg: 'Bạn không có quyền thực hiện thao tác này!' }],
-      });
-    }
+    const decoded = jwt.verify(token, jwtSignInSecret);
     req.user = decoded.user;
     next();
   } catch (err) {
-    return res.status(401).json({ errors: [{ msg: 'Token không hợp lệ!' }] });
+    return res
+      .status(statusCode.unauthorized)
+      .json({ errors: [{ msg: message.invalidToken }] });
   }
 };

@@ -64,10 +64,9 @@ const ProductAddForm = ({
     // }
     if (edit) {
       setConfirmLoading(true);
-      await editProduct({
+      await editProduct(item._id, {
         ...values,
         description: content,
-        id: item._id,
         status,
         isShow,
         images: images.map((img) => img.response.url),

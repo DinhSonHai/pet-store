@@ -32,9 +32,9 @@ export const createProduct = (data) => async (dispatch) => {
 };
 
 // edit product
-export const editProduct = (data) => async (dispatch) => {
+export const editProduct = (id, data) => async (dispatch) => {
   try {
-    const res = await productAPI.update(data);
+    const res = await productAPI.update(id, data);
     notifyActions('success', res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;

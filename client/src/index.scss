@@ -29,7 +29,7 @@ body {
 
 .container {
   max-width: 1200px;
-  margin: 10rem auto 3rem auto;
+  margin: 2rem auto 3rem;
   overflow: hidden;
   padding: 0 1rem;
 }
@@ -85,15 +85,9 @@ body {
   .logo {
     margin: auto;
   }
-  .home {
-    margin-top: 4.75rem !important;
-  }
   .menu-responsive,
   .profile__select {
     display: block !important;
-  }
-  .container {
-    margin: 5.5rem auto 3rem auto;
   }
   .vision__wrap.container {
     padding: 2rem 1rem 2rem !important;

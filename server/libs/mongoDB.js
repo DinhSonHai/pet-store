@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
-process.env['NODE_CONFIG_DIR'] = __dirname;
-const config = require('config');
-const db = config.get('mongoDBAtlasURI');
+const { mongoDBAtlasURI } = require('../config/default.json');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(db, {
+    await mongoose.connect(mongoDBAtlasURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,

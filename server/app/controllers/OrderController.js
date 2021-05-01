@@ -1,53 +1,62 @@
-process.env['NODE_CONFIG_DIR'] = __dirname;
 const { validationResult } = require('express-validator');
-const config = require('config');
 const nodemailer = require('nodemailer');
 const axios = require('axios');
 const ObjectId = require('mongoose').Types.ObjectId;
-const dayjs = require('dayjs');
-
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const Bill = require('../models/Bill');
 const BillDetail = require('../models/BillDetail');
+const statusCode = require('../../constants/statusCode.json');
+const message = require('../../constants/message.json').order;
+const crudService = require('../../services/crud');
+const {
+  NODEMAILER_EMAIL,
+  NODEMAILER_PASSWORD,
+  CLIENT_URL,
+} = require('../../config/default.json');
 
-// const api = axios.default.create({
-//   headers: {
-//     Accept: 'application/json',
-//     'Content-Type': 'application/json',
-//   },
-// });
-
+function getData(path) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(path)
+      .then(function (response) {
+        resolve(response.data.results);
+      })
+      .catch(function (err) {
+        reject(err.error);
+      });
+  });
+}
 class OrderController {
   // @route   GET api/orders/auth/:id
   // @desc    Lấy đơn hàng theo orderId phía người dùng
   // @access  Private
   async getById(req, res) {
     try {
-      const order = await Order.findById(req.params.id);
+      const order = await crudService.getById(Order, req.params.id);
       if (!order) {
-        return res.status(404).json({
+        return res.status(statusCode.notFound).json({
           errors: [
             {
-              msg: 'Đơn hàng không tồn tại!',
+              msg: message.notFound,
             },
           ],
         });
       }
       if (order.userId.toString() !== req.user.id.toString()) {
-        return res.status(400).json({
+        return res.status(statusCode.badRequest).json({
           errors: [
             {
-              msg: 'Đơn hàng phải của bạn đâu mà lấy!',
+              msg: message.notOwn,
             },
           ],
         });
       }
-      return res.json(order);
+      return res.status(statusCode.success).json(order);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -56,13 +65,13 @@ class OrderController {
   // @access  Private
   async getOrdersDetailByOrderIdAuth(req, res) {
     try {
-      const orders = await OrderDetail.find({
+      const orders = await crudService.getAll(OrderDetail, {
         userId: new ObjectId(req.user.id),
         orderId: new ObjectId(req.params.id),
       });
-      return res.json(orders);
+      return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -71,13 +80,17 @@ class OrderController {
   // @access  Private
   async getProcessingOrders(req, res) {
     try {
-      const orders = await Order.find({
-        userId: new ObjectId(req.user.id),
-        status: { $gt: -1, $lt: 5 },
-      }).sort({ createdAt: -1 });
-      return res.json(orders);
+      const orders = await crudService.getAdvance(
+        Order,
+        {
+          userId: new ObjectId(req.user.id),
+          status: { $gt: -1, $lt: 5 },
+        },
+        { createdAt: -1 }
+      );
+      return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -86,13 +99,17 @@ class OrderController {
   // @access  Private
   async getCompletedOrders(req, res) {
     try {
-      const orders = await Order.find({
-        userId: new ObjectId(req.user.id),
-        status: 5,
-      }).sort({ createdAt: -1 });
-      return res.json(orders);
+      const orders = await crudService.getAdvance(
+        Order,
+        {
+          userId: new ObjectId(req.user.id),
+          status: 5,
+        },
+        { createdAt: -1 }
+      );
+      return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -101,13 +118,17 @@ class OrderController {
   // @access  Private
   async getCanceledOrders(req, res) {
     try {
-      const orders = await Order.find({
-        userId: new ObjectId(req.user.id),
-        status: -1,
-      }).sort({ createdAt: -1 });
-      return res.json(orders);
+      const orders = await crudService.getAdvance(
+        Order,
+        {
+          userId: new ObjectId(req.user.id),
+          status: -1,
+        },
+        { createdAt: -1 }
+      );
+      return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   GET api/orders/admin/:id
@@ -115,19 +136,19 @@ class OrderController {
   // @access  Private
   async getByIdAdmin(req, res) {
     try {
-      const order = await Order.findById(req.params.id);
+      const order = await crudService.getById(Order, req.params.id);
       if (!order) {
-        return res.status(404).json({
+        return res.status(statusCode.notFound).json({
           errors: [
             {
-              msg: 'Đơn hàng không tồn tại!',
+              msg: message.notFound,
             },
           ],
         });
       }
-      return res.json(order);
+      return res.status(statusCode.success).json(order);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   GET api/orders/detail/admin/:id
@@ -135,12 +156,12 @@ class OrderController {
   // @access  Private
   async getOrdersDetailByOrderIdAdmin(req, res) {
     try {
-      const orders = await OrderDetail.find({
+      const orders = await crudService.getAll(OrderDetail, {
         orderId: new ObjectId(req.params.id),
       });
-      return res.json(orders);
+      return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   GET api/orders/:status/admin
@@ -149,10 +170,14 @@ class OrderController {
   async getOrdersByStatusAdmin(req, res) {
     const status = parseInt(req.params.status) || 0;
     try {
-      const orders = await Order.find({ status }).sort({ createdAt: 1 });
-      return res.json(orders);
+      const orders = await crudService.getAdvance(
+        Order,
+        { status },
+        { createdAt: 1 }
+      );
+      return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -161,13 +186,10 @@ class OrderController {
   // @access  Private
   async getAllOrderAdmin(req, res) {
     try {
-      let orders = await Order.find({}).sort({ createdAt: 'desc' });
-      if (!orders) {
-        return res.status(404).json({ msg: 'Chưa có đơn hàng nào.' });
-      }
-      return res.json(orders);
+      let orders = await crudService.getAdvance(Order, {}, { createdAt: -1 });
+      return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -175,21 +197,9 @@ class OrderController {
   // @desc    Đặt hàng vai trò khách
   // @access  Public
   async guestOrder(req, res) {
-    function getData(path) {
-      return new Promise((resolve, reject) => {
-        axios
-          .get(path)
-          .then(function (response) {
-            resolve(response.data.results);
-          })
-          .catch(function (err) {
-            reject(err.error);
-          });
-      });
-    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
     const {
       provinceState,
@@ -204,17 +214,6 @@ class OrderController {
       note,
       cart,
     } = req.body;
-    // const checkVerifiedEmail = await api.get(
-    //   `https://app.verify-email.org/api/v1/${config.get(
-    //     'CHECK_VERIFIED_MAIL'
-    //   )}/verify/${email}`
-    // );
-    // const { status } = checkVerifiedEmail.data;
-    // if (!status || status === 0) {
-    //   return res.status(400).json({
-    //     errors: [{ msg: 'Vui lòng sử dụng email đã được kích hoạt' }],
-    //   });
-    // }
     let totalMoney = 0;
     try {
       Promise.all([
@@ -245,8 +244,8 @@ class OrderController {
           const cartLength = cart.length;
           if (!cart || cartLength <= 0) {
             return res
-              .status(400)
-              .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
+              .status(statusCode.badRequest)
+              .json({ errors: [{ msg: message.error }] });
           }
           let order = new Order({
             name,
@@ -260,62 +259,58 @@ class OrderController {
           order.key = order._id;
           order.amount = cartLength;
           let getProducts = [];
-          if (order._id) {
-            for (let i = 0; i < cartLength; ++i) {
-              if (!cart[i].amount || parseInt(cart[i].amount <= 0)) {
-                return res.status(400).json({
-                  errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
-                });
-              }
-              const product = await Product.findById(cart[i]._id);
-              if (!product) {
-                return res.status(404).json({
-                  errors: [{ msg: 'Sản phẩm không tồn tại!' }],
-                });
-              }
-              if (product.quantity <= 0 || product.status === false) {
-                return res.status(400).json({
-                  errors: [{ msg: 'Sản phẩm hết hàng!' }],
-                });
-              }
-              if (product.quantity < parseInt(cart[i].amount)) {
-                return res.status(400).json({
-                  errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
-                });
-              }
-              product.quantity = product.quantity - parseInt(cart[i].amount);
-              if (product.quantity <= 0) {
-                product.status = false;
-              }
-              getProducts.push({ product, amount: cart[i].amount });
-              let detail = new OrderDetail({
-                orderId: order._id,
-                productId: product._id,
-                productName: product.productName,
-                amount: cart[i].amount,
-                price: product.price,
+
+          for (let i = 0; i < cartLength; ++i) {
+            if (!cart[i].amount || parseInt(cart[i].amount <= 0)) {
+              return res.status(statusCode.badRequest).json({
+                errors: [{ msg: message.invalidOrder }],
               });
-              detail.key = detail._id;
-              await detail.save();
-              await product.save();
             }
-            totalMoney = getProducts.reduce(
-              (a, b) => a + b.product.price * b.amount,
-              deliveryState === 0 ? 35000 : 55000
-            );
-            order.totalMoney = totalMoney;
-            await order.save();
-          } else {
-            return res
-              .status(400)
-              .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
+            const product = await Product.findById(cart[i]._id);
+            if (!product) {
+              return res.status(statusCode.notFound).json({
+                errors: [{ msg: message.error }],
+              });
+            }
+            if (product.quantity <= 0 || product.status === false) {
+              return res.status(statusCode.badRequest).json({
+                errors: [{ msg: message.outOfStock }],
+              });
+            }
+            if (product.quantity < parseInt(cart[i].amount)) {
+              return res.status(statusCode.badRequest).json({
+                errors: [{ msg: message.error }],
+              });
+            }
+            product.quantity = product.quantity - parseInt(cart[i].amount);
+            if (product.quantity <= 0) {
+              product.status = false;
+            }
+            getProducts.push({ product, amount: cart[i].amount });
+            let detail = new OrderDetail({
+              orderId: order._id,
+              productId: product._id,
+              productName: product.productName,
+              amount: cart[i].amount,
+              price: product.price,
+            });
+            detail.key = detail._id;
+            await detail.save();
+            await product.save();
           }
+          totalMoney = getProducts.reduce(
+            (a, b) => a + b.product.price * b.amount,
+            deliveryState === 0 ? 35000 : 55000
+          );
+          order.totalMoney = totalMoney;
+          await order.save();
+
           if (email) {
             const transporter = nodemailer.createTransport({
               service: 'gmail',
               auth: {
-                user: config.get('NODEMAILER_EMAIL'),
-                pass: config.get('NODEMAILER_PASSWORD'),
+                user: NODEMAILER_EMAIL,
+                pass: NODEMAILER_PASSWORD,
               },
             });
 
@@ -346,10 +341,10 @@ class OrderController {
           </ul>
           <hr/>
           <p>Xin cảm ơn quý khách</p>
-          <p>${config.get('CLIENT_URL')}</p>
+          <p>${CLIENT_URL}</p>
         `;
             const mailOptions = {
-              from: config.get('NODEMAILER_EMAIL'),
+              from: NODEMAILER_EMAIL,
               to: email,
               subject: 'Thông báo mua hàng ở Pet store',
               html: content,
@@ -357,162 +352,24 @@ class OrderController {
             transporter
               .sendMail(mailOptions)
               .then(() => {
-                return res.json({
-                  message:
-                    'Đặt hàng thành công, vui lòng kiểm tra đơn hàng của bạn trong hộp thư',
+                return res.status(statusCode.success).json({
+                  message: message.orderSuccess,
                 });
               })
               .catch((err) => {
-                return res.status(400).json({
-                  errors: [{ msg: err.message }],
+                return res.status(statusCode.badRequest).json({
+                  errors: [{ msg: message.orderFail }],
                 });
               });
           }
         })
         .catch((err) =>
-          res.status(400).json({
-            errors: [
-              { msg: 'Có lỗi xảy ra, hãy reload lại trang và thử lại!' },
-            ],
+          res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.orderFail }],
           })
         );
     } catch (error) {
-      return res.status(500).send('Server Error');
-    }
-  }
-  // @route   POST api/orders/admin
-  // @desc    Đặt hàng vai trò khách, xử lí ở admin
-  // @access  Private
-  async adminOrder(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const { note, cart, address, name, phone, email } = req.body;
-    let totalMoney = 0;
-    const cartLength = cart.length;
-    let getProducts = [];
-    if (!cart || cartLength <= 0) {
-      return res
-        .status(400)
-        .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
-    }
-    try {
-      const bill = new Bill({
-        note,
-        name,
-        address,
-        phone,
-        email,
-      });
-      bill.key = bill._id;
-      bill.amount = cartLength;
-      if (bill._id) {
-        for (let i = 0; i < cartLength; ++i) {
-          if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
-            return res.status(400).json({
-              errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
-            });
-          }
-          const product = await Product.findById(cart[i].key);
-          if (!product) {
-            return res.status(404).json({
-              errors: [{ msg: 'Sản phẩm không tồn tại!' }],
-            });
-          }
-          if (product.quantity <= 0 || product.status === false) {
-            return res.status(400).json({
-              errors: [{ msg: 'Sản phẩm hết hàng!' }],
-            });
-          }
-          if (product.quantity < parseInt(cart[i].amount)) {
-            return res.status(400).json({
-              errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
-            });
-          }
-          product.quantity = product.quantity - parseInt(cart[i].amount);
-          if (product.quantity <= 0) {
-            product.status = false;
-          }
-          getProducts.push({ product, amount: cart[i].amount });
-          const detail = new BillDetail({
-            billId: bill._id,
-            productId: product._id,
-            productName: product.productName,
-            amount: cart[i].amount,
-            price: product.price,
-          });
-          detail.key = detail._id;
-          await detail.save();
-          await product.save();
-        }
-        totalMoney = getProducts.reduce(
-          (a, b) => a + b.product.price * b.amount,
-          0
-        );
-        bill.totalMoney = totalMoney;
-        await bill.save();
-      } else {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
-      }
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: config.get('NODEMAILER_EMAIL'),
-          pass: config.get('NODEMAILER_PASSWORD'),
-        },
-      });
-
-      const item = getProducts.map(
-        (cartItem, index) =>
-          `<li>Sản phẩm ${index + 1}<ul><li>Tên sản phẩm: ${
-            cartItem.product.productName
-          }</li><li>Số lượng: ${
-            cartItem.amount
-          }</li><li>Đơn giá mỗi sản phẩm: ${cartItem.product.price.toLocaleString(
-            'vi-VN',
-            { style: 'currency', currency: 'VND' }
-          )}</li></ul></li>`
-      );
-      const content = `
-          <h1>Bạn vừa mua hàng ở Pet store</h1>
-          <p>Tên khách hàng: ${name}</p>
-          <p>Điện thoại: ${phone}</p>
-          <p>Địa chỉ: ${address}</p>
-          <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-          })}</p>
-          <p>Đơn hàng của quý khách:</p>
-          <ul>
-            ${item}
-          </ul>
-          <hr/>
-          <p>Xin cảm ơn quý khách</p>
-          <p>${config.get('CLIENT_URL')}</p>
-        `;
-
-      const mailOptions = {
-        from: config.get('NODEMAILER_EMAIL'),
-        to: email,
-        subject: 'Thông báo mua hàng ở Pet store',
-        html: content,
-      };
-
-      transporter
-        .sendMail(mailOptions)
-        .then(() => {
-          return res.json({ message: 'Đặt hàng thành công!' });
-        })
-        .catch((err) => {
-          return res.status(400).json({
-            errors: [{ msg: err.message }],
-          });
-        });
-    } catch (error) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -523,27 +380,27 @@ class OrderController {
     const { deliveryState, paymentState, note, cart, address } = req.body;
     let totalMoney = 0;
     try {
-      let user = await User.findById(req.user.id);
+      let user = await crudService.getById(User, req.user.id);
       if (!user) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Người dùng không tồn tại!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.userNotFound }] });
       }
       const cartLength = cart.length;
       if (!cart || cartLength <= 0) {
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.invalidOrder }] });
       }
       if (!user.phoneNumber) {
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'Vui lòng cung cấp số điện thoại!' }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.phoneRequired }] });
       }
       if (user.address.length <= 0) {
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'Vui lòng cung cấp địa chỉ!' }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.addressRequired }] });
       }
       let order = new Order({
         userId: user._id,
@@ -558,72 +415,68 @@ class OrderController {
       order.key = order._id;
       order.amount = cartLength;
       let getProducts = [];
-      if (order._id) {
-        for (let i = 0; i < cartLength; ++i) {
-          if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
-            return res.status(400).json({
-              errors: [{ msg: 'Đơn hàng không hợp lệ!' }],
-            });
-          }
-          const product = await Product.findById(cart[i]._id);
-          if (!product) {
-            return res.status(404).json({
-              errors: [{ msg: 'Sản phẩm không tồn tại!' }],
-            });
-          }
-          if (product.quantity <= 0 || product.status === false) {
-            return res.status(400).json({
-              errors: [{ msg: 'Sản phẩm hết hàng!' }],
-            });
-          }
-          if (product.quantity < parseInt(cart[i].amount)) {
-            return res.status(400).json({
-              errors: [{ msg: 'Số lượng mua vượt quá số lượng tồn kho!' }],
-            });
-          }
-          const isPurchased = user.purchasedProducts.some(
-            (item) => item.toString() === product._id.toString()
-          );
-          if (!isPurchased) {
-            user.purchasedProducts = [
-              product._id.toString(),
-              ...user.purchasedProducts,
-            ];
-          }
-          product.quantity = product.quantity - cart[i].amount;
-          if (product.quantity <= 0) {
-            product.status = false;
-          }
-          getProducts.push({ product, amount: cart[i].amount });
-          let detail = new OrderDetail({
-            userId: user._id,
-            orderId: order._id,
-            productId: product._id,
-            productName: product.productName,
-            amount: cart[i].amount,
-            price: product.price,
+
+      for (let i = 0; i < cartLength; ++i) {
+        if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.invalidOrder }],
           });
-          detail.key = detail._id;
-          await user.save();
-          await detail.save();
-          await product.save();
         }
-        totalMoney = getProducts.reduce(
-          (a, b) => a + b.product.price * b.amount,
-          deliveryState === 0 ? 35000 : 55000
+        const product = await crudService.getById(Product, cart[i]._id);
+        if (!product) {
+          return res.status(statusCode.notFound).json({
+            errors: [{ msg: message.error }],
+          });
+        }
+        if (product.quantity <= 0 || product.status === false) {
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.outOfStock }],
+          });
+        }
+        if (product.quantity < parseInt(cart[i].amount)) {
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.error }],
+          });
+        }
+        const isPurchased = user.purchasedProducts.some(
+          (item) => item.toString() === product._id.toString()
         );
-        order.totalMoney = totalMoney;
-        await order.save();
-      } else {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Đơn hàng không hợp lệ!' }] });
+        if (!isPurchased) {
+          user.purchasedProducts = [
+            product._id.toString(),
+            ...user.purchasedProducts,
+          ];
+        }
+        product.quantity = product.quantity - cart[i].amount;
+        if (product.quantity <= 0) {
+          product.status = false;
+        }
+        getProducts.push({ product, amount: cart[i].amount });
+        let detail = new OrderDetail({
+          userId: user._id,
+          orderId: order._id,
+          productId: product._id,
+          productName: product.productName,
+          amount: cart[i].amount,
+          price: product.price,
+        });
+        detail.key = detail._id;
+        await user.save();
+        await detail.save();
+        await product.save();
       }
+      totalMoney = getProducts.reduce(
+        (a, b) => a + b.product.price * b.amount,
+        deliveryState === 0 ? 35000 : 55000
+      );
+      order.totalMoney = totalMoney;
+      await order.save();
+
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: config.get('NODEMAILER_EMAIL'),
-          pass: config.get('NODEMAILER_PASSWORD'),
+          user: NODEMAILER_EMAIL,
+          pass: NODEMAILER_PASSWORD,
         },
       });
 
@@ -653,11 +506,11 @@ class OrderController {
           </ul>
           <hr/>
           <p>Xin cảm ơn quý khách</p>
-          <p>${config.get('CLIENT_URL')}</p>
+          <p>${CLIENT_URL}</p>
         `;
 
       const mailOptions = {
-        from: config.get('NODEMAILER_EMAIL'),
+        from: NODEMAILER_EMAIL,
         to: user.email,
         subject: 'Thông báo mua hàng ở Pet store',
         html: content,
@@ -666,18 +519,17 @@ class OrderController {
       transporter
         .sendMail(mailOptions)
         .then(() => {
-          return res.json({
-            message:
-              'Đặt hàng thành công, vui lòng kiểm tra đơn hàng của bạn trong hộp thư',
+          return res.status(statusCode.success).json({
+            message: message.orderSuccess,
           });
         })
         .catch((err) => {
-          return res.status(400).json({
-            errors: [{ msg: err.message }],
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.orderFail }],
           });
         });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -687,15 +539,15 @@ class OrderController {
   async cancleOrder(req, res) {
     try {
       let orderId = req.params.orderId;
-      let order = await Order.findById(orderId);
+      let order = await crudService.getById(Order, orderId);
       if (!order) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Không tìm thấy đơn hàng!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       if (order.userId.toString() !== req.user.id.toString()) {
-        return res.status(400).json({
-          errors: [{ msg: 'Bạn không có quyền thực hiện thao tác này!' }],
+        return res.status(statusCode.badRequest).json({
+          errors: [{ msg: message.error }],
         });
       }
       let { status } = order;
@@ -710,20 +562,22 @@ class OrderController {
         status = -1;
       } else {
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'Bạn không thể hủy đơn hàng!' }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.cancelProtect }] });
       }
       order.status = status;
-      await order.save((err, data) => {
+      await order.save((err, _) => {
         if (err) {
           return res
-            .status(400)
-            .json({ errors: [{ msg: 'Hủy đơn hàng thất bại!' }] });
+            .status(statusCode.badRequest)
+            .json({ errors: [{ msg: message.cancelFail }] });
         }
-        return res.json({ message: 'Đã hủy đơn hàng thành công!' });
+        return res
+          .status(statusCode.success)
+          .json({ message: message.cancelSuccess });
       });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -733,23 +587,25 @@ class OrderController {
   async cancleOrderAdmin(req, res) {
     try {
       let orderId = req.params.orderId;
-      let order = await Order.findById(orderId);
+      let order = await crudService.getById(Order, orderId);
       if (!order) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Không tìm thấy đơn hàng!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       order.status = -1;
       await order.save((err, data) => {
         if (err) {
           return res
-            .status(400)
-            .json({ errors: [{ msg: 'Hủy đơn hàng thất bại!' }] });
+            .status(statusCode.badRequest)
+            .json({ errors: [{ msg: message.cancelFail }] });
         }
-        return res.json({ message: 'Đã hủy đơn hàng thành công!' });
+        return res
+          .status(statusCode.success)
+          .json({ message: message.cancelSuccess });
       });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -759,11 +615,11 @@ class OrderController {
   async updateOrderStatus(req, res) {
     try {
       let orderId = req.params.orderId;
-      let order = await Order.findById(orderId);
+      let order = await crudService.getById(Order, orderId);
       if (!order) {
         return res
-          .status(404)
-          .json({ errors: [{ msg: 'Không tìm thấy đơn đặt hàng này!' }] });
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
       let {
         status,
@@ -795,19 +651,19 @@ class OrderController {
         });
       } else if (status === 0) {
         order.status = 1;
-        order.confirmedAt = dayjs().toISOString();
+        order.confirmedAt = new Date().toISOString();
       } else if (status === 1) {
         order.status = 2;
-        order.pickedUpAt = dayjs().toISOString();
+        order.pickedUpAt = new Date().toISOString();
       } else if (status === 2) {
         order.status = 3;
-        order.packedAt = dayjs().toISOString();
+        order.packedAt = new Date().toISOString();
       } else if (status === 3) {
         order.status = 4;
-        order.transportedAt = dayjs().toISOString();
+        order.transportedAt = new Date().toISOString();
       } else if (status === 4) {
         order.status = 5;
-        order.deliveriedAt = dayjs().toISOString();
+        order.deliveriedAt = new Date().toISOString();
         const bill = new Bill({
           orderId: order._id,
           userId,
@@ -839,28 +695,30 @@ class OrderController {
         }
         await bill.save();
       } else {
-        return res.status(400).json({
+        return res.status(statusCode.badRequest).json({
           errors: [
             {
-              msg: 'Không thể cập nhật đơn hàng!',
+              msg: message.error,
             },
           ],
         });
       }
       await order.save((err, data) => {
         if (err) {
-          return res.status(400).json({
+          return res.status(statusCode.badRequest).json({
             errors: [
               {
-                msg: 'Không thể cập nhật đơn hàng!',
+                msg: message.updateFail,
               },
             ],
           });
         }
-        return res.json({ message: 'Cập nhật đơn hàng thành công!' });
+        return res
+          .status(statusCode.success)
+          .json({ message: message.updateSuccess });
       });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
   // @route   GET api/orders/invoice/:id
@@ -868,22 +726,22 @@ class OrderController {
   // @access  Private
   async invoice(req, res) {
     try {
-      const order = await Order.findById(req.params.id);
+      const order = await crudService.getById(Order, req.params.id);
       if (!order) {
-        return res.status(404).json({
+        return res.status(statusCode.notFound).json({
           errors: [
             {
-              msg: 'Không tìm thấy đơn hàng!',
+              msg: message.notFound,
             },
           ],
         });
       }
-      const detail = await OrderDetail.find({
+      const detail = await crudService.getAll(OrderDetail, {
         orderId: new ObjectId(req.params.id),
       });
-      return res.json({ order, detail });
+      return res.status(statusCode.success).json({ order, detail });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 }

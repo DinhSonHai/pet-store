@@ -23,12 +23,12 @@ router.get('/:id', CategoryController.getById);
 // @route   POST api/categories
 // @desc    Tạo danh mục
 // @access  Private
-router.post('/', [authAdmin, checkPermission], CategoryController.Add);
+router.post('/', [authAdmin, checkPermission], CategoryController.create);
 
-// @route   PUT api/categories
+// @route   PUT api/categories/:id
 // @desc    Sửa danh mục
 // @access  Private
-router.put('/', [authAdmin, checkPermission], CategoryController.editById);
+router.put('/:id', [authAdmin, checkPermission], CategoryController.update);
 
 // @route   DELETE api/categories/:id
 // @desc    Soft delete danh mục (ẩn đi)

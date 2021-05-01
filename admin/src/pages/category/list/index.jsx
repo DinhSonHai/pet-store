@@ -86,7 +86,7 @@ const CategoryList = ({
   const save = async (key) => {
     const row = await form.validateFields();
     setIsLoading(true);
-    await editCategory({ ...row, id: key });
+    await editCategory(key, { ...row });
     setIsLoading(false);
     setEditingKey('');
   };

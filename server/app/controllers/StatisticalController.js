@@ -3,6 +3,8 @@ const BillDetail = require('../models/BillDetail');
 const Order = require('../models/Order');
 const Review = require('../models/Review');
 const _ = require('lodash');
+const crudService = require('../../services/crud');
+const statusCode = require('../../constants/statusCode.json');
 const moment = require('moment');
 
 class StatisticalController {
@@ -13,15 +15,15 @@ class StatisticalController {
     let today = moment().startOf('day');
     let tomorrow = moment(today).endOf('day');
     try {
-      let bill = await Bill.find({
+      let bill = await crudService.getAll(Bill, {
         deliveriedAt: { $gte: today.toDate(), $lt: tomorrow.toDate() },
       });
       let todayRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
-      return res.json({ todayRevenues });
+      return res.status(statusCode.success).json({ todayRevenues });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -32,7 +34,7 @@ class StatisticalController {
     let today = moment().startOf('month');
     let tomorrow = moment(today).endOf('month');
     try {
-      let bill = await Bill.find({
+      let bill = await crudService.getAll(Bill, {
         deliveriedAt: {
           $gte: today.toDate(),
           $lte: tomorrow.toDate(),
@@ -41,9 +43,9 @@ class StatisticalController {
       let monthlyRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
-      return res.json({ monthlyRevenues });
+      return res.status(statusCode.success).json({ monthlyRevenues });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -54,7 +56,7 @@ class StatisticalController {
     let today = moment().startOf('year');
     let tomorrow = moment(today).endOf('year');
     try {
-      let bill = await Bill.find({
+      let bill = await crudService.getAll(Bill, {
         deliveriedAt: {
           $gte: today.toDate(),
           $lte: tomorrow.toDate(),
@@ -63,9 +65,9 @@ class StatisticalController {
       let annualRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
-      return res.json({ annualRevenues });
+      return res.status(statusCode.success).json({ annualRevenues });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -74,10 +76,10 @@ class StatisticalController {
   // @access  Private
   async getNewestOrders(req, res) {
     try {
-      let order = await Order.find({ status: 0 });
-      return res.json({ orderCount: order.length });
+      let order = await crudService.getAll(Order, { status: 0 });
+      return res.status(statusCode.success).json({ orderCount: order.length });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -86,10 +88,12 @@ class StatisticalController {
   // @access  Private
   async getNewestReviews(req, res) {
     try {
-      let review = await Review.find({ status: 0 });
-      return res.json({ reviewCount: review.length });
+      let review = await crudService.getAll(Review, { status: 0 });
+      return res
+        .status(statusCode.success)
+        .json({ reviewCount: review.length });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -98,15 +102,15 @@ class StatisticalController {
   // @access  Private
   async getNewestComments(req, res) {
     try {
-      let review = await Review.find({ status: 1 });
+      let review = await crudService.getAll(Review, { status: 1 });
       let commentCount = review.reduce((total, current) => {
         let comment = current.replyComment;
         let newestComment = comment.filter((cmt) => cmt.status === 0);
         return total + newestComment.length;
       }, 0);
-      return res.json({ commentCount });
+      return res.status(statusCode.success).json({ commentCount });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -116,10 +120,12 @@ class StatisticalController {
   async getTodayBills(req, res) {
     let today = moment().startOf('day');
     try {
-      let bill = await Bill.find({ deliveriedAt: { $gte: today.toDate() } });
-      return res.json({ billCount: bill.length });
+      let bill = await crudService.getAll(Bill, {
+        deliveriedAt: { $gte: today.toDate() },
+      });
+      return res.status(statusCode.success).json({ billCount: bill.length });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -133,14 +139,15 @@ class StatisticalController {
         deliveriedAt: { $gte: today.toDate() },
       }).select('_id');
       let billIdList = bill.map((item) => item._id);
-      let billDetail = await BillDetail.find({ billId: { $in: billIdList } });
-
+      let billDetail = await crudService.getAll(BillDetail, {
+        billId: { $in: billIdList },
+      });
       let productCount = billDetail.reduce((total, current) => {
         return total + current.amount;
       }, 0);
-      return res.json({ productCount });
+      return res.status(statusCode.success).json({ productCount });
     } catch (err) {
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -151,22 +158,22 @@ class StatisticalController {
     const now = new Date();
     let year = parseInt(req.params.year) || now.getFullYear();
     let ordersArray = [];
-    for (let i = 0; i < 12; i++) {
-      let fromDate = new Date(year, i, 1);
-      let toDate = new Date(year, i + 1, 0);
-      try {
-        let order = await Order.find({
+    try {
+      for (let i = 0; i < 12; i++) {
+        let fromDate = new Date(year, i, 1);
+        let toDate = new Date(year, i + 1, 0);
+        let order = await crudService.getAll(Order, {
           createdAt: {
             $gte: fromDate,
             $lte: toDate,
           },
         });
         ordersArray.push(order.length);
-      } catch (err) {
-        return res.status(500).send('Server Error');
       }
+      return res.status(statusCode.success).json(ordersArray);
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server Error');
     }
-    return res.json(ordersArray);
   }
 
   // @route   GET api/statistical/revenuesdatachart/:year
@@ -176,11 +183,11 @@ class StatisticalController {
     const now = new Date();
     let year = parseInt(req.params.year) || now.getFullYear();
     let revenuesArray = [];
-    for (let i = 0; i < 12; i++) {
-      let fromDate = new Date(year, i, 1);
-      let toDate = new Date(year, i + 1, 0);
-      try {
-        let bill = await Bill.find({
+    try {
+      for (let i = 0; i < 12; i++) {
+        let fromDate = new Date(year, i, 1);
+        let toDate = new Date(year, i + 1, 0);
+        let bill = await crudService.getAll(Bill, {
           deliveriedAt: {
             $gte: fromDate,
             $lte: toDate,
@@ -190,11 +197,11 @@ class StatisticalController {
           return total + current.totalMoney;
         }, 0);
         revenuesArray.push(monthlyRevenues);
-      } catch (err) {
-        return res.status(500).send('Server Error');
       }
+      return res.status(statusCode.success).json(revenuesArray);
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server Error');
     }
-    return res.json(revenuesArray);
   }
 }
 

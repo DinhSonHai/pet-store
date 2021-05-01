@@ -1,6 +1,9 @@
 const Type = require('../models/Type');
 const Category = require('../models/Category');
 const ObjectId = require('mongoose').Types.ObjectId;
+const message = require('../../constants/message.json').crud;
+const crudService = require('../../services/crud');
+const statusCode = require('../../constants/statusCode.json');
 
 class TypeController {
   // @route   GET api/types
@@ -8,14 +11,18 @@ class TypeController {
   // @access  Public
   async getAll(req, res, next) {
     try {
-      const types = await Type.find().populate({
-        path: 'categoryId',
-        select: ['categoryName'],
-      });
-      return res.json(types);
+      const types = await crudService.getAdvance(
+        Type,
+        {},
+        {},
+        {
+          path: 'categoryId',
+          select: ['categoryName'],
+        }
+      );
+      return res.status(statusCode.success).json(types);
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -24,14 +31,15 @@ class TypeController {
   // @access  Public
   async getById(req, res, next) {
     try {
-      const type = await Type.findById(req.params.id);
+      const type = await crudService.getById(Type, req.params.id);
       if (!type) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
-      return res.json(type);
+      return res.status(statusCode.success).json(type);
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -40,100 +48,90 @@ class TypeController {
   // @access  Public
   async getByCategoryId(req, res, next) {
     try {
-      const types = await Type.find({
+      const types = await crudService.getAll(Type, {
         categoryId: new ObjectId(req.params.categoryId),
       });
-      return res.json(types);
+      return res.status(statusCode.success).json(types);
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
   // @route   POST api/types
   // @desc    Tạo loại sản phẩm
   // @access  Private
-  async add(req, res, next) {
+  async create(req, res, next) {
     const { typeName, typeImg, categoryId, content } = req.body;
     if (!typeName) {
       return res
-        .status(400)
-        .json({ errors: [{ msg: 'Loại sản phẩm không được trống!' }] });
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: 'Tên loại sản phẩm không được trống!' }] });
     }
     if (!typeImg) {
       return res
-        .status(400)
+        .status(statusCode.badRequest)
         .json({ errors: [{ msg: 'Ảnh loại sản phẩm không được trống!' }] });
     }
-    const cat = await Category.findById(categoryId);
+    const cat = await crudService.getById(Category, categoryId);
     if (!cat) {
       return res
-        .status(404)
+        .status(statusCode.notFound)
         .json({ errors: [{ msg: 'Không tìm thấy danh mục!' }] });
     }
     try {
-      const ty = new Type({
-        typeName,
-        typeImg,
-        categoryId,
-        content,
-      });
-      ty.key = ty._id;
-      await ty.save((err, data) => {
-        if (err) {
-          return res.status(400).json({ errors: [{ msg: 'Thêm thất bại!' }] });
-        }
-        return res.json({
-          message: 'Thêm thành công',
+      const status = await crudService.create(Type, req.body);
+      if (status) {
+        return res.status(statusCode.success).json({
+          message: message.createSuccess,
         });
-      });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.createFail }] });
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
-  // @route   PUT api/types
+  // @route   PUT api/types/:id
   // @desc    Sửa loại sản phẩm
   // @access  Private
-  async edit(req, res, next) {
-    const { typeName, typeImg, categoryId, id, content } = req.body;
+  async update(req, res, next) {
+    const { typeName, typeImg, categoryId } = req.body;
     if (!typeName) {
       return res
-        .status(400)
-        .json({ errors: [{ msg: 'Loại sản phẩm không được trống!' }] });
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: 'Tên loại sản phẩm không được trống!' }] });
     }
     if (!typeImg) {
       return res
-        .status(400)
+        .status(statusCode.badRequest)
         .json({ errors: [{ msg: 'Ảnh loại sản phẩm không được trống!' }] });
     }
-    const cat = await Category.findById(categoryId);
+    const cat = await crudService.getById(Category, categoryId);
     if (!cat) {
       return res
-        .status(404)
+        .status(statusCode.notFound)
         .json({ errors: [{ msg: 'Không tìm thấy danh mục!' }] });
     }
     try {
-      const ty = await Type.findById(id);
+      const ty = await crudService.getById(Type, req.params.id);
       if (!ty) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
-      ty.typeName = typeName;
-      ty.typeImg = typeImg;
-      ty.categoryId = categoryId;
-      ty.content = content;
-      await ty.save((err, data) => {
-        if (err) {
-          return res.status(400).json({ errors: [{ msg: 'Sửa thất bại!' }] });
-        }
-        return res.json({
-          message: 'Sửa thành công',
+      const status = await crudService.update(ty, req.body);
+      if (status) {
+        return res.status(statusCode.success).json({
+          message: message.updateSuccess,
         });
-      });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.updateFail }] });
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send('Server Error');
+      return res.status(statusCode.serverError).send('Server Error');
     }
   }
 
@@ -142,14 +140,23 @@ class TypeController {
   // @access  Private
   async softDelete(req, res) {
     try {
-      let ty = await Type.findById(req.params.id);
+      let ty = await crudService.getById(Type, req.params.id);
       if (!ty) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
-      await Type.delete({ _id: req.params.id });
-      return res.json({ message: 'Xóa thành công' });
-    } catch (error) {
-      return res.status(500).send('Server error');
+      const status = await crudService.remove(Type, req.params.id);
+      if (status) {
+        return res
+          .status(statusCode.success)
+          .json({ message: message.removeSuccess });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.removeFail }] });
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 
@@ -160,12 +167,21 @@ class TypeController {
     try {
       let ty = await Type.findDeleted({ _id: req.params.id });
       if (!ty) {
-        return res.status(404).json({ errors: [{ msg: 'Không tìm thấy!' }] });
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.notFound }] });
       }
-      await Type.restore({ _id: req.params.id });
-      return res.json({ message: 'Khôi phục thành công' });
-    } catch (error) {
-      return res.status(500).send('Server error');
+      const status = await crudService.restore(Type, req.params.id);
+      if (status) {
+        return res
+          .status(statusCode.success)
+          .json({ message: message.restoreSuccess });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.restoreFail }] });
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 
@@ -175,9 +191,9 @@ class TypeController {
   async getDeleted(req, res) {
     try {
       const ty = await Type.findDeleted({});
-      return res.json(ty);
-    } catch (error) {
-      return res.status(500).send('Server error');
+      return res.status(statusCode.success).json(ty);
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server error');
     }
   }
 }

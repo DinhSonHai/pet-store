@@ -77,13 +77,13 @@ router.put(
 router.put(
   '/add_address',
   [auth, validateUpdateAddress],
-  AuthController.AddUserAddress
+  AuthController.addUserAddress
 );
 
 // @route   PUT api/auth/remove_address
 // @desc    Xóa địa chỉ người dùng
 // @access  Private
-router.put('/remove_address', auth, AuthController.RemoveUserAddress);
+router.put('/remove_address', auth, AuthController.removeUserAddress);
 
 // @route   PUT api/auth/update_address
 // @desc    Cập nhật địa chỉ người dùng
@@ -91,7 +91,7 @@ router.put('/remove_address', auth, AuthController.RemoveUserAddress);
 router.put(
   '/update_address',
   [auth, validateUpdateAddress],
-  AuthController.UpdateUserAddress
+  AuthController.updateUserAddress
 );
 
 // @route   PUT api/auth/favorite

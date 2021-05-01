@@ -11,7 +11,7 @@ cloudinary.config({
   api_secret: 'rGLBE9UbLRa4qpuVh6lKlJ2Z_u4',
 });
 
-const connectDB = require('./config/db');
+const connectDB = require('./libs/mongoDB');
 const route = require('./routes');
 
 const app = express();

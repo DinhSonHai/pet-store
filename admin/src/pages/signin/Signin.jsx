@@ -27,7 +27,7 @@ const Signin = ({ login, history }) => {
     <section className='login'>
       <div className='login__wrap site-layout-background'>
         <div className='login__content'>
-          <Card style={{ maxWidth: '600px', margin: 'auto' }}>
+          <Card style={{ maxWidth: '600px', margin: 'auto', width: '100%' }}>
             <h1 className='login__title'>Đăng nhập</h1>
             <Form
               name='normal_login'

@@ -77,15 +77,6 @@ router.post(
   OrderController.guestOrder
 );
 
-// @route   POST api/orders/admin
-// @desc    Đặt hàng vai trò khách, xử lí ở admin
-// @access  Private
-router.post(
-  '/admin',
-  [authAdmin, validateOrderAdmin],
-  OrderController.adminOrder
-);
-
 // @route   POST api/orders/auth
 // @desc    Đặt hàng user
 // @access  Private
