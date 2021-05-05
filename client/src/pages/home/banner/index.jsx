@@ -1,7 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Link } from 'react-router-dom';
-import { Row, Col } from 'antd';
-import { Carousel } from 'react-responsive-carousel';
+import { Row, Col, Carousel } from 'antd';
 import './styles.scss';
 
 const bannerList = [
@@ -22,21 +21,13 @@ const Banner = () => {
     <section className='banner'>
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={14}>
-          <Carousel
-            interval={4000}
-            transitionTime={750}
-            showStatus={false}
-            renderThumbs={() => null}
-            showArrows={true}
-            autoPlay={true}
-            swipeable={true}
-            infiniteLoop={true}
-          >
+          <Carousel infinite draggable autoplay>
             {bannerList.map((img, index) => (
               <div key={index}>
                 <img
                   style={{
-                    maxWidth: '100%',
+                    objectFit: 'cover',
+                    width: '100%',
                     height: 'auto',
                   }}
                   src={img}
@@ -57,8 +48,11 @@ const Banner = () => {
               <Col key={index} xs={12} lg={12}>
                 <Link to='/'>
                   <img
-                    width='100%'
-                    height='100%'
+                    style={{
+                      objectFit: 'cover',
+                      width: '100%',
+                      height: 'auto',
+                    }}
                     src={imageUrl}
                     alt='No_Image'
                   />

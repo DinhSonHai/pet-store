@@ -2,12 +2,14 @@ import store from './store';
 import api from '../api';
 import setAuthToken from '../utils/setAuthToken';
 import { loadUser } from '../redux/actions/auth';
-import { LOGOUT } from '../redux/types';
+import { LOGOUT, AUTH_ERROR } from '../redux/types';
 const initApp = () => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
+    store.dispatch(loadUser());
+  } else {
+    store.dispatch({ type: AUTH_ERROR });
   }
-  store.dispatch(loadUser());
   window.addEventListener('storage', () => {
     if (
       !localStorage.token ||

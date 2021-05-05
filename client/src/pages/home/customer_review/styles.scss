@@ -18,6 +18,10 @@
     margin: 0 auto;
   }
   &__content {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     h1,
     p {
@@ -27,11 +31,8 @@
       font-weight: 600;
     }
   }
-  .carousel .slide {
-    background: none !important;
-  }
-  .control-dots {
-    bottom: -1rem;
+  .ant-carousel .slick-dots {
+    position: static !important;
   }
   &__avt {
     border-radius: 50% !important;

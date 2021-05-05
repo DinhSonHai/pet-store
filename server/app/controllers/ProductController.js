@@ -246,7 +246,7 @@ class ProductController {
     const { start, end } = pagination(req.query.page, 12);
     const filterValue =
       filterStatus === 'undefined'
-        ? { createdAt: -1 }
+        ? {}
         : filterStatus === 'desc'
         ? { price: -1 }
         : { price: 1 };
