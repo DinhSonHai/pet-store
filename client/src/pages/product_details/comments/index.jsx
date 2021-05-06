@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { timeSince } from '../../../utils/timesince.js';
 import './styles.scss';
 
-const ExampleComment = ({ item }) => (
+const ExampleComment = ({ item, isAuthenticated, user }) => (
   <Fragment>
     <Rate
       style={{ fontSize: '0.75rem' }}
@@ -15,7 +15,9 @@ const ExampleComment = ({ item }) => (
       defaultValue={item.starRatings}
     />
     <Comment
-      author={<p>{item.name}</p>}
+      author={
+        <p>{isAuthenticated && user._id === item.userId ? 'Bạn' : item.name}</p>
+      }
       avatar={<Avatar src={item.avatar} alt='Avatar' />}
       content={<p>{item.comment}</p>}
       datetime={

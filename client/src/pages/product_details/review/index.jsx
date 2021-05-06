@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Form, Input, Button, Card, Rate } from 'antd';
 import { notifyActions } from '../../../utils/notify';
-import { LoginOutlined } from '@ant-design/icons';
+import { LoginOutlined, SmileOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { review } from '../../../redux/actions/review';
@@ -14,7 +14,14 @@ const desc = [
   'Hài lòng',
   'Rất hài lòng',
 ];
-const DetailReview = ({ auth: { isAuthenticated, user }, id, review }) => {
+const DetailReview = ({
+  auth: { isAuthenticated, user },
+  id,
+  review,
+  isReviewed,
+  isPurchased,
+}) => {
+  const [reviewState, setReviewState] = useState(true);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [star, setStar] = useState(5);
   const history = useHistory();
@@ -35,53 +42,53 @@ const DetailReview = ({ auth: { isAuthenticated, user }, id, review }) => {
       );
     }
     setConfirmLoading(true);
-    await review({ ...values, starRatings: star }, id);
+    const res = await review({ ...values, starRatings: star }, id);
+    if (res) {
+      setReviewState(false);
+    }
     setConfirmLoading(false);
   };
   return (
     <section className='product-details__review'>
-      <Card>
-        {isAuthenticated ? (
-          <Form
-            layout='vertical'
-            name='normal_review'
-            size='large'
-            onFinish={onFinish}
-          >
-            <Form.Item>
-              <Rate tooltips={desc} defaultValue={star} onChange={onChange} />
-              {star ? (
-                <span className='ant-rate-text'>{desc[star - 1]}</span>
-              ) : (
-                ''
-              )}
-            </Form.Item>
-            <Form.Item
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng nhập nội dung!',
-                },
-              ]}
-              name='comment'
-              label='Nội dung'
+      {isReviewed !== 1 && (
+        <Card>
+          {isAuthenticated && !isReviewed && isPurchased && reviewState ? (
+            <Form
+              layout='vertical'
+              name='normal_review'
+              size='large'
+              onFinish={onFinish}
             >
-              <Input.TextArea
-                disabled={
-                  user &&
-                  !user.purchasedProducts.some(
-                    (p) => p.toString() === id.toString()
-                  )
-                }
-                rows={4}
-                placeholder='Nội dung'
-              />
-            </Form.Item>
-            <Form.Item style={{ textAlign: 'right' }}>
-              {user &&
-              user.purchasedProducts.some(
-                (p) => p.toString() === id.toString()
-              ) ? (
+              <Form.Item>
+                <Rate tooltips={desc} defaultValue={star} onChange={onChange} />
+                {star ? (
+                  <span className='ant-rate-text'>{desc[star - 1]}</span>
+                ) : (
+                  ''
+                )}
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập nội dung!',
+                  },
+                ]}
+                name='comment'
+                label='Nội dung'
+              >
+                <Input.TextArea
+                  disabled={
+                    user &&
+                    !user.purchasedProducts.some(
+                      (p) => p.toString() === id.toString()
+                    )
+                  }
+                  rows={4}
+                  placeholder='Nội dung'
+                />
+              </Form.Item>
+              <Form.Item style={{ textAlign: 'right' }}>
                 <Button
                   type='primary'
                   htmlType='submit'
@@ -89,32 +96,31 @@ const DetailReview = ({ auth: { isAuthenticated, user }, id, review }) => {
                 >
                   Gửi đánh giá
                 </Button>
-              ) : (
-                <Button
-                  onClick={() => {
-                    notifyActions(
-                      'error',
-                      'Bạn chưa mua sản phẩm này nên không thể đánh giá!'
-                    );
-                  }}
-                >
-                  {`Bạn chưa mua sản phẩm này :(`}
-                </Button>
-              )}
-            </Form.Item>
-          </Form>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <Button
-              icon={<LoginOutlined />}
-              type='dashed'
-              onClick={() => history.push('/signin')}
-            >
-              Đăng nhập để đánh giá
-            </Button>
-          </div>
-        )}
-      </Card>
+              </Form.Item>
+            </Form>
+          ) : isReviewed === 0 || !reviewState ? (
+            <div style={{ textAlign: 'center' }}>
+              Đánh giá của bạn đang chờ phê duyệt
+            </div>
+          ) : !isPurchased && !isAuthenticated ? (
+            <div style={{ textAlign: 'center' }}>
+              <Button
+                icon={<LoginOutlined />}
+                type='default'
+                onClick={() => history.push('/signin')}
+              >
+                Đăng nhập và mua hàng để đánh giá
+              </Button>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center' }}>
+              <Button icon={<SmileOutlined />} type='default'>
+                Mua hàng để đánh giá nào!
+              </Button>
+            </div>
+          )}
+        </Card>
+      )}
     </section>
   );
 };

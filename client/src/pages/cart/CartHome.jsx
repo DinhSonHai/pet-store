@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { useEffect, useState, Fragment } from 'react';
-import { Col, Row, Card, InputNumber, Button } from 'antd';
+import { Col, Row, Card, InputNumber, Button, Result } from 'antd';
+import { SmileOutlined } from '@ant-design/icons';
 import { removeItem, setAmount } from '../../utils/cart';
 import equal from 'fast-deep-equal';
 import { Link } from 'react-router-dom';
@@ -25,12 +26,17 @@ const CartHome = ({ cartState, history }) => {
       <div className='container'>
         {!cartState || cartState.length === 0 ? (
           <div className='cart__empty'>
-            <h1 className='cart__title'>Giỏ hàng của bạn trống!</h1>
-            <Link to='/'>
-              <Button className='cart__checkout' type='primary'>
-                Tiếp tục mua hàng
-              </Button>
-            </Link>
+            <Result
+              icon={<SmileOutlined />}
+              title='Giỏ hàng của bạn đang trống, hãy mua hàng nào!'
+              extra={
+                <Link to='/'>
+                  <Button className='cart__checkout' type='primary'>
+                    Tiếp tục mua hàng
+                  </Button>
+                </Link>
+              }
+            />
           </div>
         ) : (
           <Fragment>

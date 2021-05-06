@@ -41,7 +41,9 @@ const ProfilePurchased = ({ getPurchased }) => {
                 />
                 <div className='profile__main--wishlist-content'>
                   <p className='profile__main--wishlist-name'>
-                    <Link to={`/product/${item._id}`}>{item.productName}</Link>
+                    <Link to={`/product/${item.productName}/${item._id}`}>
+                      {item.productName}
+                    </Link>
                   </p>
                   <div className='profile__main--wishlist-rate'>
                     <Rate

@@ -19,7 +19,7 @@ const {
 
 function getData(path) {
   return new Promise((resolve, reject) => {
-    axios
+    axios.default
       .get(path)
       .then(function (response) {
         resolve(response.data.results);
@@ -186,7 +186,7 @@ class OrderController {
   // @access  Private
   async getAllOrderAdmin(req, res) {
     try {
-      let orders = await crudService.getAdvance(Order, {}, { createdAt: -1 });
+      const orders = await crudService.getAdvance(Order, {}, { createdAt: -1 });
       return res.status(statusCode.success).json(orders);
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
@@ -224,16 +224,16 @@ class OrderController {
         getData(`https://vapi.vnappmob.com/api/province/ward/${wardState}`),
       ])
         .then(async (results) => {
-          let province_name = results[0].find(
+          const province_name = results[0].find(
             (item) => parseInt(item.province_id) === provinceState
           ).province_name;
-          let ward_name = results[1].find(
+          const ward_name = results[1].find(
             (item) => parseInt(item.district_id) === wardState
           ).district_name;
-          let town_name = results[2].find(
+          const town_name = results[2].find(
             (item) => parseInt(item.ward_id) === townState
           ).ward_name;
-          let address =
+          const address =
             moreInfo.trim() +
             ', ' +
             town_name +
@@ -266,7 +266,7 @@ class OrderController {
                 errors: [{ msg: message.invalidOrder }],
               });
             }
-            const product = await Product.findById(cart[i]._id);
+            const product = await crudService.getById(Product, cart[i]._id);
             if (!product) {
               return res.status(statusCode.notFound).json({
                 errors: [{ msg: message.error }],
@@ -282,10 +282,6 @@ class OrderController {
                 errors: [{ msg: message.error }],
               });
             }
-            product.quantity = product.quantity - parseInt(cart[i].amount);
-            if (product.quantity <= 0) {
-              product.status = false;
-            }
             getProducts.push({ product, amount: cart[i].amount });
             let detail = new OrderDetail({
               orderId: order._id,
@@ -296,15 +292,22 @@ class OrderController {
             });
             detail.key = detail._id;
             await detail.save();
-            await product.save();
           }
           totalMoney = getProducts.reduce(
             (a, b) => a + b.product.price * b.amount,
             deliveryState === 0 ? 35000 : 55000
           );
           order.totalMoney = totalMoney;
-          await order.save();
-
+          await order.save((err, _) => {
+            if (err) {
+              return res.status(statusCode.badRequest).json({
+                errors: [{ msg: message.orderFail }],
+              });
+            }
+            return res.status(statusCode.success).json({
+              message: message.orderSuccess,
+            });
+          });
           if (email) {
             const transporter = nodemailer.createTransport({
               service: 'gmail',
@@ -352,14 +355,10 @@ class OrderController {
             transporter
               .sendMail(mailOptions)
               .then(() => {
-                return res.status(statusCode.success).json({
-                  message: message.orderSuccess,
-                });
+                console.log('Send mail success');
               })
               .catch((err) => {
-                return res.status(statusCode.badRequest).json({
-                  errors: [{ msg: message.orderFail }],
-                });
+                console.log('Send mail fail');
               });
           }
         })
@@ -368,7 +367,7 @@ class OrderController {
             errors: [{ msg: message.orderFail }],
           })
         );
-    } catch (error) {
+    } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
     }
   }
@@ -438,19 +437,6 @@ class OrderController {
             errors: [{ msg: message.error }],
           });
         }
-        const isPurchased = user.purchasedProducts.some(
-          (item) => item.toString() === product._id.toString()
-        );
-        if (!isPurchased) {
-          user.purchasedProducts = [
-            product._id.toString(),
-            ...user.purchasedProducts,
-          ];
-        }
-        product.quantity = product.quantity - cart[i].amount;
-        if (product.quantity <= 0) {
-          product.status = false;
-        }
         getProducts.push({ product, amount: cart[i].amount });
         let detail = new OrderDetail({
           userId: user._id,
@@ -461,16 +447,23 @@ class OrderController {
           price: product.price,
         });
         detail.key = detail._id;
-        await user.save();
         await detail.save();
-        await product.save();
       }
       totalMoney = getProducts.reduce(
         (a, b) => a + b.product.price * b.amount,
         deliveryState === 0 ? 35000 : 55000
       );
       order.totalMoney = totalMoney;
-      await order.save();
+      await order.save((err, _) => {
+        if (err) {
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.orderFail }],
+          });
+        }
+        return res.status(statusCode.success).json({
+          message: message.orderSuccess,
+        });
+      });
 
       const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -519,14 +512,10 @@ class OrderController {
       transporter
         .sendMail(mailOptions)
         .then(() => {
-          return res.status(statusCode.success).json({
-            message: message.orderSuccess,
-          });
+          console.log('Send mail success');
         })
         .catch((err) => {
-          return res.status(statusCode.badRequest).json({
-            errors: [{ msg: message.orderFail }],
-          });
+          console.log('Send mail fail');
         });
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
@@ -538,7 +527,7 @@ class OrderController {
   // @access  Private
   async cancleOrder(req, res) {
     try {
-      let orderId = req.params.orderId;
+      const orderId = req.params.orderId;
       let order = await crudService.getById(Order, orderId);
       if (!order) {
         return res
@@ -586,7 +575,7 @@ class OrderController {
   // @access  Private
   async cancleOrderAdmin(req, res) {
     try {
-      let orderId = req.params.orderId;
+      const orderId = req.params.orderId;
       let order = await crudService.getById(Order, orderId);
       if (!order) {
         return res
@@ -614,7 +603,7 @@ class OrderController {
   // @access  Private
   async updateOrderStatus(req, res) {
     try {
-      let orderId = req.params.orderId;
+      const orderId = req.params.orderId;
       let order = await crudService.getById(Order, orderId);
       if (!order) {
         return res
@@ -641,11 +630,10 @@ class OrderController {
       // 4: Đang vận chuyển
       // 5: Giao hàng thành công
       if (status === -1) {
-        return res.status(400).json({
+        return res.status(statusCode.badRequest).json({
           errors: [
             {
-              msg:
-                'Đơn hàng đã bị hủy. Không thể thay đổi trạng thái đơn hàng.!',
+              msg: message.changeStatusProtect,
             },
           ],
         });
@@ -653,6 +641,27 @@ class OrderController {
         order.status = 1;
         order.confirmedAt = new Date().toISOString();
       } else if (status === 1) {
+        const detailOrders = await crudService.getAll(OrderDetail, {
+          orderId: new ObjectId(orderId),
+        });
+        const length = detailOrders.length;
+        for (let i = 0; i < length; ++i) {
+          let product = await crudService.getById(
+            Product,
+            detailOrders[i].productId
+          );
+          if (!product) {
+            return res.status(statusCode.notFound).json({
+              errors: [{ msg: message.error }],
+            });
+          }
+          product.quantity =
+            product.quantity - parseInt(detailOrders[i].amount);
+          if (product.quantity <= 0) {
+            product.status = false;
+          }
+          await product.save();
+        }
         order.status = 2;
         order.pickedUpAt = new Date().toISOString();
       } else if (status === 2) {
@@ -662,8 +671,6 @@ class OrderController {
         order.status = 4;
         order.transportedAt = new Date().toISOString();
       } else if (status === 4) {
-        order.status = 5;
-        order.deliveriedAt = new Date().toISOString();
         const bill = new Bill({
           orderId: order._id,
           userId,
@@ -677,10 +684,30 @@ class OrderController {
           deliveriedAt: transportedAt,
         });
         bill.key = bill._id;
-        const detailOrders = await OrderDetail.find({
+        const detailOrders = await crudService.getAll(OrderDetail, {
           orderId: new ObjectId(orderId),
         });
-        let length = detailOrders.length;
+        const length = detailOrders.length;
+        if (userId) {
+          let user = await crudService.getById(User, userId);
+          if (!user) {
+            return res
+              .status(statusCode.notFound)
+              .json({ errors: [{ msg: message.userNotFound }] });
+          }
+          for (let i = 0; i < length; ++i) {
+            const isPurchased = user.purchasedProducts.some(
+              (item) => item.toString() === detailOrders[i].productId.toString()
+            );
+            if (!isPurchased) {
+              user.purchasedProducts = [
+                detailOrders[i].productId.toString(),
+                ...user.purchasedProducts,
+              ];
+            }
+            await user.save();
+          }
+        }
         for (let i = 0; i < length; ++i) {
           const detail = new BillDetail({
             userId: detailOrders[i].userId,
@@ -694,6 +721,8 @@ class OrderController {
           await detail.save();
         }
         await bill.save();
+        order.status = 5;
+        order.deliveriedAt = new Date().toISOString();
       } else {
         return res.status(statusCode.badRequest).json({
           errors: [

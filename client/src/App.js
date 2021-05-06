@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { BackTop } from 'antd';
 import { Navbar, Footer } from './pages';
@@ -8,10 +7,8 @@ import { Provider } from 'react-redux';
 import store from './app/store';
 import initApp from './app/init';
 import { REACT_APP_FACEBOOK_CLIENT } from './config/login';
+initApp();
 function App() {
-  useEffect(() => {
-    initApp();
-  }, []);
   return (
     <Provider store={store}>
       <Router>

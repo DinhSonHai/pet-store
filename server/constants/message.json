@@ -16,6 +16,7 @@
     "invalidOrder": "Đơn hàng không hợp lệ",
     "notOwn": "Bạn không sở hữu đơn hàng này",
     "cancelProtect": "Bạn không thể hủy đơn hàng",
+    "changeStatusProtect": "Bạn không thể thay đổi trạng thái đơn hàng",
     "cancelSuccess": "Hủy đơn hàng thành công",
     "cancelFail": "Hủy đơn hàng thất bại",
     "updateSuccess": "Cập nhật đơn hàng thành công",

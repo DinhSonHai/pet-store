@@ -5,11 +5,6 @@
     font-size: 1.2rem;
     color: var(--mainstream-color);
   }
-  &__card-info {
-    .ant-card {
-      box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.1);
-    }
-  }
   &__images {
     margin-bottom: 1rem;
   }
@@ -20,6 +15,7 @@
       font-size: 1.2rem;
     }
     .ant-card-body {
+      padding: 0 24px 24px;
       p {
         font-size: 1rem;
       }

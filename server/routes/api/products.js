@@ -3,6 +3,7 @@ const router = express.Router();
 
 const ProductController = require('../../app/controllers/ProductController');
 const checkPermission = require('../../app/middlewares/checkPermission');
+const checkReview = require('../../app/middlewares/checkReview');
 const authAdmin = require('../../app/middlewares/authAdmin');
 
 const {
@@ -28,7 +29,7 @@ router.get('/', ProductController.getAll);
 // @route   GET api/products/:id
 // @desc    Lấy sản phẩm theo id
 // @access  Public
-router.get('/:id', ProductController.getById);
+router.get('/:id', checkReview, ProductController.getById);
 
 // @route   GET api/products/types/:typeId
 // @desc    Lấy tất cả sản phẩm theo typeId

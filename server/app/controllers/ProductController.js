@@ -6,6 +6,8 @@ const _ = require('lodash');
 const pagination = require('../../helpers/pagination');
 const crudService = require('../../services/crud');
 const statusCode = require('../../constants/statusCode.json');
+const Review = require('../models/Review');
+const User = require('../models/User');
 const message = require('../../constants/message.json').crud;
 
 class ProductController {
@@ -46,7 +48,30 @@ class ProductController {
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.notFound }] });
       }
-      return res.status(statusCode.success).json(product);
+      let clonedProduct = {
+        ...product._doc,
+        isReviewed: false,
+        isPurchased: false,
+      };
+      if (req.user) {
+        const [review, user] = await Promise.all([
+          crudService.getUnique(Review, {
+            userId: new ObjectId(req.user.id),
+            productId: new ObjectId(req.params.id),
+          }),
+          crudService.getById(User, req.user.id),
+        ]);
+        const isPurchased = user.purchasedProducts.some(
+          (item) => item.toString() === req.params.id.toString()
+        );
+        if (review) {
+          clonedProduct.isReviewed = review.status;
+        }
+        if (isPurchased) {
+          clonedProduct.isPurchased = true;
+        }
+      }
+      return res.status(statusCode.success).json(clonedProduct);
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
     }

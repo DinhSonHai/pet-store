@@ -208,7 +208,7 @@ class ReviewController {
       // -1: Không phê duyệt đánh giá
       // 0: Đăng đánh giá thành công
       // 1: Đã phê duyệt đánh giá
-      if (status === 0 || status === -1) {
+      if (status === 0) {
         review.status = 1;
         product.reviewsCount = product.reviewsCount + 1;
         product.starsCount = product.starsCount + review.starRatings;

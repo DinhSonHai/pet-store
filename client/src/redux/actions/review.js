@@ -5,6 +5,7 @@ export const review = (data, id) => async (dispatch) => {
   try {
     const res = await reviewAPI.review(data, id);
     notifySuccess(res.data.message);
+    return true;
   } catch (err) {
     notifyErrors(err);
   }

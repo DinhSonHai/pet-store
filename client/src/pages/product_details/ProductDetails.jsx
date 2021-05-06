@@ -92,6 +92,7 @@ const ProductDetails = ({
                     lg={12}
                   >
                     <Card
+                      bordered={false}
                       actions={[
                         <FavoriteAction
                           isAuthenticated={isAuthenticated}
@@ -107,8 +108,8 @@ const ProductDetails = ({
                         />,
                         <Button
                           disabled={data.status ? false : true}
-                          block
                           style={{ height: '100%' }}
+                          block
                           type='text'
                           icon={<AddToCartDetail />}
                           onClick={() => handleAddToCart(data)}
@@ -175,7 +176,12 @@ const ProductDetails = ({
                   }
                   key='review'
                 >
-                  <DetailReview id={data._id} tabChange={tabChange} />
+                  <DetailReview
+                    id={data._id}
+                    isReviewed={data.isReviewed}
+                    isPurchased={data.isPurchased}
+                    tabChange={tabChange}
+                  />
                   <DetailComments id={data._id} tabChange={tabChange} />
                 </TabPane>
               </Tabs>

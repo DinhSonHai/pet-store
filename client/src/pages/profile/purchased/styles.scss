@@ -1,9 +1,6 @@
 .profile {
   &__main {
     &--wishlist {
-      .ant-card-bordered {
-        border: 1px solid var(--fourthstream-color) !important;
-      }
       &-wrap {
         img {
           margin-right: 1rem;
