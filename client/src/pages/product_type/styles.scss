@@ -17,4 +17,17 @@
     .ant-card:hover &__desc {
         color: var(--mainstream-color);
     }
+    &__large-skeleton,
+    &__small-skeleton {
+        .ant-skeleton-element {
+            width: 100%;
+            display: block;
+        }
+    }
+    &__large-skeleton {
+        margin-bottom: 1rem;
+        .ant-skeleton-element .ant-skeleton-input-lg {
+            height: 220px;
+        }
+    }
 }

@@ -1,8 +1,24 @@
 .products {
   background-color: var(--white-color);
-  &-list__wrap {
-    text-align: center;
-    margin-bottom: 1.5rem;
+  &-list {
+    &__wrap {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    &__image-skeleton,
+    &__star-skeleton,
+    &__price-skeleton {
+      margin-bottom: 1rem;
+      .ant-skeleton-element {
+        width: 100%;
+        display: block;
+      }
+    }
+    &__image-skeleton {
+      .ant-skeleton-element .ant-skeleton-input-lg {
+        height: 220px;
+      }
+    }
   }
   &__header {
     display: flex;
@@ -40,7 +56,6 @@
   }
   .ant-card {
     height: 100% !important;
-    // box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.1);
     .ant-card-body {
       height: 100% !important;
       position: relative;

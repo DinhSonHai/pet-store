@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Card, Row, Col, Breadcrumb } from 'antd';
 import { Link } from 'react-router-dom';
-import { Loader } from '../../components';
 import { connect } from 'react-redux';
+import { ProductTypeLoader } from '../../components';
 import { getTypesByCatId } from '../../redux/actions/types';
 import './styles.scss';
 
 const ProductType = ({ getTypesByCatId, match, types: { types } }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
@@ -49,7 +49,7 @@ const ProductType = ({ getTypesByCatId, match, types: { types } }) => {
           </Breadcrumb>
         </div>
         {isLoading ? (
-          <Loader className={'loader-inside'} />
+          <ProductTypeLoader />
         ) : (
           <div className='products-type__content'>
             <Row

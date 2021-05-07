@@ -98,13 +98,7 @@ const ProductDetails = ({
                           isAuthenticated={isAuthenticated}
                           data={data}
                           user={user}
-                          favoriteState={
-                            user
-                              ? user.favoriteProducts.some(
-                                  (p) => p.toString() === data._id.toString()
-                                )
-                              : null
-                          }
+                          favoriteState={data.isFavorite}
                         />,
                         <Button
                           disabled={data.status ? false : true}

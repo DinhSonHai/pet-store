@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Loader } from '../../components';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { connect } from 'react-redux';
+import { ProductPostLoader } from '../../components';
 import { getTypeById } from '../../redux/actions/types';
 import './styles.scss';
 const ProductPost = ({ match, getTypeById, types: { type } }) => {
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsloading] = useState(true);
   useEffect(() => {
     let flag = true;
     async function getData() {
@@ -22,8 +22,8 @@ const ProductPost = ({ match, getTypeById, types: { type } }) => {
   return (
     <section className='products-post'>
       <div className='products-post__wrap container'>
-        {isLoading || !type ? (
-          <Loader className={'products-post-loader'} />
+        {isLoading ? (
+          <ProductPostLoader />
         ) : (
           <CKEditor
             data={type.content || ''}

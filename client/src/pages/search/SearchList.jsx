@@ -94,81 +94,78 @@ const SearchList = ({
           </div>
         </div>
         <div className='products-list'>
+          {loading && <Loader className='product-loader' />}
           <Row
             gutter={[
               { xs: 4, sm: 8, md: 16, lg: 16 },
               { xs: 4, sm: 8, md: 16, lg: 16 },
             ]}
           >
-            {loading || !products ? (
-              <Loader className={'loader-inside'} />
-            ) : (
-              products.map((product) => (
-                <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
-                  <Card hoverable>
-                    <Link
+            {products.map((product) => (
+              <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
+                <Card hoverable>
+                  <Link
+                    style={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                    }}
+                    to={`/product/${product.productName}/${product._id}`}
+                  >
+                    <div
                       style={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
+                        textAlign: 'center',
+                        marginBottom: '1.5rem',
                       }}
-                      to={`/product/${product.productName}/${product._id}`}
                     >
-                      <div
-                        style={{
-                          textAlign: 'center',
-                          marginBottom: '1.5rem',
-                        }}
-                      >
-                        <img
-                          width='100%'
-                          height='100%'
-                          alt='example'
-                          src={product.images[0]}
-                        />
-                      </div>
+                      <img
+                        width='100%'
+                        height='100%'
+                        alt='example'
+                        src={product.images[0]}
+                      />
+                    </div>
+                    <div>
+                      <p className='products__name'>
+                        <Tooltip
+                          placement='topLeft'
+                          title={product.productName}
+                        >
+                          {product.productName}
+                        </Tooltip>
+                      </p>
                       <div>
-                        <p className='products__name'>
-                          <Tooltip
-                            placement='topLeft'
-                            title={product.productName}
-                          >
-                            {product.productName}
-                          </Tooltip>
-                        </p>
-                        <div>
-                          <Rate
-                            style={{ fontSize: '0.85rem' }}
-                            disabled
-                            defaultValue={product.starRatings}
-                          />
-                          <span
-                            style={{ fontSize: '0.85rem' }}
-                            className='ant-rate-text'
-                          >
-                            {`(${product.reviewsCount})`}
-                          </span>
-                        </div>
-                        <p className='products__price'>
-                          {parseInt(product.price).toLocaleString('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND',
-                          })}
-                        </p>
+                        <Rate
+                          style={{ fontSize: '0.85rem' }}
+                          disabled
+                          defaultValue={product.starRatings}
+                        />
+                        <span
+                          style={{ fontSize: '0.85rem' }}
+                          className='ant-rate-text'
+                        >
+                          {`(${product.reviewsCount})`}
+                        </span>
                       </div>
-                    </Link>
-                  </Card>
-                  <Button
-                    disabled={product.status ? false : true}
-                    onClick={() => handleAddToCart(product)}
-                    className='addToCart'
-                    icon={<AddToCart />}
-                    type='primary'
-                  />
-                </Col>
-              ))
-            )}
+                      <p className='products__price'>
+                        {parseInt(product.price).toLocaleString('vi-VN', {
+                          style: 'currency',
+                          currency: 'VND',
+                        })}
+                      </p>
+                    </div>
+                  </Link>
+                </Card>
+                <Button
+                  disabled={product.status ? false : true}
+                  onClick={() => handleAddToCart(product)}
+                  className='addToCart'
+                  icon={<AddToCart />}
+                  type='primary'
+                />
+              </Col>
+            ))}
           </Row>
         </div>
         <Pagination

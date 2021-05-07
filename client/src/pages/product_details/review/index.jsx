@@ -77,16 +77,7 @@ const DetailReview = ({
                 name='comment'
                 label='Nội dung'
               >
-                <Input.TextArea
-                  disabled={
-                    user &&
-                    !user.purchasedProducts.some(
-                      (p) => p.toString() === id.toString()
-                    )
-                  }
-                  rows={4}
-                  placeholder='Nội dung'
-                />
+                <Input.TextArea rows={4} placeholder='Nội dung' />
               </Form.Item>
               <Form.Item style={{ textAlign: 'right' }}>
                 <Button

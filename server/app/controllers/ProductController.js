@@ -52,6 +52,7 @@ class ProductController {
         ...product._doc,
         isReviewed: false,
         isPurchased: false,
+        isFavorite: false,
       };
       if (req.user) {
         const [review, user] = await Promise.all([
@@ -64,11 +65,17 @@ class ProductController {
         const isPurchased = user.purchasedProducts.some(
           (item) => item.toString() === req.params.id.toString()
         );
+        const isFavorite = user.favoriteProducts.some(
+          (item) => item.toString() === req.params.id.toString()
+        );
         if (review) {
           clonedProduct.isReviewed = review.status;
         }
         if (isPurchased) {
           clonedProduct.isPurchased = true;
+        }
+        if (isFavorite) {
+          clonedProduct.isFavorite = true;
         }
       }
       return res.status(statusCode.success).json(clonedProduct);

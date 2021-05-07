@@ -24,8 +24,8 @@ import {
 } from '@ant-design/icons';
 import { AddToCart } from '../../assets/icons';
 import { addItem } from '../../utils/cart';
-import { Loader } from '../../components';
 import { Link } from 'react-router-dom';
+import { ProductListLoader } from '../../components';
 import queryString from 'query-string';
 import './styles.scss';
 
@@ -38,7 +38,7 @@ const ProductList = ({
 }) => {
   let filter = queryString.parse(location.search).sort;
   let page = queryString.parse(location.search).page;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function getData() {
       setLoading(true);
@@ -106,9 +106,6 @@ const ProductList = ({
                   : match.params.type === 'accessories' && 'Phụ kiện'}
               </Link>
             </Breadcrumb.Item>
-            {/* <Breadcrumb.Item>
-              <span className='products__header-title'>Chó Alaska</span>
-            </Breadcrumb.Item> */}
           </Breadcrumb>
           <div className='products__header-filter'>
             <Dropdown disabled={loading} overlay={menu}>
@@ -118,17 +115,17 @@ const ProductList = ({
             </Dropdown>
           </div>
         </div>
-        <div className='products-list'>
-          <Row
-            gutter={[
-              { xs: 4, sm: 8, md: 16, lg: 16 },
-              { xs: 4, sm: 8, md: 16, lg: 16 },
-            ]}
-          >
-            {loading || !products ? (
-              <Loader className={'loader-inside'} />
-            ) : (
-              products.map((product) => (
+        {loading ? (
+          <ProductListLoader />
+        ) : (
+          <div className='products-list'>
+            <Row
+              gutter={[
+                { xs: 4, sm: 8, md: 16, lg: 16 },
+                { xs: 4, sm: 8, md: 16, lg: 16 },
+              ]}
+            >
+              {products.map((product) => (
                 <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
                   <Card hoverable>
                     <Link
@@ -187,10 +184,11 @@ const ProductList = ({
                     type='primary'
                   />
                 </Col>
-              ))
-            )}
-          </Row>
-        </div>
+              ))}
+            </Row>
+          </div>
+        )}
+
         <Pagination
           onChange={handlePagination}
           disabled={loading}
