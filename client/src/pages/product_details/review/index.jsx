@@ -52,7 +52,10 @@ const DetailReview = ({
     <section className='product-details__review'>
       {isReviewed !== 1 && (
         <Card>
-          {isAuthenticated && !isReviewed && isPurchased && reviewState ? (
+          {isAuthenticated &&
+          isReviewed === false &&
+          isPurchased &&
+          reviewState ? (
             <Form
               layout='vertical'
               name='normal_review'
