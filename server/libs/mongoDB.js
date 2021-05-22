@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const { mongoDBAtlasURI } = require('../config/default.json');
+const { mongoDBLocalURI } = require('../config/default.json');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(mongoDBAtlasURI, {
+    await mongoose.connect(mongoDBLocalURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,

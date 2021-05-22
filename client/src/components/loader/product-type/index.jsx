@@ -13,7 +13,7 @@ const ProductTypeLoader = () => {
             <Skeleton.Input size='large' active />
           </div>
           <div className='products-type__small-skeleton'>
-            <Skeleton.Input size='large' active />
+            <Skeleton.Input size='small' active />
           </div>
         </Col>
       ))}

@@ -272,9 +272,10 @@ class ProductController {
   // @desc    Tìm kiếm sản phẩm theo từ khóa
   // @access  Public
   async search(req, res) {
-    let q = req.query.q;
+    const q = req.query.q;
+    const search = new RegExp(q, 'i')
     const filterStatus = req.query.sort;
-    const query = { $text: { $search: q }, isShow: true };
+    const query = { productName: search, isShow: true };
     const { start, end } = pagination(req.query.page, 12);
     const filterValue =
       filterStatus === 'undefined'
