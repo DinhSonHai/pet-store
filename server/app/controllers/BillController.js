@@ -14,8 +14,8 @@ class BillController {
     const { start, end } = pagination(req.query.page, 10);
     const filterValue =
       filterStatus === 'undefined' || !filterStatus
-        ? { orderedAt: -1 }
-        : { orderedAt: -1 };
+        ? { orderedAt: 'desc' }
+        : { orderedAt: 'desc' };
     try {
       const bills = await crudService.getAll(Bill, {}, filterValue);
       return res

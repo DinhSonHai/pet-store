@@ -7,6 +7,7 @@ const {
   SECRET_ADMIN_SIGNUP,
 } = require('../../config/default.json');
 const hashString = require('../../helpers/hashString');
+const constants = require('../../constants');
 const statusCode = require('../../constants/statusCode.json');
 const message = require('../../constants/message.json').user;
 const crudService = require('../../services/crud');
@@ -54,7 +55,7 @@ class EmployeeController {
         });
       }
       const { id, role } = user;
-      if (role === 1 || role === 0) {
+      if (role === constants.EMPLOYEE || role === constants.ADMIN) {
         const payload = {
           user: {
             id,
@@ -135,7 +136,7 @@ class EmployeeController {
         email,
       });
       user.key = user._id;
-      user.role = 0;
+      user.role = constants.ADMIN;
       await user.save((err, data) => {
         if (!err) {
           return res

@@ -86,7 +86,7 @@ class OrderController {
           userId: new ObjectId(req.user.id),
           status: { $gt: -1, $lt: 5 },
         },
-        { createdAt: -1 }
+        { createdAt: 'desc' }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
@@ -105,7 +105,7 @@ class OrderController {
           userId: new ObjectId(req.user.id),
           status: 5,
         },
-        { createdAt: -1 }
+        { createdAt: 'desc' }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
@@ -124,7 +124,7 @@ class OrderController {
           userId: new ObjectId(req.user.id),
           status: -1,
         },
-        { createdAt: -1 }
+        { createdAt: 'desc' }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
@@ -173,7 +173,7 @@ class OrderController {
       const orders = await crudService.getAdvance(
         Order,
         { status },
-        { createdAt: 1 }
+        { createdAt: 'asc' }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
