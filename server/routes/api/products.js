@@ -1,46 +1,61 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const ProductController = require('../../app/controllers/ProductController');
-const checkPermission = require('../../app/middlewares/checkPermission');
-const checkReview = require('../../app/middlewares/checkReview');
-const authAdmin = require('../../app/middlewares/authAdmin');
+const ProductController = require("../../app/controllers/ProductController");
+const checkPermission = require("../../app/middlewares/checkPermission");
+const checkReview = require("../../app/middlewares/checkReview");
+const authAdmin = require("../../app/middlewares/authAdmin");
 
 const {
   validateCreateProductInfo,
   validateUpdateProductInfo,
-} = require('../../helpers/valid');
+} = require("../../helpers/valid");
 
 // @route   GET api/products/deleted
 // @desc    Lấy tất cả sản phẩm đã ẩn đi
 // @access  Private
-router.get('/deleted', authAdmin, ProductController.getDeleted);
+router.get("/deleted", authAdmin, ProductController.getDeleted);
 
 // @route   GET api/products/search
 // @desc    Tìm kiếm sản phẩm theo từ khóa
 // @access  Public
-router.get('/search', ProductController.search);
+router.get("/search", ProductController.search);
 
 // @route   GET api/products
 // @desc    Lấy tất cả sản phẩm
 // @access  Public
-router.get('/', ProductController.getAll);
+router.get("/", ProductController.getAll);
+
+// @route   GET api/products/newest
+// @desc    Lấy sản phẩm moi nhat
+// @access  Public
+router.get("/newest", ProductController.getNewestProducts);
+
+// @route   GET api/products/popular
+// @desc    Lấy sản phẩm pho bien
+// @access  Public
+router.get("/popular", ProductController.getPopularProducts);
+
+// @route   GET api/products/bestseller
+// @desc    Lấy sản phẩm ban chay
+// @access  Public
+router.get("/bestseller", ProductController.getBestSellerProducts);
 
 // @route   GET api/products/:id
 // @desc    Lấy sản phẩm theo id
 // @access  Public
-router.get('/:id', checkReview, ProductController.getById);
+router.get("/:id", checkReview, ProductController.getById);
 
 // @route   GET api/products/types/:typeId
 // @desc    Lấy tất cả sản phẩm theo typeId
 // @access  Public
-router.get('/types/:typeId', ProductController.getByTypeId);
+router.get("/types/:typeId", ProductController.getByTypeId);
 
 // @route   POST api/products
 // @desc    Tạo sản phẩm
 // @access  Private
 router.post(
-  '/',
+  "/",
   [authAdmin, checkPermission, validateCreateProductInfo],
   ProductController.create
 );
@@ -49,7 +64,7 @@ router.post(
 // @desc    Cập nhật sản phẩm
 // @access  Private
 router.put(
-  '/:id',
+  "/:id",
   [authAdmin, checkPermission, validateUpdateProductInfo],
   ProductController.update
 );
@@ -58,7 +73,7 @@ router.put(
 // @desc    Xóa mềm
 // @access  Private
 router.delete(
-  '/:id',
+  "/:id",
   [authAdmin, checkPermission],
   ProductController.softDelete
 );
@@ -67,7 +82,7 @@ router.delete(
 // @desc    Phục hồi sản phẩm đã xóa mềm
 // @access  Private
 router.patch(
-  '/:id/restore',
+  "/:id/restore",
   [authAdmin, checkPermission],
   ProductController.restore
 );

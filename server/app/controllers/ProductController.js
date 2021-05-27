@@ -1,14 +1,14 @@
-const { validationResult } = require('express-validator');
-const Product = require('../models/Product');
-const Type = require('../models/Type');
-const ObjectId = require('mongoose').Types.ObjectId;
-const _ = require('lodash');
-const pagination = require('../../helpers/pagination');
-const crudService = require('../../services/crud');
-const statusCode = require('../../constants/statusCode.json');
-const Review = require('../models/Review');
-const User = require('../models/User');
-const message = require('../../constants/message.json').crud;
+const { validationResult } = require("express-validator");
+const Product = require("../models/Product");
+const Type = require("../models/Type");
+const ObjectId = require("mongoose").Types.ObjectId;
+const _ = require("lodash");
+const pagination = require("../../helpers/pagination");
+const crudService = require("../../services/crud");
+const statusCode = require("../../constants/statusCode.json");
+const Review = require("../models/Review");
+const User = require("../models/User");
+const message = require("../../constants/message.json").crud;
 
 class ProductController {
   // @route   GET api/products
@@ -18,22 +18,22 @@ class ProductController {
     const filterStatus = req.query.sort;
     const { start, end } = pagination(req.query.page, 10);
     const filterValue =
-      filterStatus === 'undefined' || !filterStatus
+      filterStatus === "undefined" || !filterStatus
         ? { createdAt: -1 }
-        : filterStatus === 'desc'
+        : filterStatus === "desc"
         ? { price: -1 }
         : { price: 1 };
     try {
       const products = await crudService.getAdvance(Product, {}, filterValue, {
-        path: 'typeId',
-        select: ['typeName'],
+        path: "typeId",
+        select: ["typeName"],
       });
       return res.status(statusCode.success).json({
         data: products.slice(start, end),
         total: products.length,
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -80,7 +80,7 @@ class ProductController {
       }
       return res.status(statusCode.success).json(clonedProduct);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -93,9 +93,9 @@ class ProductController {
     const query = { typeId: { $eq: typeId } };
     const { start, end } = pagination(req.query.page, 12);
     const filterValue =
-      filterStatus === 'undefined'
+      filterStatus === "undefined"
         ? { createdAt: -1 }
-        : filterStatus === 'desc'
+        : filterStatus === "desc"
         ? { price: -1 }
         : { price: 1 };
     try {
@@ -109,7 +109,61 @@ class ProductController {
         total: products.length,
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/products/same-type/:typeId
+  // @desc    Lấy sản phẩm cung loai
+  // @access  Public
+  async getSameTypeProducts(req, res, next) {
+    try {
+      const products = await Product.find({ typeId: { $eq: typeId } })
+        .sort({ createdAt: "asc" })
+        .limit(12);
+      return res.status(statusCode.success).json(products);
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/products/newest
+  // @desc    Lấy sản phẩm moi nhat
+  // @access  Public
+  async getNewestProducts(req, res, next) {
+    try {
+      const products = await Product.find({ isShow : true })
+        .sort({ createdAt: "desc" })
+        .limit(12);
+      return res.status(statusCode.success).json(products);
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/products/popular
+  // @desc    Lấy sản phẩm pho bien
+  // @access  Public
+  async getPopularProducts(req, res, next) {
+    try {
+      const products = await Product.find({ isShow : true })
+        .sort({ starRatings: "desc" })
+        .limit(12);
+      return res.status(statusCode.success).json(products);
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/products/bestseller
+  // @desc    Lấy sản phẩm ban chay
+  // @access  Public
+  async getBestSellerProducts(req, res, next) {
+    try {
+      const products = await Product.find({ isShow : true }).sort({ sold: "desc" }).limit(12);
+      return res.status(statusCode.success).json(products);
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // // @route   GET api/products/categories/:categoryId
@@ -163,7 +217,7 @@ class ProductController {
         .status(statusCode.badRequest)
         .json({ errors: [{ msg: message.createFail }] });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -198,7 +252,7 @@ class ProductController {
         .status(statusCode.badRequest)
         .json({ errors: [{ msg: message.updateFail }] });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -223,7 +277,7 @@ class ProductController {
         .status(statusCode.badRequest)
         .json({ errors: [{ msg: message.removeFail }] });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -248,7 +302,7 @@ class ProductController {
         .status(statusCode.badRequest)
         .json({ errors: [{ msg: message.restoreFail }] });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -264,7 +318,7 @@ class ProductController {
         total: products.length,
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -273,14 +327,14 @@ class ProductController {
   // @access  Public
   async search(req, res) {
     const q = req.query.q;
-    const search = new RegExp(q, 'i')
+    const search = new RegExp(q, "i");
     const filterStatus = req.query.sort;
     const query = { productName: search, isShow: true };
     const { start, end } = pagination(req.query.page, 12);
     const filterValue =
-      filterStatus === 'undefined'
+      filterStatus === "undefined"
         ? {}
-        : filterStatus === 'desc'
+        : filterStatus === "desc"
         ? { price: -1 }
         : { price: 1 };
     try {
@@ -294,7 +348,7 @@ class ProductController {
         total: products.length,
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 }

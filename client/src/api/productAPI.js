@@ -14,6 +14,15 @@ const productAPI = {
       `${source}/search?q=${q}&sort=${filterValue}&page=${page}`
     );
   },
+  get_newest_products: async () => {
+    return await api.get(`${source}/newest`);
+  },
+  get_popular_products: async () => {
+    return await api.get(`${source}/popular`);
+  },
+  get_bestseller_products: async () => {
+    return await api.get(`${source}/bestseller`);
+  },
 };
 
 export default productAPI;

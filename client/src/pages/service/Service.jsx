@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Row, Col, Card } from 'antd';
-import { PetHealthy, PetWash, PetCut } from '../../../assets/icons';
+import { PetHealthy, PetWash, PetCut } from '../../assets/icons';
 import './styles.scss';
 const Services = () => {
   return (

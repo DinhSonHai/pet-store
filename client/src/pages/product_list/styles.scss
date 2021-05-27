@@ -8,7 +8,7 @@
     &__image-skeleton,
     &__star-skeleton,
     &__price-skeleton {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       .ant-skeleton-element {
         width: 100%;
         display: block;
@@ -59,10 +59,18 @@
     .ant-card-body {
       height: 100% !important;
       position: relative;
+      border-radius: 5px 5px 0 0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
       .ant-card-meta-title {
         font-weight: 300;
         margin-bottom: 1rem;
       }
+    }
+  }
+
+  @media (max-width: 46.1875em) {
+    .products__price {
+      font-size: 1rem;
     }
   }
 }

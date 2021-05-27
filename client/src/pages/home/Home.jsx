@@ -1,26 +1,45 @@
-import Banner from './banner';
-import Vision from './vision';
-import Achivements from './achivements';
-import Categories from './categories';
-import About from './about_us';
-import Services from './services';
-import CustomerReview from './customer_review';
-import CustomerExperience from './experience';
-import './styles.scss';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect } from "react";
+import Banner from "./banner";
+import Vision from "./vision";
+import Categories from "./categories";
+import CustomerReview from "./customer_review";
+import CustomerExperience from "./experience";
+import { ShowHomeProducts } from "../../components";
+import { getShowHomeProducts } from "../../redux/actions/products";
+import { connect } from "react-redux";
+import "./styles.scss";
 
-function Home(props) {
+function Home({
+  getShowHomeProducts,
+  data: { popularProducts, newestProducts, bestsellerProducts },
+}) {
+  useEffect(() => {
+    async function getData() {
+      await Promise.all([
+        getShowHomeProducts("newest"),
+        getShowHomeProducts("popular"),
+        getShowHomeProducts(),
+      ]);
+    }
+    getData();
+  }, []);
   return (
-    <section className='home'>
+    <section className="home">
       <Banner />
       <Vision />
-      <About />
-      <Achivements />
       <Categories />
-      <Services />
+      <ShowHomeProducts type="newest" products={newestProducts} />
+      <ShowHomeProducts type="bestseller" products={bestsellerProducts} />
+      <ShowHomeProducts type="popular" products={popularProducts} />
       <CustomerReview />
       <CustomerExperience />
     </section>
   );
 }
 
-export default Home;
+const mapStateToProps = (state) => ({
+  data: state.products,
+});
+
+export default connect(mapStateToProps, { getShowHomeProducts })(Home);

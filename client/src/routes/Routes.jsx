@@ -25,6 +25,8 @@ export default function () {
         path='/product/:productName/:id'
         component={pages.ProductDetails}
       />
+      <Route exact path="/about" component={pages.About}/>
+      <Route exact path="/services" component={pages.Service}/>
       <AuthRoute exact path='/signin' component={pages.Signin} />
       <AuthRoute exact path='/signup' component={pages.Signup} />
       <PrivateRoute exact path='/signout' component={pages.SignOut} />

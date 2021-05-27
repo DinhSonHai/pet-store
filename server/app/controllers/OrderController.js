@@ -657,6 +657,7 @@ class OrderController {
           }
           product.quantity =
             product.quantity - parseInt(detailOrders[i].amount);
+          product.sold = product.sold + parseInt(detailOrders[i].amount);
           if (product.quantity <= 0) {
             product.status = false;
           }

@@ -127,7 +127,7 @@ const ProductList = ({
             >
               {products.map((product) => (
                 <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
-                  <Card hoverable>
+                  <Card bordered={false} hoverable>
                     <Link
                       style={{
                         height: '100%',

@@ -17,6 +17,10 @@
     .ant-card:hover &__desc {
         color: var(--mainstream-color);
     }
+    .ant-card-body {
+        border-radius: 5px 5px 0 0;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    }
     &__large-skeleton,
     &__small-skeleton {
         .ant-skeleton-element {
@@ -25,7 +29,7 @@
         }
     }
     &__large-skeleton {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         .ant-skeleton-element .ant-skeleton-input-lg {
             height: 220px;
         }
