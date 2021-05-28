@@ -1,6 +1,14 @@
 @import "~react-image-gallery/styles/scss/image-gallery.scss";
 .product-details {
   background-color: var(--white-color);
+  .ant-comment-content{
+    background-color: #f7f7f7;
+    padding: 0.65rem;
+    border-radius: 5px;
+  }
+  .ant-comment-inner{
+    padding: 0.35rem 0;
+  }
   &__title {
     font-size: 1.2rem;
     color: var(--mainstream-color);

@@ -1,28 +1,32 @@
-import { useState, useEffect, Fragment } from 'react';
-import { Comment, Tooltip, Card, Rate, Avatar, Divider } from 'antd';
-import { Loader } from '../../../components';
-import { getReviewByProductId } from '../../../redux/actions/review';
-import { connect } from 'react-redux';
-import dayjs from 'dayjs';
-import { timeSince } from '../../../utils/timesince.js';
-import './styles.scss';
+import { useState, useEffect, Fragment } from "react";
+import { Comment, Tooltip, Card, Rate, Avatar, Divider } from "antd";
+import { Loader } from "../../../components";
+import { getReviewByProductId } from "../../../redux/actions/review";
+import { connect } from "react-redux";
+import dayjs from "dayjs";
+import { timeSince } from "../../../utils/timesince.js";
+import "./styles.scss";
 
 const ExampleComment = ({ item, isAuthenticated, user }) => (
   <Fragment>
-    <Rate
-      style={{ fontSize: '0.75rem' }}
-      disabled
-      defaultValue={item.starRatings}
-    />
     <Comment
       author={
-        <p>{isAuthenticated && user._id === item.userId ? 'Bạn' : item.name}</p>
+        <Fragment>
+          <p>
+            {isAuthenticated && user._id === item.userId ? "Bạn" : item.name}
+          </p>
+          <Rate
+            style={{ fontSize: "0.6rem" }}
+            disabled
+            defaultValue={item.starRatings}
+          />
+        </Fragment>
       }
-      avatar={<Avatar src={item.avatar} alt='Avatar' />}
+      avatar={<Avatar src={item.avatar} alt="Avatar" />}
       content={<p>{item.comment}</p>}
       datetime={
-        <Tooltip title={dayjs(item.commentedAt).format('HH:mm DD/MM/YYYY')}>
-          <span>{timeSince(item.commentedAt) + ' ago'}</span>
+        <Tooltip title={dayjs(item.commentedAt).format("HH:mm DD/MM/YYYY")}>
+          <span>{`${timeSince(item.commentedAt)} ago`}</span>
         </Tooltip>
       }
     >
@@ -32,32 +36,32 @@ const ExampleComment = ({ item, isAuthenticated, user }) => (
             key={index}
             author={
               <p>
-                {' '}
+                {" "}
                 {sub.adminReplyId &&
                   (sub.adminReplyId.role === 0 ||
                     sub.adminReplyId.role === 1) && (
                     <span
                       style={{
-                        backgroundColor: 'var(--fourthstream-color)',
-                        fontSize: '0.7rem',
-                        fontWeight: '600',
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '10px',
+                        backgroundColor: "var(--fourthstream-color)",
+                        fontSize: "0.7rem",
+                        fontWeight: "600",
+                        padding: "0.25rem 0.5rem",
+                        borderRadius: "10px",
                       }}
                     >
                       QTV
                     </span>
-                  )}{' '}
+                  )}{" "}
                 {sub.name}
               </p>
             }
-            avatar={<Avatar src={sub.avatar} alt='Avatar' />}
+            avatar={<Avatar src={sub.avatar} alt="Avatar" />}
             content={<p>{sub.replyComment}</p>}
             datetime={
               <Tooltip
-                title={dayjs(sub.replyCommentedAt).format('HH:mm DD/MM/YYYY')}
+                title={dayjs(sub.replyCommentedAt).format("HH:mm DD/MM/YYYY")}
               >
-                <span>{timeSince(sub.replyCommentedAt) + ' ago'}</span>
+                <span>{timeSince(sub.replyCommentedAt) + " ago"}</span>
               </Tooltip>
             }
           />
@@ -83,18 +87,18 @@ const DetailComments = ({
     getData();
   }, [id, getReviewByProductId]);
   return (
-    <section className='product-details__comments'>
-      <Card>
+    <section className="product-details__comments">
+      <Card bordered={false}>
         {data.length > 0 && (
           <Fragment>
-            <div className='ant-list-header'>{`${data.length} đánh giá`}</div>
+            <div className="ant-list-header">{`${data.length} đánh giá`}</div>
             <Divider />
           </Fragment>
         )}
         {isLoading ? (
-          <Loader className='product-details__comments--loader' />
+          <Loader className="product-details__comments--loader" />
         ) : data.length === 0 ? (
-          <p style={{ textAlign: 'center' }}>Chưa có đánh giá nào.</p>
+          <p style={{ textAlign: "center" }}>Chưa có đánh giá nào.</p>
         ) : (
           data.length > 0 &&
           data.map((item) => (

@@ -51,7 +51,7 @@ const DetailReview = ({
   return (
     <section className='product-details__review'>
       {isReviewed !== 1 && (
-        <Card>
+        <Card bordered={false}>
           {isAuthenticated &&
           isReviewed === false &&
           isPurchased &&

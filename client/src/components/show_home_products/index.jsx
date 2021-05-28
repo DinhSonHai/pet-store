@@ -17,30 +17,29 @@ const responsive = {
     items: 2,
   },
 };
-const ShowHomeProducts = ({
-  type,
-  products
-}) => {
+const ShowHomeProducts = ({ type, products }) => {
   return (
     <section className="show-products">
       <div className="show-products__wrap container">
         <p className="show-products__heading">
           {" "}
-          {`${type === "newest"
+          {`${
+            type === "newest"
               ? "Newest"
               : type === "popular"
-                ? "Popular"
-                : "Best Seller"
-            } Products`}
+              ? "Popular"
+              : "Best Seller"
+          } Products`}
         </p>
         <h1 className="show-products__title">
           Sản phẩm{" "}
-          <span>{`${type === "newest"
+          <span>{`${
+            type === "newest"
               ? "mới nhất"
               : type === "popular"
-                ? "ưa chuộng"
-                : "bán chạy"
-            }`}</span>
+              ? "ưa chuộng"
+              : "bán chạy"
+          }`}</span>
         </h1>
         <Carousel infinite ssr partialVisbile responsive={responsive}>
           {products.map((product) => (
@@ -55,19 +54,11 @@ const ShowHomeProducts = ({
                 to={`/product/${product.productName}/${product._id}`}
               >
                 <div className="products-list__wrap">
-                  <img
-                    width="100%"
-                    height="100%"
-                    alt="example"
-                    src={product.images[0]}
-                  />
+                  <img alt="example" src={product.images[0]} />
                 </div>
                 <div>
                   <p className="products__name">
-                    <Tooltip
-                      placement="topLeft"
-                      title={product.productName}
-                    >
+                    <Tooltip placement="topLeft" title={product.productName}>
                       {product.productName}
                     </Tooltip>
                   </p>
@@ -100,5 +91,4 @@ const ShowHomeProducts = ({
   );
 };
 
-export default ShowHomeProducts
-
+export default ShowHomeProducts;

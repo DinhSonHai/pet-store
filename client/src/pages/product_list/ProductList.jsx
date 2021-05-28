@@ -139,8 +139,6 @@ const ProductList = ({
                     >
                       <div className='products-list__wrap'>
                         <img
-                          width='100%'
-                          height='100%'
                           alt='example'
                           src={product.images[0]}
                         />

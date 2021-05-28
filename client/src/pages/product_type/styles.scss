@@ -14,6 +14,9 @@
         color: var(--dark-second-color);
         text-align: center;
     }
+    .ant-card, .ant-card-body{
+        height: 100%;
+    }
     .ant-card:hover &__desc {
         color: var(--mainstream-color);
     }
