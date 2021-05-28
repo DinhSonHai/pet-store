@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtSignInSecret } = require('../../config/default.json');
+const constants = require('../../constants');
 
 module.exports = function (req, res, next) {
   req.user = null;
@@ -9,7 +10,7 @@ module.exports = function (req, res, next) {
   }
   try {
     jwt.verify(token, jwtSignInSecret, (err, decoded) => {
-      if (err || decoded.user.role !== 2) {
+      if (err || decoded.user.role !== constants.USER) {
         return next();
       }
       req.user = decoded.user;
