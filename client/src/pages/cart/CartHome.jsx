@@ -43,7 +43,7 @@ const CartHome = ({ cartState, history }) => {
             <h1 className='cart__title'>Giỏ hàng của bạn</h1>
             <Row gutter={[16, 16]}>
               <Col className='cart__wrap' xs={24} sm={24} md={24} lg={16}>
-                <Card>
+                <Card bordered={false}>
                   <div className='cart__items'>
                     {cartState.map((item) => (
                       <div key={item._id} className='cart__content'>
@@ -91,7 +91,7 @@ const CartHome = ({ cartState, history }) => {
                 </Card>
               </Col>
               <Col xs={24} sm={24} md={24} lg={8}>
-                <Card title='Tổng đơn hàng' className='cart__overall'>
+                <Card bordered={false} title='Tổng đơn hàng' className='cart__overall'>
                   <div className='cart__total'>
                     <span>Tổng tiền: </span>
                     <span id='cart__total'>

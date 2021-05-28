@@ -55,7 +55,7 @@ const ProfileAddress = ({ auth: { user } }) => {
                 return x.isDefault === y.isDefault ? 0 : x.isDefault ? -1 : 1;
               })
               .map((item) => (
-                <Card key={item._id} style={{ margin: '1rem 0' }}>
+                <Card bordered={false} key={item._id} style={{ margin: '1rem 0' }}>
                   {item.isDefault ? (
                     <p style={{ color: '#5fdba7' }}>
                       <CheckCircleOutlined /> Mặc định

@@ -71,7 +71,7 @@ const ProfileInfo = ({ auth: { user }, updateUserInfo }) => {
   return (
     <Fragment>
       <h3 className='profile__title'>Thông tin tài khoản</h3>
-      <Card className='profile__main--card profile__main--user'>
+      <Card bordered={false} className='profile__main--card profile__main--user'>
         <Form
           layout='vertical'
           name='normal_login'

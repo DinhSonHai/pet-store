@@ -58,6 +58,7 @@ const OrderTracking = ({ id, setView, setId, setOrder, getOrderById }) => {
               </div>
             )}
             <Card
+              bordered={false}
               style={{ marginBottom: '1rem' }}
               title={`Trạng thái: ${
                 data.status === 0
@@ -97,6 +98,7 @@ const OrderTracking = ({ id, setView, setId, setOrder, getOrderById }) => {
           </div>
           <div className='track-order__detail'>
             <Card
+              bordered={false}
               title='Chi tiết trạng thái đơn hàng'
               style={{ marginBottom: '1rem' }}
             >

@@ -106,6 +106,7 @@ const Order = ({
         <Row gutter={[16, 16]}>
           <Col className='order__form' xs={24} sm={24} md={24} lg={15}>
             <Card
+              bordered={false}
               style={{ marginBottom: '1rem' }}
               title='Chọn hình thức giao hàng'
             >
@@ -133,7 +134,7 @@ const Order = ({
                 </Radio>
               </Radio.Group>
             </Card>
-            <Card title='Chọn hình thức thanh toán'>
+            <Card bordered={false} title='Chọn hình thức thanh toán'>
               <Radio.Group onChange={onChangePayment} value={paymentState}>
                 <Radio style={style} value={0}>
                   Thanh toán tiền mặt khi nhận hàng (COD)
@@ -143,6 +144,7 @@ const Order = ({
           </Col>
           <Col xs={24} sm={24} md={24} lg={9} className='order__order'>
             <Card
+              bordered={false}
               extra={
                 <div className='checkout__update-cart'>
                   <CaretLeftOutlined />

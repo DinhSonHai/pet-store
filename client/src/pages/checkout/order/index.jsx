@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 const CheckoutOrder = ({ cartState, totalCart }) => {
   return (
     <Card
+      bordered={false}
       title='Đơn hàng'
       extra={
         <div className='checkout__update-cart'>

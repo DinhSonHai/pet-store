@@ -38,6 +38,7 @@ const CheckoutAddress = ({
       <CheckoutAddressModal visible={visible} setVisible={setVisible} />
       {isAuthenticated && user.address.length > 0 ? (
         <Card
+          bordered={false}
           style={{ marginBottom: '1rem' }}
           title='Địa chỉ giao hàng'
           extra={

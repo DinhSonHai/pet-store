@@ -28,7 +28,7 @@ const CheckoutFormAuth = ({ cartState, history, user }) => {
     return history.push('/order');
   };
   return (
-    <Card>
+    <Card bordered={false}>
       <Form
         layout='vertical'
         name='normal_checkout'

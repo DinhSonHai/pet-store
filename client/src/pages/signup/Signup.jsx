@@ -30,7 +30,7 @@ const Signup = ({ register }) => {
     <section className='signup'>
       <div className='signup__wrap container'>
         <div className='signup__content'>
-          <Card style={{ maxWidth: '600px', margin: 'auto' }}>
+          <Card bordered={false} style={{ maxWidth: '600px', margin: 'auto' }}>
             <h1 className='signup__title'>Đăng ký</h1>
             <Form
               layout='vertical'

@@ -107,7 +107,7 @@ const CheckoutFormGuest = ({ cartState, history }) => {
     return history.push('/order');
   };
   return (
-    <Card>
+    <Card bordered={false}>
       <Form
         form={form}
         layout='vertical'

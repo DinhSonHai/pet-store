@@ -30,7 +30,7 @@ const ProfilePurchased = ({ getPurchased }) => {
           <Loader className={'wishlist-loader'} />
         ) : (
           data.map((item) => (
-            <Card style={{ marginBottom: '0.5rem' }} key={item._id}>
+            <Card bordered={false} style={{ marginBottom: '0.5rem' }} key={item._id}>
               <div className='profile__main--wishlist-wrap'>
                 <img
                   src={item.image}

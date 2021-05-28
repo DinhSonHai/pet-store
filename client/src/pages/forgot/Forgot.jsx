@@ -22,7 +22,7 @@ const Forgot = ({ forgotPassword }) => {
     <section className='forget'>
       <div className='forget__wrap container'>
         <div className='forget__content'>
-          <Card style={{ maxWidth: '600px', margin: 'auto' }}>
+          <Card bordered={false} style={{ maxWidth: '600px', margin: 'auto' }}>
             <h1 className='login__title'>Quên mật khẩu</h1>
             <Form
               name='normal_login'

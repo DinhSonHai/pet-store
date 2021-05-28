@@ -144,14 +144,14 @@ const OrderView = ({
       </div>
       <Row gutter={[16, 16]}>
         <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
-          <Card style={{ height: '100%' }} title='Địa chỉ người nhận'>
+          <Card bordered={false} style={{ height: '100%' }} title='Địa chỉ người nhận'>
             <p className='view-order__name'>{order.name}</p>
             <p className='view-order__address'>{order.address}</p>
             <p className='view-order__phone'>{'SĐT: ' + order.phone}</p>
           </Card>
         </Col>
         <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
-          <Card style={{ height: '100%' }} title='Hình thức giao hàng'>
+          <Card bordered={false} style={{ height: '100%' }} title='Hình thức giao hàng'>
             <p className='view-order__delivery'>
               {order.deliveryState === 0
                 ? 'Giao hàng tiêu chuẩn'
@@ -166,7 +166,7 @@ const OrderView = ({
           </Card>
         </Col>
         <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
-          <Card style={{ height: '100%' }} title='Hình thức thanh toán'>
+          <Card bordered={false} style={{ height: '100%' }} title='Hình thức thanh toán'>
             <p className='view-order__payment'>
               {order.paymentState === 0 && 'Thanh toán tiền mặt khi nhận hàng'}
             </p>

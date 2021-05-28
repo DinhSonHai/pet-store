@@ -69,7 +69,7 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
     <section className='login'>
       <div className='login__wrap container'>
         <div className='login__content'>
-          <Card style={{ maxWidth: '600px', margin: 'auto' }}>
+          <Card bordered={false} style={{ maxWidth: '600px', margin: 'auto' }}>
             <h1 className='login__title'>Đăng nhập</h1>
             <Form
               name='normal_login'
