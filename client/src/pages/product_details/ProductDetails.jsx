@@ -63,7 +63,7 @@ const ProductDetails = ({
         </Breadcrumb>
         <div className='product-details__content'>
           {loading || !data ? (
-            <Loader className={'loader-inside'} />
+            <Loader className="product-loader" />
           ) : (
             <Fragment>
               <div className='product-details__wrap'>

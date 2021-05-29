@@ -1,24 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
-import { Col, Row, Card, Button, Radio } from 'antd';
-import equal from 'fast-deep-equal';
-import { connect } from 'react-redux';
-import { CaretLeftOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import { orderProducts, orderProductsAuth } from '../../redux/actions/order';
-import PropTypes from 'prop-types';
-import store from '../../app/store';
+import { useState, useEffect } from "react";
+import { Col, Row, Card, Button, Radio } from "antd";
+import equal from "fast-deep-equal";
+import { connect } from "react-redux";
+import { CaretLeftOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import { orderProducts, orderProductsAuth } from "../../redux/actions/order";
+import PropTypes from "prop-types";
+import store from "../../app/store";
 import {
   REMOVE_CART,
   UPDATE_GUEST_INFO,
   UPDATE_AUTH_INFO,
   CLEAR_CHECKOUT_INFO,
-} from '../../redux/types';
-import './styles.scss';
+} from "../../redux/types";
+import "./styles.scss";
 
 const style = {
-  display: 'block',
-  lineHeight: '30px',
+  display: "block",
+  lineHeight: "30px",
 };
 const Order = ({
   cartState,
@@ -35,11 +35,20 @@ const Order = ({
     price: 35000,
   });
   const [paymentState, SetPaymentState] = useState(0);
+
   useEffect(() => {
-    window.addEventListener('storage', () => {
-      let cart = JSON.parse(localStorage.getItem('cart'));
-      if (!equal(cart, cartState)) {
-        return store.dispatch({ type: REMOVE_CART });
+    window.addEventListener("storage", () => {
+      const cart = JSON.parse(localStorage.getItem("cart"));
+      if(cart && cartState){
+        if (!equal(cart, cartState)) {
+          return store.dispatch({ type: REMOVE_CART });
+        }
+      }
+      const guestInfo = JSON.parse(localStorage.getItem("guestInfo"));
+      if (guestInfo && guestState) {
+        if (!equal(guestInfo, guestState)) {
+          return store.dispatch({ type: REMOVE_CART });
+        }
       }
     });
     if (cartState && cartState.length > 0) {
@@ -77,9 +86,9 @@ const Order = ({
     SetPaymentState(e.target.value);
   };
   const onFinish = async () => {
-    let cart = JSON.parse(localStorage.getItem('cart'));
+    let cart = JSON.parse(localStorage.getItem("cart"));
     if (!equal(cart, cartState)) {
-      return history.push('/cart');
+      return history.push("/cart");
     }
     setIsProcessing(true);
     let res;
@@ -96,19 +105,18 @@ const Order = ({
       store.dispatch({
         type: CLEAR_CHECKOUT_INFO,
       });
-      localStorage.removeItem('cart');
     }
   };
 
   return (
-    <section className='order'>
-      <div className='order__wrap container'>
+    <section className="order">
+      <div className="order__wrap container">
         <Row gutter={[16, 16]}>
-          <Col className='order__form' xs={24} sm={24} md={24} lg={15}>
+          <Col className="order__form" xs={24} sm={24} md={24} lg={15}>
             <Card
               bordered={false}
-              style={{ marginBottom: '1rem' }}
-              title='Chọn hình thức giao hàng'
+              style={{ marginBottom: "1rem" }}
+              title="Chọn hình thức giao hàng"
             >
               <Radio.Group
                 onChange={onChangeDelivery}
@@ -116,25 +124,25 @@ const Order = ({
               >
                 <Radio style={style} value={0}>
                   {`Giao hàng tiêu chuẩn  :  ${parseInt(35000).toLocaleString(
-                    'vi-VN',
+                    "vi-VN",
                     {
-                      style: 'currency',
-                      currency: 'VND',
+                      style: "currency",
+                      currency: "VND",
                     }
                   )}`}
                 </Radio>
                 <Radio style={style} value={1}>
                   {`Giao hàng nhanh  :  ${parseInt(55000).toLocaleString(
-                    'vi-VN',
+                    "vi-VN",
                     {
-                      style: 'currency',
-                      currency: 'VND',
+                      style: "currency",
+                      currency: "VND",
                     }
                   )}`}
                 </Radio>
               </Radio.Group>
             </Card>
-            <Card bordered={false} title='Chọn hình thức thanh toán'>
+            <Card bordered={false} title="Chọn hình thức thanh toán">
               <Radio.Group onChange={onChangePayment} value={paymentState}>
                 <Radio style={style} value={0}>
                   Thanh toán tiền mặt khi nhận hàng (COD)
@@ -142,63 +150,63 @@ const Order = ({
               </Radio.Group>
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={9} className='order__order'>
+          <Col xs={24} sm={24} md={24} lg={9} className="order__order">
             <Card
               bordered={false}
               extra={
-                <div className='checkout__update-cart'>
+                <div className="checkout__update-cart">
                   <CaretLeftOutlined />
-                  <Link to='/checkout'>Sửa địa chỉ</Link>
+                  <Link to="/checkout">Sửa địa chỉ</Link>
                 </div>
               }
-              title='Đơn hàng'
+              title="Đơn hàng"
             >
-              <div className='order__products'>
+              <div className="order__products">
                 {cartState.map((item) => (
-                  <div key={item._id} className='order__products--content'>
+                  <div key={item._id} className="order__products--content">
                     <img
-                      width='50'
-                      height='50'
-                      style={{ objectFit: 'cover' }}
+                      width="50"
+                      height="50"
+                      style={{ objectFit: "cover" }}
                       src={item.image}
-                      alt='Cart'
+                      alt="Cart"
                     />
 
-                    <div className='order__products--info'>
-                      <p className='order__products--name'>
+                    <div className="order__products--info">
+                      <p className="order__products--name">
                         {item.productName}
                       </p>
-                      <p className='order__products--price'>
-                        {parseInt(item.price).toLocaleString('vi-VN', {
-                          style: 'currency',
-                          currency: 'VND',
+                      <p className="order__products--price">
+                        {parseInt(item.price).toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
                         })}
                         <span
-                          className='order__products--amount'
-                          style={{ margin: '0 1rem' }}
+                          className="order__products--amount"
+                          style={{ margin: "0 1rem" }}
                         >
-                          {'x' + item.amount}
+                          {"x" + item.amount}
                         </span>
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
-              <p className='order__fee'>
+              <p className="order__fee">
                 <span>Phí vận chuyển: </span>
                 <span>
-                  {parseInt(deliveryState.price).toLocaleString('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
+                  {parseInt(deliveryState.price).toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
                   })}
                 </span>
               </p>
-              <p className='order__total'>
+              <p className="order__total">
                 <span>Tổng tiền: </span>
-                <span id='order__total'>
-                  {parseInt(totalMoney).toLocaleString('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
+                <span id="order__total">
+                  {parseInt(totalMoney).toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
                   })}
                 </span>
               </p>
@@ -206,7 +214,7 @@ const Order = ({
                 loading={isProcessing}
                 onClick={onFinish}
                 block
-                type='primary'
+                type="primary"
               >
                 Đặt hàng
               </Button>

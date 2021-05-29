@@ -10,6 +10,7 @@ export default ({ history }) => {
       <Button
         onClick={() => {
           localStorage.removeItem('cart');
+          localStorage.removeItem('guestInfo');
           store.dispatch({ type: REMOVE_CART });
           store.dispatch({ type: LOGOUT });
           store.dispatch({ type: CLEAR_CHECKOUT_INFO });

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Route, Switch } from 'react-router-dom';
-import { PrivateRoute, AuthRoute, CheckoutRoute } from '../routes';
+import { PrivateRoute, AuthRoute, CheckoutRoute, OrderRoute } from '../routes';
 import * as pages from '../pages';
 
 export default function () {
@@ -43,7 +43,7 @@ export default function () {
       />
       <PrivateRoute exact path='/profile' component={pages.Profile} />
       <CheckoutRoute exact path='/checkout' component={pages.Checkout} />
-      <CheckoutRoute exact path='/order' component={pages.Order} />
+      <OrderRoute exact path='/order' component={pages.Order} />
       <Route component={pages.NotFound} />
     </Switch>
   );

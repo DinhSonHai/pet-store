@@ -1,14 +1,14 @@
-import store from './store';
-import api from '../api';
-import setAuthToken from '../utils/setAuthToken';
-import { loadUser } from '../redux/actions/auth';
+import store from "./store";
+import setAuthToken from "../utils/setAuthToken";
+import { loadUser } from "../redux/actions/auth";
 import {
   LOGOUT,
   CLEAR_CHECKOUT_INFO,
   CART_LOADER,
   REMOVE_CART,
   AUTH_ERROR,
-} from '../redux/types';
+  GET_GUEST_INFO,
+} from "../redux/types";
 const initApp = () => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -16,27 +16,24 @@ const initApp = () => {
   } else {
     store.dispatch({ type: AUTH_ERROR });
   }
-  let cartState = JSON.parse(localStorage.getItem('cart'));
+  const cartState = JSON.parse(localStorage.getItem("cart"));
   if (cartState && cartState.length > 0) {
     store.dispatch({
       type: CART_LOADER,
       payload: { cartState, isHaveCart: true },
     });
-  }
-  window.addEventListener('storage', () => {
-    let cart = JSON.parse(localStorage.getItem('cart'));
-    if (!cart || cart.length <= 0) {
-      store.dispatch({ type: REMOVE_CART });
+    const guestInfo = JSON.parse(localStorage.getItem("guestInfo"));
+    if (guestInfo) {
+      store.dispatch({
+        type: GET_GUEST_INFO,
+        payload: guestInfo,
+      });
     }
-    if (
-      !localStorage.token ||
-      api.defaults.headers.common['x-auth-token'] !== localStorage.token
-    ) {
+  }
+  window.addEventListener("storage", () => {
       store.dispatch({ type: LOGOUT });
       store.dispatch({ type: REMOVE_CART });
       store.dispatch({ type: CLEAR_CHECKOUT_INFO });
-      localStorage.removeItem('cart');
-    }
   });
 };
 

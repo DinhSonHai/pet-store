@@ -1,37 +1,55 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { addressAPI } from '../../../api';
-import { Card, Form, Input, Select } from 'antd';
-import { notifyActions } from '../../../utils/notify';
-import { GET_GUEST_INFO } from '../../../redux/types';
-import store from '../../../app/store';
-import equal from 'fast-deep-equal';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React from "react";
+import { useState, useEffect } from "react";
+import { addressAPI } from "../../../api";
+import { Card, Form, Input, Select } from "antd";
+import { notifyActions } from "../../../utils/notify";
+import { GET_GUEST_INFO } from "../../../redux/types";
+import store from "../../../app/store";
+
 const { Option } = Select;
-const CheckoutFormGuest = ({ cartState, history }) => {
+const CheckoutFormGuest = ({ cartState, guestData, history }) => {
   const [form] = Form.useForm();
   const [province, setProvince] = useState([]);
   const [ward, setWard] = useState([]);
   const [town, setTown] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [countryState, setCountryState] = useState({
-    p: '',
-    w: '',
-    t: '',
+    p: "",
+    w: "",
+    t: "",
   });
   useEffect(() => {
-    async function Get_Province() {
-      const res = await addressAPI.get_province();
-      setProvince(res.data);
+    async function getAddress() {
+      if (guestData) {
+        const [p, w, t] = await Promise.all([
+          addressAPI.get_province(),
+          addressAPI.get_ward(guestData.provinceState),
+          addressAPI.get_town(guestData.wardState),
+        ]);
+        setProvince(p.data);
+        setWard(w.data);
+        setTown(t.data);
+        setCountryState({
+          p: guestData.provinceState,
+          w: guestData.wardState,
+          t: guestData.townState,
+        });
+      } else {
+        const res = await addressAPI.get_province();
+        setProvince(res.data);
+      }
     }
-    Get_Province();
+    getAddress();
   }, []);
+
   const onChangeProvince = async (values) => {
     if (!values) {
       return;
     }
     form.setFieldsValue({
-      wardState: '',
-      townState: '',
+      wardState: "",
+      townState: "",
     });
     let id = parseInt(values);
     setIsProcessing(true);
@@ -48,7 +66,7 @@ const CheckoutFormGuest = ({ cartState, history }) => {
       return;
     }
     form.setFieldsValue({
-      townState: '',
+      townState: "",
     });
     let id = parseInt(values);
     setIsProcessing(true);
@@ -68,10 +86,6 @@ const CheckoutFormGuest = ({ cartState, history }) => {
     setCountryState({ ...countryState, t: id });
   };
   const onFinish = (values) => {
-    let cart = JSON.parse(localStorage.getItem('cart'));
-    if (!equal(cart, cartState)) {
-      return history.push('/cart');
-    }
     const {
       name,
       phone,
@@ -85,8 +99,8 @@ const CheckoutFormGuest = ({ cartState, history }) => {
     const { p, w, t } = countryState;
     if (!p || !w || !t) {
       return notifyActions(
-        'error',
-        'Vui lòng chọn Quận/Huyện hoặc Phường/Xã phù hợp!'
+        "error",
+        "Vui lòng chọn Quận/Huyện hoặc Phường/Xã phù hợp!"
       );
     }
     const payload = {
@@ -100,72 +114,76 @@ const CheckoutFormGuest = ({ cartState, history }) => {
       note,
       cart: cartState.map((item) => ({ _id: item._id, amount: item.amount })),
     };
+    localStorage.setItem("guestInfo", JSON.stringify(payload));
     store.dispatch({
       type: GET_GUEST_INFO,
       payload,
     });
-    return history.push('/order');
+    return history.push("/order");
   };
   return (
     <Card bordered={false}>
       <Form
         form={form}
-        layout='vertical'
-        name='normal_checkout'
+        layout="vertical"
+        name="normal_checkout"
         initialValues={{
-          size: 'large',
+          size: "large",
         }}
-        size='large'
+        size="large"
         onFinish={onFinish}
       >
         <Form.Item
-          name='name'
-          label='Tên'
+          initialValue={guestData ? guestData.name : ""}
+          name="name"
+          label="Tên"
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập tên!',
+              message: "Vui lòng nhập tên!",
             },
           ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name='phone'
-          label='Số điện thoại'
+          initialValue={guestData ? guestData.phone : ""}
+          name="phone"
+          label="Số điện thoại"
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập số điện thoại!',
+              message: "Vui lòng nhập số điện thoại!",
             },
           ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name='email'
-          label='E-mail'
+          initialValue={guestData ? guestData.email : ""}
+          name="email"
+          label="E-mail"
           rules={[
             {
-              type: 'email',
-              message: 'Email không hợp lệ',
+              type: "email",
+              message: "Email không hợp lệ",
             },
             {
               required: true,
-              message: 'Vui lòng nhập email!',
+              message: "Vui lòng nhập email!",
             },
           ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          initialValue={''}
-          name='provinceState'
-          label='Tỉnh/Thành Phố'
+          initialValue={guestData ? guestData.provinceState : ""}
+          name="provinceState"
+          label="Tỉnh/Thành Phố"
           rules={[
             {
               required: true,
-              message: 'Vui lòng chọn Tỉnh/Thành Phố!',
+              message: "Vui lòng chọn Tỉnh/Thành Phố!",
             },
           ]}
         >
@@ -174,7 +192,7 @@ const CheckoutFormGuest = ({ cartState, history }) => {
             disabled={isProcessing}
             onChange={onChangeProvince}
           >
-            <Option value={''}>Chọn Tỉnh/Thành Phố</Option>
+            <Option value={""}>Chọn Tỉnh/Thành Phố</Option>
             {province.map((item) => (
               <Option
                 key={parseInt(item.province_id)}
@@ -186,13 +204,13 @@ const CheckoutFormGuest = ({ cartState, history }) => {
           </Select>
         </Form.Item>
         <Form.Item
-          initialValue={''}
-          name='wardState'
-          label='Quận/Huyện'
+          initialValue={guestData ? guestData.wardState : ""}
+          name="wardState"
+          label="Quận/Huyện"
           rules={[
             {
               required: true,
-              message: 'Vui lòng chọn Quận/Huyện!',
+              message: "Vui lòng chọn Quận/Huyện!",
             },
           ]}
         >
@@ -201,7 +219,7 @@ const CheckoutFormGuest = ({ cartState, history }) => {
             disabled={isProcessing}
             onChange={onChangeWard}
           >
-            <Option value={''}>Chọn Quận/Huyện</Option>
+            <Option value={""}>Chọn Quận/Huyện</Option>
             {ward.map((item) => (
               <Option
                 key={parseInt(item.district_id)}
@@ -213,13 +231,13 @@ const CheckoutFormGuest = ({ cartState, history }) => {
           </Select>
         </Form.Item>
         <Form.Item
-          initialValue={''}
-          name='townState'
-          label='Phường/Xã'
+          initialValue={guestData ? guestData.townState : ""}
+          name="townState"
+          label="Phường/Xã"
           rules={[
             {
               required: true,
-              message: 'Vui lòng chọn Phường/Xã!',
+              message: "Vui lòng chọn Phường/Xã!",
             },
           ]}
         >
@@ -228,7 +246,7 @@ const CheckoutFormGuest = ({ cartState, history }) => {
             loading={isProcessing}
             disabled={isProcessing}
           >
-            <Option value={''}>Chọn Phường/Xã</Option>
+            <Option value={""}>Chọn Phường/Xã</Option>
             {town.map((item) => (
               <Option
                 key={parseInt(item.ward_id)}
@@ -240,19 +258,23 @@ const CheckoutFormGuest = ({ cartState, history }) => {
           </Select>
         </Form.Item>
         <Form.Item
-          initialValue={''}
+          initialValue={guestData ? guestData.moreInfo : ""}
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập địa chỉ!',
+              message: "Vui lòng nhập địa chỉ!",
             },
           ]}
-          name='moreInfo'
-          label='Địa chỉ'
+          name="moreInfo"
+          label="Địa chỉ"
         >
           <Input.TextArea />
         </Form.Item>
-        <Form.Item initialValue={''} name='note' label='Ghi chú'>
+        <Form.Item
+          initialValue={guestData ? guestData.note : ""}
+          name="note"
+          label="Ghi chú"
+        >
           <Input.TextArea />
         </Form.Item>
       </Form>

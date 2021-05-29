@@ -58,6 +58,8 @@ export default function (state = initialState, action) {
         },
       };
     case CLEAR_CHECKOUT_INFO:
+      localStorage.removeItem('cart');
+      localStorage.removeItem('guestInfo');
       return {
         ...state,
         guestState: null,

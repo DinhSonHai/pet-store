@@ -6,6 +6,8 @@ import { removeItem, setAmount } from '../../utils/cart';
 import equal from 'fast-deep-equal';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import store from '../../app/store';
+import { REMOVE_CART } from '../../redux/types';
 import '../../app/store';
 import './styles.scss';
 
@@ -13,9 +15,9 @@ const CartHome = ({ cartState, history }) => {
   const [totalCart, setTotalCart] = useState(0);
   useEffect(() => {
     window.addEventListener('storage', () => {
-      let cart = JSON.parse(localStorage.getItem('cart'));
+      const cart = JSON.parse(localStorage.getItem('cart'));
       if (!equal(cart, cartState)) {
-        return window.location.reload(false);
+        return store.dispatch({ type: REMOVE_CART });
       }
     });
     let total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);

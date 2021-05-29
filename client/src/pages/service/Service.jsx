@@ -22,7 +22,7 @@ const Services = () => {
             ]}
           >
             <Col xs={24} sm={12} md={12} lg={8}>
-              <Card hoverable={true}>
+              <Card bordered={false} hoverable>
                 <p className='services__content--icon'>
                   <PetHealthy />
                 </p>
@@ -34,7 +34,7 @@ const Services = () => {
               </Card>
             </Col>
             <Col xs={24} sm={12} md={12} lg={8}>
-              <Card hoverable={true}>
+              <Card bordered={false} hoverable>
                 <p className='services__content--icon'>
                   <PetWash />
                 </p>
@@ -48,7 +48,7 @@ const Services = () => {
               </Card>
             </Col>
             <Col xs={24} sm={12} md={12} lg={8}>
-              <Card hoverable={true}>
+              <Card bordered={false} hoverable>
                 <p className='services__content--icon'>
                   <PetCut />
                 </p>

@@ -126,7 +126,7 @@ const SearchList = ({
                         src={product.images[0]}
                       />
                     </div>
-                    <div>
+                    <div className="item-wrap">
                       <p className='products__name'>
                         <Tooltip
                           placement='topLeft'

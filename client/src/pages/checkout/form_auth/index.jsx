@@ -3,13 +3,9 @@ import { Card, Form, Input } from 'antd';
 import { notifyActions } from '../../../utils/notify';
 import { GET_AUTH_INFO } from '../../../redux/types';
 import store from '../../../app/store';
-import equal from 'fast-deep-equal';
+
 const CheckoutFormAuth = ({ cartState, history, user }) => {
   const onFinish = (values) => {
-    let cart = JSON.parse(localStorage.getItem('cart'));
-    if (!equal(cart, cartState)) {
-      return history.push('/cart');
-    }
     if (user && user.address.length <= 0) {
       return notifyActions('error', 'Vui lòng chọn địa chỉ giao hàng!');
     }

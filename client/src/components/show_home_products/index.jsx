@@ -43,7 +43,7 @@ const ShowHomeProducts = ({ type, products }) => {
         </h1>
         <Carousel infinite ssr partialVisbile responsive={responsive}>
           {products.map((product) => (
-            <Card bordered={false} hoverable>
+            <Card key={product._id} bordered={false} hoverable>
               <Link
                 style={{
                   height: "100%",
@@ -56,7 +56,7 @@ const ShowHomeProducts = ({ type, products }) => {
                 <div className="products-list__wrap">
                   <img alt="example" src={product.images[0]} />
                 </div>
-                <div>
+                <div className="item-wrap">
                   <p className="products__name">
                     <Tooltip placement="topLeft" title={product.productName}>
                       {product.productName}

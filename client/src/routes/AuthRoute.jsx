@@ -13,7 +13,7 @@ const AuthRoute = ({
     {...rest}
     render={(props) =>
       loading ? (
-        <Loader className={'loader'} />
+        <Loader className="product-loader" />
       ) : !isAuthenticated ? (
         <Component {...props} />
       ) : (
