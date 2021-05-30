@@ -18,7 +18,6 @@ export default function (state = initialState, action) {
       };
     case REMOVE_CART:
       localStorage.removeItem('cart');
-      localStorage.removeItem('guestInfo');
       return {
         ...state,
         cartState: [],

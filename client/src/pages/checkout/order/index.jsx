@@ -9,7 +9,7 @@ const CheckoutOrder = ({ cartState, totalCart }) => {
       extra={
         <div className='checkout__update-cart'>
           <CaretLeftOutlined />
-          <Link to='/cart'>Sửa</Link>
+          <Link to='/cart'>Sửa đơn hàng</Link>
         </div>
       }
     >

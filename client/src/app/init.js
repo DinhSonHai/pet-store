@@ -8,6 +8,7 @@ import {
   REMOVE_CART,
   AUTH_ERROR,
   GET_GUEST_INFO,
+  GET_AUTH_INFO
 } from "../redux/types";
 const initApp = () => {
   if (localStorage.token) {
@@ -27,6 +28,13 @@ const initApp = () => {
       store.dispatch({
         type: GET_GUEST_INFO,
         payload: guestInfo,
+      });
+    }
+    const authInfo = JSON.parse(localStorage.getItem("authInfo"));
+    if(authInfo){
+      store.dispatch({
+        type: GET_AUTH_INFO,
+        payload: authInfo,
       });
     }
   }

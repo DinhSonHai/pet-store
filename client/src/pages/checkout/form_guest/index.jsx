@@ -8,6 +8,15 @@ import { GET_GUEST_INFO } from "../../../redux/types";
 import store from "../../../app/store";
 
 const { Option } = Select;
+const handleSplitAddress = (str) => {
+  let s = str.split(" ");
+  let id = parseInt(s[0]);
+  let addr = "";
+  for (let i = 1; i < s.length; ++i) {
+    addr += ` ${s[i]} `;
+  }
+  return { id, addr: addr.trim() };
+};
 const CheckoutFormGuest = ({ cartState, guestData, history }) => {
   const [form] = Form.useForm();
   const [province, setProvince] = useState([]);
@@ -15,6 +24,11 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
   const [town, setTown] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [countryState, setCountryState] = useState({
+    p: "",
+    w: "",
+    t: "",
+  });
+  const [addressState, setAddressState] = useState({
     p: "",
     w: "",
     t: "",
@@ -51,11 +65,12 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
       wardState: "",
       townState: "",
     });
-    let id = parseInt(values);
+    const { id, addr } = handleSplitAddress(values);
     setIsProcessing(true);
     const res = await addressAPI.get_ward(id);
     setWard(res.data);
     setCountryState({ ...countryState, p: id });
+    setAddressState({ ...addressState, p: addr });
     if (countryState.w || countryState.t) {
       setCountryState({ ...countryState, w: null, t: null });
     }
@@ -68,11 +83,12 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
     form.setFieldsValue({
       townState: "",
     });
-    let id = parseInt(values);
+    const { id, addr } = handleSplitAddress(values);
     setIsProcessing(true);
     const res = await addressAPI.get_town(id);
     setTown(res.data);
     setCountryState({ ...countryState, w: id });
+    setAddressState({ ...addressState, w: addr });
     if (countryState.t) {
       setCountryState({ ...countryState, t: null });
     }
@@ -82,8 +98,9 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
     if (!values) {
       return;
     }
-    let id = parseInt(values);
+    const { id, addr } = handleSplitAddress(values);
     setCountryState({ ...countryState, t: id });
+    setAddressState({ ...addressState, t: addr });
   };
   const onFinish = (values) => {
     const {
@@ -107,9 +124,10 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
       name,
       phone,
       email,
-      provinceState: p ? provinceState : p,
-      wardState: w ? wardState : w,
-      townState: t ? townState : t,
+      address: `${moreInfo}, ${addressState.t}, ${addressState.w}, ${addressState.p}.`,
+      provinceState: p ? handleSplitAddress(provinceState).id : p,
+      wardState: w ? handleSplitAddress(wardState).id : w,
+      townState: t ? handleSplitAddress(townState).id : t,
       moreInfo,
       note,
       cart: cartState.map((item) => ({ _id: item._id, amount: item.amount })),
@@ -196,7 +214,7 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
             {province.map((item) => (
               <Option
                 key={parseInt(item.province_id)}
-                value={parseInt(item.province_id)}
+                value={`${item.province_id} ${item.province_name}`}
               >
                 {item.province_name}
               </Option>
@@ -223,7 +241,7 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
             {ward.map((item) => (
               <Option
                 key={parseInt(item.district_id)}
-                value={parseInt(item.district_id)}
+                value={`${item.district_id} ${item.district_name}`}
               >
                 {item.district_name}
               </Option>
@@ -250,7 +268,7 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
             {town.map((item) => (
               <Option
                 key={parseInt(item.ward_id)}
-                value={parseInt(item.ward_id)}
+                value={`${item.ward_id} ${item.ward_name}`}
               >
                 {item.ward_name}
               </Option>

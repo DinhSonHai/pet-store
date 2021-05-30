@@ -60,6 +60,7 @@ export default function (state = initialState, action) {
     case CLEAR_CHECKOUT_INFO:
       localStorage.removeItem('cart');
       localStorage.removeItem('guestInfo');
+      localStorage.removeItem('authInfo');
       return {
         ...state,
         guestState: null,

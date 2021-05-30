@@ -88,7 +88,7 @@ const DetailComments = ({
   }, [id, getReviewByProductId]);
   return (
     <section className="product-details__comments">
-      <Card bordered={false}>
+      <Card>
         {data.length > 0 && (
           <Fragment>
             <div className="ant-list-header">{`${data.length} đánh giá`}</div>

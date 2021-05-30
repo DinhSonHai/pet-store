@@ -9,31 +9,34 @@ import equal from "fast-deep-equal";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import store from "../../app/store";
-import { REMOVE_CART } from "../../redux/types";
+import { GET_GUEST_INFO, CLEAR_CHECKOUT_INFO } from "../../redux/types";
 import "./styles.scss";
 const Checkout = ({
   cartState,
   history,
   auth: { isAuthenticated, user },
-  checkout: { guestState },
+  checkout: { guestState, authState },
 }) => {
   const [totalCart, setTotalCart] = useState(0);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
+    const guestInfo = JSON.parse(localStorage.getItem("guestInfo"));
+    const cart = JSON.parse(localStorage.getItem("cart"));
     window.addEventListener("storage", () => {
-      const cart = JSON.parse(localStorage.getItem("cart"));
       if (cart && cartState) {
         if (!equal(cart, cartState)) {
-          return store.dispatch({ type: REMOVE_CART });
+          return store.dispatch({ type: CLEAR_CHECKOUT_INFO });
         }
       }
-      const guestInfo = JSON.parse(localStorage.getItem("guestInfo"));
       if (guestInfo && guestState) {
         if (!equal(guestInfo, guestState)) {
-          return store.dispatch({ type: REMOVE_CART });
+          return store.dispatch({ type: CLEAR_CHECKOUT_INFO });
         }
       }
     });
+    if (guestInfo) {
+      store.dispatch({ type: GET_GUEST_INFO, payload: guestInfo });
+    }
     if (cartState && cartState.length > 0) {
       let total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);
       setTotalCart(total_value);
@@ -60,10 +63,15 @@ const Checkout = ({
                   user={user}
                   history={history}
                   cartState={cartState}
+                  authData={authState}
                 />
               </Fragment>
             ) : (
-              <CheckoutFormGuest history={history} guestData={guestState} cartState={cartState} />
+              <CheckoutFormGuest
+                history={history}
+                guestData={guestState}
+                cartState={cartState}
+              />
             )}
           </Col>
           <Col xs={24} sm={24} md={24} lg={9} className="checkout__order">

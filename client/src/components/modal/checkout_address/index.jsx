@@ -1,9 +1,9 @@
-import { Modal, Button, Card } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons';
-import { UPDATE_AUTH_ADDRESS } from '../../../redux/types';
-import store from '../../../app/store';
-import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Modal, Button, Card } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
+import { UPDATE_AUTH_ADDRESS } from "../../../redux/types";
+import store from "../../../app/store";
+import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
   const history = useHistory();
@@ -11,6 +11,15 @@ const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
     setVisible(false);
   };
   const onFinish = (values) => {
+    const authInfo = JSON.parse(localStorage.getItem("authInfo"));
+    if (authInfo) {
+      localStorage.setItem(
+        "authInfo",
+        JSON.stringify({ ...authInfo, address: { ...values } })
+      );
+    } else {
+      localStorage.setItem("authInfo", JSON.stringify({ address: values }));
+    }
     store.dispatch({
       type: UPDATE_AUTH_ADDRESS,
       payload: { address: values },
@@ -19,7 +28,7 @@ const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
   };
   return (
     <Modal
-      title={'Chọn địa chỉ'}
+      title={"Chọn địa chỉ"}
       visible={visible}
       onOk={onFinish}
       onCancel={handleCancel}
@@ -27,34 +36,34 @@ const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
     >
       {user &&
         user.address.map((item) => (
-          <Card key={item._id} style={{ marginBottom: '1rem' }}>
+          <Card key={item._id} style={{ marginBottom: "1rem" }}>
             {item.isDefault && (
-              <p style={{ color: '#5fdba7' }}>
+              <p style={{ color: "#5fdba7" }}>
                 <CheckCircleOutlined /> Mặc định
               </p>
             )}
             <p>
               <b>Địa chỉ: </b> <i>{item.value}</i>
             </p>
-            <div style={{ textAlign: 'right' }}>
+            <div style={{ textAlign: "right" }}>
               <Button
-                onClick={() => history.push('/profile/?tab=address')}
-                type='link'
+                onClick={() => history.push("/profile/?tab=address")}
+                type="link"
                 danger
               >
                 Sửa
               </Button>
               <Button
                 onClick={() => onFinish(item.value)}
-                style={{ marginLeft: '0.5rem' }}
-                type='link'
+                style={{ marginLeft: "0.5rem" }}
+                type="link"
               >
                 Chọn
               </Button>
             </div>
           </Card>
         ))}
-      <div style={{ textAlign: 'right' }}>
+      <div style={{ textAlign: "right" }}>
         <Button onClick={handleCancel}>Hủy</Button>
       </div>
     </Modal>

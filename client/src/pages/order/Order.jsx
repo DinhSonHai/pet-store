@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import { Col, Row, Card, Button, Radio } from "antd";
+import { Col, Row } from "antd";
 import equal from "fast-deep-equal";
 import { connect } from "react-redux";
-import { CaretLeftOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
 import { orderProducts, orderProductsAuth } from "../../redux/actions/order";
+import Payment from "./payment";
+import Shipment from "./shipment";
+import CartInfo from "./cart";
+import Information from "./infomation";
 import PropTypes from "prop-types";
 import store from "../../app/store";
 import {
@@ -37,17 +39,17 @@ const Order = ({
   const [paymentState, SetPaymentState] = useState(0);
 
   useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem("cart"));
+    const guestInfo = JSON.parse(localStorage.getItem("guestInfo"));
     window.addEventListener("storage", () => {
-      const cart = JSON.parse(localStorage.getItem("cart"));
-      if(cart && cartState){
+      if (cart && cartState) {
         if (!equal(cart, cartState)) {
-          return store.dispatch({ type: REMOVE_CART });
+          return store.dispatch({ type: CLEAR_CHECKOUT_INFO });
         }
       }
-      const guestInfo = JSON.parse(localStorage.getItem("guestInfo"));
       if (guestInfo && guestState) {
         if (!equal(guestInfo, guestState)) {
-          return store.dispatch({ type: REMOVE_CART });
+          return store.dispatch({ type: CLEAR_CHECKOUT_INFO });
         }
       }
     });
@@ -113,112 +115,30 @@ const Order = ({
       <div className="order__wrap container">
         <Row gutter={[16, 16]}>
           <Col className="order__form" xs={24} sm={24} md={24} lg={15}>
-            <Card
-              bordered={false}
-              style={{ marginBottom: "1rem" }}
-              title="Chọn hình thức giao hàng"
-            >
-              <Radio.Group
-                onChange={onChangeDelivery}
-                value={deliveryState.value}
-              >
-                <Radio style={style} value={0}>
-                  {`Giao hàng tiêu chuẩn  :  ${parseInt(35000).toLocaleString(
-                    "vi-VN",
-                    {
-                      style: "currency",
-                      currency: "VND",
-                    }
-                  )}`}
-                </Radio>
-                <Radio style={style} value={1}>
-                  {`Giao hàng nhanh  :  ${parseInt(55000).toLocaleString(
-                    "vi-VN",
-                    {
-                      style: "currency",
-                      currency: "VND",
-                    }
-                  )}`}
-                </Radio>
-              </Radio.Group>
-            </Card>
-            <Card bordered={false} title="Chọn hình thức thanh toán">
-              <Radio.Group onChange={onChangePayment} value={paymentState}>
-                <Radio style={style} value={0}>
-                  Thanh toán tiền mặt khi nhận hàng (COD)
-                </Radio>
-              </Radio.Group>
-            </Card>
+            <Information
+              isAuthenticated={isAuthenticated}
+              authState={authState}
+              guestState={guestState}
+            />
+            <Shipment
+              deliveryState={deliveryState}
+              onChangeDelivery={onChangeDelivery}
+              style={style}
+            />
+            <Payment
+              paymentState={paymentState}
+              onChangePayment={onChangePayment}
+              style={style}
+            />
           </Col>
           <Col xs={24} sm={24} md={24} lg={9} className="order__order">
-            <Card
-              bordered={false}
-              extra={
-                <div className="checkout__update-cart">
-                  <CaretLeftOutlined />
-                  <Link to="/checkout">Sửa địa chỉ</Link>
-                </div>
-              }
-              title="Đơn hàng"
-            >
-              <div className="order__products">
-                {cartState.map((item) => (
-                  <div key={item._id} className="order__products--content">
-                    <img
-                      width="50"
-                      height="50"
-                      style={{ objectFit: "cover" }}
-                      src={item.image}
-                      alt="Cart"
-                    />
-
-                    <div className="order__products--info">
-                      <p className="order__products--name">
-                        {item.productName}
-                      </p>
-                      <p className="order__products--price">
-                        {parseInt(item.price).toLocaleString("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        })}
-                        <span
-                          className="order__products--amount"
-                          style={{ margin: "0 1rem" }}
-                        >
-                          {"x" + item.amount}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="order__fee">
-                <span>Phí vận chuyển: </span>
-                <span>
-                  {parseInt(deliveryState.price).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </span>
-              </p>
-              <p className="order__total">
-                <span>Tổng tiền: </span>
-                <span id="order__total">
-                  {parseInt(totalMoney).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </span>
-              </p>
-              <Button
-                loading={isProcessing}
-                onClick={onFinish}
-                block
-                type="primary"
-              >
-                Đặt hàng
-              </Button>
-            </Card>
+            <CartInfo
+              cartState={cartState}
+              deliveryState={deliveryState}
+              totalMoney={totalMoney}
+              isProcessing={isProcessing}
+              onFinish={onFinish}
+            />
           </Col>
         </Row>
       </div>
