@@ -172,7 +172,7 @@ const AddressModal = ({
             {province.map((item) => (
               <Option
                 key={parseInt(item.province_id)}
-                value={parseInt(item.province_id)}
+                value={item.province_id}
               >
                 {item.province_name}
               </Option>
@@ -199,7 +199,7 @@ const AddressModal = ({
             {ward.map((item) => (
               <Option
                 key={parseInt(item.district_id)}
-                value={parseInt(item.district_id)}
+                value={item.district_id}
               >
                 {item.district_name}
               </Option>
@@ -226,7 +226,7 @@ const AddressModal = ({
             {town.map((item) => (
               <Option
                 key={parseInt(item.ward_id)}
-                value={parseInt(item.ward_id)}
+                value={item.ward_id}
               >
                 {item.ward_name}
               </Option>

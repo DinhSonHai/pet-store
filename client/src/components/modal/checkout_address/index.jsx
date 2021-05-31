@@ -15,7 +15,7 @@ const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
     if (authInfo) {
       localStorage.setItem(
         "authInfo",
-        JSON.stringify({ ...authInfo, address: { ...values } })
+        JSON.stringify({ ...authInfo, address: values })
       );
     } else {
       localStorage.setItem("authInfo", JSON.stringify({ address: values }));

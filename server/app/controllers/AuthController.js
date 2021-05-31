@@ -582,13 +582,13 @@ class AuthController {
       ])
         .then((results) => {
           let province_name = results[0].find(
-            (item) => parseInt(item.province_id) === provinceState
+            (item) => item.province_id === provinceState
           ).province_name;
           let ward_name = results[1].find(
-            (item) => parseInt(item.district_id) === wardState
+            (item) => item.district_id === wardState
           ).district_name;
           let town_name = results[2].find(
-            (item) => parseInt(item.ward_id) === townState
+            (item) => item.ward_id === townState
           ).ward_name;
           let address =
             moreInfo.trim() +
@@ -735,13 +735,13 @@ class AuthController {
       ])
         .then((results) => {
           let province_name = results[0].find(
-            (item) => parseInt(item.province_id) === provinceState
+            (item) => item.province_id === provinceState
           ).province_name;
           let ward_name = results[1].find(
-            (item) => parseInt(item.district_id) === wardState
+            (item) => item.district_id === wardState
           ).district_name;
           let town_name = results[2].find(
-            (item) => parseInt(item.ward_id) === townState
+            (item) => item.ward_id === townState
           ).ward_name;
           let address =
             moreInfo.trim() +

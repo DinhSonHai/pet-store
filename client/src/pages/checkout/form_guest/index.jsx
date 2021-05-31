@@ -8,15 +8,6 @@ import { GET_GUEST_INFO } from "../../../redux/types";
 import store from "../../../app/store";
 
 const { Option } = Select;
-const handleSplitAddress = (str) => {
-  let s = str.split(" ");
-  let id = parseInt(s[0]);
-  let addr = "";
-  for (let i = 1; i < s.length; ++i) {
-    addr += ` ${s[i]} `;
-  }
-  return { id, addr: addr.trim() };
-};
 const CheckoutFormGuest = ({ cartState, guestData, history }) => {
   const [form] = Form.useForm();
   const [province, setProvince] = useState([]);
@@ -49,6 +40,20 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
           w: guestData.wardState,
           t: guestData.townState,
         });
+        const p_name = p.data.find(
+          (item) => item.province_id === guestData.provinceState
+        ).province_name;
+        const w_name = w.data.find(
+          (item) => item.district_id === guestData.wardState
+        ).district_name;
+        const t_name = t.data.find(
+          (item) => item.ward_id === guestData.townState
+        ).ward_name;
+        setAddressState({
+          p: p_name,
+          w: w_name,
+          t: t_name,
+        });
       } else {
         const res = await addressAPI.get_province();
         setProvince(res.data);
@@ -65,11 +70,13 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
       wardState: "",
       townState: "",
     });
-    const { id, addr } = handleSplitAddress(values);
     setIsProcessing(true);
-    const res = await addressAPI.get_ward(id);
+    const res = await addressAPI.get_ward(values);
     setWard(res.data);
-    setCountryState({ ...countryState, p: id });
+    setCountryState({ ...countryState, p: values });
+    const addr = province.find(
+      (item) => item.province_id === values
+    ).province_name;
     setAddressState({ ...addressState, p: addr });
     if (countryState.w || countryState.t) {
       setCountryState({ ...countryState, w: null, t: null });
@@ -83,11 +90,11 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
     form.setFieldsValue({
       townState: "",
     });
-    const { id, addr } = handleSplitAddress(values);
     setIsProcessing(true);
-    const res = await addressAPI.get_town(id);
+    const res = await addressAPI.get_town(values);
     setTown(res.data);
-    setCountryState({ ...countryState, w: id });
+    setCountryState({ ...countryState, w: values });
+    const addr = ward.find((item) => item.district_id === values).district_name;
     setAddressState({ ...addressState, w: addr });
     if (countryState.t) {
       setCountryState({ ...countryState, t: null });
@@ -98,8 +105,8 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
     if (!values) {
       return;
     }
-    const { id, addr } = handleSplitAddress(values);
-    setCountryState({ ...countryState, t: id });
+    setCountryState({ ...countryState, t: values });
+    const addr = town.find((item) => item.ward_id === values).ward_name;
     setAddressState({ ...addressState, t: addr });
   };
   const onFinish = (values) => {
@@ -125,9 +132,9 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
       phone,
       email,
       address: `${moreInfo}, ${addressState.t}, ${addressState.w}, ${addressState.p}.`,
-      provinceState: p ? handleSplitAddress(provinceState).id : p,
-      wardState: w ? handleSplitAddress(wardState).id : w,
-      townState: t ? handleSplitAddress(townState).id : t,
+      provinceState: p ? provinceState : p,
+      wardState: w ? wardState : w,
+      townState: t ? townState : t,
       moreInfo,
       note,
       cart: cartState.map((item) => ({ _id: item._id, amount: item.amount })),
@@ -212,10 +219,7 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
           >
             <Option value={""}>Chọn Tỉnh/Thành Phố</Option>
             {province.map((item) => (
-              <Option
-                key={parseInt(item.province_id)}
-                value={`${item.province_id} ${item.province_name}`}
-              >
+              <Option key={parseInt(item.province_id)} value={item.province_id}>
                 {item.province_name}
               </Option>
             ))}
@@ -239,10 +243,7 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
           >
             <Option value={""}>Chọn Quận/Huyện</Option>
             {ward.map((item) => (
-              <Option
-                key={parseInt(item.district_id)}
-                value={`${item.district_id} ${item.district_name}`}
-              >
+              <Option key={parseInt(item.district_id)} value={item.district_id}>
                 {item.district_name}
               </Option>
             ))}
@@ -266,10 +267,7 @@ const CheckoutFormGuest = ({ cartState, guestData, history }) => {
           >
             <Option value={""}>Chọn Phường/Xã</Option>
             {town.map((item) => (
-              <Option
-                key={parseInt(item.ward_id)}
-                value={`${item.ward_id} ${item.ward_name}`}
-              >
+              <Option key={parseInt(item.ward_id)} value={item.ward_id}>
                 {item.ward_name}
               </Option>
             ))}

@@ -225,13 +225,13 @@ class OrderController {
       ])
         .then(async (results) => {
           const province_name = results[0].find(
-            (item) => parseInt(item.province_id) === provinceState
+            (item) => item.province_id === provinceState
           ).province_name;
           const ward_name = results[1].find(
-            (item) => parseInt(item.district_id) === wardState
+            (item) => item.district_id === wardState
           ).district_name;
           const town_name = results[2].find(
-            (item) => parseInt(item.ward_id) === townState
+            (item) => item.ward_id === townState
           ).ward_name;
           const address =
             moreInfo.trim() +
