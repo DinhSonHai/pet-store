@@ -38,7 +38,6 @@ const Order = ({
     price: 35000,
   });
   const [paymentState, SetPaymentState] = useState(0);
-
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart"));
     const guestInfo = JSON.parse(localStorage.getItem("guestInfo"));
@@ -86,7 +85,14 @@ const Order = ({
     });
   };
   const onChangePayment = (e) => {
-    SetPaymentState(e.target.value);
+    const paymentState = e.target.value;
+    SetPaymentState(paymentState);
+    if (paymentState === 1) {
+      setOpenStripe(true);
+    }
+    else {
+      setOpenStripe(false);
+    }
   };
   const onFinish = async () => {
     let cart = JSON.parse(localStorage.getItem("cart"));
