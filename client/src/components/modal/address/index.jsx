@@ -68,11 +68,10 @@ const AddressModal = ({
       wardState: '',
       townState: '',
     });
-    let id = parseInt(values);
     setIsProcessing(true);
-    const res = await addressAPI.get_ward(id);
+    const res = await addressAPI.get_ward(values);
     setWard(res.data);
-    setCountryState({ ...countryState, p: id });
+    setCountryState({ ...countryState, p: values });
     if (countryState.w || countryState.t) {
       setCountryState({ ...countryState, w: null, t: null });
     }
@@ -85,11 +84,10 @@ const AddressModal = ({
     form.setFieldsValue({
       townState: '',
     });
-    let id = parseInt(values);
     setIsProcessing(true);
-    const res = await addressAPI.get_town(id);
+    const res = await addressAPI.get_town(values);
     setTown(res.data);
-    setCountryState({ ...countryState, w: id });
+    setCountryState({ ...countryState, w: values });
     if (countryState.t) {
       setCountryState({ ...countryState, t: null });
     }
@@ -99,8 +97,7 @@ const AddressModal = ({
     if (!values) {
       return;
     }
-    let id = parseInt(values);
-    setCountryState({ ...countryState, t: id });
+    setCountryState({ ...countryState, t: values });
   };
   const onFinish = async (values) => {
     const { moreInfo, provinceState, wardState, townState } = values;
@@ -172,7 +169,7 @@ const AddressModal = ({
             {province.map((item) => (
               <Option
                 key={parseInt(item.province_id)}
-                value={item.province_id}
+                value={`${item.province_id}`}
               >
                 {item.province_name}
               </Option>
@@ -199,7 +196,7 @@ const AddressModal = ({
             {ward.map((item) => (
               <Option
                 key={parseInt(item.district_id)}
-                value={item.district_id}
+                value={`${item.district_id}`}
               >
                 {item.district_name}
               </Option>
@@ -226,7 +223,7 @@ const AddressModal = ({
             {town.map((item) => (
               <Option
                 key={parseInt(item.ward_id)}
-                value={item.ward_id}
+                value={`${item.ward_id}`}
               >
                 {item.ward_name}
               </Option>
