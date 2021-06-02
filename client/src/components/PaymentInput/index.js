@@ -1,67 +1,64 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  useStripe,
-  useElements,
-  CardElement,
-} from "@stripe/react-stripe-js";
+// import React from 'react';
+// import PropTypes from 'prop-types';
 
-import './styles.scss';
+// import './styles.scss';
 
-PaymentInput.propTypes = {
-  
-};
+// PaymentInput.propTypes = {
+//   error: PropTypes.object,
+//   onChange: PropTypes.func,
+// };
 
-const options = {
-  hidePostalCode: true,
-  style: {
-    base: {
-      iconColor: "#000",
-      fontSize: "16px",
-      color: "#000",
-      letterSpacing: "0.025em",
-      "::placeholder": {
-        color: "#666"
-      }
-    },
-    invalid: {
-      iconColor: "red",
-      color: "red"
-    }
-  }
-}
+// PaymentInput.defaultProps = {
+//   error: {},
+//   onChange: () => { },
+// };
 
-function PaymentInput(props) {
-  const stripe = useStripe();
-  const elements = useElements();
+// const options = {
+//   hidePostalCode: true,
+//   style: {
+//     base: {
+//       iconColor: "#000",
+//       fontSize: "16px",
+//       color: "#000",
+//       letterSpacing: "0.025em",
+//       "::placeholder": {
+//         color: "#666"
+//       }
+//     },
+//     invalid: {
+//       iconColor: "red",
+//       color: "red"
+//     }
+//   }
+// }
 
-  return (
-    <div className="payment-input">
-      <label>
-        Số thẻ
-        <CardElement
-          options={options}
-          onReady={() => {
-            console.log("CardElement [ready]");
-          }}
-          onChange={event => {
-            console.log("CardElement [change]", event);
-          }}
-          onBlur={() => {
-            console.log("CardElement [blur]");
-          }}
-          onFocus={() => {
-            console.log("CardElement [focus]");
-          }}
-        />
-      </label>
-      {/* {error && (
-        <div className="ErrorMessage">
-          {error.message}
-        </div>
-      )} */}
-    </div>
-  );
-}
+// function PaymentInput({ element, error, onChange }) {
 
-export default PaymentInput;
+//   return (
+//     <div className="payment-input">
+//       <label>
+//         Số thẻ
+//         <CardElement
+//           options={options}
+//           onReady={() => {
+//             console.log("CardElement [ready]");
+//           }}
+//           onChange={onChange}
+//           onBlur={() => {
+//             console.log("CardElement [blur]");
+//           }}
+//           onFocus={() => {
+//             console.log("CardElement [focus]");
+//           }}
+//         />
+//       </label>
+//       {error && (
+//         <div className="error-message">
+//           {error.message}
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default PaymentInput;
