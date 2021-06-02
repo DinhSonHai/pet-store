@@ -17,7 +17,8 @@ import {
   CLEAR_CHECKOUT_INFO,
 } from "../../redux/types";
 import { BuyStep } from "../../components";
-import "./styles.scss";
+import PaymentInput from '../../components/PaymentInput';
+import './styles.scss';
 
 const style = {
   display: "block",

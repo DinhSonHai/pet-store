@@ -16,15 +16,17 @@ const options = {
   hidePostalCode: true,
   style: {
     base: {
+      iconColor: "#000",
       fontSize: "16px",
-      color: "#424770",
+      color: "#000",
       letterSpacing: "0.025em",
       "::placeholder": {
-        color: "#aab7c4"
+        color: "#666"
       }
     },
     invalid: {
-      color: "#9e2146"
+      iconColor: "red",
+      color: "red"
     }
   }
 }
@@ -53,6 +55,11 @@ function PaymentInput(props) {
           }}
         />
       </label>
+      {/* {error && (
+        <div className="ErrorMessage">
+          {error.message}
+        </div>
+      )} */}
     </div>
   );
 }
