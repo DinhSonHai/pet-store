@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { CaretLeftOutlined } from "@ant-design/icons";
 
 const CartInfo = ({
+  paymentState,
+  cardComplete,
   cartState,
   deliveryState,
   totalMoney,
@@ -68,7 +70,12 @@ const CartInfo = ({
           })}
         </span>
       </p>
-      <Button loading={isProcessing} onClick={onFinish} block type="primary">
+      <Button
+        disabled={paymentState === 1 && !cardComplete}
+        loading={isProcessing}
+        onClick={onFinish}
+        block 
+        type="primary">
         Đặt hàng
       </Button>
     </Card>

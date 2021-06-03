@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { Col, Row } from "antd";
+import { Col, Row, Card } from "antd";
 import equal from "fast-deep-equal";
 import { connect } from "react-redux";
 import { orderProducts, orderProductsAuth } from "../../redux/actions/order";
@@ -18,7 +18,6 @@ import {
   CLEAR_CHECKOUT_INFO,
 } from "../../redux/types";
 import { BuyStep } from "../../components";
-import PaymentInput from '../../components/PaymentInput';
 import './styles.scss';
 
 const style = {
@@ -55,7 +54,6 @@ const Order = ({
 }) => {
   const stripe = useStripe();
   const elements = useElements();
-
   const [isProcessing, setIsProcessing] = useState(false);
   const [totalMoney, setTotalMoney] = useState(0);
   const [deliveryState, SetDeliveryState] = useState({
@@ -63,9 +61,8 @@ const Order = ({
     price: 35000,
   });
   const [paymentState, SetPaymentState] = useState(0);
-  const [error, setError] = useState(null);
   const [cardComplete, setCardComplete] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleCardChange = (e) => {
     console.log(e);
@@ -88,38 +85,20 @@ const Order = ({
   };
   
   const onFinish = async () => {
+    let payload = {};
     if (paymentState === 1 && cardComplete) {
       if (!stripe || !elements) {
         return;
       }
   
-      const payload = await stripe.createPaymentMethod({
+      payload = await stripe.createPaymentMethod({
         type: "card",
         card: elements.getElement(CardElement),
       });
   
-      if(!payload?.error) {
-        // let cart = JSON.parse(localStorage.getItem('cart'));
-        // if (!equal(cart, cartState)) {
-        //   return history.push('/cart');
-        // }
-        // setIsProcessing(true);
-        // let res;
-        // if (isAuthenticated) {
-        //   res = await orderProductsAuth(authState);
-        // } else {
-        //   res = await orderProducts(guestState);
-        // }
-        // setIsProcessing(false);
-        // if (res) {
-        //   store.dispatch({
-        //     type: REMOVE_CART,
-        //   });
-        //   store.dispatch({
-        //     type: CLEAR_CHECKOUT_INFO,
-        //   });
-        //   localStorage.removeItem('cart');
-        // }
+      if(payload?.error) {
+        setError({ message: 'Stripe payment error! Please try again later.' });
+        return;
         // try {
         //     const {id} = paymentMethod
         //     const response = await axios.post("http://localhost:4000/payment", {
@@ -135,34 +114,30 @@ const Order = ({
         // } catch (error) {
         //     console.log("Error", error)
         // }
-        console.log(authState);
-      } else {
-        setError({ message: 'Stripe payment error! Please try again later.' });
       }
-    } else {
-      // let cart = JSON.parse(localStorage.getItem('cart'));
-      // if (!equal(cart, cartState)) {
-      //   return history.push('/cart');
-      // }
-      // setIsProcessing(true);
-      // let res;
-      // if (isAuthenticated) {
-      //   res = await orderProductsAuth(authState);
-      // } else {
-      //   res = await orderProducts(guestState);
-      // }
-      // setIsProcessing(false);
-      // if (res) {
-      //   store.dispatch({
-      //     type: REMOVE_CART,
-      //   });
-      //   store.dispatch({
-      //     type: CLEAR_CHECKOUT_INFO,
-      //   });
-      //   localStorage.removeItem('cart');
-      // }
-      console.log(authState);
     }
+    console.log(payload);
+    // let cart = JSON.parse(localStorage.getItem('cart'));
+    // if (!equal(cart, cartState)) {
+    //   return history.push('/cart');
+    // }
+    // setIsProcessing(true);
+    // let res;
+    // if (isAuthenticated) {
+    //   res = await orderProductsAuth(authState);
+    // } else {
+    //   res = await orderProducts(guestState);
+    // }
+    // setIsProcessing(false);
+    // if (res) {
+    //   store.dispatch({
+    //     type: REMOVE_CART,
+    //   });
+    //   store.dispatch({
+    //     type: CLEAR_CHECKOUT_INFO,
+    //   });
+    //   localStorage.removeItem('cart');
+    // }
   };
 
   useEffect(() => {
@@ -184,7 +159,6 @@ const Order = ({
       let total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);
       setTotalMoney(total_value + deliveryState.price);
       if (isAuthenticated) {
-        console.log(isAuthenticated)
         store.dispatch({
           type: UPDATE_AUTH_INFO,
           payload: {
@@ -209,7 +183,7 @@ const Order = ({
   return (
     <section className="order">
       <div className="order__wrap container">
-      <div className="step-container">
+        <div className="step-container">
           <BuyStep />
         </div>
         <Row gutter={[16, 16]}>
@@ -224,14 +198,35 @@ const Order = ({
               onChangeDelivery={onChangeDelivery}
               style={style}
             />
-            <Payment
-              paymentState={paymentState}
-              onChangePayment={onChangePayment}
-              style={style}
-            />
+            <Card bordered={false} title="Chọn hình thức thanh toán">
+              <Payment
+                paymentState={paymentState}
+                setCardComplete={setCardComplete}
+                onChangePayment={onChangePayment}
+                style={style}
+              />
+              {paymentState === 1 && (
+                <div className="payment-input">
+                  <label>
+                    Số thẻ
+                    <CardElement
+                      options={options}
+                      onChange={handleCardChange}
+                    />
+                  </label>
+                  {error && (
+                    <div className="error-message">
+                      {error.message}
+                    </div>
+                  )}
+                </div>
+              )}
+            </Card>
           </Col>
           <Col xs={24} sm={24} md={24} lg={9} className="order__order">
             <CartInfo
+              paymentState={paymentState}
+              cardComplete={cardComplete}
               cartState={cartState}
               deliveryState={deliveryState}
               totalMoney={totalMoney}
