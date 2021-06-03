@@ -15,7 +15,9 @@ const {
   NODEMAILER_EMAIL,
   NODEMAILER_PASSWORD,
   CLIENT_URL,
+  STRIPE_SECRET,
 } = require('../../config/default.json');
+const stripe = require("stripe")(STRIPE_SECRET);
 
 function getData(path) {
   return new Promise((resolve, reject) => {
@@ -376,147 +378,154 @@ class OrderController {
   // @desc    Đặt hàng vai trò người dùng
   // @access  Private
   async authOrder(req, res) {
-    const { deliveryState, paymentState, note, cart, address } = req.body;
+    const { deliveryState, paymentState, note, cart, address, paymentId } = req.body;
     let totalMoney = 0;
     try {
-      let user = await crudService.getById(User, req.user.id);
-      if (!user) {
-        return res
-          .status(statusCode.notFound)
-          .json({ errors: [{ msg: message.userNotFound }] });
-      }
-      const cartLength = cart.length;
-      if (!cart || cartLength <= 0) {
-        return res
-          .status(statusCode.badRequest)
-          .json({ errors: [{ msg: message.invalidOrder }] });
-      }
-      if (!user.phoneNumber) {
-        return res
-          .status(statusCode.badRequest)
-          .json({ errors: [{ msg: message.phoneRequired }] });
-      }
-      if (user.address.length <= 0) {
-        return res
-          .status(statusCode.badRequest)
-          .json({ errors: [{ msg: message.addressRequired }] });
-      }
-      let order = new Order({
-        userId: user._id,
-        name: user.name,
-        phone: user.phoneNumber,
-        email: user.email,
-        address,
-        note,
-        deliveryState,
-        paymentState,
+      const payment = await stripe.paymentIntents.create({
+        amount: 50000,
+        currency: "VND",
+        payment_method: paymentId,
+        confirm: true,
       });
-      order.key = order._id;
-      order.amount = cartLength;
-      let getProducts = [];
+    //   let user = await crudService.getById(User, req.user.id);
+    //   if (!user) {
+    //     return res
+    //       .status(statusCode.notFound)
+    //       .json({ errors: [{ msg: message.userNotFound }] });
+    //   }
+    //   const cartLength = cart.length;
+    //   if (!cart || cartLength <= 0) {
+    //     return res
+    //       .status(statusCode.badRequest)
+    //       .json({ errors: [{ msg: message.invalidOrder }] });
+    //   }
+    //   if (!user.phoneNumber) {
+    //     return res
+    //       .status(statusCode.badRequest)
+    //       .json({ errors: [{ msg: message.phoneRequired }] });
+    //   }
+    //   if (user.address.length <= 0) {
+    //     return res
+    //       .status(statusCode.badRequest)
+    //       .json({ errors: [{ msg: message.addressRequired }] });
+    //   }
+    //   let order = new Order({
+    //     userId: user._id,
+    //     name: user.name,
+    //     phone: user.phoneNumber,
+    //     email: user.email,
+    //     address,
+    //     note,
+    //     deliveryState,
+    //     paymentState,
+    //   });
+    //   order.key = order._id;
+    //   order.amount = cartLength;
+    //   let getProducts = [];
 
-      for (let i = 0; i < cartLength; ++i) {
-        if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
-          return res.status(statusCode.badRequest).json({
-            errors: [{ msg: message.invalidOrder }],
-          });
-        }
-        const product = await crudService.getById(Product, cart[i]._id);
-        if (!product) {
-          return res.status(statusCode.notFound).json({
-            errors: [{ msg: message.error }],
-          });
-        }
-        if (product.quantity <= 0 || product.status === false) {
-          return res.status(statusCode.badRequest).json({
-            errors: [{ msg: message.outOfStock }],
-          });
-        }
-        if (product.quantity < parseInt(cart[i].amount)) {
-          return res.status(statusCode.badRequest).json({
-            errors: [{ msg: message.error }],
-          });
-        }
-        getProducts.push({ product, amount: cart[i].amount });
-        let detail = new OrderDetail({
-          userId: user._id,
-          orderId: order._id,
-          productId: product._id,
-          productName: product.productName,
-          amount: cart[i].amount,
-          price: product.price,
-        });
-        detail.key = detail._id;
-        await detail.save();
-      }
-      totalMoney = getProducts.reduce(
-        (a, b) => a + b.product.price * b.amount,
-        deliveryState === 0 ? 35000 : 55000
-      );
-      order.totalMoney = totalMoney;
-      await order.save((err, _) => {
-        if (err) {
-          return res.status(statusCode.badRequest).json({
-            errors: [{ msg: message.orderFail }],
-          });
-        }
-        return res.status(statusCode.success).json({
-          message: message.orderSuccess,
-        });
-      });
+    //   for (let i = 0; i < cartLength; ++i) {
+    //     if (!cart[i].amount || parseInt(cart[i].amount) <= 0) {
+    //       return res.status(statusCode.badRequest).json({
+    //         errors: [{ msg: message.invalidOrder }],
+    //       });
+    //     }
+    //     const product = await crudService.getById(Product, cart[i]._id);
+    //     if (!product) {
+    //       return res.status(statusCode.notFound).json({
+    //         errors: [{ msg: message.error }],
+    //       });
+    //     }
+    //     if (product.quantity <= 0 || product.status === false) {
+    //       return res.status(statusCode.badRequest).json({
+    //         errors: [{ msg: message.outOfStock }],
+    //       });
+    //     }
+    //     if (product.quantity < parseInt(cart[i].amount)) {
+    //       return res.status(statusCode.badRequest).json({
+    //         errors: [{ msg: message.error }],
+    //       });
+    //     }
+    //     getProducts.push({ product, amount: cart[i].amount });
+    //     let detail = new OrderDetail({
+    //       userId: user._id,
+    //       orderId: order._id,
+    //       productId: product._id,
+    //       productName: product.productName,
+    //       amount: cart[i].amount,
+    //       price: product.price,
+    //     });
+    //     detail.key = detail._id;
+    //     await detail.save();
+    //   }
+    //   totalMoney = getProducts.reduce(
+    //     (a, b) => a + b.product.price * b.amount,
+    //     deliveryState === 0 ? 35000 : 55000
+    //   );
+    //   order.totalMoney = totalMoney;
+    //   await order.save((err, _) => {
+    //     if (err) {
+    //       return res.status(statusCode.badRequest).json({
+    //         errors: [{ msg: message.orderFail }],
+    //       });
+    //     }
+    //     return res.status(statusCode.success).json({
+    //       message: message.orderSuccess,
+    //     });
+    //   });
 
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: NODEMAILER_EMAIL,
-          pass: NODEMAILER_PASSWORD,
-        },
-      });
+    //   const transporter = nodemailer.createTransport({
+    //     service: 'gmail',
+    //     auth: {
+    //       user: NODEMAILER_EMAIL,
+    //       pass: NODEMAILER_PASSWORD,
+    //     },
+    //   });
 
-      const item = getProducts.map(
-        (cartItem, index) =>
-          `<li>Sản phẩm ${index + 1}<ul><li>Tên sản phẩm: ${
-            cartItem.product.productName
-          }</li><li>Số lượng: ${
-            cartItem.amount
-          }</li><li>Đơn giá mỗi sản phẩm: ${cartItem.product.price.toLocaleString(
-            'vi-VN',
-            { style: 'currency', currency: 'VND' }
-          )}</li></ul></li>`
-      );
-      const content = `
-          <h1>Bạn vừa mua hàng ở Pet store</h1>
-          <p>Tên khách hàng: ${user.name}</p>
-          <p>Điện thoại: ${user.phoneNumber}</p>
-          <p>Địa chỉ: ${address}</p>
-          <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-          })}</p>
-          <p>Đơn hàng của quý khách:</p>
-          <ul>
-            ${item}
-          </ul>
-          <hr/>
-          <p>Xin cảm ơn quý khách</p>
-          <p>${CLIENT_URL}</p>
-        `;
+    //   const item = getProducts.map(
+    //     (cartItem, index) =>
+    //       `<li>Sản phẩm ${index + 1}<ul><li>Tên sản phẩm: ${
+    //         cartItem.product.productName
+    //       }</li><li>Số lượng: ${
+    //         cartItem.amount
+    //       }</li><li>Đơn giá mỗi sản phẩm: ${cartItem.product.price.toLocaleString(
+    //         'vi-VN',
+    //         { style: 'currency', currency: 'VND' }
+    //       )}</li></ul></li>`
+    //   );
+    //   const content = `
+    //       <h1>Bạn vừa mua hàng ở Pet store</h1>
+    //       <p>Tên khách hàng: ${user.name}</p>
+    //       <p>Điện thoại: ${user.phoneNumber}</p>
+    //       <p>Địa chỉ: ${address}</p>
+    //       <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString('vi-VN', {
+    //         style: 'currency',
+    //         currency: 'VND',
+    //       })}</p>
+    //       <p>Đơn hàng của quý khách:</p>
+    //       <ul>
+    //         ${item}
+    //       </ul>
+    //       <hr/>
+    //       <p>Xin cảm ơn quý khách</p>
+    //       <p>${CLIENT_URL}</p>
+    //     `;
 
-      const mailOptions = {
-        from: NODEMAILER_EMAIL,
-        to: user.email,
-        subject: 'Thông báo mua hàng ở Pet store',
-        html: content,
-      };
+    //   const mailOptions = {
+    //     from: NODEMAILER_EMAIL,
+    //     to: user.email,
+    //     subject: 'Thông báo mua hàng ở Pet store',
+    //     html: content,
+    //   };
 
-      transporter
-        .sendMail(mailOptions)
-        .then(() => {
-          console.log('Send mail success');
-        })
-        .catch((err) => {
-          console.log('Send mail fail');
-        });
+    //   transporter
+    //     .sendMail(mailOptions)
+    //     .then(() => {
+    //       console.log('Send mail success');
+    //     })
+    //     .catch((err) => {
+    //       console.log('Send mail fail');
+    //     });
+      return res.send('OK');
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
     }

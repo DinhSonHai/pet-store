@@ -65,7 +65,6 @@ const Order = ({
   const [error, setError] = useState(null);
 
   const handleCardChange = (e) => {
-    console.log(e);
     setError(e.error);
     setCardComplete(e.complete);
   }
@@ -116,28 +115,27 @@ const Order = ({
         // }
       }
     }
-    console.log(payload);
-    // let cart = JSON.parse(localStorage.getItem('cart'));
-    // if (!equal(cart, cartState)) {
-    //   return history.push('/cart');
-    // }
-    // setIsProcessing(true);
-    // let res;
-    // if (isAuthenticated) {
-    //   res = await orderProductsAuth(authState);
-    // } else {
-    //   res = await orderProducts(guestState);
-    // }
-    // setIsProcessing(false);
-    // if (res) {
-    //   store.dispatch({
-    //     type: REMOVE_CART,
-    //   });
-    //   store.dispatch({
-    //     type: CLEAR_CHECKOUT_INFO,
-    //   });
-    //   localStorage.removeItem('cart');
-    // }
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    if (!equal(cart, cartState)) {
+      return history.push('/cart');
+    }
+    setIsProcessing(true);
+    let res;
+    if (isAuthenticated) {
+      res = await orderProductsAuth({ ...authState, paymentId: payload?.paymentMethod?.id });
+    } else {
+      res = await orderProducts({ ...guestState, paymentId: payload?.paymentMethod?.id });
+    }
+    setIsProcessing(false);
+    if (res) {
+      store.dispatch({
+        type: REMOVE_CART,
+      });
+      store.dispatch({
+        type: CLEAR_CHECKOUT_INFO,
+      });
+      localStorage.removeItem('cart');
+    }
   };
 
   useEffect(() => {
