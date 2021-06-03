@@ -16,6 +16,7 @@ import {
   UPDATE_AUTH_INFO,
   CLEAR_CHECKOUT_INFO,
 } from "../../redux/types";
+import { BuyStep } from "../../components";
 import "./styles.scss";
 
 const style = {
@@ -113,6 +114,9 @@ const Order = ({
   return (
     <section className="order">
       <div className="order__wrap container">
+      <div className="step-container">
+          <BuyStep />
+        </div>
         <Row gutter={[16, 16]}>
           <Col className="order__form" xs={24} sm={24} md={24} lg={15}>
             <Information

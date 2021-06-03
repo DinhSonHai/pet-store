@@ -51,6 +51,11 @@ router.get("/:id", checkReview, ProductController.getById);
 // @access  Public
 router.get("/types/:typeId", ProductController.getByTypeId);
 
+// @route   GET api/products/same-types/:typeId
+// @desc    Lấy tất cả sản phẩm theo typeId
+// @access  Public
+router.get("/same-type/:typeId", ProductController.getSameTypeProducts);
+
 // @route   POST api/products
 // @desc    Tạo sản phẩm
 // @access  Private

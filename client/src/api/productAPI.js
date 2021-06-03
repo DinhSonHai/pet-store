@@ -1,5 +1,5 @@
-import api from '../api';
-const source = '/products';
+import api from "../api";
+const source = "/products";
 const productAPI = {
   get_by_type: async (id, filterValue, page) => {
     return await api.get(
@@ -22,6 +22,9 @@ const productAPI = {
   },
   get_bestseller_products: async () => {
     return await api.get(`${source}/bestseller`);
+  },
+  get_same_type: async (typeId) => {
+    return await api.get(`${source}/same-type/${typeId}`);
   },
 };
 

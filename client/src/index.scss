@@ -26,7 +26,6 @@ body {
   color: var(--dark-second-color) !important;
   height: fit-content !important;
 }
-
 .container {
   max-width: 1200px;
   margin: 2rem auto 3rem;
@@ -71,6 +70,9 @@ body {
 .profile__select {
   margin: 0 0 1.5rem;
   display: none;
+}
+.ant-card{
+  overflow: hidden;
 }
 .ant-back-top {
   bottom: 120px !important;

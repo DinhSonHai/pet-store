@@ -2,6 +2,7 @@ import Carousel from "react-multi-carousel";
 import { Link } from "react-router-dom";
 import { Card, Tooltip, Rate } from "antd";
 import "./styles.scss";
+import { Fragment } from "react";
 
 const responsive = {
   desktop: {
@@ -21,26 +22,32 @@ const ShowHomeProducts = ({ type, products }) => {
   return (
     <section className="show-products">
       <div className="show-products__wrap container">
-        <p className="show-products__heading">
-          {" "}
-          {`${
-            type === "newest"
-              ? "Newest"
-              : type === "popular"
-              ? "Popular"
-              : "Best Seller"
-          } Products`}
-        </p>
-        <h1 className="show-products__title">
-          Sản phẩm{" "}
-          <span>{`${
-            type === "newest"
-              ? "mới nhất"
-              : type === "popular"
-              ? "ưa chuộng"
-              : "bán chạy"
-          }`}</span>
-        </h1>
+        {type !== "detail" ? (
+          <Fragment>
+            <p className="show-products__heading">
+              {" "}
+              {`${
+                type === "newest"
+                  ? "Newest"
+                  : type === "popular"
+                  ? "Popular"
+                  : "Best Seller"
+              } Products`}
+            </p>
+            <h1 className="show-products__title">
+              Sản phẩm{" "}
+              <span>{`${
+                type === "newest"
+                  ? "mới nhất"
+                  : type === "popular"
+                  ? "ưa chuộng"
+                  : "bán chạy"
+              }`}</span>
+            </h1>
+          </Fragment>
+        ) : (
+          <h4>Sản phẩm cùng loại:</h4>
+        )}
         <Carousel infinite ssr partialVisbile responsive={responsive}>
           {products.map((product) => (
             <Card key={product._id} bordered={false} hoverable>

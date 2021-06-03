@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import store from "../../app/store";
 import { GET_GUEST_INFO, CLEAR_CHECKOUT_INFO } from "../../redux/types";
+import { BuyStep } from "../../components";
 import "./styles.scss";
 const Checkout = ({
   cartState,
@@ -46,6 +47,9 @@ const Checkout = ({
   return (
     <section className="checkout">
       <div className="checkout__wrap container">
+        <div className="step-container">
+          <BuyStep />
+        </div>
         {!isAuthenticated && (
           <div className="checkout__title">
             <div>

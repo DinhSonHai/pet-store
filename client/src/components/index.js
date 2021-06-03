@@ -11,3 +11,4 @@ export { default as CheckoutAddressModal } from "./modal/checkout_address";
 export { default as FavoriteAction } from "./favorite_action";
 export { default as VoiceSearch } from "./voice_search";
 export { default as ShowHomeProducts } from "./show_home_products";
+export { default as BuyStep } from "./buy_step";

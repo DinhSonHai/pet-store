@@ -118,8 +118,9 @@ class ProductController {
   // @access  Public
   async getSameTypeProducts(req, res, next) {
     try {
-      const products = await Product.find({ typeId: { $eq: typeId } })
-        .sort({ createdAt: "asc" })
+      const typeId = new ObjectId(req.params.typeId);
+      const products = await Product.find({ typeId: { $eq: typeId }, isShow : true })
+        .sort({ createdAt: "asc", sold: "desc", starRatings: "desc" })
         .limit(12);
       return res.status(statusCode.success).json(products);
     } catch (err) {
