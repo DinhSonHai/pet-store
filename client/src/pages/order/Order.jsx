@@ -20,7 +20,6 @@ import {
 import { BuyStep } from "../../components";
 import PaymentInput from '../../components/PaymentInput';
 import './styles.scss';
-import e from 'express';
 
 const style = {
   display: "block",
@@ -64,7 +63,6 @@ const Order = ({
     price: 35000,
   });
   const [paymentState, SetPaymentState] = useState(0);
-  const [isOpenStripe, setOpenStripe] = useState(false);
   const [error, setError] = useState(null);
   const [cardComplete, setCardComplete] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -74,6 +72,98 @@ const Order = ({
     setError(e.error);
     setCardComplete(e.complete);
   }
+
+  const onChangeDelivery = (e) => {
+    SetDeliveryState({
+      ...deliveryState,
+      value: e.target.value,
+      price: e.target.value === 0 ? 35000 : 55000,
+    });
+  };
+
+  const onChangePayment = (e) => {
+    const paymentState = e.target.value;
+    SetPaymentState(paymentState);
+    setCardComplete(false);
+  };
+  
+  const onFinish = async () => {
+    if (paymentState === 1 && cardComplete) {
+      if (!stripe || !elements) {
+        return;
+      }
+  
+      const payload = await stripe.createPaymentMethod({
+        type: "card",
+        card: elements.getElement(CardElement),
+      });
+  
+      if(!payload?.error) {
+        // let cart = JSON.parse(localStorage.getItem('cart'));
+        // if (!equal(cart, cartState)) {
+        //   return history.push('/cart');
+        // }
+        // setIsProcessing(true);
+        // let res;
+        // if (isAuthenticated) {
+        //   res = await orderProductsAuth(authState);
+        // } else {
+        //   res = await orderProducts(guestState);
+        // }
+        // setIsProcessing(false);
+        // if (res) {
+        //   store.dispatch({
+        //     type: REMOVE_CART,
+        //   });
+        //   store.dispatch({
+        //     type: CLEAR_CHECKOUT_INFO,
+        //   });
+        //   localStorage.removeItem('cart');
+        // }
+        // try {
+        //     const {id} = paymentMethod
+        //     const response = await axios.post("http://localhost:4000/payment", {
+        //         amount: 1000,
+        //         id
+        //     })
+  
+        //     if(response.data.success) {
+        //         console.log("Successful payment")
+        //         setSuccess(true)
+        //     }
+  
+        // } catch (error) {
+        //     console.log("Error", error)
+        // }
+        console.log(authState);
+      } else {
+        setError({ message: 'Stripe payment error! Please try again later.' });
+      }
+    } else {
+      // let cart = JSON.parse(localStorage.getItem('cart'));
+      // if (!equal(cart, cartState)) {
+      //   return history.push('/cart');
+      // }
+      // setIsProcessing(true);
+      // let res;
+      // if (isAuthenticated) {
+      //   res = await orderProductsAuth(authState);
+      // } else {
+      //   res = await orderProducts(guestState);
+      // }
+      // setIsProcessing(false);
+      // if (res) {
+      //   store.dispatch({
+      //     type: REMOVE_CART,
+      //   });
+      //   store.dispatch({
+      //     type: CLEAR_CHECKOUT_INFO,
+      //   });
+      //   localStorage.removeItem('cart');
+      // }
+      console.log(authState);
+    }
+  };
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart"));
@@ -94,6 +184,7 @@ const Order = ({
       let total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);
       setTotalMoney(total_value + deliveryState.price);
       if (isAuthenticated) {
+        console.log(isAuthenticated)
         store.dispatch({
           type: UPDATE_AUTH_INFO,
           payload: {
@@ -113,76 +204,8 @@ const Order = ({
         },
       });
     }
-  }, [cartState, deliveryState]);
+  }, [cartState, deliveryState, paymentState, isAuthenticated]);
   
-  const onChangeDelivery = (e) => {
-    SetDeliveryState({
-      ...deliveryState,
-      value: e.target.value,
-      price: e.target.value === 0 ? 35000 : 55000,
-    });
-  };
-
-  const onChangePayment = (e) => {
-    const paymentState = e.target.value;
-    SetPaymentState(paymentState);
-    if (paymentState === 1) {
-      setOpenStripe(true);
-    }
-    else {
-      setOpenStripe(false);
-    }
-  };
-  
-  const onFinish = async (e) => {
-    e.preventDefault();
-    const {error, paymentMethod} = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardElement)
-    });
-    if(!error) {
-      // try {
-      //     const {id} = paymentMethod
-      //     const response = await axios.post("http://localhost:4000/payment", {
-      //         amount: 1000,
-      //         id
-      //     })
-
-      //     if(response.data.success) {
-      //         console.log("Successful payment")
-      //         setSuccess(true)
-      //     }
-
-      // } catch (error) {
-      //     console.log("Error", error)
-      // }
-      console.log(paymentMethod);
-    } else {
-        console.log(error.message)
-    }
-    // let cart = JSON.parse(localStorage.getItem('cart'));
-    // if (!equal(cart, cartState)) {
-    //   return history.push('/cart');
-    // }
-    // setIsProcessing(true);
-    // let res;
-    // if (isAuthenticated) {
-    //   res = await orderProductsAuth(authState);
-    // } else {
-    //   res = await orderProducts(guestState);
-    // }
-    // setIsProcessing(false);
-    // if (res) {
-    //   store.dispatch({
-    //     type: REMOVE_CART,
-    //   });
-    //   store.dispatch({
-    //     type: CLEAR_CHECKOUT_INFO,
-    //   });
-    //   localStorage.removeItem('cart');
-    // }
-  };
-
   return (
     <section className="order">
       <div className="order__wrap container">
