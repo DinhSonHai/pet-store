@@ -300,12 +300,14 @@ class OrderController {
             (a, b) => a + b.product.price * b.amount,
             deliveryState === 0 ? 35000 : 55000
           );
-          const payment = await stripe.paymentIntents.create({
-            amount: totalMoney,
-            currency: "VND",
-            payment_method: paymentId,
-            confirm: true,
-          });
+          if (paymentId) {
+            const payment = await stripe.paymentIntents.create({
+              amount: totalMoney,
+              currency: "VND",
+              payment_method: paymentId,
+              confirm: true,
+            });
+          }
           order.totalMoney = totalMoney;
           await order.save((err, _) => {
             if (err) {
@@ -386,6 +388,7 @@ class OrderController {
   // @access  Private
   async authOrder(req, res) {
     const { deliveryState, paymentState, note, cart, address, paymentId } = req.body;
+    console.log(paymentId);
     let totalMoney = 0;
     try {
       let user = await crudService.getById(User, req.user.id);
@@ -462,12 +465,14 @@ class OrderController {
         (a, b) => a + b.product.price * b.amount,
         deliveryState === 0 ? 35000 : 55000
       );
-      const payment = await stripe.paymentIntents.create({
-        amount: totalMoney,
-        currency: "VND",
-        payment_method: paymentId,
-        confirm: true,
-      });
+      if (paymentId) {
+        const payment = await stripe.paymentIntents.create({
+          amount: totalMoney,
+          currency: "VND",
+          payment_method: paymentId,
+          confirm: true,
+        });
+      }
       order.totalMoney = totalMoney;
       await order.save((err, _) => {
         if (err) {
