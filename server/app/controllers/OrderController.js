@@ -15,7 +15,9 @@ const {
   NODEMAILER_EMAIL,
   NODEMAILER_PASSWORD,
   CLIENT_URL,
+  STRIPE_SECRET,
 } = require('../../config/default.json');
+const stripe = require("stripe")(STRIPE_SECRET);
 
 function getData(path) {
   return new Promise((resolve, reject) => {
@@ -213,6 +215,7 @@ class OrderController {
       paymentState,
       note,
       cart,
+      paymentId,
     } = req.body;
     let totalMoney = 0;
     try {
@@ -297,6 +300,12 @@ class OrderController {
             (a, b) => a + b.product.price * b.amount,
             deliveryState === 0 ? 35000 : 55000
           );
+          const payment = await stripe.paymentIntents.create({
+            amount: totalMoney,
+            currency: "VND",
+            payment_method: paymentId,
+            confirm: true,
+          });
           order.totalMoney = totalMoney;
           await order.save((err, _) => {
             if (err) {
@@ -376,7 +385,7 @@ class OrderController {
   // @desc    Đặt hàng vai trò người dùng
   // @access  Private
   async authOrder(req, res) {
-    const { deliveryState, paymentState, note, cart, address } = req.body;
+    const { deliveryState, paymentState, note, cart, address, paymentId } = req.body;
     let totalMoney = 0;
     try {
       let user = await crudService.getById(User, req.user.id);
@@ -453,6 +462,12 @@ class OrderController {
         (a, b) => a + b.product.price * b.amount,
         deliveryState === 0 ? 35000 : 55000
       );
+      const payment = await stripe.paymentIntents.create({
+        amount: totalMoney,
+        currency: "VND",
+        payment_method: paymentId,
+        confirm: true,
+      });
       order.totalMoney = totalMoney;
       await order.save((err, _) => {
         if (err) {

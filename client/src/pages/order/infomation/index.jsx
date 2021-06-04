@@ -34,7 +34,7 @@ const Information = ({ isAuthenticated, authState, guestState }) => {
       {isAuthenticated && authState ? (
         <DataComponent data={authState} />
       ) : (
-        <DataComponent data={guestState} />
+        <DataComponent data={guestState || {}} />
       )}
     </Card>
   );
