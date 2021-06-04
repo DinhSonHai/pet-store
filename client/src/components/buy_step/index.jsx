@@ -12,7 +12,7 @@ const BuyStep = () => {
   };
   return (
     <div className="buy-step">
-      <Steps responsive size="small" current={getCurrentStep()}>
+      <Steps responsive="true" size="small" current={getCurrentStep()}>
         <Step title="Thông tin giao hàng" />
         <Step title="Thanh toán và đặt hàng" />
       </Steps>
