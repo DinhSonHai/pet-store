@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-// import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import React from "react";
 import { Radio } from "antd";
 
 const Payment = ({ onChangePayment, paymentState, style }) => {

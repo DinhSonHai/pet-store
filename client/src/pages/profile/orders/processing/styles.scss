@@ -1,5 +1,5 @@
 .order-processing {
-  margin-bottom: 1rem;
+  margin: auto 1rem;
   &__title {
     color: var(--gray-color);
   }
@@ -10,6 +10,11 @@
   }
   &__actions {
     text-align: right;
+  }
+  .ant-card{
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    margin-bottom: 1rem;
   }
 }
 .order-processing-loader {
