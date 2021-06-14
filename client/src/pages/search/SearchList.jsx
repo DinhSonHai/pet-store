@@ -8,18 +8,16 @@ import {
   Row,
   Col,
   Card,
-  Menu,
-  Dropdown,
   Button,
   message,
   Pagination,
   Rate,
   Tooltip,
+  Select
 } from 'antd';
 import {
   CaretDownOutlined,
   CaretUpOutlined,
-  DownOutlined,
 } from '@ant-design/icons';
 import { AddToCart } from '../../assets/icons';
 import { addItem } from '../../utils/cart';
@@ -27,6 +25,7 @@ import { Loader } from '../../components';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import './styles.scss';
+const { Option } = Select;
 
 const SearchList = ({
   data: { products, total },
@@ -50,33 +49,41 @@ const SearchList = ({
   const handlePagination = async (_page) => {
     if (filter) {
       return history.push(
-        `/products/search?q=${q}&sort=${filter}&page=${_page}`
+        `/products/search?q=${q}&sort=${filter || 'newest'}&page=${_page}`
       );
     }
     return history.push(`/products/search?q=${q}&page=${_page}`);
   };
-  const menu = (
-    <Menu>
-      <Menu.Item key='3' icon={<CaretUpOutlined />}>
-        <Link to={`/products/search?q=${q}&sort=asc`}>
-          {' '}
-          Thứ tự theo: giá thấp đến cao
-        </Link>
-      </Menu.Item>
-      <Menu.Item key='4' icon={<CaretDownOutlined />}>
-        <Link to={`/products/search?q=${q}&sort=desc`}>
-          {' '}
-          Thứ tự theo: giá cao đến thấp
-        </Link>
-      </Menu.Item>
-    </Menu>
-  );
   const handleAddToCart = (item) => {
     if (item) {
       const check = addItem(item);
       if (check) {
         return message.success('Đã thêm sản phẩm vào giỏ hàng');
       }
+    }
+  };
+  const handleChange = (value) => {
+    switch (value) {
+      case "newest":
+        return history.push(
+          `/products/search?q=${q}&sort=newest`
+        );
+      case "asc":
+        return history.push(
+          `/products/search?q=${q}&sort=asc`
+        );
+      case "desc":
+        return history.push(
+          `/products/search?q=${q}&sort=desc`
+        );
+      case "name_asc":
+        return history.push(
+          `/products/search?q=${q}&sort=name_asc`
+        );
+      default:
+        return history.push(
+          `/products/search?q=${q}&sort=name_desc`
+        );
     }
   };
 
@@ -86,11 +93,25 @@ const SearchList = ({
         <div className='products__header'>
           {`Kết quả tìm kiếm cho "${q}" (${products.length})`}
           <div className='products__header-filter'>
-            <Dropdown disabled={loading} overlay={menu}>
-              <Button>
-                Mới nhất <DownOutlined />
-              </Button>
-            </Dropdown>
+          <Select
+              defaultValue={filter || "newest"}
+              style={{ width: "100%" }}
+              onChange={handleChange}
+            >
+              <Option value="newest">Mới nhất</Option>
+              <Option value="asc">
+                <CaretUpOutlined /> Thứ tự theo: giá thấp đến cao
+              </Option>
+              <Option value="desc">
+                <CaretDownOutlined /> Thứ tự theo: giá cao đến thấp
+              </Option>
+              <Option value="name_asc">
+                <CaretUpOutlined /> Thứ tự theo: A - Z
+              </Option>
+              <Option value="name_desc">
+                <CaretDownOutlined /> Thứ tự theo: Z - A
+              </Option>
+            </Select>
           </div>
         </div>
         <div className='products-list'>
@@ -103,7 +124,7 @@ const SearchList = ({
           >
             {products.map((product) => (
               <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
-                <Card hoverable>
+                <Card bordered={false} hoverable>
                   <Link
                     style={{
                       height: '100%',

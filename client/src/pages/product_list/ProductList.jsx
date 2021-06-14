@@ -1,34 +1,29 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
-import { getProductsByType } from '../../redux/actions/products';
-import { connect } from 'react-redux';
+import { getProductsByType } from "../../redux/actions/products";
+import { connect } from "react-redux";
 
 import {
   Row,
   Col,
   Card,
-  Menu,
-  Dropdown,
   Button,
   Breadcrumb,
   Pagination,
   Tooltip,
   Rate,
-} from 'antd';
-import { notifyActions } from '../../utils/notify';
-import {
-  CaretDownOutlined,
-  CaretUpOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
-import { AddToCart } from '../../assets/icons';
-import { addItem } from '../../utils/cart';
-import { Link } from 'react-router-dom';
-import { ProductListLoader } from '../../components';
-import queryString from 'query-string';
-import './styles.scss';
-
+  Select,
+} from "antd";
+import { notifyActions } from "../../utils/notify";
+import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
+import { AddToCart } from "../../assets/icons";
+import { addItem } from "../../utils/cart";
+import { Link } from "react-router-dom";
+import { ProductListLoader } from "../../components";
+import queryString from "query-string";
+import "./styles.scss";
+const { Option } = Select;
 const ProductList = ({
   data: { products, total },
   getProductsByType,
@@ -50,75 +45,96 @@ const ProductList = ({
   const handlePagination = async (_page) => {
     if (filter) {
       return history.push(
-        `/products/${match.params.type}/list/${match.params.id}/?sort=${filter}&page=${_page}`
+        `/products/${match.params.type}/list/${match.params.id}/?sort=${
+          filter || "newest"
+        }&page=${_page}`
       );
     }
     return history.push(
       `/products/${match.params.type}/list/${match.params.id}/?page=${_page}`
     );
   };
-  const menu = (
-    <Menu>
-      <Menu.Item key='3' icon={<CaretUpOutlined />}>
-        <Link
-          to={`/products/${match.params.type}/list/${match.params.id}/?sort=asc`}
-        >
-          {' '}
-          Thứ tự theo: giá thấp đến cao
-        </Link>
-      </Menu.Item>
-      <Menu.Item key='4' icon={<CaretDownOutlined />}>
-        <Link
-          to={`/products/${match.params.type}/list/${match.params.id}/?sort=desc`}
-        >
-          {' '}
-          Thứ tự theo: giá cao đến thấp
-        </Link>
-      </Menu.Item>
-    </Menu>
-  );
+
   const handleAddToCart = (item) => {
     if (item) {
       const check = addItem(item);
       if (check) {
-        return notifyActions('success', 'Đã thêm sản phẩm vào giỏ hàng');
+        return notifyActions("success", "Đã thêm sản phẩm vào giỏ hàng");
       }
     }
   };
+  const handleChange = (value) => {
+    switch (value) {
+      case "newest":
+        return history.push(
+          `/products/${match.params.type}/list/${match.params.id}/?sort=newest`
+        );
+      case "asc":
+        return history.push(
+          `/products/${match.params.type}/list/${match.params.id}/?sort=asc`
+        );
+      case "desc":
+        return history.push(
+          `/products/${match.params.type}/list/${match.params.id}/?sort=desc`
+        );
+      case "name_asc":
+        return history.push(
+          `/products/${match.params.type}/list/${match.params.id}/?sort=name_asc`
+        );
+      default:
+        return history.push(
+          `/products/${match.params.type}/list/${match.params.id}/?sort=name_desc`
+        );
+    }
+  };
   return (
-    <section className='products'>
-      <div className='container'>
-        <div className='products__header'>
+    <section className="products">
+      <div className="container">
+        <div className="products__header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Link className='products__header-title' to='/'>
+              <Link className="products__header-title" to="/">
                 Trang chủ
               </Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <Link className='products__header-title' to='/'>
-                {match.params.type === 'dog'
-                  ? 'Chó cảnh'
-                  : match.params.type === 'cat'
-                  ? 'Mèo cảnh'
-                  : match.params.type === 'food'
-                  ? 'Thức ăn'
-                  : match.params.type === 'accessories' && 'Phụ kiện'}
+              <Link className="products__header-title" to="/">
+                {match.params.type === "dog"
+                  ? "Chó cảnh"
+                  : match.params.type === "cat"
+                  ? "Mèo cảnh"
+                  : match.params.type === "food"
+                  ? "Thức ăn"
+                  : match.params.type === "accessories" && "Phụ kiện"}
               </Link>
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className='products__header-filter'>
-            <Dropdown disabled={loading} overlay={menu}>
-              <Button>
-                Mới nhất <DownOutlined />
-              </Button>
-            </Dropdown>
+          <div className="products__header-filter">
+            <Select
+              defaultValue={filter || "newest"}
+              style={{ width: "100%" }}
+              onChange={handleChange}
+            >
+              <Option value="newest">Mới nhất</Option>
+              <Option value="asc">
+                <CaretUpOutlined /> Thứ tự theo: giá thấp đến cao
+              </Option>
+              <Option value="desc">
+                <CaretDownOutlined /> Thứ tự theo: giá cao đến thấp
+              </Option>
+              <Option value="name_asc">
+                <CaretUpOutlined /> Thứ tự theo: A - Z
+              </Option>
+              <Option value="name_desc">
+                <CaretDownOutlined /> Thứ tự theo: Z - A
+              </Option>
+            </Select>
           </div>
         </div>
         {loading ? (
           <ProductListLoader />
         ) : (
-          <div className='products-list'>
+          <div className="products-list">
             <Row
               gutter={[
                 { xs: 4, sm: 8, md: 16, lg: 16 },
@@ -130,23 +146,20 @@ const ProductList = ({
                   <Card bordered={false} hoverable>
                     <Link
                       style={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
                       }}
                       to={`/product/${product.productName}/${product._id}`}
                     >
-                      <div className='products-list__wrap'>
-                        <img
-                          alt='example'
-                          src={product.images[0]}
-                        />
+                      <div className="products-list__wrap">
+                        <img alt="example" src={product.images[0]} />
                       </div>
                       <div className="item-wrap">
-                        <p className='products__name'>
+                        <p className="products__name">
                           <Tooltip
-                            placement='topLeft'
+                            placement="topLeft"
                             title={product.productName}
                           >
                             {product.productName}
@@ -154,21 +167,21 @@ const ProductList = ({
                         </p>
                         <div>
                           <Rate
-                            style={{ fontSize: '0.85rem' }}
+                            style={{ fontSize: "0.85rem" }}
                             disabled
                             defaultValue={product.starRatings}
                           />
                           <span
-                            style={{ fontSize: '0.85rem' }}
-                            className='ant-rate-text'
+                            style={{ fontSize: "0.85rem" }}
+                            className="ant-rate-text"
                           >
                             {`(${product.reviewsCount})`}
                           </span>
                         </div>
-                        <p className='products__price'>
-                          {parseInt(product.price).toLocaleString('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND',
+                        <p className="products__price">
+                          {parseInt(product.price).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
                           })}
                         </p>
                       </div>
@@ -177,9 +190,9 @@ const ProductList = ({
                   <Button
                     disabled={product.status ? false : true}
                     onClick={() => handleAddToCart(product)}
-                    className='addToCart'
+                    className="addToCart"
                     icon={<AddToCart />}
-                    type='primary'
+                    type="primary"
                   />
                 </Col>
               ))}
@@ -195,7 +208,7 @@ const ProductList = ({
           pageSize={12}
           total={total}
           showSizeChanger={false}
-          style={{ textAlign: 'center', margin: '3rem 0 1rem 0' }}
+          style={{ textAlign: "center", margin: "3rem 0 1rem 0" }}
         />
       </div>
     </section>

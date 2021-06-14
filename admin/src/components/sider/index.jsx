@@ -3,17 +3,14 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import {
-  // DesktopOutlined,
   BarsOutlined,
   PieChartOutlined,
   AuditOutlined,
-  // UserOutlined,
   BarChartOutlined,
-  // PaperClipOutlined,
-  // TeamOutlined,
   ImportOutlined,
   BarcodeOutlined,
   CommentOutlined,
+  HighlightOutlined
 } from '@ant-design/icons';
 
 import './styles.scss';
@@ -80,27 +77,9 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
         <Menu.Item key='review' icon={<CommentOutlined />}>
           <Link to='/?tab=review'>Quản lý bình luận</Link>
         </Menu.Item>
-        {/* <Menu.Item key='user' icon={<UserOutlined />}>
-          <Link to='/?tab=user'>Quản lý người dùng</Link>
-        </Menu.Item> */}
-        {/* <SubMenu
-          key='employee_management'
-          icon={<TeamOutlined />}
-          title='Quản lý nhân viên'
-        >
-          <Menu.Item key='employee'>
-            <Link to='/?tab=employee'>Nhân viên</Link>
-          </Menu.Item>
-          <Menu.Item key='account'>
-            <Link to='/?tab=account'>Tài khoản</Link>
-          </Menu.Item>
-        </SubMenu> */}
-        {/* <Menu.Item key='post' icon={<PaperClipOutlined />}>
-          <Link to='/?tab=post'>Quản lý bài đăng</Link>
+        <Menu.Item key='blog' icon={<HighlightOutlined />}>
+          <Link to='/?tab=blog'>Quản lý bài đăng</Link>
         </Menu.Item>
-        <Menu.Item key='frontend' icon={<DesktopOutlined />}>
-          <Link to='/?tab=frontend'>Quản lý UI/UX</Link>
-        </Menu.Item> */}
         {user && user.role === 0 && (
           <Menu.Item key='statistical' icon={<BarChartOutlined />}>
             <Link to='/?tab=statistical'>Thống kê</Link>

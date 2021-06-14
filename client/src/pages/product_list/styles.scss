@@ -29,6 +29,10 @@
   &__header-title {
     font-size: 0.9rem;
   }
+  &__header-filter{
+    max-width: 250px;
+    width: 100%;
+  }
   &__name {
     margin-bottom: 0rem;
     white-space: nowrap;

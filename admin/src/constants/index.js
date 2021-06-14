@@ -8,3 +8,14 @@ export const ORDER_PACKING = 2;
 export const ORDER_PACKED = 3;
 export const ORDER_TRANSPORTING = 4;
 export const ORDER_DELIVERIED = 5;
+export const BLOG_TAGS = [
+  { label: "Chó", value: "dog" },
+  { label: "Dinh dưỡng", value: "food" },
+  { label: "Huấn luyện", value: "tranning" },
+  { label: "Hướng dẫn", value: "tutorial" },
+  { label: "Hỏi đáp", value: "helper" },
+  { label: "Mèo", value: "cat" },
+  { label: "Mẹo hữu ích", value: "tips" },
+  { label: "Sức khỏe", value: "healthy" },
+  { label: "Top list", value: "top_list" },
+];

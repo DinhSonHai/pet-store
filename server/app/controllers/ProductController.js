@@ -93,11 +93,15 @@ class ProductController {
     const query = { typeId: { $eq: typeId } };
     const { start, end } = pagination(req.query.page, 12);
     const filterValue =
-      filterStatus === "undefined"
+      filterStatus === "newest"
         ? { createdAt: -1 }
         : filterStatus === "desc"
         ? { price: -1 }
-        : { price: 1 };
+        : filterStatus === "asc"
+        ? { price: 1 }
+        : filterStatus === "name_asc"
+        ? { productName: 1 }
+        : { productName: -1 };
     try {
       const products = await crudService.getAdvance(
         Product,
@@ -119,7 +123,10 @@ class ProductController {
   async getSameTypeProducts(req, res, next) {
     try {
       const typeId = new ObjectId(req.params.typeId);
-      const products = await Product.find({ typeId: { $eq: typeId }, isShow : true })
+      const products = await Product.find({
+        typeId: { $eq: typeId },
+        isShow: true,
+      })
         .sort({ createdAt: "asc", sold: "desc", starRatings: "desc" })
         .limit(12);
       return res.status(statusCode.success).json(products);
@@ -133,7 +140,7 @@ class ProductController {
   // @access  Public
   async getNewestProducts(req, res, next) {
     try {
-      const products = await Product.find({ isShow : true })
+      const products = await Product.find({ isShow: true })
         .sort({ createdAt: "desc" })
         .limit(12);
       return res.status(statusCode.success).json(products);
@@ -147,7 +154,7 @@ class ProductController {
   // @access  Public
   async getPopularProducts(req, res, next) {
     try {
-      const products = await Product.find({ isShow : true })
+      const products = await Product.find({ isShow: true })
         .sort({ starRatings: "desc" })
         .limit(12);
       return res.status(statusCode.success).json(products);
@@ -161,7 +168,9 @@ class ProductController {
   // @access  Public
   async getBestSellerProducts(req, res, next) {
     try {
-      const products = await Product.find({ isShow : true }).sort({ sold: "desc" }).limit(12);
+      const products = await Product.find({ isShow: true })
+        .sort({ sold: "desc" })
+        .limit(12);
       return res.status(statusCode.success).json(products);
     } catch (err) {
       return res.status(statusCode.serverError).send("Server Error");
@@ -333,11 +342,15 @@ class ProductController {
     const query = { productName: search, isShow: true };
     const { start, end } = pagination(req.query.page, 12);
     const filterValue =
-      filterStatus === "undefined"
-        ? {}
-        : filterStatus === "desc"
-        ? { price: -1 }
-        : { price: 1 };
+    filterStatus === "newest"
+      ? { createdAt: -1 }
+      : filterStatus === "desc"
+      ? { price: -1 }
+      : filterStatus === "asc"
+      ? { price: 1 }
+      : filterStatus === "name_asc"
+      ? { productName: 1 }
+      : { productName: -1 };
     try {
       const products = await crudService.getAdvance(
         Product,

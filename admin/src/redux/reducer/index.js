@@ -8,15 +8,17 @@ import orders from './orders';
 import bills from './bills';
 import reviews from './reviews';
 import statistical from './statistical';
+import blogs from './blogs'
 
 export default combineReducers({
-  products,
   auth,
-  categories,
-  types,
-  receipts,
-  orders,
+  blogs,
   bills,
+  categories,
+  orders,
+  products,
+  receipts,
   reviews,
   statistical,
+  types,
 });
