@@ -3,7 +3,7 @@ import { GET_ALL_TYPES, GET_TYPE_BY_ID } from '../types';
 
 const initialState = {
   types: [],
-  product: null,
+  type: null,
 };
 
 export default function (state = initialState, action) {

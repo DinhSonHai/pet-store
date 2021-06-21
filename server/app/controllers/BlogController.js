@@ -9,7 +9,7 @@ class BlogController {
   // @desc    Lấy tất cả blogs
   // @access  Public
   async getAll(req, res, next) {
-    const { start, end } = pagination(req.query.page, 10);
+    const { start, end } = pagination(req.query.page, 6);
     try {
       const blogs = await crudService.getAdvance(
         Blog,

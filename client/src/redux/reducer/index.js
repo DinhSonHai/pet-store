@@ -4,11 +4,13 @@ import auth from './auth';
 import cart from './cart';
 import checkout from './checkout';
 import types from './types';
+import blogs from './blogs';
 
 export default combineReducers({
-  products,
   auth,
+  blogs,
   cart,
   checkout,
+  products,
   types,
 });

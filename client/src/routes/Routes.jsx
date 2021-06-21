@@ -7,6 +7,7 @@ export default function () {
   return (
     <Switch>
       <Route exact path='/' component={pages.Home} />
+      <Route exact path='/blogs' component={pages.BlogList} />
       <Route exact path='/products/search' component={pages.SearchList} />
       <Route
         exact

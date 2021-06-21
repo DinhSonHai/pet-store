@@ -10,11 +10,6 @@ const authAdmin = require("../../app/middlewares/authAdmin");
 // @access  Public
 router.get("/", BlogController.getAll);
 
-// @route   GET api/blogs/:id
-// @desc    Lấy blog theo id
-// @access  Public
-router.get("/:id", BlogController.getById);
-
 // @route   GET api/blogs/tags
 // @desc    Lấy blog theo tags
 // @access  Public
@@ -44,5 +39,10 @@ router.put("/:id", [authAdmin, checkPermission], BlogController.update);
 // @desc    Xoa blog
 // @access  Private
 router.delete("/:id", [authAdmin, checkPermission], BlogController.remove);
+
+// @route   GET api/blogs/:id
+// @desc    Lấy blog theo id
+// @access  Public
+router.get("/:id", BlogController.getById);
 
 module.exports = router;

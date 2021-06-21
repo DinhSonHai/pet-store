@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+const date = new Date().toISOString();
+
 const BlogSchema = new Schema({
   key: { type: Schema.Types.ObjectId, required: true },
   employeeId: { type: Schema.Types.ObjectId, ref: "employee", required: true },
@@ -9,7 +11,7 @@ const BlogSchema = new Schema({
   content: { type: String, trim: true },
   thumbnail: { type: String, trim: true },
   tags: [{ type: String, trim: true }],
-  createdAt: { type: Date, default: new Date().toISOString() },
+  createdAt: { type: Date, default: date},
 });
 
 module.exports = mongoose.model("blog", BlogSchema);

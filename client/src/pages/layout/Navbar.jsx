@@ -124,6 +124,9 @@ const NavBar = ({ auth: { isAuthenticated, user, loading }, history }) => {
           <Link className='navbar__wrap-actions--link' to='/services'>
             Dịch vụ
           </Link>
+          <Link className='navbar__wrap-actions--link' to='/blogs'>
+            Tin tức
+          </Link>
         </div>
       </section>
       <Drawer
