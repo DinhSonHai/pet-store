@@ -98,21 +98,6 @@ const Order = ({
       if(payload?.error) {
         setError({ message: 'Stripe payment error! Please try again later.' });
         return;
-        // try {
-        //     const {id} = paymentMethod
-        //     const response = await axios.post("http://localhost:4000/payment", {
-        //         amount: 1000,
-        //         id
-        //     })
-  
-        //     if(response.data.success) {
-        //         console.log("Successful payment")
-        //         setSuccess(true)
-        //     }
-  
-        // } catch (error) {
-        //     console.log("Error", error)
-        // }
       }
     }
     let cart = JSON.parse(localStorage.getItem('cart'));

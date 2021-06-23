@@ -388,7 +388,6 @@ class OrderController {
   // @access  Private
   async authOrder(req, res) {
     const { deliveryState, paymentState, note, cart, address, paymentId } = req.body;
-    console.log(paymentId);
     let totalMoney = 0;
     try {
       let user = await crudService.getById(User, req.user.id);
@@ -471,6 +470,10 @@ class OrderController {
           currency: "VND",
           payment_method: paymentId,
           confirm: true,
+          metadata: {
+            'order_id': order._id.toString(),
+            'user_id': user._id.toString(),
+          },
         });
       }
       order.totalMoney = totalMoney;
