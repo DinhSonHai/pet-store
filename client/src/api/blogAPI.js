@@ -1,5 +1,5 @@
-import api from '../api';
-const source = '/blogs';
+import api from "../api";
+const source = "/blogs";
 const blogAPI = {
   get_all: async (page) => {
     return await api.get(`${source}/?page=${page}`);
@@ -12,6 +12,9 @@ const blogAPI = {
   },
   get_by_searching: async (q, page) => {
     return await api.get(`${source}/search/?q=${q}&page=${page}`);
+  },
+  get_by_id: async (id) => {
+    return await api.get(`${source}/${id}`);
   },
 };
 

@@ -20,3 +20,4 @@ export { default as NotFound } from "./layout/NotFound";
 export { default as About } from "./about/About";
 export { default as Service } from "./service/Service";
 export { default as BlogList } from "./blog/blog_list";
+export { default as BlogItem } from './blog/blog_item';

@@ -34,7 +34,10 @@ class BlogController {
   // @access  Public
   async getById(req, res, next) {
     try {
-      const blog = await crudService.getById(Blog, req.params.id);
+      const blog = await Blog.findById(req.params.id).populate({
+        path: "employeeId",
+        select: ["name"],
+      });
       if (!blog) {
         return res
           .status(statusCode.notFound)
