@@ -14,6 +14,7 @@ const ProductSchema = new Schema({
   description: { type: String, trim: true, default: '' },
   images: [{ type: String, trim: true }],
   price: { type: Number, required: true }, //price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+  discountPrice: { type: Number, default: 0 },
   quantity: { type: Number, required: true },
   sold: { type: Number, required: true, default: 0},
   status: { type: Boolean, default: true },
