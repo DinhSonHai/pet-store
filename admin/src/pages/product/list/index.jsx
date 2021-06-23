@@ -63,6 +63,7 @@ const ProductList = ({
     {
       title: 'Tên SP',
       dataIndex: 'productName',
+      width: '40%',
     },
     {
       title: 'Số lượng',

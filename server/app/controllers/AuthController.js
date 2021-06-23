@@ -862,7 +862,7 @@ class AuthController {
           );
           if (!product) {
             product = {
-              _id: user.purchasedProducts[i],
+              _id: user.favoriteProducts[i],
               productName: 'Sản phẩm không tồn tại!',
               price: 0,
               image:
@@ -875,6 +875,7 @@ class AuthController {
               _id: product._id,
               productName: product.productName,
               price: product.price,
+              discountPrice: product.discountPrice,
               image: product.images[0],
               starRatings: product.starRatings,
             },
@@ -922,6 +923,7 @@ class AuthController {
               _id: product._id,
               productName: product.productName,
               price: product.price,
+              discountPrice: product.discountPrice,
               image: product.images[0],
               starRatings: product.starRatings,
             },

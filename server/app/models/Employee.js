@@ -16,7 +16,7 @@ const EmployeeSchema = new Schema({
   },
   address: { type: String, trim: true, default: '' },
   gender: { type: Number, default: 0 },
-  dateOfBirth: { type: Date, default: new Date().toISOString() },
+  dateOfBirth: { type: Date, default: Date.now },
   phoneNumber: { type: String, trim: true },
   resetPasswordLink: {
     data: String,
@@ -24,7 +24,7 @@ const EmployeeSchema = new Schema({
   },
   role: { type: Number, default: 1 },
   isWorking: { type: Boolean, default: true },
-  createdAt: { type: Date, default: new Date().toISOString() },
+  createdAt: { type: Date, default: Date.now },
 });
 EmployeeSchema.methods.checkPassword = async function (password) {
   return await bcrypt.compare(password, this.password);

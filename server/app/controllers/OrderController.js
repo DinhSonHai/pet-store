@@ -175,7 +175,7 @@ class OrderController {
       const orders = await crudService.getAdvance(
         Order,
         { status },
-        { createdAt: 'asc' }
+        { createdAt: 'desc' }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
@@ -291,13 +291,13 @@ class OrderController {
               productId: product._id,
               productName: product.productName,
               amount: cart[i].amount,
-              price: product.price,
+              price: product.discountPrice ? product.discountPrice : product.price,
             });
             detail.key = detail._id;
             await detail.save();
           }
           totalMoney = getProducts.reduce(
-            (a, b) => a + b.product.price * b.amount,
+            (a, b) => a + (b.product.discountPrice ? b.product.discountPrice : b.product.price) * b.amount,
             deliveryState === 0 ? 35000 : 55000
           );
           if (paymentId) {
@@ -334,7 +334,7 @@ class OrderController {
                   cartItem.product.productName
                 }</li><li>Số lượng: ${
                   cartItem.amount
-                }</li><li>Đơn giá mỗi sản phẩm: ${cartItem.product.price.toLocaleString(
+                }</li><li>Đơn giá mỗi sản phẩm: ${(cartItem.product.discountPrice ? cartItem.product.discountPrice : cartItem.product.price).toLocaleString(
                   'vi-VN',
                   { style: 'currency', currency: 'VND' }
                 )}</li></ul></li>`
@@ -455,13 +455,13 @@ class OrderController {
           productId: product._id,
           productName: product.productName,
           amount: cart[i].amount,
-          price: product.price,
+          price: product.discountPrice ? product.discountPrice : product.price,
         });
         detail.key = detail._id;
         await detail.save();
       }
       totalMoney = getProducts.reduce(
-        (a, b) => a + b.product.price * b.amount,
+        (a, b) => a + (b.product.discountPrice ? b.product.discountPrice : b.product.price) * b.amount,
         deliveryState === 0 ? 35000 : 55000
       );
       if (paymentId) {
@@ -502,7 +502,7 @@ class OrderController {
             cartItem.product.productName
           }</li><li>Số lượng: ${
             cartItem.amount
-          }</li><li>Đơn giá mỗi sản phẩm: ${cartItem.product.price.toLocaleString(
+          }</li><li>Đơn giá mỗi sản phẩm: ${(cartItem.product.discountPrice ? cartItem.product.discountPrice : cartItem.product.price).toLocaleString(
             'vi-VN',
             { style: 'currency', currency: 'VND' }
           )}</li></ul></li>`
@@ -661,9 +661,6 @@ class OrderController {
           ],
         });
       } else if (status === 0) {
-        order.status = 1;
-        order.confirmedAt = new Date().toISOString();
-      } else if (status === 1) {
         const detailOrders = await crudService.getAll(OrderDetail, {
           orderId: new ObjectId(orderId),
         });
@@ -686,6 +683,9 @@ class OrderController {
           }
           await product.save();
         }
+        order.status = 1;
+        order.confirmedAt = new Date().toISOString();
+      } else if (status === 1) {
         order.status = 2;
         order.pickedUpAt = new Date().toISOString();
       } else if (status === 2) {
@@ -739,7 +739,7 @@ class OrderController {
             productId: detailOrders[i].productId,
             productName: detailOrders[i].productName,
             amount: detailOrders[i].amount,
-            price: detailOrders[i].price,
+            price: detailOrders[i].discountPrice ? detailOrders[i].discountPrice : detailOrders[i].price,
           });
           detail.key = detail._id;
           await detail.save();

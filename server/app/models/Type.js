@@ -9,7 +9,7 @@ const TypeSchema = new Schema({
   typeImg: { type: String, trim: true },
   content: { type: String, trim: true },
   categoryId: { type: Schema.Types.ObjectId, ref: 'category', required: true },
-  createdAt: { type: Date, default: new Date().toISOString() },
+  createdAt: { type: Date, default: Date.now },
 });
 
 TypeSchema.plugin(mongooseDelete, {
