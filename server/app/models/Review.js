@@ -10,7 +10,7 @@ const ReviewSchema = new Schema({
   avatar: { type: String, trim: true },
   starRatings: { type: Number },
   comment: { type: String, trim: true },
-  commentedAt: { type: Date, default: new Date().toISOString() },
+  commentedAt: { type: Date, default: Date.now },
   replyComment: [
     {
       userReplyId: { type: Schema.Types.ObjectId, ref: 'user', default: null },
@@ -22,7 +22,7 @@ const ReviewSchema = new Schema({
       name: { type: String, trim: true },
       avatar: { type: String, trim: true },
       replyComment: { type: String, trim: true },
-      replyCommentedAt: { type: Date, default: new Date().toISOString() },
+      replyCommentedAt: { type: Date, default: Date.now },
       status: { type: Number, default: 0 },
     },
   ],

@@ -15,7 +15,7 @@ const OrderSchema = new Schema({
   note: { type: String, trim: true },
   deliveryState: { type: Number, default: 0 },
   paymentState: { type: Number, default: 0 },
-  createdAt: { type: Date, default: new Date().toISOString() },
+  createdAt: { type: Date, default: Date.now },
   confirmedAt: { type: Date, default: null },
   pickedUpAt: { type: Date, default: null },
   packedAt: { type: Date, default: null },

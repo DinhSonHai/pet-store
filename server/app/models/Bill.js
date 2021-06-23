@@ -13,8 +13,8 @@ const BillSchema = new Schema({
   totalMoney: { type: Number, required: true },
   status: { type: Boolean, default: true },
   note: { type: String, trim: true },
-  orderedAt: { type: Date, default: new Date().toISOString() },
-  deliveriedAt: { type: Date, default: new Date().toISOString() },
+  orderedAt: { type: Date, default: Date.now },
+  deliveriedAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('bill', BillSchema);

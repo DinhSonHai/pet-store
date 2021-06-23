@@ -25,7 +25,7 @@ const UserSchema = new Schema({
     },
   ],
   gender: { type: Number, default: 0 },
-  dateOfBirth: { type: Date, default: new Date().toISOString() },
+  dateOfBirth: { type: Date, default: Date.now },
   phoneNumber: {
     type: String,
     trim: true,
@@ -38,7 +38,7 @@ const UserSchema = new Schema({
     default: '',
   },
   role: { type: Number, default: 2 },
-  createdAt: { type: Date, default: new Date().toISOString() },
+  createdAt: { type: Date, default: Date.now },
 });
 
 UserSchema.plugin(mongooseDelete, {

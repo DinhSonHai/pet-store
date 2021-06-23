@@ -23,7 +23,7 @@ const ProductSchema = new Schema({
   reviewsCount: { type: Number, default: 0 },
   typeId: { type: Schema.Types.ObjectId, ref: 'type' },
   isShow: { type: Boolean, default: true },
-  createdAt: { type: Date, default: new Date().toISOString() },
+  createdAt: { type: Date, default: Date.now },
   modifiedAt: { type: Date },
 });
 
