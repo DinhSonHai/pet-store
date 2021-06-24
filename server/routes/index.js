@@ -10,6 +10,7 @@ const reviews = require('./api/reviews');
 const bills = require('./api/bills');
 const statistical = require('./api/statistical');
 const blog = require('./api/blog');
+const discountOffer = require('./api/discountOffer');
 
 function route(app) {
   //Products route
@@ -46,7 +47,10 @@ function route(app) {
   app.use('/api/statistical', statistical);
 
   // Blog route
-  app.use('/api/blogs', blog)
+  app.use('/api/blogs', blog);
+
+  // Discount offer route
+  app.use('/api/discountOffer', discountOffer);
 }
 
 module.exports = route;
