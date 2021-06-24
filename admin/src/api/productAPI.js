@@ -17,7 +17,7 @@ const productAPI = {
     return await api.patch(`${source}/${id}/restore`);
   },
   get_removed: async (page) => {
-    return await api.delete(`${source}/deleted/?page=${page}`);
+    return await api.get(`${source}/deleted/?page=${page}`);
   },
 };
 

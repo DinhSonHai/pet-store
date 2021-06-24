@@ -17,7 +17,7 @@ const typeAPI = {
     return await api.patch(`${source}/${id}/restore`);
   },
   get_removed: async () => {
-    return await api.delete(`${source}/deleted`);
+    return await api.get(`${source}/deleted`);
   },
 };
 
