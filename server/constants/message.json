@@ -78,5 +78,8 @@
     "maxLength": "is too long",
     "validLength": "must have a length of",
     "wrongTypeData": "is wrong data type"
+  },
+  "discountOffer": {
+    "isNotActive": "Chương trình khuyễn mãi phải đang hoạt động mới có thể sửa"
   }
 }

@@ -240,6 +240,7 @@ class ProductController {
     if (!errors.isEmpty()) {
       return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
+    let { price, quantity } = req.body;
     try {
       let product = await crudService.getById(Product, req.params.id);
       if (!product) {
