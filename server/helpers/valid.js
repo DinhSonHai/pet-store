@@ -226,7 +226,7 @@ module.exports.validateCreateDiscountOffer = [
   body('data')
     .custom((item) => _.isArray(item) && item.length > 0)
     .withMessage('Vui lòng nhập sản phẩm giảm giá'),
-  body('data.*.id')
+  body('data.*.productId')
     .notEmpty()
     .withMessage('Vui lòng chọn sản phẩm'),
   body('data.*.discount')

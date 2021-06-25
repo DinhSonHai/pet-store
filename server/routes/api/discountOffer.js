@@ -18,10 +18,15 @@ router.get("/", authAdmin, DiscountOfferController.getAllDiscountOffers);
 // @access  Private
 router.post("/", [authAdmin, validateCreateDiscountOffer], DiscountOfferController.createDiscountOffer);
 
-// @route   PUT api/discountOffer/:id/active
-// @desc    Kích chương trình khuyến mãi
+// @route   PUT api/discountOffer/:id/activate
+// @desc    Kích hoạt chương trình khuyến mãi
 // @access  Private
-router.put("/:id/active", authAdmin, DiscountOfferController.activeDiscountOffer);
+router.put("/:id/activate", authAdmin, DiscountOfferController.activeDiscountOffer);
+
+// @route   PUT api/discountOffer/:id/deactivate
+// @desc    Hủy kích hoạt chương trình khuyến mãi
+// @access  Private
+router.put("/:id/deactivate", authAdmin, DiscountOfferController.deactiveDiscountOffer);
 
 // @route   PUT api/discountOffer/:id
 // @desc    Cập nhật chương trình khuyến mãi

@@ -32,12 +32,11 @@ class DiscountOfferController {
     const from = parseInt(req.body.from);
     const to = parseInt(req.body.to);
     try {
-      const products = data.map(item => ({ productId: item.id, discount: item.discount }));
       const discountOffer = new DiscountOffer({
         title,
         from,
         to,
-        products,
+        products: data,
       });
       await discountOffer.save();
       return res.status(statusCode.success).json({
@@ -50,7 +49,7 @@ class DiscountOfferController {
 
   // @route   PUT api/discountOffer/:id
   // @desc    Cập nhật chương trình khuyến mãi
-  // @access  Private
+  // @access  Private Admin
   async updateDiscountOffer(req, res) {
     //Kiểm tra req.body
     const errors = validationResult(req);
@@ -61,7 +60,6 @@ class DiscountOfferController {
     const from = parseInt(req.body.from);
     const to = parseInt(req.body.to);
     const length = data.length;
-    let products = [];
     try {
       let discountOffer = await crudService.getById(DiscountOffer, req.params.id);
       if (!discountOffer) {
@@ -72,10 +70,10 @@ class DiscountOfferController {
       if (!discountOffer.isActive) {
         return res
         .status(statusCode.notFound)
-        .json({ message: message.discountOffer.isNotActive });
+        .json({ errors: [{ msg: message.discountOffer.isNotActive }] });
       }
       for (let i = 0; i < length; i++) {
-        const product = await crudService.getById(Product, data[i].id);
+        const product = await crudService.getById(Product, data[i].productId);
         if (!product) {
           return res
             .status(statusCode.notFound)
@@ -83,14 +81,12 @@ class DiscountOfferController {
         }
         product.discountPrice = product.price * (100 - data[i].discount) / 100;
         await product.save();
-
-        products.push({ productId: product.id, discount: data[i].discount });
       }
       const status = await crudService.update(discountOffer, {
         title, 
         from, 
         to, 
-        products,
+        products: data,
       });
       if (status) {
         return res
@@ -105,8 +101,8 @@ class DiscountOfferController {
     }
   }
 
-  // @route   PUT api/discountOffer/:id/active
-  // @desc    Kích chương trình khuyến mãi
+  // @route   PUT api/discountOffer/:id/activate
+  // @desc    Kích hoạt chương trình khuyến mãi
   // @access  Private
   async activeDiscountOffer(req, res) {
     try {
@@ -119,7 +115,7 @@ class DiscountOfferController {
       if (discountOffer.isActive) {
         return res
         .status(statusCode.notFound)
-        .json({ message: message.discountOffer.isActive });
+        .json({ errors: [{ msg: message.discountOffer.isActive }] });
       }
       const offers = await crudService.getAll(DiscountOffer);
       const offersLength = offers.length;
@@ -128,7 +124,7 @@ class DiscountOfferController {
           const products = offers[i].products;
           const length = products.length;
           for (let i = 0; i < length; i++) {
-            const product = await crudService.getById(Product, products[i].id);
+            const product = await crudService.getById(Product, products[i].productId);
             if (!product) {
               return res
                 .status(statusCode.notFound)
@@ -144,7 +140,7 @@ class DiscountOfferController {
       const updateProducts = discountOffer.products;
       const updateLength = updateProducts.length;
       for (let i = 0; i < updateLength; i++) {
-        const updateProduct = await crudService.getById(Product, updateProducts[i].id);
+        const updateProduct = await crudService.getById(Product, updateProducts[i].productId);
         if (!updateProduct) {
           return res
             .status(statusCode.notFound)
@@ -156,8 +152,52 @@ class DiscountOfferController {
       discountOffer.isActive = true;
       await discountOffer.save();
       return res
-      .status(statusCode.success)
-      .json({ message: 'Success' });
+        .status(statusCode.success)
+        .json({ message: message.discountOffer.activate });
+    } catch (error) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   PUT api/discountOffer/:id/deactivate
+  // @desc    Hủy kích hoạt chương trình khuyến mãi
+  // @access  Private
+  async deactiveDiscountOffer(req, res) {
+    try {
+      const discountOffer = await crudService.getById(DiscountOffer, req.params.id);
+      if (!discountOffer) {
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.crud.notFound }] });
+      }
+      if (!discountOffer.isActive) {
+        return res
+        .status(statusCode.notFound)
+        .json({ errors: [{ msg: message.discountOffer.isNotActive }] });
+      }
+      const offers = await crudService.getAll(DiscountOffer);
+      const offersLength = offers.length;
+      for (let i = 0; i < offersLength; i++) {
+        if (offers[i].isActive) {
+          const products = offers[i].products;
+          const length = products.length;
+          for (let i = 0; i < length; i++) {
+            const product = await crudService.getById(Product, products[i].productId);
+            if (!product) {
+              return res
+                .status(statusCode.notFound)
+                .json({ errors: [{ msg: message.crud.notFound }] });
+            }
+            product.discountPrice = 0;
+            await product.save();
+          }
+          offers[i].isActive = false;
+          await offers[i].save();
+        }
+      }
+      return res
+        .status(statusCode.success)
+        .json({ message: message.discountOffer.deactivate });
     } catch (error) {
       return res.status(statusCode.serverError).send("Server Error");
     }
