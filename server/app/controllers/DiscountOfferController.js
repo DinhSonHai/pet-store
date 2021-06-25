@@ -31,21 +31,8 @@ class DiscountOfferController {
     const { title, data } = req.body;
     const from = parseInt(req.body.from);
     const to = parseInt(req.body.to);
-    const length = data.length;
-    let products = [];
     try {
-      for (let i = 0; i < length; i++) {
-        const product = await crudService.getById(Product, data[i].id);
-        if (!product) {
-          return res
-            .status(statusCode.notFound)
-            .json({ errors: [{ msg: message.crud.notFound }] });
-        }
-        product.discountPrice = product.price * (100 - data[i].discount) / 100;
-        await product.save();
-
-        products.push({ productId: product.id, discount: data[i].discount });
-      }
+      const products = data.map(item => ({ productId: item.id, discount: item.discount }));
       const discountOffer = new DiscountOffer({
         title,
         from,
@@ -118,7 +105,7 @@ class DiscountOfferController {
     }
   }
 
-  // @route   POST api/discountOffer/:id/active
+  // @route   PUT api/discountOffer/:id/active
   // @desc    Kích chương trình khuyến mãi
   // @access  Private
   async activeDiscountOffer(req, res) {
