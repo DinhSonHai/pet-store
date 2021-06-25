@@ -13,7 +13,48 @@ class DiscountOfferController {
   async getAllDiscountOffers(req, res) {
     try {
       const offers = await crudService.getAll(DiscountOffer);
-      return res.json(offers);
+      return res.status(statusCode.success).json(offers);
+    } catch (error) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/discountOffer/:id
+  // @desc    Lấy chương trình khuyến mãi theo id
+  // @access  Private
+  async getDiscountOfferById(req, res) {
+    try {
+      const discountOffer = await crudService.getById(DiscountOffer, req.params.id);
+      if (!discountOffer) {
+        if (!discountOffer) {
+          return res
+            .status(statusCode.notFound)
+            .json({ errors: [{ msg: message.crud.notFound }] });
+        }
+      }
+      return res.status(statusCode.success).json(discountOffer);
+    } catch (error) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/discountOffer/products
+  // @desc    Lấy tất cả sản phẩm trong chương trình khuyến mãi đang hoạt động
+  // @access  Public
+  async getAllProductsInOffer(req, res) {
+    try {
+      const discountOffer = await crudService.getUniqueAdvance(DiscountOffer, { isActive: true }, {}, {
+        path: 'products',
+        populate: { path: 'productId' },
+      });
+      if (!discountOffer) {
+        if (!discountOffer) {
+          return res
+            .status(statusCode.notFound)
+            .json({ errors: [{ msg: message.crud.notFound }] });
+        }
+      }
+      return res.status(statusCode.success).json(discountOffer);
     } catch (error) {
       return res.status(statusCode.serverError).send("Server Error");
     }
