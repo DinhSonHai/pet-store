@@ -80,6 +80,7 @@
     "wrongTypeData": "is wrong data type"
   },
   "discountOffer": {
-    "isNotActive": "Chương trình khuyễn mãi phải đang hoạt động mới có thể sửa"
+    "isNotActive": "Chương trình khuyễn mãi phải đang hoạt động mới có thể sửa",
+    "isActive": "Chương trình khuyễn mãi đang hoạt động"
   }
 }

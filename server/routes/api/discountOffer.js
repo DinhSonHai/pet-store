@@ -18,14 +18,14 @@ router.get("/", authAdmin, DiscountOfferController.getAllDiscountOffers);
 // @access  Private
 router.post("/", [authAdmin, validateCreateDiscountOffer], DiscountOfferController.createDiscountOffer);
 
+// @route   PUT api/discountOffer/:id/active
+// @desc    Kích chương trình khuyến mãi
+// @access  Private
+router.put("/:id/active", authAdmin, DiscountOfferController.activeDiscountOffer);
+
 // @route   PUT api/discountOffer/:id
 // @desc    Cập nhật chương trình khuyến mãi
 // @access  Private
 router.put("/:id", [authAdmin, validateCreateDiscountOffer], DiscountOfferController.updateDiscountOffer);
-
-// @route   PUT api/discountOffer/active
-// @desc    Kích chương trình khuyến mãi
-// @access  Private
-router.put("/active", authAdmin, DiscountOfferController.activeDiscountOffer);
 
 module.exports = router;

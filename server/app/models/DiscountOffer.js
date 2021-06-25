@@ -6,7 +6,12 @@ const DiscountOfferSchema = new Schema({
   title: { type: String, trim: true, required: true },
   from: { type: Date, required: true },
   to: { type: Date, required: true },
-  productIds: [{ type: Schema.Types.ObjectId, ref: 'product' }],
+  products: [
+    {
+      productId: { type: Schema.Types.ObjectId, ref: 'product' },
+      discount: { type: Number, required: true },
+    },
+  ],
   isActive: { type: Boolean, default: false },
 });
 
