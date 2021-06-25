@@ -1,10 +1,102 @@
 /* eslint-disable import/no-anonymous-default-export */
-import './styles.scss';
+import { Row, Col, Card, Form, Input, Button } from "antd";
+import { notifySuccess } from '../../../utils/notify'
+import "./styles.scss";
 
 const Contact = () => {
+  const onFinish = (values)=>{
+    if(values){
+      notifySuccess('Chức năng này làm cho vui thôi, bạn cần hỏi gì thì nhắn hãy nhắn qua messenger!. Cảm ơn.');
+    }
+  }
   return (
-    <section className='contact'>
-      <div className='contact__wrap container'></div>
+    <section className="contact">
+      <div className="contact__wrap container">
+        <p className="contact__heading">Contact</p>
+        <h1 className="contact__title">
+          <span>Liên hệ</span>
+        </h1>
+        <h4 className="contact__desc-head">
+          Đừng ngần ngại liên hệ với chúng tôi để được hỗ trợ tư vấn, giải đáp
+          các thắc mắc của bạn.
+        </h4>
+        <div className="contact__content">
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={12} lg={12}>
+              <iframe
+                title="Address"
+                frameBorder="0"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.5558910970612!2d106.79455541518122!3d10.845258860884018!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175273e5b95f75d%3A0x774a073b596e07ab!2zNDg0IEzDqiBWxINuIFZp4buHdCwgVMSDbmcgTmjGoW4gUGjDuiBBLCBRdeG6rW4gOSwgVGjDoG5oIHBo4buRIEjhu5MgQ2jDrSBNaW5oLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1624602810690!5m2!1svi!2s"
+                allowFullScreen
+                loading="lazy"
+              ></iframe>
+            </Col>
+            <Col xs={24} sm={24} md={12} lg={12}>
+              <Card bordered={false}>
+                <Form
+                  layout="vertical"
+                  name="normal_login"
+                  className="login-form"
+                  initialValues={{
+                    remember: true,
+                    size: "large",
+                  }}
+                  size="large"
+                  onFinish={onFinish}
+                >
+                  <Form.Item
+                    name="name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Your name" />
+                  </Form.Item>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      {
+                        type: "email",
+                        message: "Email không hợp lệ",
+                      },
+                      {
+                        required: true,
+                        message: "Vui lòng nhập email!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Your email" />
+                  </Form.Item>
+                  <Form.Item
+                    name="content"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập nội dung!",
+                      },
+                    ]}
+                  >
+                    <Input.TextArea
+                      placeholder="Message"
+                      rows={5}
+                      showCount
+                      maxLength={200}
+                    />
+                  </Form.Item>
+                  <Form.Item style={{ textAlign: "center" }}>
+                    <Button type="primary" htmlType="submit">
+                      Gửi message
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      </div>
     </section>
   );
 };

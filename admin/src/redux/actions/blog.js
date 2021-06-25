@@ -6,9 +6,9 @@ import {
   import { notifyActions } from '../../utils/notify';
   
   // get all blogs
-  export const getAllBlogs = () => async (dispatch) => {
+  export const getAllBlogs = (page) => async (dispatch) => {
     try {
-      const res = await blogAPI.get_all();
+      const res = await blogAPI.get_all(page);
       dispatch({
         type: GET_ALL_BLOGS,
         payload: res.data,

@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
-import { Button, Table, Popconfirm, Tag } from "antd";
+import { useLocation, useHistory } from "react-router-dom";
+import { Button, Table, Popconfirm, Tag, Pagination } from "antd";
 import { getAllBlogs, removeBlog } from "../../../redux/actions/blog";
 import BlogAddForm from "../add_form";
 import dayjs from "dayjs";
@@ -19,8 +19,9 @@ const colors = [
   "purple",
 ];
 
-const BlogList = ({ blogs: { blogs }, getAllBlogs, removeBlog, tabChange }) => {
+const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange }) => {
   const location = useLocation();
+  const history = useHistory();
   let page = queryString.parse(location.search).page;
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -35,6 +36,9 @@ const BlogList = ({ blogs: { blogs }, getAllBlogs, removeBlog, tabChange }) => {
       getData();
     }
   }, [getAllBlogs, tabChange, page, edit]);
+  const handlePagination = async (_page) => {
+    return history.push(`?tab=blog&page=${_page}`);
+  };
   const remove = async (id) => {
     setIsLoading(true);
     await removeBlog(id);
@@ -101,10 +105,17 @@ const BlogList = ({ blogs: { blogs }, getAllBlogs, removeBlog, tabChange }) => {
             columns={columns}
             loading={isLoading}
             dataSource={blogs}
-            pagination={{
-              responsive: true,
-              showSizeChanger: false,
-            }}
+            pagination={false}
+          />
+            <Pagination
+            onChange={handlePagination}
+            disabled={isLoading}
+            current={!page ? 1 : parseInt(page)}
+            responsive={true}
+            pageSize={6}
+            total={total}
+            showSizeChanger={false}
+            style={{ textAlign: 'right', margin: '3rem 0 0 0' }}
           />
         </Fragment>
       ) : (

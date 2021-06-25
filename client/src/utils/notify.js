@@ -7,7 +7,7 @@ const notifyErrors = (err) => {
       notification['error']({
         message: 'Lỗi',
         description: error.msg,
-        placement: 'bottomRight'
+        placement: 'topRight'
       })
     );
   }
@@ -18,7 +18,7 @@ const notifySuccess = (payload) => {
     notification['success']({
       message: 'Thành công',
       description: payload,
-      placement: 'bottomRight'
+      placement: 'topRight'
     });
   }
 };

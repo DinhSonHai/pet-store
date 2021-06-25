@@ -5,6 +5,7 @@ import Vision from "./vision";
 import Categories from "./categories";
 import CustomerReview from "./customer_review";
 import CustomerExperience from "./experience";
+import Contact from "./contact";
 import { ShowHomeProducts } from "../../components";
 import { getShowHomeProducts } from "../../redux/actions/products";
 import { connect } from "react-redux";
@@ -34,6 +35,7 @@ function Home({
       <ShowHomeProducts type="popular" products={popularProducts} />
       <CustomerReview />
       <CustomerExperience />
+      <Contact />
     </section>
   );
 }
