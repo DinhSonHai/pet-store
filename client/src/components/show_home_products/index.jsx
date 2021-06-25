@@ -48,7 +48,7 @@ const ShowHomeProducts = ({ type, products }) => {
         ) : (
           <h4>Sản phẩm cùng loại:</h4>
         )}
-        <Carousel infinite ssr partialVisbile responsive={responsive}>
+        <Carousel infinite ssr partialVisibile responsive={responsive}>
           {products.map((product) => (
             <Card key={product._id} bordered={false} hoverable>
               <Link
