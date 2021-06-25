@@ -1,4 +1,5 @@
-const { check } = require('express-validator');
+const { check, body } = require('express-validator');
+const _ = require('lodash');
 
 //Sign up
 module.exports.validateSignUp = [
@@ -210,3 +211,27 @@ module.exports.validateComment = [
 module.exports.validateCommentAdmin = [
   check('replyComment', 'Vui lòng nhập bình luận').notEmpty(),
 ];
+
+// Valid create discount
+module.exports.validateCreateDiscountOffer = [
+  check('title')
+    .notEmpty()
+    .withMessage('Xin hãy nhập tiêu đề chương trình giảm giá'),
+  check('from')
+    .isInt()
+    .withMessage('Thời gian không hợp lệ'),
+  check('to')
+    .isInt()
+    .withMessage('Thời gian không hợp lệ'),
+  body('data')
+    .custom((item) => _.isArray(item) && item.length > 0)
+    .withMessage('Vui lòng nhập sản phẩm giảm giá'),
+  body('data.*.productId')
+    .notEmpty()
+    .withMessage('Vui lòng chọn sản phẩm'),
+  body('data.*.discount')
+    .notEmpty()
+    .withMessage('Vui lòng nhập phần trăm giảm giá')
+    .isInt({ min: 1, max: 99 })
+    .withMessage('Phần trăm giảm giá phải nằm trong phạm vi 1 - 99')
+]

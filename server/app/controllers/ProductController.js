@@ -1,13 +1,13 @@
 const { validationResult } = require("express-validator");
 const Product = require("../models/Product");
 const Type = require("../models/Type");
+const Review = require("../models/Review");
+const User = require("../models/User");
 const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 const pagination = require("../../helpers/pagination");
 const crudService = require("../../services/crud");
 const statusCode = require("../../constants/statusCode.json");
-const Review = require("../models/Review");
-const User = require("../models/User");
 const message = require("../../constants/message.json").crud;
 
 class ProductController {
@@ -240,6 +240,7 @@ class ProductController {
     if (!errors.isEmpty()) {
       return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
+    let { price, quantity } = req.body;
     try {
       let product = await crudService.getById(Product, req.params.id);
       if (!product) {

@@ -78,5 +78,11 @@
     "maxLength": "is too long",
     "validLength": "must have a length of",
     "wrongTypeData": "is wrong data type"
+  },
+  "discountOffer": {
+    "isNotActive": "Chương trình khuyến mãi phải đang hoạt động mới có thể sửa",
+    "isActive": "Chương trình khuyến mãi đang hoạt động",
+    "activate": "Chương trình khuyến mãi đã được kích hoạt",
+    "deactivate": "Chương trình khuyến mãi đã tắt"
   }
 }

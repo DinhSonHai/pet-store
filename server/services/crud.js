@@ -35,6 +35,40 @@ class CrudService {
       });
     });
   }
+  getUniqueAdvance(schema, filterValues = {}, sortValues = {}, populate = {}) {
+    // let data = await schema.aggregate([
+    //   { $match: { ...filterValues } },
+    //   { $sort: { ...sortValues } },
+    // ]);
+    if (Object.keys(populate).length > 0) {
+      return new Promise((resolve, reject) => {
+        schema
+          .findOne({ ...filterValues })
+          .sort({ ...sortValues })
+          .populate({ ...populate })
+          .exec((err, data) => {
+            if (!err) {
+              resolve(data);
+            } else {
+              reject(null);
+            }
+          });
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        schema
+          .findOne({ ...filterValues })
+          .sort({ ...sortValues })
+          .exec((err, data) => {
+            if (!err) {
+              resolve(data);
+            } else {
+              reject(null);
+            }
+          });
+      });
+    }
+  }
   getAdvance(schema, filterValues = {}, sortValues = {}, populate = {}) {
     // let data = await schema.aggregate([
     //   { $match: { ...filterValues } },
