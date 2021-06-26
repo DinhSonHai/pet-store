@@ -83,6 +83,9 @@
     "isNotActive": "Chương trình khuyến mãi phải đang hoạt động mới có thể sửa",
     "isActive": "Chương trình khuyến mãi đang hoạt động",
     "activate": "Chương trình khuyến mãi đã được kích hoạt",
-    "deactivate": "Chương trình khuyến mãi đã tắt"
+    "deactivate": "Chương trình khuyến mãi đã tắt",
+    "invalidDateRange": "Chương trình khuyến mãi có thời gian không hợp lệ",
+    "invalidStartDate": "Chương trình khuyến mãi có thời gian bắt đầu không hợp lệ",
+    "invalidExpireDate": "Chương trình khuyến mãi có thời gian kết thúc không hợp lệ"
   }
 }

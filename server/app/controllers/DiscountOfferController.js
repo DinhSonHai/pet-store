@@ -26,11 +26,9 @@ class DiscountOfferController {
     try {
       const discountOffer = await crudService.getById(DiscountOffer, req.params.id);
       if (!discountOffer) {
-        if (!discountOffer) {
-          return res
-            .status(statusCode.notFound)
-            .json({ errors: [{ msg: message.crud.notFound }] });
-        }
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.crud.notFound }] });
       }
       return res.status(statusCode.success).json(discountOffer);
     } catch (error) {
@@ -48,11 +46,9 @@ class DiscountOfferController {
         populate: { path: 'productId' },
       });
       if (!discountOffer) {
-        if (!discountOffer) {
-          return res
-            .status(statusCode.notFound)
-            .json({ errors: [{ msg: message.crud.notFound }] });
-        }
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.crud.notFound }] });
       }
       return res.status(statusCode.success).json(discountOffer);
     } catch (error) {
@@ -72,6 +68,11 @@ class DiscountOfferController {
     const { title, data } = req.body;
     const from = parseInt(req.body.from);
     const to = parseInt(req.body.to);
+    if (from >= to) {
+      return res
+      .status(statusCode.badRequest)
+      .json({ errors: [{ msg: message.discountOffer.invalidDateRange }] });
+    }
     try {
       const discountOffer = new DiscountOffer({
         title,
@@ -101,6 +102,11 @@ class DiscountOfferController {
     const from = parseInt(req.body.from);
     const to = parseInt(req.body.to);
     const length = data.length;
+    if (from >= to) {
+      return res
+      .status(statusCode.badRequest)
+      .json({ errors: [{ msg: message.discountOffer.invalidDateRange }] });
+    }
     try {
       let discountOffer = await crudService.getById(DiscountOffer, req.params.id);
       if (!discountOffer) {
@@ -108,20 +114,39 @@ class DiscountOfferController {
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.crud.notFound }] });
       }
-      if (!discountOffer.isActive) {
+      if (to <= Date.now()) {
         return res
-        .status(statusCode.notFound)
-        .json({ errors: [{ msg: message.discountOffer.isNotActive }] });
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.discountOffer.invalidExpireDate }] });
       }
-      for (let i = 0; i < length; i++) {
-        const product = await crudService.getById(Product, data[i].productId);
-        if (!product) {
+      if (discountOffer.isActive) {
+        if (from >= Date.now()) {
           return res
-            .status(statusCode.notFound)
-            .json({ errors: [{ msg: message.crud.notFound }] });
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.discountOffer.invalidStartDate }] });
         }
-        product.discountPrice = product.price * (100 - data[i].discount) / 100;
-        await product.save();
+        const oldData = discountOffer.products;
+        const oldDataLength = oldData.length;
+        for (let i = 0; i < oldDataLength; i++) {
+          const product = await crudService.getById(Product, oldData[i].productId);
+          if (!product) {
+            return res
+              .status(statusCode.notFound)
+              .json({ errors: [{ msg: message.crud.notFound }] });
+          }
+          product.discountPrice = 0;
+          await product.save();
+        }
+        for (let i = 0; i < length; i++) {
+          const product = await crudService.getById(Product, data[i].productId);
+          if (!product) {
+            return res
+              .status(statusCode.notFound)
+              .json({ errors: [{ msg: message.crud.notFound }] });
+          }
+          product.discountPrice = product.price * (100 - data[i].discount) / 100;
+          await product.save();
+        }
       }
       const status = await crudService.update(discountOffer, {
         title, 
@@ -152,6 +177,16 @@ class DiscountOfferController {
         return res
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.crud.notFound }] });
+      }
+      if (Date.parse(discountOffer.from) >= Date.now()) {
+        return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.discountOffer.invalidStartDate }] });
+      }
+      if (Date.parse(discountOffer.to) <= Date.now()) {
+        return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.discountOffer.invalidExpireDate }] });
       }
       if (discountOffer.isActive) {
         return res
