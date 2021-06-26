@@ -24,7 +24,7 @@ function App() {
           <Navbar />
           <div>
             <MessengerCustomerChat
-              pageId='106278264756196'
+              pageId='113027407691307'
               appId={REACT_APP_FACEBOOK_CLIENT}
             />
           </div>
