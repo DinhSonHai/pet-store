@@ -15,6 +15,9 @@ class ProductController {
   // @desc    Lấy tất cả sản phẩm
   // @access  Public
   async getAll(req, res, next) {
+    const q = req.query.q;
+    const search = new RegExp(q, "i");
+    const query = { 'productName': search };
     const filterStatus = req.query.sort;
     const { start, end } = pagination(req.query.page, 10);
     const filterValue =
@@ -24,12 +27,33 @@ class ProductController {
         ? { price: -1 }
         : { price: 1 };
     try {
-      const products = await crudService.getAdvance(Product, {}, filterValue, {
+      const products = await crudService.getAdvance(Product, query, filterValue, {
         path: "typeId",
         select: ["typeName"],
       });
       return res.status(statusCode.success).json({
         data: products.slice(start, end),
+        total: products.length,
+      });
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/products/discount
+  // @desc    Lấy tất cả sản phẩm có thể thêm vào chương trình giảm giá
+  // @access  Public
+  async getAllCanAddDiscount(req, res, next) {
+    const q = req.query.q;
+    const search = new RegExp(q, "i");
+    const query = { 'productName': search };
+    try {
+      const products = await crudService.getAdvanceWithLimit(Product, query, {}, {
+        path: "typeId",
+        select: ["typeName"],
+      }, 5);
+      return res.status(statusCode.success).json({
+        data: products,
         total: products.length,
       });
     } catch (err) {

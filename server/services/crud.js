@@ -103,6 +103,42 @@ class CrudService {
       });
     }
   }
+  getAdvanceWithLimit(schema, filterValues = {}, sortValues = {}, populate = {}, limit = 5) {
+    // let data = await schema.aggregate([
+    //   { $match: { ...filterValues } },
+    //   { $sort: { ...sortValues } },
+    // ]);
+    if (Object.keys(populate).length > 0) {
+      return new Promise((resolve, reject) => {
+        schema
+          .find({ ...filterValues })
+          .sort({ ...sortValues })
+          .populate({ ...populate })
+          .limit(limit)
+          .exec((err, data) => {
+            if (!err) {
+              resolve(data);
+            } else {
+              reject(null);
+            }
+          });
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        schema
+          .find({ ...filterValues })
+          .sort({ ...sortValues })
+          .limit(limit)
+          .exec((err, data) => {
+            if (!err) {
+              resolve(data);
+            } else {
+              reject(null);
+            }
+          });
+      });
+    }
+  }
   create(schema, payload) {
     const data = new schema(payload);
     data.key = data._id;
