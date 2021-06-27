@@ -80,16 +80,16 @@ class DiscountOfferController {
       .json({ errors: [{ msg: message.discountOffer.invalidDateRange }] });
     }
     try {
-      const discountOffer = new DiscountOffer({
-        title,
-        from,
-        to,
-        products: data,
-      });
-      await discountOffer.save();
-      return res.status(statusCode.success).json({
-        message: message.crud.createSuccess,
-      });
+      const status = await crudService.create(DiscountOffer, { title, from, to, products: data });
+      console.log(status)
+      if (status) {
+        return res
+          .status(statusCode.success)
+          .json({ message: message.crud.createSuccess });
+      }
+      return res
+        .status(statusCode.badRequest)
+        .json({ errors: [{ msg: message.crud.createFail }] });
     } catch (error) {
       return res.status(statusCode.serverError).send("Server Error");
     }
@@ -254,7 +254,7 @@ class DiscountOfferController {
       }
       if (!discountOffer.isActive) {
         return res
-        .status(statusCode.notFound)
+        .status(statusCode.badRequest)
         .json({ errors: [{ msg: message.discountOffer.isNotActive }] });
       }
       const offers = await crudService.getAll(DiscountOffer);

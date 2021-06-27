@@ -14,3 +14,19 @@ export const getAllOffers = (page) => async (dispatch) => {
     });
   } catch (err) {}
 };
+
+// activate offers
+export const activateOffer = (id) => async (dispatch) => {
+  try {
+    const res = await offerAPI.activate_offer(id);
+    notifyActions('success', res.data.message);
+  } catch (err) {}
+};
+
+// deactivate offers
+export const deactivateOffer = (id) => async (dispatch) => {
+  try {
+    const res = await offerAPI.deactivate_offer(id);
+    notifyActions('success', res.data.message);
+  } catch (err) {}
+};

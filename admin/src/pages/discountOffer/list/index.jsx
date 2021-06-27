@@ -2,12 +2,12 @@ import { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
 import { Button, Table, Pagination } from "antd";
-import { getAllOffers } from "../../../redux/actions/offers";
+import { getAllOffers, activateOffer, deactivateOffer } from "../../../redux/actions/offers";
 // import BlogAddForm from "../add_form";
 import dayjs from "dayjs";
 import queryString from "query-string";
 
-function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}) {
+function DiscountOfferList({ offers: { offers, total }, getAllOffers, activateOffer, deactivateOffer, tabChange}) {
   const location = useLocation();
   const history = useHistory();
   let page = queryString.parse(location.search).page;
@@ -17,6 +17,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
 
   const columns = [
     {
+      width: "40%",
       title: "Tên Khuyến mãi",
       dataIndex: "title",
     },
@@ -52,14 +53,17 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
               Sửa
             </Button>
             <Button
+              disabled={record.isActive}
               type="primary"
-              onClick={() => { }}
+              onClick={() => { activate(record._id) }}
             >
               Kích hoạt
             </Button>
             <Button
-              type="danger"
-              onClick={() => { }}
+              disabled={!record.isActive}
+              type="link"
+              danger
+              onClick={() => { deactivate(record._id) }}
             >
               Hủy kích hoạt
             </Button>
@@ -68,6 +72,20 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
       },
     },
   ];
+
+  const activate = async (id) => {
+    setIsLoading(true);
+    await activateOffer(id);
+    getAllOffers();
+    setIsLoading(false);
+  };
+
+  const deactivate = async (id) => {
+    setIsLoading(true);
+    await deactivateOffer(id);
+    getAllOffers();
+    setIsLoading(false);
+  };
 
   const handlePagination = async (_page) => {
     return history.push(`?tab=discountOffer&page=${_page}`);
@@ -117,4 +135,4 @@ const mapStateToProps = (state) => ({
   offers: state.offers,
 });
 
-export default connect(mapStateToProps, { getAllOffers })(DiscountOfferList);
+export default connect(mapStateToProps, { getAllOffers, activateOffer, deactivateOffer })(DiscountOfferList);
