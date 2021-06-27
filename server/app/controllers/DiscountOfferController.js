@@ -5,15 +5,21 @@ const DiscountOffer = require("../models/DiscountOffer");
 const statusCode = require("../../constants/statusCode.json");
 const crudService = require("../../services/crud");
 const message = require('../../constants/message.json');
+const pagination = require("../../helpers/pagination");
 
 class DiscountOfferController {
   // @route   GET api/discountOffer
   // @desc    Lấy tất cả chương trình khuyến mãi
   // @access  Private
   async getAllDiscountOffers(req, res) {
+    const { start, end } = pagination(req.query.page, 6);
+
     try {
       const offers = await crudService.getAll(DiscountOffer);
-      return res.status(statusCode.success).json(offers);
+      return res.status(statusCode.success).json({
+        data: offers.slice(start, end),
+        total: offers.length,
+      });
     } catch (error) {
       return res.status(statusCode.serverError).send("Server Error");
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
@@ -10,7 +10,8 @@ import {
   ImportOutlined,
   BarcodeOutlined,
   CommentOutlined,
-  HighlightOutlined
+  HighlightOutlined,
+  DollarCircleOutlined,
 } from '@ant-design/icons';
 
 import './styles.scss';
@@ -34,6 +35,7 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
     }
     setStyle({});
   };
+
   return (
     <Sider
       style={style}
@@ -46,7 +48,7 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
       <Link to='/' className='logo'>
         PetStore.
       </Link>
-      <Menu theme='dark' defaultSelectedKeys={[tabState]} mode='inline'>
+      <Menu theme='dark' selectedKeys={[tabState]} mode='inline'>
         <Menu.Item key='dashboard' icon={<PieChartOutlined />}>
           <Link to='/'>Dashboard</Link>
         </Menu.Item>
@@ -79,6 +81,9 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
         </Menu.Item>
         <Menu.Item key='blog' icon={<HighlightOutlined />}>
           <Link to='/?tab=blog'>Quản lý bài đăng</Link>
+        </Menu.Item>
+        <Menu.Item key='discountOffer' icon={<DollarCircleOutlined />}>
+          <Link to='/?tab=discountOffer'>Quản lý khuyến mãi</Link>
         </Menu.Item>
         {user && user.role === 0 && (
           <Menu.Item key='statistical' icon={<BarChartOutlined />}>

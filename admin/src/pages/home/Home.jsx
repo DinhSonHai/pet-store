@@ -14,7 +14,8 @@ import {
   Bill,
   Review,
   Statistical,
-  Blog
+  Blog,
+  DiscountOffer
 } from '../../pages';
 
 import queryString from 'query-string';
@@ -46,6 +47,8 @@ const Home = ({ location }) => {
         return <Statistical />;
       case 'blog':
         return <Blog />
+      case 'discountOffer':
+        return <DiscountOffer />
       default:
         return <DashBoard />;
     }

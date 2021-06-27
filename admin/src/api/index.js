@@ -10,6 +10,7 @@ import reviewAPI from './reviewAPI';
 import statisticalAPI from './statisticalAPI';
 import typeAPI from './typeAPI';
 import blogAPI from './blogAPI';
+import offerAPI from './offerAPI';
 import { LOGOUT } from '../redux/types';
 
 const api = axios.create({
@@ -44,6 +45,7 @@ export {
   reviewAPI,
   statisticalAPI,
   typeAPI,
-  blogAPI
+  blogAPI,
+  offerAPI,
 };
 export default api;

@@ -14,3 +14,4 @@ export { default as Bill } from './bill/Bill';
 export { default as Review } from './review/Review';
 export { default as Statistical } from './statistical/Statistical';
 export { default as Blog } from './blog/Blog';
+export { default as DiscountOffer } from './discountOffer/DiscountOffer';

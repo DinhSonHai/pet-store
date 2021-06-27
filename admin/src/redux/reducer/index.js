@@ -8,7 +8,8 @@ import orders from './orders';
 import bills from './bills';
 import reviews from './reviews';
 import statistical from './statistical';
-import blogs from './blogs'
+import blogs from './blogs';
+import offers from './offers';
 
 export default combineReducers({
   auth,
@@ -21,4 +22,5 @@ export default combineReducers({
   reviews,
   statistical,
   types,
+  offers,
 });
