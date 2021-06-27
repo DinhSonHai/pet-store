@@ -38,3 +38,4 @@ export const GET_CHART_REVENUE_DATA = 'GET_CHART_REVENUE_DATA';
 export const GET_ALL_BLOGS = 'GET_ALL_BLOGS';
 export const REMOVE_BLOG = 'REMOVE_BLOG';
 export const GET_ALL_OFFERS = 'GET_ALL_OFFERS';
+export const GET_OFFER_BY_ID = 'GET_OFFER_BY_ID';

@@ -4,6 +4,9 @@ const offerApi = {
   get_all: async (page) => {
     return await api.get(`${source}/?page=${page}`);
   },
+  get_by_id: async (id) => {
+    return await api.get(`${source}/${id}`);
+  },
   activate_offer: async (id) => {
     return await api.put(`${source}/${id}/activate`);
   },

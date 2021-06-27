@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const Product = require("../models/Product");
 const DiscountOffer = require("../models/DiscountOffer");
@@ -30,7 +31,11 @@ class DiscountOfferController {
   // @access  Private
   async getDiscountOfferById(req, res) {
     try {
-      const discountOffer = await crudService.getById(DiscountOffer, req.params.id);
+      const discountOffer = await crudService.getUniqueAdvance(
+        DiscountOffer, { _id: new ObjectId(req.params.id) }, {}, {
+          path: 'products',
+          populate: { path: 'productId' },
+        });
       if (!discountOffer) {
         return res
           .status(statusCode.notFound)

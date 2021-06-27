@@ -1,23 +1,32 @@
-import { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
 import { Button, Table, Pagination } from "antd";
-import { getAllOffers, activateOffer, deactivateOffer } from "../../../redux/actions/offers";
-// import BlogAddForm from "../add_form";
+import {
+  EyeOutlined,
+} from '@ant-design/icons';
 import dayjs from "dayjs";
 import queryString from "query-string";
 
-function DiscountOfferList({ offers: { offers, total }, getAllOffers, activateOffer, deactivateOffer, tabChange}) {
+import ViewDiscountOffer from '../view/index';
+import { getAllOffers } from "../../../redux/actions/offers";
+// import BlogAddForm from "../add_form";
+
+export const DiscountOfferContext = React.createContext(null);
+
+function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}) {
   const location = useLocation();
   const history = useHistory();
   let page = queryString.parse(location.search).page;
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
+  const [view, setView] = useState(false);
+  const [id, setId] = useState(null);
 
   const columns = [
     {
-      width: "40%",
+      width: "30%",
       title: "Tên Khuyến mãi",
       dataIndex: "title",
     },
@@ -34,7 +43,15 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, activateOf
     {
       title: "Trạng thái",
       dataIndex: "isActive",
-      render: (value) => <span>{value ? 'Đang hoạt động' : 'Không hoạt động'}</span>
+      render: (value) => (
+        <span 
+          style={{
+            color: value ? 'var(--success-color)' : 'var(--danger-color)',
+          }}
+        >
+          {value ? 'Đang hoạt động' : 'Không hoạt động'}
+        </span>
+      )
     },
     {
       title: "Hành động",
@@ -42,7 +59,12 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, activateOf
       align: 'center',
       render: (_, record) => {
         return (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div>
+            <Button
+              onClick={() => handleViewOrder(record)}
+              type='link'
+              icon={<EyeOutlined />}
+            />
             <Button
               type="link"
               onClick={() => {
@@ -52,7 +74,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, activateOf
             >
               Sửa
             </Button>
-            <Button
+            {/* <Button
               disabled={record.isActive}
               type="primary"
               onClick={() => { activate(record._id) }}
@@ -66,44 +88,42 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, activateOf
               onClick={() => { deactivate(record._id) }}
             >
               Hủy kích hoạt
-            </Button>
+            </Button> */}
           </div>
         );
       },
     },
   ];
 
-  const activate = async (id) => {
-    setIsLoading(true);
-    await activateOffer(id);
-    getAllOffers();
-    setIsLoading(false);
-  };
-
-  const deactivate = async (id) => {
-    setIsLoading(true);
-    await deactivateOffer(id);
-    getAllOffers();
-    setIsLoading(false);
-  };
-
   const handlePagination = async (_page) => {
     return history.push(`?tab=discountOffer&page=${_page}`);
   };
 
+  const handleViewOrder = (record) => {
+    setId(record._id);
+    setItem(record);
+    setView(true);
+  };
+
+  const getData = async () => {
+    setIsLoading(true);
+    await getAllOffers(page);
+    setIsLoading(false);
+  }
+
+  const context = {
+    refetch: () => getData(),
+  };
+
   useEffect(() => {
-    async function getData() {
-      setIsLoading(true);
-      await getAllOffers(page);
-      setIsLoading(false);
-    }
     if (tabChange === "list" && !edit) {
       getData();
     }
-  }, [getAllOffers, tabChange, page, edit]);
+  }, [tabChange, page, edit]);
 
   return (
-    <Fragment>
+    <DiscountOfferContext.Provider value={context}>
+      {view && <ViewDiscountOffer id={id} setView={setView} />}
       {!edit ? (
         <Fragment>
           <Table
@@ -127,7 +147,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, activateOf
         // <BlogAddForm edit={edit} setEdit={setEdit} item={item} />
         <></>
       )}
-    </Fragment>
+    </DiscountOfferContext.Provider>
   );
 }
 
@@ -135,4 +155,4 @@ const mapStateToProps = (state) => ({
   offers: state.offers,
 });
 
-export default connect(mapStateToProps, { getAllOffers, activateOffer, deactivateOffer })(DiscountOfferList);
+export default connect(mapStateToProps, { getAllOffers })(DiscountOfferList);
