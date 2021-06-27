@@ -10,7 +10,7 @@ import queryString from "query-string";
 
 import ViewDiscountOffer from '../view/index';
 import { getAllOffers } from "../../../redux/actions/offers";
-// import BlogAddForm from "../add_form";
+import OfferAddForm from "../add_form";
 
 export const DiscountOfferContext = React.createContext(null);
 
@@ -20,7 +20,6 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
   let page = queryString.parse(location.search).page;
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [item, setItem] = useState(null);
   const [view, setView] = useState(false);
   const [id, setId] = useState(null);
 
@@ -68,27 +67,11 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
             <Button
               type="link"
               onClick={() => {
-                setItem(record);
                 setEdit(true);
               }}
             >
               Sửa
             </Button>
-            {/* <Button
-              disabled={record.isActive}
-              type="primary"
-              onClick={() => { activate(record._id) }}
-            >
-              Kích hoạt
-            </Button>
-            <Button
-              disabled={!record.isActive}
-              type="link"
-              danger
-              onClick={() => { deactivate(record._id) }}
-            >
-              Hủy kích hoạt
-            </Button> */}
           </div>
         );
       },
@@ -101,7 +84,6 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
 
   const handleViewOrder = (record) => {
     setId(record._id);
-    setItem(record);
     setView(true);
   };
 
@@ -144,8 +126,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
           />
         </Fragment>
       ) : (
-        // <BlogAddForm edit={edit} setEdit={setEdit} item={item} />
-        <></>
+        <OfferAddForm edit={edit} setEdit={setEdit} />
       )}
     </DiscountOfferContext.Provider>
   );

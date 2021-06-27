@@ -11,7 +11,6 @@ import './styles.scss';
 function ViewDiscountOffer({ offers: { offer }, id, setView, getOfferById, activateOffer, deactivateOffer }) {
   const [isLoading, setIsLoading] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [tableLoading, setTableLoading] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const { refetch } = useContext(DiscountOfferContext);
