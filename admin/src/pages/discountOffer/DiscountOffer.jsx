@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
 import DiscountOfferList from './list';
-// import DiscountOfferAddForm from './add_form';
+import OfferAddForm from './add_form';
 import {
   UnorderedListOutlined,
   PlusOutlined,
@@ -43,7 +43,7 @@ const DiscountOffer = () => {
             }
             key='actions'
           >
-            {/* <DiscountOfferAddForm tabChange={tabChange} /> */}
+            <OfferAddForm tabChange={tabChange} />
           </TabPane>
         </Tabs>
       </div>

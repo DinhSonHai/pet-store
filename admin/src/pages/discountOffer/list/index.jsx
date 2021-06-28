@@ -22,6 +22,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
   const [edit, setEdit] = useState(false);
   const [view, setView] = useState(false);
   const [id, setId] = useState(null);
+  const [item, setItem] = useState(null);
 
   const columns = [
     {
@@ -32,12 +33,12 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
     {
       title: "Thời gian bắt đầu",
       dataIndex: "from",
-      render: (value) => <span>{dayjs(value).format("HH:mm DD/MM/YYYY")}</span>,
+      render: (value) => <span>{dayjs(value).format("DD/MM/YYYY HH:mm")}</span>,
     },
     {
       title: "Thời gian kết thúc",
       dataIndex: "to",
-      render: (value) => <span>{dayjs(value).format("HH:mm DD/MM/YYYY")}</span>
+      render: (value) => <span>{dayjs(value).format("DD/MM/YYYY HH:mm")}</span>
     },
     {
       title: "Trạng thái",
@@ -67,6 +68,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
             <Button
               type="link"
               onClick={() => {
+                setItem(record)
                 setEdit(true);
               }}
             >
@@ -126,7 +128,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
           />
         </Fragment>
       ) : (
-        <OfferAddForm edit={edit} setEdit={setEdit} />
+        <OfferAddForm edit={edit} setEdit={setEdit} item={item} />
       )}
     </DiscountOfferContext.Provider>
   );

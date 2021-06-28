@@ -26,11 +26,6 @@ router.get("/search", ProductController.search);
 // @access  Public
 router.get("/", ProductController.getAll);
 
-// @route   GET api/products/discount
-// @desc    Lấy tất cả sản phẩm có thể thêm vào chương trình giảm giá
-// @access  Public
-router.get("/discount", ProductController.getAllCanAddDiscount);
-
 // @route   GET api/products/newest
 // @desc    Lấy sản phẩm moi nhat
 // @access  Public
