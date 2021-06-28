@@ -26,7 +26,7 @@ const CheckoutOrder = ({ cartState, totalCart }) => {
             <div className='checkout__products--info'>
               <p className='checkout__products--name'>{item.productName}</p>
               <p className='checkout__products--price'>
-                {parseInt(item.price).toLocaleString('vi-VN', {
+                {parseInt(item.discountPrice || item.price).toLocaleString('vi-VN', {
                   style: 'currency',
                   currency: 'VND',
                 })}

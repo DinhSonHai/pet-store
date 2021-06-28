@@ -5,7 +5,6 @@ import Vision from "./vision";
 import Categories from "./categories";
 import CustomerReview from "./customer_review";
 import CustomerExperience from "./experience";
-import Contact from "./contact";
 import { ShowHomeProducts } from "../../components";
 import { getShowHomeProducts } from "../../redux/actions/products";
 import { connect } from "react-redux";
@@ -30,12 +29,11 @@ function Home({
       <Banner />
       <Vision />
       <Categories />
-      <ShowHomeProducts type="newest" products={newestProducts} />
       <ShowHomeProducts type="bestseller" products={bestsellerProducts} />
       <ShowHomeProducts type="popular" products={popularProducts} />
+      <ShowHomeProducts type="newest" products={newestProducts} />
       <CustomerReview />
       <CustomerExperience />
-      <Contact />
     </section>
   );
 }

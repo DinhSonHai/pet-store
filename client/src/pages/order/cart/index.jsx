@@ -37,7 +37,7 @@ const CartInfo = ({
             <div className="order__products--info">
               <p className="order__products--name">{item.productName}</p>
               <p className="order__products--price">
-                {parseInt(item.price).toLocaleString("vi-VN", {
+                {parseInt(item.discountPrice || item.price).toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
                 })}

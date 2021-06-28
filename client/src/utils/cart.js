@@ -12,8 +12,8 @@ export const addItem = (item) => {
     }
   } else {
     item.amount = 1;
-    let { _id, amount, productName, images, price } = item;
-    cartCopy.push({ _id, amount, productName, image: images[0], price });
+    let { _id, amount, productName, images, price, discountPrice } = item;
+    cartCopy.push({ _id, amount, productName, image: images[0], price, discountPrice });
   }
   store.dispatch({
     type: UPDATE_CART,

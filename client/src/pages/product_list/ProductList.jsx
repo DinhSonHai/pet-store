@@ -179,11 +179,20 @@ const ProductList = ({
                           </span>
                         </div>
                         <p className="products__price">
-                          {parseInt(product.price).toLocaleString("vi-VN", {
+                          {parseInt(product.discountPrice || product.price).toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
                         </p>
+                        {!!product.discountPrice && (
+                          <span className="products__discount">
+                            {`-${Math.ceil(
+                              ((product.price - product.discountPrice) /
+                                product.price) *
+                                100
+                            )}%`}
+                          </span>
+                        )}
                       </div>
                     </Link>
                   </Card>

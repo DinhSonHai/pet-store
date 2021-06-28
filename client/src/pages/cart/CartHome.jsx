@@ -1,39 +1,39 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { useEffect, useState, Fragment } from 'react';
-import { Col, Row, Card, InputNumber, Button, Result } from 'antd';
-import { SmileOutlined } from '@ant-design/icons';
-import { removeItem, setAmount } from '../../utils/cart';
-import equal from 'fast-deep-equal';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import store from '../../app/store';
-import { REMOVE_CART } from '../../redux/types';
-import '../../app/store';
-import './styles.scss';
+import { useEffect, useState, Fragment } from "react";
+import { Col, Row, Card, InputNumber, Button, Result } from "antd";
+import { SmileOutlined } from "@ant-design/icons";
+import { removeItem, setAmount } from "../../utils/cart";
+import equal from "fast-deep-equal";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import store from "../../app/store";
+import { REMOVE_CART } from "../../redux/types";
+import "../../app/store";
+import "./styles.scss";
 
 const CartHome = ({ cartState, history }) => {
   const [totalCart, setTotalCart] = useState(0);
   useEffect(() => {
-    window.addEventListener('storage', () => {
-      const cart = JSON.parse(localStorage.getItem('cart'));
+    window.addEventListener("storage", () => {
+      const cart = JSON.parse(localStorage.getItem("cart"));
       if (!equal(cart, cartState)) {
         return store.dispatch({ type: REMOVE_CART });
       }
     });
-    let total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);
+    let total_value = cartState.reduce((a, b) => a + (b.discountPrice || b.price) * b.amount, 0);
     setTotalCart(total_value);
   }, [cartState]);
   return (
-    <section className='cart'>
-      <div className='container'>
+    <section className="cart">
+      <div className="container">
         {!cartState || cartState.length === 0 ? (
-          <div className='cart__empty'>
+          <div className="cart__empty">
             <Result
               icon={<SmileOutlined />}
-              title='Giỏ hàng của bạn đang trống, hãy mua hàng nào!'
+              title="Giỏ hàng của bạn đang trống, hãy mua hàng nào!"
               extra={
-                <Link to='/'>
-                  <Button className='cart__checkout' type='primary'>
+                <Link to="/">
+                  <Button className="cart__checkout" type="primary">
                     Tiếp tục mua hàng
                   </Button>
                 </Link>
@@ -42,35 +42,50 @@ const CartHome = ({ cartState, history }) => {
           </div>
         ) : (
           <Fragment>
-            <h1 className='cart__title'>Giỏ hàng của bạn</h1>
+            <h1 className="cart__title">Giỏ hàng của bạn</h1>
             <Row gutter={[16, 16]}>
-              <Col className='cart__wrap' xs={24} sm={24} md={24} lg={16}>
+              <Col className="cart__wrap" xs={24} sm={24} md={24} lg={16}>
                 <Card bordered={false}>
-                  <div className='cart__items'>
+                  <div className="cart__items">
                     {cartState.map((item) => (
-                      <div key={item._id} className='cart__content'>
+                      <div key={item._id} className="cart__content">
                         <img
-                          width='100'
-                          height='100'
-                          style={{ objectFit: 'cover' }}
+                          width="100"
+                          height="100"
+                          style={{ objectFit: "cover" }}
                           src={item.image}
-                          alt='Cart'
-                          className='cart__product--img'
+                          alt="Cart"
+                          className="cart__product--img"
                         />
 
-                        <div className='cart__product--info'>
+                        <div className="cart__product--info">
                           <Link
-                            className='cart__product--name'
+                            className="cart__product--name"
                             to={`/product/${item._id}`}
                           >
                             {item.productName}
                           </Link>
-                          <p className='cart__product--price'>
-                            {parseInt(item.price).toLocaleString('vi-VN', {
-                              style: 'currency',
-                              currency: 'VND',
-                            })}
-                          </p>
+                          <div style={{display:'flex',alignItems:'center'}}>
+                            <p className="cart__product--price">
+                              {parseInt(item.discountPrice || item.price).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
+                            </p>
+                            <span
+                              style={{
+                                fontSize: "0.85rem",
+                                color: "#4a4a4a",
+                                textDecoration: "line-through",
+                                margin: "0 0.5rem 1em",
+                              }}
+                            >
+                              {parseInt(item.price).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
+                            </span>
+                          </div>
                           <InputNumber
                             onChange={(value) => {
                               setAmount(item._id, value);
@@ -81,8 +96,8 @@ const CartHome = ({ cartState, history }) => {
                           />
                           <Button
                             onClick={() => removeItem(item._id)}
-                            style={{ color: 'red' }}
-                            type='text'
+                            style={{ color: "red" }}
+                            type="text"
                           >
                             Xóa
                           </Button>
@@ -93,21 +108,25 @@ const CartHome = ({ cartState, history }) => {
                 </Card>
               </Col>
               <Col xs={24} sm={24} md={24} lg={8}>
-                <Card bordered={false} title='Tổng đơn hàng' className='cart__overall'>
-                  <div className='cart__total'>
+                <Card
+                  bordered={false}
+                  title="Tổng đơn hàng"
+                  className="cart__overall"
+                >
+                  <div className="cart__total">
                     <span>Tổng tiền: </span>
-                    <span id='cart__total'>
-                      {parseInt(totalCart).toLocaleString('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND',
+                    <span id="cart__total">
+                      {parseInt(totalCart).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
                       })}
                     </span>
                   </div>
                   <Button
-                    onClick={() => history.push('/checkout')}
+                    onClick={() => history.push("/checkout")}
                     block
-                    className='cart__checkout'
-                    type='primary'
+                    className="cart__checkout"
+                    type="primary"
                   >
                     Thanh toán
                   </Button>

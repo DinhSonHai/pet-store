@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Fragment } from "react";
 import { Row, Col, Card } from "antd";
+import Contact from './contact'
 import AboutImg from "../../assets/img/about.png";
 import {
   Store,
@@ -130,6 +131,7 @@ const About = () => {
           </Row>
         </div>
       </section>
+      <Contact />
     </Fragment>
   );
 };

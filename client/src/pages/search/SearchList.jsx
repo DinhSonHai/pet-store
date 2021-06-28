@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
-import { getSearchProductsList } from '../../redux/actions/products';
-import { connect } from 'react-redux';
+import { getSearchProductsList } from "../../redux/actions/products";
+import { connect } from "react-redux";
 
 import {
   Row,
@@ -13,18 +13,15 @@ import {
   Pagination,
   Rate,
   Tooltip,
-  Select
-} from 'antd';
-import {
-  CaretDownOutlined,
-  CaretUpOutlined,
-} from '@ant-design/icons';
-import { AddToCart } from '../../assets/icons';
-import { addItem } from '../../utils/cart';
-import { Loader } from '../../components';
-import { Link } from 'react-router-dom';
-import queryString from 'query-string';
-import './styles.scss';
+  Select,
+} from "antd";
+import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
+import { AddToCart } from "../../assets/icons";
+import { addItem } from "../../utils/cart";
+import { Loader } from "../../components";
+import { Link } from "react-router-dom";
+import queryString from "query-string";
+import "./styles.scss";
 const { Option } = Select;
 
 const SearchList = ({
@@ -49,7 +46,7 @@ const SearchList = ({
   const handlePagination = async (_page) => {
     if (filter) {
       return history.push(
-        `/products/search?q=${q}&sort=${filter || 'newest'}&page=${_page}`
+        `/products/search?q=${q}&sort=${filter || "newest"}&page=${_page}`
       );
     }
     return history.push(`/products/search?q=${q}&page=${_page}`);
@@ -58,42 +55,32 @@ const SearchList = ({
     if (item) {
       const check = addItem(item);
       if (check) {
-        return message.success('Đã thêm sản phẩm vào giỏ hàng');
+        return message.success("Đã thêm sản phẩm vào giỏ hàng");
       }
     }
   };
   const handleChange = (value) => {
     switch (value) {
       case "newest":
-        return history.push(
-          `/products/search?q=${q}&sort=newest`
-        );
+        return history.push(`/products/search?q=${q}&sort=newest`);
       case "asc":
-        return history.push(
-          `/products/search?q=${q}&sort=asc`
-        );
+        return history.push(`/products/search?q=${q}&sort=asc`);
       case "desc":
-        return history.push(
-          `/products/search?q=${q}&sort=desc`
-        );
+        return history.push(`/products/search?q=${q}&sort=desc`);
       case "name_asc":
-        return history.push(
-          `/products/search?q=${q}&sort=name_asc`
-        );
+        return history.push(`/products/search?q=${q}&sort=name_asc`);
       default:
-        return history.push(
-          `/products/search?q=${q}&sort=name_desc`
-        );
+        return history.push(`/products/search?q=${q}&sort=name_desc`);
     }
   };
 
   return (
-    <section className='products'>
-      <div className='container'>
-        <div className='products__header'>
+    <section className="products">
+      <div className="container">
+        <div className="products__header">
           {`Kết quả tìm kiếm cho "${q}" (${products.length})`}
-          <div className='products__header-filter'>
-          <Select
+          <div className="products__header-filter">
+            <Select
               defaultValue={filter || "newest"}
               style={{ width: "100%" }}
               onChange={handleChange}
@@ -114,8 +101,8 @@ const SearchList = ({
             </Select>
           </div>
         </div>
-        <div className='products-list'>
-          {loading && <Loader className='product-loader' />}
+        <div className="products-list">
+          {loading && <Loader className="product-loader" />}
           <Row
             gutter={[
               { xs: 4, sm: 8, md: 16, lg: 16 },
@@ -127,30 +114,30 @@ const SearchList = ({
                 <Card bordered={false} hoverable>
                   <Link
                     style={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
                     }}
                     to={`/product/${product.productName}/${product._id}`}
                   >
                     <div
                       style={{
-                        textAlign: 'center',
-                        marginBottom: '1.5rem',
+                        textAlign: "center",
+                        marginBottom: "1.5rem",
                       }}
                     >
                       <img
-                        width='100%'
-                        height='100%'
-                        alt='example'
+                        width="100%"
+                        height="100%"
+                        alt="example"
                         src={product.images[0]}
                       />
                     </div>
                     <div className="item-wrap">
-                      <p className='products__name'>
+                      <p className="products__name">
                         <Tooltip
-                          placement='topLeft'
+                          placement="topLeft"
                           title={product.productName}
                         >
                           {product.productName}
@@ -158,32 +145,43 @@ const SearchList = ({
                       </p>
                       <div>
                         <Rate
-                          style={{ fontSize: '0.85rem' }}
+                          style={{ fontSize: "0.85rem" }}
                           disabled
                           defaultValue={product.starRatings}
                         />
                         <span
-                          style={{ fontSize: '0.85rem' }}
-                          className='ant-rate-text'
+                          style={{ fontSize: "0.85rem" }}
+                          className="ant-rate-text"
                         >
                           {`(${product.reviewsCount})`}
                         </span>
                       </div>
-                      <p className='products__price'>
-                        {parseInt(product.price).toLocaleString('vi-VN', {
-                          style: 'currency',
-                          currency: 'VND',
+                      <p className="products__price">
+                        {parseInt(
+                          product.discountPrice || product.price
+                        ).toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
                         })}
                       </p>
+                      {!!product.discountPrice && (
+                        <span className="products__discount">
+                          {`-${Math.ceil(
+                            ((product.price - product.discountPrice) /
+                              product.price) *
+                              100
+                          )}%`}
+                        </span>
+                      )}
                     </div>
                   </Link>
                 </Card>
                 <Button
                   disabled={product.status ? false : true}
                   onClick={() => handleAddToCart(product)}
-                  className='addToCart'
+                  className="addToCart"
                   icon={<AddToCart />}
-                  type='primary'
+                  type="primary"
                 />
               </Col>
             ))}
@@ -197,7 +195,7 @@ const SearchList = ({
           pageSize={12}
           total={total}
           showSizeChanger={false}
-          style={{ textAlign: 'center', margin: '3rem 0 1rem 0' }}
+          style={{ textAlign: "center", margin: "3rem 0 1rem 0" }}
         />
       </div>
     </section>

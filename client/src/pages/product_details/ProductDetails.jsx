@@ -140,11 +140,26 @@ const ProductDetails = ({
                       <p>
                         <b>Giá : </b>
                         <span style={{ fontSize: "1.2rem", color: "#106eea" }}>
+                          {parseInt(data.discountPrice || data.price).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </span>
+                        <span style={{ fontSize: "0.85rem", color: "#4a4a4a", textDecoration: 'line-through', margin:'0 0.5rem' }}>
                           {parseInt(data.price).toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
                         </span>
+                        {!!data.discountPrice && (
+                          <span className="products__discount">
+                            {`-${Math.ceil(
+                              ((data.price - data.discountPrice) /
+                                data.price) *
+                                100
+                            )}%`}
+                          </span>
+                        )}
                       </p>
                       <Rate disabled defaultValue={data.starRatings} />
                       <span className="ant-rate-text">
