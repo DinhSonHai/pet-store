@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   Form,
   Button,
@@ -7,6 +7,8 @@ import {
   Select,
 } from 'antd';
 import moment from 'moment';
+
+import { productAPI, typeAPI } from '../../../api';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -18,10 +20,12 @@ function OfferAddForm({
 }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const [typeOptions, setTypeOptions] = useState([{ label: '123' , value: '321'}]);
-  const [productOptions, setProductOptions] = useState([{ label: '123' , value: '321'}]);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [productOptions, setProductOptions] = useState([]);
+  const [selectingProduct, setSelectingProduct] = useState({});
 
   const onFinish = async (value) => {
     console.log(value);
@@ -35,13 +39,42 @@ function OfferAddForm({
     setTo(Date.parse(dateString[1]));
   };
 
-  const handleTypeChange = (value) => {
-    console.log(value);
+  const handleTypeChange = async (value) => {
+    if (!value) {
+      return;
+    }
+    setIsProcessing(true);
+    const res = await productAPI.get_by_type(value);
+    setProductOptions(res.data);
+    setIsProcessing(false);
   };
 
   const handleProductChange = (value) => {
-    console.log(value);
+    const product = productOptions.find(item => item._id === value);
+    if (!product) {
+      return;
+    }
+    setSelectingProduct(product);
   };
+
+  const handleSelectProduct = () => {
+    console.log(selectingProduct)
+  };
+
+  useEffect(() => {
+    if (edit) {
+      form.resetFields();
+    };
+
+    async function getType() {
+      setIsProcessing(true);
+      const res = await typeAPI.get_all_sell();
+      setTypeOptions(res.data);
+      setIsProcessing(false);
+    };
+
+    getType();
+  }, [item]);
 
   return (
     <Fragment>
@@ -70,18 +103,20 @@ function OfferAddForm({
         <div>
           <p>Thời gian khuyến mãi</p>
           <RangePicker
-            defaultValue={[moment(item.from), moment(item.to)]}
+            defaultValue={edit ? [moment(item.from), moment(item.to)] : []}
             placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm"
             onChange={onDateChange}
           />
         </div>
-        <div style={{ marginTop: '24px' }}>
-          <p>Chọn sản phẩm</p>
+        <p style={{ marginTop: '28px' }}>Chọn sản phẩm</p>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <Select
+            showSearch
+            loading={isProcessing}
             style={{ width: '30%', marginRight: '12px' }}
-            mode="multiple"
+            mode="single"
             placeholder="Chọn danh mục"
             onChange={handleTypeChange}
             optionFilterProp="children"
@@ -94,16 +129,17 @@ function OfferAddForm({
                 key={type._id}
                 value={type._id}
               >
-                  {type.typeName}
+                {type.typeName}
               </Option>
             ))}
           </Select>
           <Select
-            style={{ width: '50%', marginRight: '12px' }}
-            mode="multiple"
+            showSearch
+            loading={isProcessing}
+            style={{ width: '60%', marginRight: '12px' }}
+            mode="single"
             placeholder="Chọn sản phẩm"
             onChange={handleProductChange}
-            options={typeOptions}
             optionFilterProp="children"
             filterOption={(input, option) =>  
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -114,10 +150,11 @@ function OfferAddForm({
                 key={product._id}
                 value={product._id}
               >
-                  {product.productName}
+                {product.productName}
               </Option>
             ))}
           </Select>
+          <Button onClick={handleSelectProduct} type="default">Xác nhận</Button>
         </div>
         <Form.Item style={{ textAlign: 'right' }}>
           {edit && (

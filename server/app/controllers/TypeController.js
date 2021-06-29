@@ -26,6 +26,27 @@ class TypeController {
     }
   }
 
+  // @route   GET api/types/sell
+  // @desc    Lấy tất cả loại sản phẩm bán ra
+  // @access  Public
+  async getAllTypeSell(req, res, next) {
+    const categoryIds = [new ObjectId('5ff00f72488a9a35bcb5d1dc'), new ObjectId('5ff01f04d5b5e035d8ed9f67')]
+    try {
+      const types = await crudService.getAdvance(
+        Type,
+        { 'categoryId': { '$in': categoryIds}},
+        {},
+        {
+          path: 'categoryId',
+          select: ['categoryName'],
+        }
+      );
+      return res.status(statusCode.success).json(types);
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server Error');
+    }
+  }
+
   // @route   GET api/types/:id
   // @desc    Lấy loại theo id
   // @access  Public

@@ -10,6 +10,11 @@ const authAdmin = require('../../app/middlewares/authAdmin');
 // @access  Public
 router.get('/', TypeController.getAll);
 
+// @route   GET api/types/sell
+// @desc    Lấy tất cả loại sản phẩm bán ra
+// @access  Public
+router.get('/sell', TypeController.getAllTypeSell);
+
 // @route   GET api/types/deleted
 // @desc    Lây tất cả loại sản phẩn soft deleted
 // @access  Private

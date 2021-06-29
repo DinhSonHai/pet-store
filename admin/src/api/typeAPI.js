@@ -4,6 +4,9 @@ const typeAPI = {
   get_all: async () => {
     return await api.get(`${source}`);
   },
+  get_all_sell: async () => {
+    return await api.get(`${source}/sell`);
+  },
   create: async (data) => {
     return await api.post(`${source}`, data);
   },

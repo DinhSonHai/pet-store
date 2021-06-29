@@ -51,6 +51,11 @@ router.get("/:id", checkReview, ProductController.getById);
 // @access  Public
 router.get("/types/:typeId", ProductController.getByTypeId);
 
+// @route   GET api/products/types/:typeId/admin
+// @desc    Lấy sản phẩm theo typeId cho admin
+// @access  Public
+router.get('/types/:typeId/admin', ProductController.getProductsByTypeIdForAdmin);
+
 // @route   GET api/products/same-types/:typeId
 // @desc    Lấy tất cả sản phẩm theo typeId
 // @access  Public

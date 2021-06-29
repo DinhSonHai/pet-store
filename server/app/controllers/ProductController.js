@@ -120,6 +120,18 @@ class ProductController {
     }
   }
 
+  // @route   GET api/products/types/:typeId/admin
+  // @desc    Lấy sản phẩm theo typeId cho admin
+  // @access  Public
+  async getProductsByTypeIdForAdmin(req, res) {
+    try {
+      const products = await crudService.getAll(Product, { typeId: new ObjectId(req.params.typeId) });
+      return res.status(statusCode.success).json(products);
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server Error');
+    }
+  }
+
   // @route   GET api/products/same-type/:typeId
   // @desc    Lấy sản phẩm cung loai
   // @access  Public

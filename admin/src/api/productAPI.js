@@ -4,6 +4,9 @@ const productAPI = {
   get_all: async (filter, page) => {
     return await api.get(`${source}/?sort=${filter}&page=${page}`);
   },
+  get_by_type: async (typeId) => {
+    return await api.get(`${source}/types/${typeId}/admin`);
+  },
   create: async (data) => {
     return await api.post(`${source}`, data);
   },
