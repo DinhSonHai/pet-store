@@ -8,6 +8,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+import EditableTable from './components/EditableTable';
 import { productAPI, typeAPI } from '../../../api';
 
 const { RangePicker } = DatePicker;
@@ -25,7 +26,8 @@ function OfferAddForm({
   const [to, setTo] = useState('');
   const [typeOptions, setTypeOptions] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
-  const [selectingProduct, setSelectingProduct] = useState({});
+  const [selectingProduct, setSelectingProduct] = useState(null);
+  const [productList, setProductList] = useState([]);
 
   const onFinish = async (value) => {
     console.log(value);
@@ -46,6 +48,7 @@ function OfferAddForm({
     setIsProcessing(true);
     const res = await productAPI.get_by_type(value);
     setProductOptions(res.data);
+    setSelectingProduct(null);
     setIsProcessing(false);
   };
 
@@ -58,7 +61,15 @@ function OfferAddForm({
   };
 
   const handleSelectProduct = () => {
-    console.log(selectingProduct)
+    if (!selectingProduct) return;
+    const currentProduct = selectingProduct;
+    const currentProductList = [...productList];
+    const existProduct = currentProductList.find(product => product._id === currentProduct._id);
+    if (existProduct) {
+      return;
+    }
+    currentProductList.push(currentProduct);
+    setProductList(currentProductList);
   };
 
   useEffect(() => {
@@ -111,7 +122,7 @@ function OfferAddForm({
           />
         </div>
         <p style={{ marginTop: '28px' }}>Chọn sản phẩm</p>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
           <Select
             showSearch
             loading={isProcessing}
@@ -134,6 +145,7 @@ function OfferAddForm({
             ))}
           </Select>
           <Select
+            disabled={productOptions.length <= 0}
             showSearch
             loading={isProcessing}
             style={{ width: '60%', marginRight: '12px' }}
@@ -144,7 +156,9 @@ function OfferAddForm({
             filterOption={(input, option) =>  
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
+            value={selectingProduct ? selectingProduct._id : ""}
           >
+            <Option value={""}>Chọn sản phẩm</Option>
             {productOptions.map((product) => (
               <Option
                 key={product._id}
@@ -154,9 +168,10 @@ function OfferAddForm({
               </Option>
             ))}
           </Select>
-          <Button onClick={handleSelectProduct} type="default">Xác nhận</Button>
+          <Button onClick={handleSelectProduct} type="default" disabled={!selectingProduct}>Xác nhận</Button>
         </div>
-        <Form.Item style={{ textAlign: 'right' }}>
+        {productList.length > 0 && <EditableTable dataSource={productList} setDataSource={setProductList} />}
+        <Form.Item style={{ textAlign: 'right', marginTop: '24px' }}>
           {edit && (
             <Button
               style={{ marginRight: '1rem' }}
