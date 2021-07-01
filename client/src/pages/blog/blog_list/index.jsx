@@ -60,13 +60,13 @@ const BlogList = ({
                   {item.title}
                 </Tooltip>
               </p>
-              <p className="blog-list__info">
+              <p className="blog-list__list-info">
                 <UserOutlined /> {item.employeeId.name} - <HistoryOutlined />{" "}
                 {dayjs(item.createdAt).format("DD/MM/YYYY")}
               </p>
               <p className="blog-list__tags">
                 {item.tags.map((tag) => (
-                  <Link to={`/blogs/?tags=${tag}`}>
+                  <Link key={tag} to={`/blogs/?tags=${tag}`}>
                     <Tag
                       key={tag}
                       color={TAGS_COLOR[Math.ceil(Math.random() * 8)]}
