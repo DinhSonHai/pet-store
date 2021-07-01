@@ -5,6 +5,7 @@ import cart from './cart';
 import checkout from './checkout';
 import types from './types';
 import blogs from './blogs';
+import sales from './sales';
 
 export default combineReducers({
   auth,
@@ -12,5 +13,6 @@ export default combineReducers({
   cart,
   checkout,
   products,
+  sales,
   types,
 });

@@ -21,3 +21,4 @@ export { default as About } from "./about/About";
 export { default as Service } from "./service/Service";
 export { default as BlogList } from "./blog/blog_list";
 export { default as BlogItem } from './blog/blog_item';
+export { default as Sales } from './sales/Sales';
