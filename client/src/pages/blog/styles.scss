@@ -26,9 +26,22 @@
         font-size: 1.2rem;
         color: var(--dark-second-color);
     }
+    &__list-info{
+        margin-bottom: 0.5rem;
+        color: var(--gray-color);
+    }
     &__info{
         margin-bottom: 0.5rem;
         color: var(--gray-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .share-actions{
+            margin-top: 0;
+        }
+        p{
+            margin-bottom: 0;
+        }
     }
     &__tags{
         margin-bottom: 0;

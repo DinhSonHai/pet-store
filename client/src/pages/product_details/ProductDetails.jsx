@@ -16,7 +16,7 @@ import { Loader } from "../../components";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
-import { ShowHomeProducts } from "../../components";
+import { ShowHomeProducts, SocialShare } from "../../components";
 import { productAPI } from "../../api";
 import "./styles.scss";
 
@@ -140,22 +140,32 @@ const ProductDetails = ({
                       <p>
                         <b>Giá : </b>
                         <span style={{ fontSize: "1.2rem", color: "#106eea" }}>
-                          {parseInt(data.discountPrice || data.price).toLocaleString("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                        </span>
-                        <span style={{ fontSize: "0.85rem", color: "#4a4a4a", textDecoration: 'line-through', margin:'0 0.5rem' }}>
-                          {parseInt(data.price).toLocaleString("vi-VN", {
+                          {parseInt(
+                            data.discountPrice || data.price
+                          ).toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
                         </span>
                         {!!data.discountPrice && (
+                          <span
+                            style={{
+                              fontSize: "0.85rem",
+                              color: "#4a4a4a",
+                              textDecoration: "line-through",
+                              margin: "0 0.5rem",
+                            }}
+                          >
+                            {parseInt(data.price).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
+                          </span>
+                        )}
+                        {!!data.discountPrice && (
                           <span className="products__discount">
                             {`-${Math.ceil(
-                              ((data.price - data.discountPrice) /
-                                data.price) *
+                              ((data.price - data.discountPrice) / data.price) *
                                 100
                             )}%`}
                           </span>
@@ -167,6 +177,7 @@ const ProductDetails = ({
                           ? "Chưa có đánh giá nào"
                           : `${data.reviewsCount} đánh giá`}
                       </span>
+                      <SocialShare />
                     </Card>
                   </Col>
                 </Row>
