@@ -61,6 +61,28 @@ class DiscountOfferController {
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.crud.notFound }] });
       }
+      if (discountOffer.to <= Date.now()) {
+        const offers = await crudService.getAll(DiscountOffer);
+        const offersLength = offers.length;
+        for (let i = 0; i < offersLength; i++) {
+          if (offers[i].isActive) {
+            const products = offers[i].products;
+            const length = products.length;
+            for (let i = 0; i < length; i++) {
+              const product = await crudService.getById(Product, products[i].productId);
+              if (!product) {
+                return res
+                  .status(statusCode.notFound)
+                  .json({ errors: [{ msg: message.crud.notFound }] });
+              }
+              product.discountPrice = 0;
+              await product.save();
+            }
+            offers[i].isActive = false;
+            await offers[i].save();
+          }
+        }
+      }
       return res.status(statusCode.success).json(discountOffer);
     } catch (error) {
       return res.status(statusCode.serverError).send("Server Error");
