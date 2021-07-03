@@ -39,3 +39,5 @@ export const GET_ALL_BLOGS = 'GET_ALL_BLOGS';
 export const REMOVE_BLOG = 'REMOVE_BLOG';
 export const GET_ALL_OFFERS = 'GET_ALL_OFFERS';
 export const GET_OFFER_BY_ID = 'GET_OFFER_BY_ID';
+export const GET_ALL_CONTACTS = 'GET_ALL_CONTACTS';
+export const UPDATE_CONTACT = 'UPDATE_CONTACT';

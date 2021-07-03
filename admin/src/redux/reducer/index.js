@@ -10,12 +10,14 @@ import reviews from './reviews';
 import statistical from './statistical';
 import blogs from './blogs';
 import offers from './offers';
+import contacts from './contacts';
 
 export default combineReducers({
   auth,
   blogs,
   bills,
   categories,
+  contacts,
   orders,
   products,
   receipts,

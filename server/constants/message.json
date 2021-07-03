@@ -9,7 +9,9 @@
     "removeFail": "Xóa thất bại",
     "restoreSuccess": "Khôi phục thành công",
     "restoreFail": "Khôi phục thất bại",
-    "error": "Xảy ra lỗi, hãy thử lại"
+    "error": "Xảy ra lỗi, hãy thử lại",
+    "sendSuccess": "Gửi thành công",
+    "sendFail": "Gửi thất bại"
   },
   "order": {
     "notFound": "Không tìm thấy đơn hàng",
