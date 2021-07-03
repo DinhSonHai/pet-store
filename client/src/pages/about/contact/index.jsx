@@ -1,14 +1,25 @@
 /* eslint-disable import/no-anonymous-default-export */
+import { useState } from "react";
 import { Row, Col, Card, Form, Input, Button } from "antd";
-import { notifySuccess } from '../../../utils/notify'
+import { notifySuccess, notifyErrors } from "../../../utils/notify";
+import { contactAPI } from "../../../api";
 import "./styles.scss";
 
 const Contact = () => {
-  const onFinish = (values)=>{
-    if(values){
-      notifySuccess('Chức năng này làm cho vui thôi, bạn cần hỏi gì thì nhắn hãy nhắn qua messenger!. Cảm ơn.');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const onFinish = async (values) => {
+    if (values) {
+      setIsProcessing(true);
+      try {
+        const res = await contactAPI.create(values);
+        notifySuccess(res.data.message);
+        setIsProcessing(false);
+      } catch (err) {
+        notifyErrors(err);
+        setIsProcessing(false);
+      }
     }
-  }
+  };
   return (
     <section className="contact">
       <div className="contact__wrap container">
@@ -71,7 +82,7 @@ const Contact = () => {
                     <Input placeholder="Your email" />
                   </Form.Item>
                   <Form.Item
-                    name="content"
+                    name="message"
                     rules={[
                       {
                         required: true,
@@ -87,7 +98,11 @@ const Contact = () => {
                     />
                   </Form.Item>
                   <Form.Item style={{ textAlign: "center" }}>
-                    <Button type="primary" htmlType="submit">
+                    <Button
+                      loading={isProcessing}
+                      type="primary"
+                      htmlType="submit"
+                    >
                       Gửi message
                     </Button>
                   </Form.Item>
