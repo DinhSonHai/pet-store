@@ -20,7 +20,10 @@ const CartHome = ({ cartState, history }) => {
         return store.dispatch({ type: REMOVE_CART });
       }
     });
-    let total_value = cartState.reduce((a, b) => a + (b.discountPrice || b.price) * b.amount, 0);
+    let total_value = cartState.reduce(
+      (a, b) => a + (b.discountPrice || b.price) * b.amount,
+      0
+    );
     setTotalCart(total_value);
   }, [cartState]);
   return (
@@ -65,26 +68,32 @@ const CartHome = ({ cartState, history }) => {
                           >
                             {item.productName}
                           </Link>
-                          <div style={{display:'flex',alignItems:'center'}}>
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
                             <p className="cart__product--price">
-                              {parseInt(item.discountPrice || item.price).toLocaleString("vi-VN", {
+                              {parseInt(
+                                item.discountPrice || item.price
+                              ).toLocaleString("vi-VN", {
                                 style: "currency",
                                 currency: "VND",
                               })}
                             </p>
-                            <span
-                              style={{
-                                fontSize: "0.85rem",
-                                color: "#4a4a4a",
-                                textDecoration: "line-through",
-                                margin: "0 0.5rem 1em",
-                              }}
-                            >
-                              {parseInt(item.price).toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              })}
-                            </span>
+                            {!!item.discountPrice && (
+                              <span
+                                style={{
+                                  fontSize: "0.85rem",
+                                  color: "#4a4a4a",
+                                  textDecoration: "line-through",
+                                  margin: "0 0.5rem 1em",
+                                }}
+                              >
+                                {parseInt(item.price).toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
+                              </span>
+                            )}
                           </div>
                           <InputNumber
                             onChange={(value) => {
