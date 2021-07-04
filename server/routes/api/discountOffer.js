@@ -43,4 +43,9 @@ router.get("/:id", authAdmin, DiscountOfferController.getDiscountOfferById);
 // @access  Private
 router.put("/:id", [authAdmin, validateCreateDiscountOffer], DiscountOfferController.updateDiscountOffer);
 
+// @route   DELETE api/discountOffer/:id
+// @desc    Xóa chương trình khuyến mãi theo id
+// @access  Private
+router.delete("/:id", authAdmin, DiscountOfferController.deleteDiscountOfferById);
+
 module.exports = router;

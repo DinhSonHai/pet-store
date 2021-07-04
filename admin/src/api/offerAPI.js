@@ -12,6 +12,15 @@ const offerApi = {
   },
   deactivate_offer: async (id) => {
     return await api.put(`${source}/${id}/deactivate`);
+  },
+  create_offer: async (data) => {
+    return await api.post(`${source}`, { ...data });
+  },
+  edit_offer: async (id, data) => {
+    return await api.put(`${source}/${id}`, { ...data });
+  },
+  delete_offer: async (id) => {
+    return await api.delete(`${source}/${id}`);
   }
 };
 

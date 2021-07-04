@@ -7,9 +7,11 @@ import {
   Select,
 } from 'antd';
 import moment from 'moment';
+import { connect } from 'react-redux';
 
 import EditableTable from './components/EditableTable';
 import { productAPI, typeAPI } from '../../../api';
+import { createOffer, editOffer } from '../../../redux/actions/offers';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -18,6 +20,10 @@ function OfferAddForm({
   edit,
   setEdit,
   item,
+  createOffer,
+  editOffer,
+  tabChange,
+  setTabChange,
 }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -27,10 +33,29 @@ function OfferAddForm({
   const [typeOptions, setTypeOptions] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
   const [selectingProduct, setSelectingProduct] = useState(null);
-  const [productList, setProductList] = useState([]);
+  const [productList, setProductList] = useState(item ? () => {
+    const newProducts = item.products.map(product => ({ ...product.productId, discount: product.discount, discountPrice: product.productId.price * (100 - product.discount) /100 }));
+    return newProducts;
+  } : []);
 
   const onFinish = async (value) => {
-    console.log(value);
+    const { title } = value;
+    if (!title || !from || !to || productList.length <= 0 || productList.find(product => !product.discount)) {
+      return;
+    }
+    const data = productList.map(product => ({ productId: product._id, discount: product.discount }));
+    setLoading(true);
+    let result = false;
+    if (edit && item) {
+      result = await editOffer(item._id, { title, from, to, data });
+    } else {
+      result = await createOffer({ title, from, to, data });
+    }
+    setLoading(false);
+    if (result) {
+      setTabChange('list');
+      edit && setEdit(false);
+    }
   };
 
   const onDateChange = (value, dateString) => {
@@ -72,10 +97,20 @@ function OfferAddForm({
     setProductList(currentProductList);
   };
 
+  const shouldDisabledButton = () => {
+    return productList.length <= 0 || productList.some(product => !product.discount) || !from || !to;
+  };
+
   useEffect(() => {
+    form.resetFields();
     if (edit) {
-      form.resetFields();
-    };
+      setFrom(Date.parse(item.from));
+      setTo(Date.parse(item.to));
+    } else {
+      setFrom('');
+      setTo('');
+      setProductList([]);
+    }
 
     async function getType() {
       setIsProcessing(true);
@@ -182,8 +217,8 @@ function OfferAddForm({
               Hủy
             </Button>
           )}
-          <Button type='primary' loading={loading} htmlType='submit'>
-            {edit ? 'Lưu' : ' Thêm'}
+          <Button type='primary' loading={loading} htmlType='submit' disabled={shouldDisabledButton()}>
+            {edit ? 'Cập nhật khuyến mãi' : ' Thêm khuyến mãi'}
           </Button>
         </Form.Item>
       </Form>
@@ -191,4 +226,4 @@ function OfferAddForm({
   );
 }
 
-export default OfferAddForm;
+export default connect(null, { createOffer, editOffer })(OfferAddForm);

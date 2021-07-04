@@ -6,7 +6,6 @@ import EditableCell from './EditableCell';
 import '../../styles.scss';
 
 const EditableTable = ({ dataSource, setDataSource }) => {
-
   const components = {
     body: {
       row: EditableRow,
@@ -31,7 +30,7 @@ const EditableTable = ({ dataSource, setDataSource }) => {
       align: 'center',
       title: 'Giá sản phẩm',
       dataIndex: 'price',
-      render: (value) => <>{value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</>
+      render: (value) => <>{value ? value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : ''}</>
     },
     {
       align: 'center',
@@ -56,7 +55,7 @@ const EditableTable = ({ dataSource, setDataSource }) => {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <Popconfirm title="Bạn có muốn xóa?" onConfirm={() => handleDelete(record.key)}>
-            <a>Delete</a>
+            <a>Xóa</a>
           </Popconfirm>
         ) : null,
     },

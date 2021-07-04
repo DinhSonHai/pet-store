@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
-import { Button, Table, Pagination } from "antd";
+import { Button, Table, Pagination, Popconfirm } from "antd";
 import {
   EyeOutlined,
 } from '@ant-design/icons';
@@ -9,12 +9,12 @@ import dayjs from "dayjs";
 import queryString from "query-string";
 
 import ViewDiscountOffer from '../view/index';
-import { getAllOffers } from "../../../redux/actions/offers";
+import { getAllOffers, deleteOffer } from "../../../redux/actions/offers";
 import OfferAddForm from "../add_form";
 
 export const DiscountOfferContext = React.createContext(null);
 
-function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}) {
+function DiscountOfferList({ offers: { offers, total }, getAllOffers, deleteOffer, tabChange, setTabChange}) {
   const location = useLocation();
   const history = useHistory();
   let page = queryString.parse(location.search).page;
@@ -23,6 +23,11 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
   const [view, setView] = useState(false);
   const [id, setId] = useState(null);
   const [item, setItem] = useState(null);
+
+  const handleDeleteOffer = async (id) => {
+    await deleteOffer(id);
+    getData();
+  };
 
   const columns = [
     {
@@ -74,6 +79,9 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
             >
               Sửa
             </Button>
+            <Popconfirm title="Bạn có muốn xóa?" onConfirm={() => handleDeleteOffer(record._id)}>
+              <a>Xóa</a>
+            </Popconfirm>
           </div>
         );
       },
@@ -128,7 +136,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, tabChange}
           />
         </Fragment>
       ) : (
-        <OfferAddForm edit={edit} setEdit={setEdit} item={item} />
+        <OfferAddForm edit={edit} setEdit={setEdit} item={item} setTabChange={setTabChange}/>
       )}
     </DiscountOfferContext.Provider>
   );
@@ -138,4 +146,4 @@ const mapStateToProps = (state) => ({
   offers: state.offers,
 });
 
-export default connect(mapStateToProps, { getAllOffers })(DiscountOfferList);
+export default connect(mapStateToProps, { getAllOffers, deleteOffer })(DiscountOfferList);

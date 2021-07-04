@@ -23,7 +23,7 @@ const DiscountOffer = () => {
         className='type__wrap site-layout-background'
         style={{ padding: '1.5rem', minHeight: '100vh' }}
       >
-        <Tabs onTabClick={onTabChange} defaultActiveKey={tabChange} type='card'>
+        <Tabs onTabClick={onTabChange} activeKey={tabChange} type='card'>
           <TabPane
             tab={
               <span>
@@ -33,7 +33,7 @@ const DiscountOffer = () => {
             }
             key='list'
           >
-            <DiscountOfferList tabChange={tabChange} />
+            <DiscountOfferList tabChange={tabChange} setTabChange={setTabChange} />
           </TabPane>
           <TabPane
             tab={
@@ -44,7 +44,7 @@ const DiscountOffer = () => {
             }
             key='actions'
           >
-            <OfferAddForm tabChange={tabChange} />
+            <OfferAddForm tabChange={tabChange} setTabChange={setTabChange} />
           </TabPane>
         </Tabs>
       </div>

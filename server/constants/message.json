@@ -88,6 +88,7 @@
     "deactivate": "Chương trình khuyến mãi đã tắt",
     "invalidDateRange": "Chương trình khuyến mãi có thời gian không hợp lệ",
     "invalidStartDate": "Chương trình khuyến mãi có thời gian bắt đầu không hợp lệ",
-    "invalidExpireDate": "Chương trình khuyến mãi có thời gian kết thúc không hợp lệ"
+    "invalidExpireDate": "Chương trình khuyến mãi có thời gian kết thúc không hợp lệ",
+    "remove": "Đã xóa chương trình khuyến mãi"
   }
 }

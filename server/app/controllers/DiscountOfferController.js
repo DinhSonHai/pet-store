@@ -14,9 +14,11 @@ class DiscountOfferController {
   // @access  Private
   async getAllDiscountOffers(req, res) {
     const { start, end } = pagination(req.query.page, 6);
-
     try {
-      const offers = await crudService.getAll(DiscountOffer);
+      const offers = await crudService.getAdvance(DiscountOffer, {}, { 'createdAt': 'desc' }, {
+        path: 'products',
+        populate: { path: 'productId' },
+      });
       return res.status(statusCode.success).json({
         data: offers.slice(start, end),
         total: offers.length,
@@ -108,7 +110,6 @@ class DiscountOfferController {
     }
     try {
       const status = await crudService.create(DiscountOffer, { title, from, to, products: data });
-      console.log(status)
       if (status) {
         return res
           .status(statusCode.success)
@@ -310,6 +311,39 @@ class DiscountOfferController {
     } catch (error) {
       return res.status(statusCode.serverError).send("Server Error");
     }
+  }
+
+  // @route   DELETE api/discountOffer/:id
+  // @desc    Xóa chương trình khuyến mãi theo id
+  // @access  Private
+  async deleteDiscountOfferById(req, res) {
+    const discountOffer = await crudService.getById(DiscountOffer, req.params.id);
+    if (!discountOffer) {
+      return res
+        .status(statusCode.notFound)
+        .json({ errors: [{ msg: message.crud.notFound }] });
+    }
+    if (discountOffer.isActive) {
+      return res
+      .status(statusCode.badRequest)
+      .json({ errors: [{ msg: message.discountOffer.isActive }] });
+    }
+    const products = discountOffer.products;
+    const length = products.length;
+    for (let i = 0; i < length; i++) {
+      const product = await crudService.getById(Product, products[i].productId);
+      if (!product) {
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.crud.notFound }] });
+      }
+      product.discountPrice = 0;
+      await product.save();
+    }
+    await discountOffer.remove();
+    return res
+    .status(statusCode.success)
+    .json({ message: message.discountOffer.remove });
   }
 }
 

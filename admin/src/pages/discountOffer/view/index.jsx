@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Table, Button, Modal, Col, Row, Card, Popconfirm, Input } from 'antd';
+import { Table, Button, Modal, Popconfirm, Spin } from 'antd';
 import { connect } from 'react-redux';
 import dayjs from 'dayjs';
 
@@ -54,19 +54,25 @@ function ViewDiscountOffer({ offers: { offer }, id, setView, getOfferById, activ
 
   const activate = async () => {
     setConfirmLoading(true);
-    await activateOffer(id);
-    refetch();
+    const result = await activateOffer(id);
     setConfirmLoading(false);
     setVisible(false);
+    if (!result) {
+      return;
+    }
+    refetch();
     setView(false);
   };
 
   const deactivate = async () => {
     setConfirmLoading(true);
-    await deactivateOffer(id);
-    refetch();
+    const result = await deactivateOffer(id);
     setConfirmLoading(false);
     setVisible(false);
+    if (!result) {
+      return;
+    }
+    refetch();
     setView(false);
   };
 
@@ -102,7 +108,11 @@ function ViewDiscountOffer({ offers: { offer }, id, setView, getOfferById, activ
       title='Thông tin khuyến mãi'
     >
       <section className="view-offer">
-        {!isLoading && offer && (
+        {isLoading || !offer ? (
+          <div className="spinner">
+            <Spin size="large" />
+          </div>
+        ) : (
           <>
             <p className='view-offer__id'>
               <span>Chi tiết khuyến mãi: </span> {`#${id}`}
