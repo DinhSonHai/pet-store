@@ -23,12 +23,14 @@ export const createType = (data) => async (dispatch) => {
   try {
     const res = await typeAPI.create(data);
     notifyActions('success', res.data.message);
+    return true;
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
       errors.forEach((error) => notifyActions('error', error.msg));
     }
+    return false;
   }
 };
 
@@ -37,12 +39,14 @@ export const editType = (id, data) => async (dispatch) => {
   try {
     const res = await typeAPI.update(id, data);
     notifyActions('success', res.data.message);
+    return true;
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
       errors.forEach((error) => notifyActions('error', error.msg));
     }
+    return false;
   }
 };
 

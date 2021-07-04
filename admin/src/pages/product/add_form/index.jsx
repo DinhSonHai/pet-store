@@ -28,6 +28,8 @@ const ProductAddForm = ({
   edit,
   setEdit,
   item,
+  tabChange,
+  setTabChange,
 }) => {
   let getIsShow = edit ? item.isShow : true;
   const [form] = Form.useForm();
@@ -39,6 +41,7 @@ const ProductAddForm = ({
   const [status, setStatus] = useState(true);
   const [isShow, setIsShow] = useState(getIsShow);
   useEffect(() => {
+    form.resetFields();
     if (edit) {
       setStatus(item.status);
       setImages(
@@ -48,8 +51,11 @@ const ProductAddForm = ({
           response: { url: img },
         }))
       );
-      form.resetFields();
+    } else {
+      setStatus(true);
+      setImages([]);
     }
+
     async function getTypes() {
       setIsProcessing(true);
       const res = await api.get('/types');
@@ -57,45 +63,54 @@ const ProductAddForm = ({
       setIsProcessing(false);
     }
     getTypes();
-  }, [item]);
+  }, [item, tabChange]);
+
   const onFinish = async (values) => {
     // if (images.length <= 0) {
     //   return message.error('Vui lòng chọn hình ảnh!');
     // }
+    let result = false;
+    setConfirmLoading(true);
     if (edit) {
-      setConfirmLoading(true);
-      await editProduct(item._id, {
+      result = await editProduct(item._id, {
         ...values,
         description: content,
         status,
         isShow,
         images: images.map((img) => img.response.url),
       });
-      setConfirmLoading(false);
-      return;
+    } else {
+      result = await createProduct({
+        ...values,
+        description: content,
+        isShow,
+        images: images.map((img) => img.response.url),
+      });
     }
-    setConfirmLoading(true);
-    await createProduct({
-      ...values,
-      description: content,
-      isShow,
-      images: images.map((img) => img.response.url),
-    });
     setConfirmLoading(false);
+    if (result) {
+      setTabChange('list');
+      edit && setEdit(false);
+    }
   };
+
   const handleCkeditor = (event, editor) => {
     let data = editor.getData();
     setContent(data);
   };
+
   const handleChange = ({ fileList }) => {
     setImages(fileList);
   };
+
   function onChangeStatus(e) {
     setStatus(e.target.checked);
   }
+
   function onChangeShow(e) {
     setIsShow(e.target.checked);
   }
+  
   return (
     <Fragment>
       <h3 style={{ textAlign: 'right' }}>
@@ -231,7 +246,7 @@ const ProductAddForm = ({
 
         <Form.Item label='Mô tả'>
           <CKEditor
-            data={edit ? item.description : ''}
+            data={item ? (content ? content : item.content) : content}
             config={{
               ckfinder: {
                 uploadUrl: '/upload',

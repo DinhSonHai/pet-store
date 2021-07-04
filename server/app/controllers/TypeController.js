@@ -14,7 +14,7 @@ class TypeController {
       const types = await crudService.getAdvance(
         Type,
         {},
-        {},
+        { createdAt: 'desc' },
         {
           path: 'categoryId',
           select: ['categoryName'],

@@ -22,12 +22,14 @@ export const createProduct = (data) => async (dispatch) => {
   try {
     const res = await productAPI.create(data);
     notifyActions('success', res.data.message);
+    return true;
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
       errors.forEach((error) => notifyActions('error', error.msg));
     }
+    return false;
   }
 };
 
@@ -36,12 +38,14 @@ export const editProduct = (id, data) => async (dispatch) => {
   try {
     const res = await productAPI.update(id, data);
     notifyActions('success', res.data.message);
+    return true;
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
       errors.forEach((error) => notifyActions('error', error.msg));
     }
+    return false;
   }
 };
 

@@ -25,7 +25,7 @@ const Type = () => {
         className='type__wrap site-layout-background'
         style={{ padding: '1.5rem', minHeight: '100vh' }}
       >
-        <Tabs onTabClick={onTabChange} defaultActiveKey={tabChange} type='card'>
+        <Tabs onTabClick={onTabChange} activeKey={tabChange} type='card'>
           <TabPane
             tab={
               <span>
@@ -35,7 +35,7 @@ const Type = () => {
             }
             key='list'
           >
-            <TypeList tabChange={tabChange} />
+            <TypeList tabChange={tabChange} setTabChange={setTabChange}/>
           </TabPane>
           <TabPane
             tab={
@@ -57,7 +57,7 @@ const Type = () => {
             }
             key='actions'
           >
-            <TypeAddForm tabChange={tabChange} />
+            <TypeAddForm tabChange={tabChange} setTabChange={setTabChange} />
           </TabPane>
         </Tabs>
       </div>

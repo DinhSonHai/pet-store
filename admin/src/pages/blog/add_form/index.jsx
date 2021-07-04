@@ -14,14 +14,14 @@ const uploadButton = (
     <div style={{ marginTop: 8 }}>Upload</div>
   </div>
 );
-const BlogAddForm = ({ createBlog, editBlog, edit, setEdit, item }) => {
+const BlogAddForm = ({ createBlog, editBlog, edit, setEdit, item, tabChange, setTabChange }) => {
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   useEffect(() => {
+    form.resetFields();
     if (edit) {
-      form.resetFields();
       setContent(item.content);
       setImages([
         {
@@ -30,8 +30,11 @@ const BlogAddForm = ({ createBlog, editBlog, edit, setEdit, item }) => {
           response: { url: item.thumbnail },
         },
       ]);
+    } else {
+      setContent('');
+      setImages([]);
     }
-  }, [item]);
+  }, [item, tabChange]);
   const onFinish = async (values) => {
     if (images.length <= 0) {
       values.thumbnail = "";
@@ -51,6 +54,8 @@ const BlogAddForm = ({ createBlog, editBlog, edit, setEdit, item }) => {
       });
     }
     setConfirmLoading(false);
+    setTabChange('list');
+    edit && setEdit(false);
   };
   const handleCkeditor = (event, editor) => {
     let data = editor.getData();
@@ -78,7 +83,7 @@ const BlogAddForm = ({ createBlog, editBlog, edit, setEdit, item }) => {
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập Tiêu đề bài viết!",
+              message: "Vui lòng nhập tiêu đề bài viết!",
             },
           ]}
         >
@@ -95,7 +100,14 @@ const BlogAddForm = ({ createBlog, editBlog, edit, setEdit, item }) => {
             },
           ]}
         >
-          <Select mode="multiple" allowClear>
+          <Select
+            mode="multiple" 
+            allowClear
+            optionFilterProp="children"
+            filterOption={(input, option) =>  
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
             {BLOG_TAGS.map((tag) => (
               <Option key={tag.value} value={tag.value}>
                 {tag.label}
@@ -115,7 +127,7 @@ const BlogAddForm = ({ createBlog, editBlog, edit, setEdit, item }) => {
         </Form.Item>
         <Form.Item>
           <CKEditor
-            data={edit ? item.content : ""}
+            data={item ? (content ? content : item.content) : content}
             config={{
               ckfinder: {
                 uploadUrl: "/upload",

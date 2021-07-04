@@ -5,7 +5,7 @@ import { Button, Table, Popconfirm } from 'antd';
 
 import { getAllTypes, removeType } from '../../../redux/actions/types';
 
-const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange }) => {
+const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTabChange }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
@@ -76,7 +76,7 @@ const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange }) => {
           />
         </Fragment>
       ) : (
-        <TypeAddForm edit={edit} setEdit={setEdit} item={item} />
+        <TypeAddForm edit={edit} setEdit={setEdit} item={item} tabChange={tabChange} setTabChange={setTabChange}/>
       )}
     </Fragment>
   );

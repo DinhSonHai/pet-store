@@ -23,7 +23,7 @@ const Blog = () => {
         className='type__wrap site-layout-background'
         style={{ padding: '1.5rem', minHeight: '100vh' }}
       >
-        <Tabs onTabClick={onTabChange} defaultActiveKey={tabChange} type='card'>
+        <Tabs onTabClick={onTabChange} activeKey={tabChange} type='card'>
           <TabPane
             tab={
               <span>
@@ -33,7 +33,7 @@ const Blog = () => {
             }
             key='list'
           >
-            <BlogList tabChange={tabChange} />
+            <BlogList tabChange={tabChange} setTabChange={setTabChange}/>
           </TabPane>
           <TabPane
             tab={
@@ -44,7 +44,7 @@ const Blog = () => {
             }
             key='actions'
           >
-            <BlogAddForm tabChange={tabChange} />
+            <BlogAddForm tabChange={tabChange} setTabChange={setTabChange}/>
           </TabPane>
         </Tabs>
       </div>

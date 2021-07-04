@@ -13,6 +13,7 @@ const ProductList = ({
   getAllProducts,
   removeProduct,
   tabChange,
+  setTabChange,
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -186,7 +187,7 @@ const ProductList = ({
           />
         </Fragment>
       ) : (
-        <ProductAddForm edit={edit} setEdit={setEdit} item={item} />
+        <ProductAddForm edit={edit} setEdit={setEdit} item={item} tabChange={tabChange} setTabChange={setTabChange} />
       )}
     </Fragment>
   );

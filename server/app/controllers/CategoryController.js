@@ -9,7 +9,7 @@ class CategoryController {
   // @access  Public
   async getAll(req, res, next) {
     try {
-      const categories = await crudService.getAll(Category);
+      const categories = await crudService.getAdvance(Category, {}, { createdAt: 'desc' });
       return res.status(statusCode.success).json(categories);
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');

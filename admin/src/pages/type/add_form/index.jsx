@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { createType, editType } from '../../../redux/actions/types';
 import api from '../../../api';
 const { Option } = Select;
-const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
+const TypeAddForm = ({ createType, editType, edit, setEdit, item, tabChange, setTabChange }) => {
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [content, setContent] = useState('');
@@ -18,11 +18,15 @@ const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
   const types = ['image/png', 'image/jpeg', 'image/jpg'];
+
   useEffect(() => {
+    form.resetFields();
     if (edit) {
-      form.resetFields();
       setContent(item.content);
       setImages([item.typeImg]);
+    } else {
+      setContent('');
+      setImages([]);
     }
     async function getCategories() {
       setIsProcessing(true);
@@ -31,7 +35,8 @@ const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
       setIsProcessing(false);
     }
     getCategories();
-  }, [item]);
+  }, [item, tabChange]);
+
   const uploadImages = async (e) => {
     setImages([]);
     let selected = e.target.files[0];
@@ -47,24 +52,30 @@ const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
       setError('Vui lòng chọn định dạng file ảnh png hay jpeg/jpg !');
     }
   };
+
   const onFinish = async (values) => {
     if (images.length <= 0) {
       return message.error('Vui lòng chọn hình ảnh!');
     }
-    if (edit) {
-      setConfirmLoading(true);
-      await editType(item._id, { ...values, typeImg: images[0], content });
-      setConfirmLoading(false);
-      return;
-    }
     setConfirmLoading(true);
-    await createType({ ...values, typeImg: images[0], content });
-    setConfirmLoading(false);
+    let result = false;
+    if (edit) {
+      result = await editType(item._id, { ...values, typeImg: images[0], content });
+    } else {
+      result = await createType({ ...values, typeImg: images[0], content });
+    }
+    if (result) {
+      setConfirmLoading(false);
+      setTabChange('list');
+      edit && setEdit(false);
+    }
   };
+
   const handleCkeditor = (event, editor) => {
     let data = editor.getData();
     setContent(data);
   };
+
   return (
     <Fragment>
       <h3 style={{ textAlign: 'right' }}>
@@ -159,7 +170,7 @@ const TypeAddForm = ({ createType, editType, edit, setEdit, item }) => {
         </div>
         <Form.Item>
           <CKEditor
-            data={edit ? item.content : ''}
+            data={item ? (content ? content : item.content) : content}
             config={{
               ckfinder: {
                 uploadUrl: '/upload',
