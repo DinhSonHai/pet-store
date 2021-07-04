@@ -136,7 +136,7 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, deleteOffe
           />
         </Fragment>
       ) : (
-        <OfferAddForm edit={edit} setEdit={setEdit} item={item} setTabChange={setTabChange}/>
+        <OfferAddForm edit={edit} setEdit={setEdit} item={item} tabChange={tabChange} setTabChange={setTabChange}/>
       )}
     </DiscountOfferContext.Provider>
   );

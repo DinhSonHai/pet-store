@@ -148,16 +148,16 @@ class DiscountOfferController {
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.crud.notFound }] });
       }
-      if (to <= Date.now()) {
-        return res
-        .status(statusCode.badRequest)
-        .json({ errors: [{ msg: message.discountOffer.invalidExpireDate }] });
-      }
       if (discountOffer.isActive) {
         if (from >= Date.now()) {
           return res
           .status(statusCode.badRequest)
           .json({ errors: [{ msg: message.discountOffer.invalidStartDate }] });
+        }
+        if (to <= Date.now()) {
+          return res
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.discountOffer.invalidExpireDate }] });
         }
         const oldData = discountOffer.products;
         const oldDataLength = oldData.length;

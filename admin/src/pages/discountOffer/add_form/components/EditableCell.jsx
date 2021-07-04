@@ -54,7 +54,7 @@ const EditableCell = ({
           },
         ]}
       >
-        <InputNumber ref={inputRef} onPressEnter={save} onBlur={save} />
+        <InputNumber min={1} max={99} ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
       <div

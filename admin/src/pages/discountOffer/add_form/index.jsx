@@ -28,10 +28,11 @@ function OfferAddForm({
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+  const [from, setFrom] = useState(Date.now());
+  const [to, setTo] = useState(Date.now());
   const [typeOptions, setTypeOptions] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
+  const [selectingType, setSelectingType] = useState(null);
   const [selectingProduct, setSelectingProduct] = useState(null);
   const [productList, setProductList] = useState(item ? () => {
     const newProducts = item.products.map(product => ({ ...product.productId, discount: product.discount, discountPrice: product.productId.price * (100 - product.discount) /100 }));
@@ -53,9 +54,21 @@ function OfferAddForm({
     }
     setLoading(false);
     if (result) {
+      resetData();
       setTabChange('list');
       edit && setEdit(false);
     }
+  };
+
+  const resetData = () => {
+    setSelectingProduct(null);
+    setSelectingType(null);
+    setFrom(Date.now());
+    setTo(Date.now());
+    setProductList([]);
+    form.resetFields();
+    setTypeOptions([]);
+    setProductOptions([]);
   };
 
   const onDateChange = (value, dateString) => {
@@ -74,10 +87,18 @@ function OfferAddForm({
     const res = await productAPI.get_by_type(value);
     setProductOptions(res.data);
     setSelectingProduct(null);
+    const type = typeOptions.find(item => item._id === value);
+    if (!type) {
+      return;
+    }
+    setSelectingType(type);
     setIsProcessing(false);
   };
 
   const handleProductChange = (value) => {
+    if (!value) {
+      return;
+    }
     const product = productOptions.find(item => item._id === value);
     if (!product) {
       return;
@@ -102,14 +123,12 @@ function OfferAddForm({
   };
 
   useEffect(() => {
-    form.resetFields();
     if (edit) {
       setFrom(Date.parse(item.from));
       setTo(Date.parse(item.to));
-    } else {
-      setFrom('');
-      setTo('');
-      setProductList([]);
+    }
+    else {
+      resetData();
     }
 
     async function getType() {
@@ -120,13 +139,20 @@ function OfferAddForm({
     };
 
     getType();
-  }, [item]);
+  }, [item, tabChange]);
 
   return (
     <Fragment>
-      <h3 style={{ textAlign: 'right' }}>
-        {edit ? 'Sửa khuyến mãi' : 'Thêm khuyến mãi'}
-      </h3>
+      <div className="header">
+        <h2>
+          {edit ? 'Sửa khuyến mãi' : 'Thêm khuyến mãi'}
+        </h2>
+        {item && (
+          <h3 className={item.isActive ? "active" : "deactive"}>
+            {item.isActive ? "Đang hoạt động" : "Không hoạt động"}
+          </h3>
+        )}
+      </div>
       <Form
         form={form}
         size='large'
@@ -147,17 +173,18 @@ function OfferAddForm({
           <Input placeholder='Tiêu đề' />
         </Form.Item>
         <div>
-          <p>Thời gian khuyến mãi</p>
+          <p><span className="asterisk">*</span> Thời gian khuyến mãi</p>
           <RangePicker
             defaultValue={edit ? [moment(item.from), moment(item.to)] : []}
+            value={[moment(from), moment(to)]}
             placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm"
             onChange={onDateChange}
           />
         </div>
-        <p style={{ marginTop: '28px' }}>Chọn sản phẩm</p>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+        <p style={{ marginTop: '28px' }}><span className="asterisk">*</span> Chọn sản phẩm</p>
+        <div className="product-container">
           <Select
             showSearch
             loading={isProcessing}
@@ -169,7 +196,9 @@ function OfferAddForm({
             filterOption={(input, option) =>  
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
+            value={selectingType ? selectingType._id : ""}
           >
+            <Option value={""}>Chọn danh mục</Option>
             {typeOptions.map((type) => (
               <Option
                 key={type._id}

@@ -85,6 +85,9 @@ const EditableTable = ({ dataSource, setDataSource }) => {
   };
   
   const handleSave = (row) => {
+    if (row.discount < 1 || row.discount > 99) {
+      return;
+    }
     const newData = [...dataSource];
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];

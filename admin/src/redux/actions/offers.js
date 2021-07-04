@@ -8,7 +8,6 @@ import { notifyActions } from '../../utils/notify';
 export const getAllOffers = (page) => async (dispatch) => {
   try {
     const res = await offerAPI.get_all(page);
-    console.log(res.data);
     dispatch({
       type: GET_ALL_OFFERS,
       payload: res.data,
