@@ -19,7 +19,7 @@ const colors = [
   "purple",
 ];
 
-const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange }) => {
+const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange, setTabChange }) => {
   const location = useLocation();
   const history = useHistory();
   let page = queryString.parse(location.search).page;
@@ -119,7 +119,7 @@ const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange 
           />
         </Fragment>
       ) : (
-        <BlogAddForm edit={edit} setEdit={setEdit} item={item} />
+        <BlogAddForm edit={edit} setEdit={setEdit} item={item} tabChange={tabChange} setTabChange={setTabChange} />
       )}
     </Fragment>
   );
