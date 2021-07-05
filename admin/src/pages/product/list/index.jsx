@@ -1,12 +1,22 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
-import { ReceiptModal, OrderModal } from '../../../components';
+
+// import { ReceiptModal, OrderModal } from '../../../components';
 import ProductAddForm from '../add_form';
-import { Button, Table, Popconfirm, Pagination, Radio, Space } from 'antd';
+import { Button, Table, Popconfirm, Pagination, Space } from 'antd';
 import queryString from 'query-string';
-import { PlusOutlined } from '@ant-design/icons';
 import { getAllProducts, removeProduct } from '../../../redux/actions/products';
+import CustomInput from './components/CustomInput';
+import { useDebounceValue } from '../../../hooks';
+
+const defaultPage = 1;
+const defaultPageSize = 10;
+
+const defaultPageSetting = {
+  currentPage: defaultPage,
+  pageSize: defaultPageSize,
+};
 
 const ProductList = ({
   products: { products, total },
@@ -17,31 +27,49 @@ const ProductList = ({
 }) => {
   const location = useLocation();
   const history = useHistory();
-  let filter = queryString.parse(location.search).sort;
   let page = queryString.parse(location.search).page;
+
+  const [{ currentPage, pageSize }, setPage] = useState(page ? { currentPage: page, pageSize: defaultPageSize } : defaultPageSetting);
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [item, setItem] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [visible, setVisible] = useState(false);
   const [view, setView] = useState(false);
   const [value, setValue] = useState('receipt');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const resetPageSetting = () => handlePagination(defaultPage);
+  const searchKeyDebounced = useDebounceValue(searchText, 500, resetPageSetting);
+
+  const getData = useCallback(async () => {
+    setIsLoading(true);
+    await getAllProducts(currentPage, searchKeyDebounced);
+    setIsLoading(false);
+  }, [currentPage, searchKeyDebounced]);
+
   useEffect(() => {
-    async function getData() {
-      setIsLoading(true);
-      await getAllProducts(filter, page);
-      setIsLoading(false);
-    }
-    if (tabChange === 'list' && !edit && !visible && !view) {
-      getData();
-    }
-  }, [getAllProducts, tabChange, edit, filter, page, visible, view]);
+    getData();
+  }, [getData]);
+
+  // useEffect(() => {
+  //   async function getData() {
+  //     setIsLoading(true);
+  //     await getAllProducts(filter, page);
+  //     setIsLoading(false);
+  //   }
+  //   if (tabChange === 'list' && !edit && !visible && !view) {
+  //     getData();
+  //   }
+  // }, [getAllProducts, tabChange, edit, filter, page, visible, view]);
+
   const remove = async (id) => {
     setIsLoading(true);
     await removeProduct(id);
     setIsLoading(false);
   };
+
   const onSelectChange = (_, selectedRows) => {
     let mapData = selectedRows.map((p) => ({
       key: p.key,
@@ -54,12 +82,15 @@ const ProductList = ({
     setSelectedRowKeys(_);
     setSelectedRows(mapData);
   };
+
   const handlePagination = async (_page) => {
-    if (filter) {
-      return history.push(`?tab=product&sort=${filter}&page=${_page}`);
+    setPage({ currentPage: _page, pageSize: defaultPageSize });
+    if (searchText) {
+      return history.push(`?tab=product&page=${_page}&q=${searchText}`);
     }
     return history.push(`?tab=product&page=${_page}`);
   };
+
   const columns = [
     {
       title: 'Tên SP',
@@ -127,16 +158,18 @@ const ProductList = ({
       },
     },
   ];
+  
   const onChange = (e) => {
     setSelectedRowKeys([]);
     setSelectedRows([]);
     setValue(e.target.value);
   };
+
   return (
     <Fragment>
       {!edit ? (
         <Fragment>
-          <Radio.Group onChange={onChange} value={value}>
+          {/* <Radio.Group onChange={onChange} value={value}>
             <Radio value={'receipt'}>Thêm phiếu nhập</Radio>
             <Radio value={'order'}>Thêm hóa đơn</Radio>
           </Radio.Group>
@@ -165,7 +198,13 @@ const ProductList = ({
           {visible && (
             <ReceiptModal setVisible={setVisible} data={selectedRows} />
           )}
-          {view && <OrderModal setView={setView} data={selectedRows} />}
+          {view && <OrderModal setView={setView} data={selectedRows} />} */}
+          <div style={{ marginBottom: '20px' }}>
+            <CustomInput 
+              handleOnChange={setSearchText}
+              placeholder="Tên sản phẩm..."
+            />
+          </div>
           <Table
             rowSelection={{
               selectedRowKeys,
@@ -182,9 +221,9 @@ const ProductList = ({
           <Pagination
             onChange={handlePagination}
             disabled={isLoading}
-            current={!page ? 1 : parseInt(page)}
+            current={!currentPage ? 1 : parseInt(currentPage)}
             responsive={true}
-            pageSize={10}
+            pageSize={defaultPageSize}
             total={total}
             showSizeChanger={false}
             style={{ textAlign: 'right', margin: '3rem 0 0 0' }}

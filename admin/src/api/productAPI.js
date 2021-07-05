@@ -1,8 +1,8 @@
 import api from '../api';
 const source = '/products';
 const productAPI = {
-  get_all: async (filter, page) => {
-    return await api.get(`${source}/?sort=${filter}&page=${page}`);
+  get_all: async (page, q) => {
+    return await api.get(`${source}/?page=${page}&q=${q}`);
   },
   get_by_type: async (typeId) => {
     return await api.get(`${source}/types/${typeId}/admin`);
