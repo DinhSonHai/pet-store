@@ -61,3 +61,27 @@ body {
     padding-left: 1.5rem;
   }
 }
+
+.message-expired,
+.message-valid,
+.message-pending {
+  display: inline-block;
+  max-width: 55px;
+  width: 100%;
+  color: #ffffff;
+  font-size: 0.75rem;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.message-expired {
+  background-color: #ec4758;
+}
+
+.message-valid {
+  background-color: #18a689;
+}
+
+.message-pending {
+  background-color: #f8ac59;
+}

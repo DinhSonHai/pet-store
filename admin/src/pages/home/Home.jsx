@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Layout } from 'antd';
+import { useState, useEffect } from "react";
+import { Layout } from "antd";
 
-import { SiderComponent } from '../../components';
+import { SiderComponent } from "../../components";
 import {
   Category,
   Footer,
@@ -16,52 +16,55 @@ import {
   Statistical,
   Blog,
   DiscountOffer,
-  Contacts
-} from '../../pages';
+  Contacts,
+  Promo,
+} from "../../pages";
 
-import queryString from 'query-string';
+import queryString from "query-string";
 const { Content } = Layout;
 
 const Home = ({ location }) => {
-  let tab = queryString.parse(location.search).tab || 'dashboard';
+  let tab = queryString.parse(location.search).tab || "dashboard";
   const [tabState, setTabState] = useState(tab);
   useEffect(() => {
     setTabState(tab);
   }, [tab]);
   function page() {
     switch (tabState) {
-      case 'category':
+      case "category":
         return <Category />;
-      case 'type':
+      case "type":
         return <Type />;
-      case 'product':
+      case "product":
         return <Product />;
-      case 'receipt':
+      case "receipt":
         return <Receipts />;
-      case 'order':
+      case "order":
         return <Order />;
-      case 'bill':
+      case "bill":
         return <Bill />;
-      case 'review':
+      case "review":
         return <Review />;
-      case 'statistical':
+      case "statistical":
         return <Statistical />;
-      case 'blog':
-        return <Blog />
-      case 'discountOffer':
-        return <DiscountOffer />
-      case 'contacts':
-        return <Contacts />
+      case "blog":
+        return <Blog />;
+      case "discountOffer":
+        return <DiscountOffer />;
+      case "contacts":
+        return <Contacts />;
+      case "promo":
+        return <Promo />;
       default:
         return <DashBoard />;
     }
   }
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <SiderComponent tabState={tabState} />
-      <Layout className='site-layout'>
+      <Layout className="site-layout">
         <Navbar />
-        <Content style={{ margin: '0 1rem' }}>{page()}</Content>
+        <Content style={{ margin: "0 1rem" }}>{page()}</Content>
         <Footer />
       </Layout>
     </Layout>

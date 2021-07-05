@@ -12,6 +12,7 @@ import typeAPI from './typeAPI';
 import blogAPI from './blogAPI';
 import offerAPI from './offerAPI';
 import contactAPI from './contactAPI';
+import promoAPI from './promoAPI';
 import { LOGOUT } from '../redux/types';
 
 const api = axios.create({
@@ -48,6 +49,7 @@ export {
   typeAPI,
   blogAPI,
   offerAPI,
-  contactAPI
+  contactAPI,
+  promoAPI
 };
 export default api;

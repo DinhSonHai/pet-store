@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const mongooseDelete = require('mongoose-delete');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const mongooseDelete = require("mongoose-delete");
+const bcrypt = require("bcryptjs");
 
 const Schema = mongoose.Schema;
 
@@ -11,7 +11,7 @@ const UserSchema = new Schema({
   avatar: {
     type: String,
     default:
-      'https://firebasestorage.googleapis.com/v0/b/pet-store-ed9d7.appspot.com/o/avatar_03.jpg?alt=media&token=c79e47f3-f578-475a-aba2-ac8cce7cee39',
+      "https://firebasestorage.googleapis.com/v0/b/pet-store-ed9d7.appspot.com/o/avatar_03.jpg?alt=media&token=c79e47f3-f578-475a-aba2-ac8cce7cee39",
   },
   address: [
     {
@@ -29,13 +29,14 @@ const UserSchema = new Schema({
   phoneNumber: {
     type: String,
     trim: true,
-    default: '',
+    default: "",
   },
-  favoriteProducts: [{ type: Schema.Types.ObjectId, ref: 'product' }],
-  purchasedProducts: [{ type: Schema.Types.ObjectId, ref: 'product' }],
+  favoriteProducts: [{ type: Schema.Types.ObjectId, ref: "product" }],
+  purchasedProducts: [{ type: Schema.Types.ObjectId, ref: "product" }],
+  promos: [{ type: Schema.Types.ObjectId, ref: "promo" }],
   resetPasswordLink: {
     type: String,
-    default: '',
+    default: "",
   },
   role: { type: Number, default: 2 },
   createdAt: { type: Date, default: Date.now },
@@ -43,9 +44,9 @@ const UserSchema = new Schema({
 
 UserSchema.plugin(mongooseDelete, {
   deletedAt: true,
-  overrideMethods: 'all',
+  overrideMethods: "all",
 });
 UserSchema.methods.checkPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-module.exports = mongoose.model('user', UserSchema);
+module.exports = mongoose.model("user", UserSchema);

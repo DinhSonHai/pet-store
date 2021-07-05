@@ -17,7 +17,7 @@ class ProductController {
   async getAll(req, res, next) {
     const q = req.query.q;
     const search = new RegExp(q, "i");
-    const query = { 'productName': search };
+    const query = { productName: search };
     const filterStatus = req.query.sort;
     const { start, end } = pagination(req.query.page, 10);
     const filterValue =
@@ -27,10 +27,15 @@ class ProductController {
         ? { price: -1 }
         : { price: 1 };
     try {
-      const products = await crudService.getAdvance(Product, query, filterValue, {
-        path: "typeId",
-        select: ["typeName"],
-      });
+      const products = await crudService.getAdvance(
+        Product,
+        query,
+        filterValue,
+        {
+          path: "typeId",
+          select: ["typeName"],
+        }
+      );
       return res.status(statusCode.success).json({
         data: products.slice(start, end),
         total: products.length,
@@ -125,10 +130,12 @@ class ProductController {
   // @access  Public
   async getProductsByTypeIdForAdmin(req, res) {
     try {
-      const products = await crudService.getAll(Product, { typeId: new ObjectId(req.params.typeId) });
+      const products = await crudService.getAll(Product, {
+        typeId: new ObjectId(req.params.typeId),
+      });
       return res.status(statusCode.success).json(products);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -170,7 +177,7 @@ class ProductController {
   async getPopularProducts(req, res, next) {
     try {
       const products = await Product.find({ isShow: true })
-        .sort({ starRatings: "desc" })
+        .sort({ starRatings: "desc", reviewsCount: "desc" })
         .limit(12);
       return res.status(statusCode.success).json(products);
     } catch (err) {
@@ -358,15 +365,15 @@ class ProductController {
     const query = { productName: search, isShow: true };
     const { start, end } = pagination(req.query.page, 12);
     const filterValue =
-    filterStatus === "newest"
-      ? { createdAt: -1 }
-      : filterStatus === "desc"
-      ? { price: -1 }
-      : filterStatus === "asc"
-      ? { price: 1 }
-      : filterStatus === "name_asc"
-      ? { productName: 1 }
-      : { productName: -1 };
+      filterStatus === "newest"
+        ? { createdAt: -1 }
+        : filterStatus === "desc"
+        ? { price: -1 }
+        : filterStatus === "asc"
+        ? { price: 1 }
+        : filterStatus === "name_asc"
+        ? { productName: 1 }
+        : { productName: -1 };
     try {
       const products = await crudService.getAdvance(
         Product,
