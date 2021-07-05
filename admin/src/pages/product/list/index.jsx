@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 import { ReceiptModal, OrderModal } from '../../../components';
 import ProductAddForm from '../add_form';
-import { Button, Table, Popconfirm, Pagination, Radio } from 'antd';
+import { Button, Table, Popconfirm, Pagination, Radio, Space } from 'antd';
 import queryString from 'query-string';
 import { PlusOutlined } from '@ant-design/icons';
 import { getAllProducts, removeProduct } from '../../../redux/actions/products';
@@ -66,8 +66,12 @@ const ProductList = ({
       width: '40%',
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
+      title: 'Đã bán / Số lượng',
+      render: (_,record) => (
+        <span>
+         {record.sold} / {(record.quantity+record.sold)}
+        </span>
+      ),
     },
     {
       title: 'Đơn giá',
@@ -99,9 +103,9 @@ const ProductList = ({
       dataIndex: 'operation',
       render: (_, record) => {
         return (
-          <Fragment>
+          <Space>
             <Button
-              type='link'
+              type='primary'
               onClick={() => {
                 setItem(record);
                 setEdit(true);
@@ -113,11 +117,11 @@ const ProductList = ({
               title='Sure to remove?'
               onConfirm={() => remove(record.key)}
             >
-              <Button danger type='link'>
+              <Button danger type='primary'>
                 Ẩn
               </Button>
             </Popconfirm>
-          </Fragment>
+          </Space>
         );
       },
     },

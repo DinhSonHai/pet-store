@@ -166,7 +166,7 @@ class CrudService {
   }
   remove(shema, id) {
     return new Promise((resolve, reject) => {
-      shema.delete({ _id: id }, (err, _) => {
+      shema.deleteOne({ _id: id }, (err, _) => {
         if (!err) {
           resolve(true);
         } else {

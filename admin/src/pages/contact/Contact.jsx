@@ -55,7 +55,7 @@ const Contact = ({
             Đã liên hệ
           </Button>
         ) : (
-          <Button onClick={() => updateContact(record._id)} type="link">
+          <Button onClick={() => updateContact(record._id)} type="primary">
             Xác nhận
           </Button>
         );

@@ -1,10 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
-import { Button, Table, Pagination, Popconfirm } from "antd";
-import {
-  EyeOutlined,
-} from '@ant-design/icons';
+import { Button, Table, Pagination, Space, Popconfirm } from "antd";
 import dayjs from "dayjs";
 import queryString from "query-string";
 
@@ -64,14 +62,12 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, deleteOffe
       align: 'center',
       render: (_, record) => {
         return (
-          <div>
+          <Space>
             <Button
               onClick={() => handleViewOrder(record)}
-              type='link'
-              icon={<EyeOutlined />}
-            />
+            >Xem</Button>
             <Button
-              type="link"
+              type="primary"
               onClick={() => {
                 setItem(record)
                 setEdit(true);
@@ -80,9 +76,12 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, deleteOffe
               Sửa
             </Button>
             <Popconfirm title="Bạn có muốn xóa?" onConfirm={() => handleDeleteOffer(record._id)}>
-              <a>Xóa</a>
+            <Button
+              type="primary"
+              danger
+            >Xóa</Button>
             </Popconfirm>
-          </div>
+          </Space>
         );
       },
     },

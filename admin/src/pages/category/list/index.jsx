@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Table, Input, Popconfirm } from 'antd';
+import { Button, Form, Table, Input, Popconfirm, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import {
@@ -117,9 +117,9 @@ const CategoryList = ({
             </Popconfirm>
           </span>
         ) : (
-          <Fragment>
+          <Space>
             <Button
-              type='link'
+              type="primary"
               disabled={editingKey !== ''}
               onClick={() => edit(record)}
             >
@@ -129,11 +129,11 @@ const CategoryList = ({
               title='Sure to remove?'
               onConfirm={() => remove(record.key)}
             >
-              <Button danger type='link'>
+              <Button danger type='primary'>
                 Ẩn
               </Button>
             </Popconfirm>
-          </Fragment>
+          </Space>
         );
       },
     },

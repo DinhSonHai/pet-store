@@ -11,6 +11,7 @@ import statistical from './statistical';
 import blogs from './blogs';
 import offers from './offers';
 import contacts from './contacts';
+import promos from './promos';
 
 export default combineReducers({
   auth,
@@ -25,4 +26,5 @@ export default combineReducers({
   statistical,
   types,
   offers,
+  promos
 });

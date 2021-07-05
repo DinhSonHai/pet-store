@@ -7,7 +7,7 @@ import {
 import { Link } from 'react-router-dom';
 import ViewOrder from '../view';
 import dayjs from 'dayjs';
-import { Button, Table, Tooltip } from 'antd';
+import { Button, Table, Tooltip, Space } from 'antd';
 import {
   CheckCircleOutlined,
   EyeOutlined,
@@ -64,23 +64,20 @@ const PackedOrders = ({
       dataIndex: 'operation',
       render: (_, record) => {
         return (
-          <Fragment>
+          <Space>
             <Button
               onClick={() => handleViewOrder(record)}
-              type='link'
               icon={<EyeOutlined />}
             />
-            |
             <Link to={`/invoice/packed/${record._id}`} target='_blank'>
-              <Button type='link' icon={<PrinterOutlined />} />
-            </Link>{' '}
-            |
+              <Button type="primary" danger icon={<PrinterOutlined />} />
+            </Link>
             <Button
               onClick={() => handleUpdateOrder(record._id)}
-              type='link'
+              type='primary'
               icon={<CheckCircleOutlined />}
             />
-          </Fragment>
+          </Space>
         );
       },
     },

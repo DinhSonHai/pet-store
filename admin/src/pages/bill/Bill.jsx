@@ -74,7 +74,7 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
         return (
           <Fragment>
             <Link to={`/invoice/bill/${record._id}`} target='_blank'>
-              <Button type='link' icon={<PrinterOutlined />} />
+              <Button type='primary' icon={<PrinterOutlined />} />
             </Link>
           </Fragment>
         );

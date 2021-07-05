@@ -41,3 +41,5 @@ export const GET_ALL_OFFERS = 'GET_ALL_OFFERS';
 export const GET_OFFER_BY_ID = 'GET_OFFER_BY_ID';
 export const GET_ALL_CONTACTS = 'GET_ALL_CONTACTS';
 export const UPDATE_CONTACT = 'UPDATE_CONTACT';
+export const GET_ALL_PROMOS = 'GET_ALL_PROMOS';
+export const REMOVE_PROMO = 'REMOVE_PROMO';
