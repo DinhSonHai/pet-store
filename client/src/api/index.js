@@ -9,6 +9,7 @@ import typeAPI from './typeAPI';
 import blogAPI from './blogAPI'
 import saleAPI from './saleAPI';
 import contactAPI from './contactAPI';
+import promoAPI from './promoAPI';
 import { LOGOUT, CLEAR_PROFILE } from '../redux/types';
 
 const api = axios.create({
@@ -34,5 +35,5 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-export { addressAPI, authAPI, orderAPI, productAPI, reviewAPI, typeAPI, blogAPI, saleAPI, contactAPI };
+export { addressAPI, authAPI, orderAPI, productAPI, reviewAPI, typeAPI, blogAPI, saleAPI, contactAPI, promoAPI };
 export default api;

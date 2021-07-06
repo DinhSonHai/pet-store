@@ -1,0 +1,49 @@
+.checkout-promo-modal {
+  .promo-loader {
+    text-align: center;
+  }
+  .ant-card {
+    height: 100%;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+  }
+  .ant-card-head-title {
+    font-weight: bold;
+    color: var(--dark-second-color);
+  }
+  p {
+    margin-bottom: 0.5rem;
+  }
+  &-date,
+  &-status {
+    font-weight: bold;
+    color: var(--gray-color);
+  }
+  &-desc {
+    font-size: 1.05rem;
+  }
+  .message-expired,
+  .message-valid,
+  .message-pending {
+    display: inline-block;
+    max-width: 70px;
+    width: 100%;
+    padding: 0 0.3rem;
+    color: #ffffff;
+    font-size: 0.75rem;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .message-expired {
+    background-color: #ec4758;
+  }
+
+  .message-valid {
+    background-color: #18a689;
+  }
+
+  .message-pending {
+    background-color: #f8ac59;
+  }
+}

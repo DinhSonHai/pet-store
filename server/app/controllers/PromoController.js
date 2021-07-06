@@ -1,7 +1,9 @@
 const Promo = require("../models/Promo");
+const User = require("../models/User");
 const crudService = require("../../services/crud");
 const statusCode = require("../../constants/statusCode.json");
 const message = require("../../constants/message.json").crud;
+const userMessage = require("../../constants/message.json").user;
 
 function getFormattedDataPromo(data) {
   const { discountCondition, discountValue, discountType, name } = data;
@@ -29,13 +31,39 @@ function getFormattedDataPromo(data) {
 }
 
 class PromoController {
-  // @route   GET api/promos
-  // @desc    Lấy tất cả promos
+  // @route   GET api/promos/admin
+  // @desc    Lấy tất cả promos phia admin
   // @access  Private
-  async getAll(req, res, next) {
+  async getAllByAdmin(req, res, next) {
     try {
       const promos = await crudService.getAll(Promo);
       return res.status(statusCode.success).json(promos);
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/promos/client
+  // @desc    Lấy tất cả promos phia client
+  // @access  Private
+  async getAllByClient(req, res, next) {
+    try {
+      const user = await crudService.getById(User, req.user.id);
+      if (!user) {
+        return res.status(statusCode.notFound).json({
+          errors: [{ msg: userMessage.notFound }],
+        });
+      }
+      const promos = await crudService.getAll(Promo, {
+        _id: { $nin: user.promos || [] },
+      });
+      const mappedPromos = promos.filter((item) => {
+        const { endDate } = item;
+        return endDate
+          ? !(new Date(Date.now()).getTime() >= new Date(endDate).getTime())
+          : true;
+      });
+      return res.status(statusCode.success).json(mappedPromos);
     } catch (err) {
       return res.status(statusCode.serverError).send("Server Error");
     }

@@ -29,7 +29,10 @@
     "error": "Xảy ra lỗi, hãy thử lại",
     "userNotFound": "Tài khoản không tồn tại",
     "phoneRequired": "Vui lòng cung cấp số điện thoại",
-    "addressRequired": "Vui lòng cung cấp địa chỉ"
+    "addressRequired": "Vui lòng cung cấp địa chỉ",
+    "notFoundPromo": "Phiếu giảm giá không tồn tại",
+    "invalidPromoOrder": "Đơn hàng không đạt điều kiện áp dụng!",
+    "existPromoUser": "Bạn đã sử dụng phiếu mua hàng này rồi! Vui lòng thử lại."
   },
   "user": {
     "notFound": "Tài khoản không tồn tại",
