@@ -10,8 +10,9 @@ const { TabPane } = Tabs;
 const Bill = ({ bills: { bills, total }, getAllBills }) => {
   const location = useLocation();
   const history = useHistory();
-  let filter = queryString.parse(location.search).sort;
+
   let page = queryString.parse(location.search).page;
+
   const [isLoading, setIsLoading] = useState(false);
   const [tabChange, setTabChange] = useState('list');
   const onTabChange = (key) => {
@@ -20,16 +21,16 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      await getAllBills(filter, page);
+      await getAllBills(page);
       setIsLoading(false);
     }
     getData();
-  }, [getAllBills, filter, page]);
+  }, [getAllBills, page]);
 
   const handlePagination = async (_page) => {
-    if (filter) {
-      return history.push(`?tab=bill&sort=${filter}&page=${_page}`);
-    }
+    // if (filter) {
+    //   return history.push(`?tab=bill&sort=${filter}&page=${_page}`);
+    // }
     return history.push(`?tab=bill&page=${_page}`);
   };
   const columns = [

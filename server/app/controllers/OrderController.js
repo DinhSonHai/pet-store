@@ -1,7 +1,6 @@
 const { validationResult } = require("express-validator");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
-const moment = require("moment");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const Order = require("../models/Order");
@@ -173,34 +172,13 @@ class OrderController {
   // @desc    Lấy các đơn hàng theo trạng thái phía admin
   // @access  Private
   async getOrdersByStatusAdmin(req, res) {
-    const { sort } = req.query;
-    const from = parseInt(req.query.from);
-    const to = parseInt(req.query.to);
     const status = parseInt(req.params.status) || 0;
-
-    let dayStart = moment().startOf("day");
-    let dayEnd = moment().endOf("day");
-
-    let sortQuery = {};
-
-    if (sort) {
-      if (sort === "today") {
-        dayStart = new Date(dayStart).toISOString();
-        dayEnd = new Date(dayEnd).toISOString();
-        sortQuery = { createdAt: { $gte: dayStart, $lt: dayEnd } };
-      }
-    }
-    if (from && to) {
-      dayStart = new Date(from).toISOString();
-      dayEnd = new Date(to).toISOString();
-      sortQuery = { createdAt: { $gte: dayStart, $lt: dayEnd } };
-    }
-
+    
     try {
       const orders = await crudService.getAdvance(
         Order,
-        { status, ...sortQuery },
-        { createdAt: "desc" }
+        { status },
+        { createdAt: 'desc' }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {

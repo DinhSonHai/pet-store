@@ -1,4 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
+const moment = require('moment');
+
 const Bill = require('../models/Bill');
 const BillDetail = require('../models/BillDetail');
 const pagination = require('../../helpers/pagination');
@@ -10,14 +12,32 @@ class BillController {
   // @desc    Lấy tất cả hóa đơn
   // @access  Private
   async getAll(req, res) {
-    const filterStatus = req.query.sort;
+    const { sort } = req.query;
+    const from = parseInt(req.query.from);
+    const to = parseInt(req.query.to);
+
+    let dayStart = moment().startOf('day');
+    let dayEnd = moment().endOf('day');
+
+    let sortQuery = {};
+
+    if (sort) {
+      if (sort === 'today') {
+        dayStart = new Date(dayStart).toISOString();
+        dayEnd = new Date(dayEnd).toISOString();
+        sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+      }
+    }
+    if (from && to) {
+      dayStart = new Date(from).toISOString();
+      dayEnd = new Date(to).toISOString();
+      sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    }
+
     const { start, end } = pagination(req.query.page, 10);
-    const filterValue =
-      filterStatus === 'undefined' || !filterStatus
-        ? { orderedAt: 'desc' }
-        : { orderedAt: 'desc' };
+
     try {
-      const bills = await crudService.getAll(Bill, {}, filterValue);
+      const bills = await crudService.getAdvance(Bill, { ...sortQuery }, { 'deliveriedAt': 'desc' });
       return res
         .status(statusCode.success)
         .json({ data: bills.slice(start, end), total: bills.length });
