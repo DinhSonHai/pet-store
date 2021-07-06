@@ -13,8 +13,14 @@ import {
 import { connect } from "react-redux";
 import { createPromo, editPromo } from "../../../redux/actions/promos";
 import moment from "moment";
-const { RangePicker } = DatePicker;
-const PromoAddForm = ({ createPromo, editPromo, edit, setEdit, setTabChange, item }) => {
+const PromoAddForm = ({
+  createPromo,
+  editPromo,
+  edit,
+  setEdit,
+  setTabChange,
+  item,
+}) => {
   const [form] = Form.useForm();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isHaveCondition, setIsHaveCondition] = useState(false);
@@ -32,9 +38,8 @@ const PromoAddForm = ({ createPromo, editPromo, edit, setEdit, setTabChange, ite
   }, [item]);
 
   const onFinish = async (values) => {
-    const { applyDate, ...data } = values;
-    data.startDate = applyDate ? new Date(applyDate[0]) : null;
-    data.endDate = applyDate ? new Date(applyDate[1]) : null;
+    const { enDate, ...data } = values;
+    data.endDate = enDate ? new Date(enDate) : null;
     setIsProcessing(true);
     if (edit) {
       await editPromo(item._id, data);
@@ -43,7 +48,7 @@ const PromoAddForm = ({ createPromo, editPromo, edit, setEdit, setTabChange, ite
     } else {
       await createPromo(data);
       setIsProcessing(false);
-      setTabChange('list');
+      setTabChange("list");
     }
   };
 
@@ -114,15 +119,13 @@ const PromoAddForm = ({ createPromo, editPromo, edit, setEdit, setTabChange, ite
           />
         </Form.Item>
         <Form.Item
-          initialValue={
-            edit ? [item?.startDate ? moment(item.startDate) : '', item?.endDate ? moment(item.endDate) : ''] : []
-          }
+          initialValue={edit ? (item?.endDate ? moment(item.endDate) : "") : ""}
           label="Thời gian áp dụng"
-          name="applyDate"
+          name="enDate"
         >
-          <RangePicker
+          <DatePicker
             allowClear
-            placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+            placeholder="Ngày hết hạn"
             showTime={{ format: "HH:mm" }}
             format="YYYY-MM-DD HH:mm"
           />

@@ -9,12 +9,12 @@ const auth = require("../../app/middlewares/auth");
 // @route   GET api/promos
 // @desc    Lấy tất cả promos phia client
 // @access  Private
-router.get("/", auth, PromoController.getAll);
+router.get("/client", auth, PromoController.getAllByClient);
 
 // @route   GET api/promos/admin
 // @desc    Lấy tất cả promos phia admin
 // @access  Private
-router.get("/admin", [authAdmin, checkPermission], PromoController.getAll);
+router.get("/admin", [authAdmin, checkPermission], PromoController.getAllByAdmin);
 
 // @route   POST api/promos
 // @desc    Tạo promo

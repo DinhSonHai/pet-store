@@ -35,11 +35,6 @@ const PromoList = ({ promos: { promos }, getAllPromos, removePromo, tabChange })
       dataIndex: 'descriptions',
     },
     {
-      title: 'Ngày bắt đầu',
-      dataIndex: 'startDate',
-      render: (value) => <span>{value ? dayjs(value).format('HH:mm DD/MM/YYYY') : '---'}</span>,
-    },
-    {
       title: 'Ngày kết thúc',
       dataIndex: 'endDate',
       render: (value) => <span>{value ? dayjs(value).format('HH:mm DD/MM/YYYY'): '---'}</span>,
@@ -47,17 +42,13 @@ const PromoList = ({ promos: { promos }, getAllPromos, removePromo, tabChange })
     {
       title: 'Trạng thái',
       render: (_, record) => {
-      const {startDate, endDate } = record;
-      const start = startDate && new Date(startDate);
+      const { endDate } = record;
       const end = endDate && new Date(endDate);
       const now = new Date(Date.now());
       if (end && now.getTime() >= end.getTime()) {
-        return <span className="message-expired">expired</span>;
+        return <span className="message-expired">Hết hạn</span>;
       }
-      if (start && now.getTime() < start.getTime()) {
-        return <span className="message-pending">pending</span>;
-      }
-      return <span className="message-valid">valid</span>;
+      return <span className="message-valid">Còn hạn</span>;
     },
     },
     {

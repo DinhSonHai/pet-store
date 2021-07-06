@@ -4,6 +4,7 @@ import { UPDATE_AUTH_ADDRESS } from "../../../redux/types";
 import store from "../../../app/store";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
+import './styles.scss';
 
 const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
   const history = useHistory();
@@ -33,10 +34,11 @@ const CheckoutAddressModal = ({ visible, setVisible, auth: { user } }) => {
       onOk={onFinish}
       onCancel={handleCancel}
       footer={false}
+      className="checkout-address-modal"
     >
       {user &&
         user.address.map((item) => (
-          <Card key={item._id} style={{ marginBottom: "1rem" }}>
+          <Card bordered={false} key={item._id} style={{ marginBottom: "1rem" }}>
             {item.isDefault && (
               <p style={{ color: "#5fdba7" }}>
                 <CheckCircleOutlined /> Mặc định

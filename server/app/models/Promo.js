@@ -9,7 +9,6 @@ const PromoSchema = new Schema({
   discountCondition: { type: Number, default: 0 },
   discountValue: { type: Number, require: true },
   discountType: { type: String, require: true }, // [percent, cash]
-  startDate: { type: Date, default: null },
   endDate: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now },
 });

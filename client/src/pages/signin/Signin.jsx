@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { Form, Input, Button, Checkbox, Card } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import { login, loginGoogle, loginFacebook } from '../../redux/actions/auth';
-import { GoogleLogin } from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-import { GooglePlus, Facebook } from '../../assets/icons';
+import { useState } from "react";
+import { Form, Input, Button, Checkbox, Card } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import { login, loginGoogle, loginFacebook } from "../../redux/actions/auth";
+import { GoogleLogin } from "react-google-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import { GooglePlus, Facebook } from "../../assets/icons";
 import {
   REACT_APP_GOOGLE_CLIENT,
   REACT_APP_FACEBOOK_CLIENT,
-} from '../../config/login';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import './styles.scss';
+} from "../../config/login";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import "./styles.scss";
 
 const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -25,10 +25,10 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
     const { email, password } = values;
     setIsProcessing(true);
     const res = await login(email, password);
-    if (res) {
-      return history.push('/');
-    }
     setIsProcessing(false);
+    if (res) {
+      return history.push("/");
+    }
   };
 
   // Handle login with Google Account
@@ -39,9 +39,11 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
     if (!idToken) {
       return;
     }
+    setIsProcessing(true);
     const res = await loginGoogle(idToken);
+    setIsProcessing(false);
     if (res) {
-      return history.push('/');
+      return history.push("/");
     }
   };
   const responseGoogle = (response) => {
@@ -56,9 +58,11 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
     if (!userID || !accessToken) {
       return;
     }
+    setIsProcessing(true);
     const res = await loginFacebook(userID, accessToken);
+    setIsProcessing(false);
     if (res) {
-      return history.push('/');
+      return history.push("/");
     }
   };
 
@@ -66,116 +70,118 @@ const Signin = ({ login, loginGoogle, loginFacebook, history }) => {
     facebookLoginHandle(response.userID, response.accessToken);
   };
   return (
-    <section className='login'>
-      <div className='login__wrap container'>
-        <div className='login__content'>
-          <Card bordered={false} style={{ maxWidth: '600px', margin: 'auto' }}>
-            <h1 className='login__title'>Đăng nhập</h1>
+    <section className="login">
+      <div className="login__wrap container">
+        <div className="login__content">
+          <Card bordered={false} style={{ maxWidth: "600px", margin: "auto" }}>
+            <h1 className="login__title">Đăng nhập</h1>
             <Form
-              name='normal_login'
-              className='login-form'
-              size='large'
+              name="normal_login"
+              className="login-form"
+              size="large"
               onFinish={onFinish}
             >
               <Form.Item
-                name='email'
+                name="email"
                 rules={[
                   {
-                    type: 'email',
-                    message: 'Email không hợp lệ',
+                    type: "email",
+                    message: "Email không hợp lệ",
                   },
                   {
                     required: true,
-                    message: 'Vui lòng nhập email!',
+                    message: "Vui lòng nhập email!",
                   },
                 ]}
               >
                 <Input
-                  prefix={<UserOutlined className='site-form-item-icon' />}
-                  placeholder='Email'
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Email"
                 />
               </Form.Item>
               <Form.Item
-                name='password'
+                name="password"
                 rules={[
                   {
                     required: true,
-                    message: 'Vui lòng nhập mật khẩu!',
+                    message: "Vui lòng nhập mật khẩu!",
                   },
                 ]}
               >
                 <Input
-                  prefix={<LockOutlined className='site-form-item-icon' />}
-                  type='password'
-                  placeholder='Mật khẩu'
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  placeholder="Mật khẩu"
                 />
               </Form.Item>
-              <Form.Item style={{ textAlign: 'center' }}>
-                <Form.Item name='remember' valuePropName='checked' noStyle>
+              <Form.Item style={{ textAlign: "center" }}>
+                <Form.Item name="remember" valuePropName="checked" noStyle>
                   <Checkbox>Ghi nhớ tôi</Checkbox>
                 </Form.Item>
 
-                <Link className='login-form-forgot' to='/forget'>
+                <Link className="login-form-forgot" to="/forget">
                   Quên mật khẩu?
                 </Link>
               </Form.Item>
 
-              <Form.Item style={{ textAlign: 'center' }}>
+              <Form.Item style={{ textAlign: "center" }}>
                 <Button
                   loading={isProcessing}
-                  type='primary'
-                  htmlType='submit'
-                  className='login-form-button'
+                  type="primary"
+                  htmlType="submit"
+                  className="login-form-button"
                 >
                   Đăng nhập
-                </Button>{' '}
-                hoặc <Link to='/signup'>Đăng ký ngay!</Link>
+                </Button>{" "}
+                hoặc <Link to="/signup">Đăng ký ngay!</Link>
               </Form.Item>
             </Form>
-            <p style={{ textAlign: 'center' }}>hoặc đăng nhập với</p>
-            <p className='login__social'>
+            <p style={{ textAlign: "center" }}>hoặc đăng nhập với</p>
+            <p className="login__social">
               <GoogleLogin
                 clientId={REACT_APP_GOOGLE_CLIENT}
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}
-                cookiePolicy={'single_host_origin'}
+                cookiePolicy={"single_host_origin"}
                 render={(renderProps) => (
                   <Button
-                    className='login__google'
-                    type='primary'
+                    disabled={isProcessing}
+                    className="login__google"
+                    type="primary"
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      backgroundColor: '#d73d32',
+                      display: "flex",
+                      alignItems: "center",
+                      backgroundColor: "#d73d32",
                     }}
                     danger
-                    size={'large'}
+                    size={"large"}
                     onClick={renderProps.onClick}
                   >
                     <GooglePlus />
-                    <div style={{ margin: '0 1.5rem' }}>Google+</div>
+                    <div style={{ margin: "0 1.5rem" }}>Google+</div>
                   </Button>
                 )}
               />
               <FacebookLogin
                 appId={REACT_APP_FACEBOOK_CLIENT}
                 autoLoad={false}
-                fields='name,email,picture'
+                fields="name,email,picture"
                 callback={responseFacebook}
                 render={(renderProps) => (
                   <Button
-                    className='login__facebook'
-                    type='primary'
+                    disabled={isProcessing}
+                    className="login__facebook"
+                    type="primary"
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      backgroundColor: '#0a426e',
+                      display: "flex",
+                      alignItems: "center",
+                      backgroundColor: "#0a426e",
                     }}
-                    size={'large'}
+                    size={"large"}
                     onClick={renderProps.onClick}
                   >
                     <Facebook />
-                    <div style={{ margin: '0 1.4rem' }}>Facebook</div>
+                    <div style={{ margin: "0 1.4rem" }}>Facebook</div>
                   </Button>
                 )}
               />

@@ -22,7 +22,7 @@ const ProductPost = ({ match, getTypeById, types: { type } }) => {
   return (
     <section className='products-post'>
       <div className='products-post__wrap container'>
-        {isLoading ? (
+        {isLoading || !type ? (
           <ProductPostLoader />
         ) : (
           <CKEditor

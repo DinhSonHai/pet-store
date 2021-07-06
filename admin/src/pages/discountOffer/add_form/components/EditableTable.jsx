@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Popconfirm, Tooltip } from 'antd';
+import { Table, Popconfirm, Tooltip, Button } from 'antd';
 
 import EditableRow from './EditableRow';
 import EditableCell from './EditableCell';
@@ -55,7 +55,9 @@ const EditableTable = ({ dataSource, setDataSource }) => {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <Popconfirm title="Bạn có muốn xóa?" onConfirm={() => handleDelete(record.key)}>
-            <a>Xóa</a>
+             <Button danger type='link'>
+                Xóa
+              </Button>
           </Popconfirm>
         ) : null,
     },
