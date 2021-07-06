@@ -12,6 +12,7 @@ const statistical = require('./api/statistical');
 const blog = require('./api/blog');
 const discountOffer = require('./api/discountOffer');
 const contacts = require('./api/contacts');
+const promos = require('./api/promos');
 
 function route(app) {
   //Products route
@@ -55,6 +56,9 @@ function route(app) {
 
   // Contacts route
   app.use('/api/contacts', contacts);
+
+  // Pormo route
+  app.use('/api/promos', promos);
 }
 
 module.exports = route;

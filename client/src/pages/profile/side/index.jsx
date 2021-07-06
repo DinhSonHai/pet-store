@@ -7,6 +7,7 @@ import {
   ShopOutlined,
   HeartOutlined,
   DollarOutlined,
+  TagOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import './styles.scss';
@@ -30,10 +31,10 @@ const ProfileSide = ({ tab }) => {
       </span>
       <span>
         <Link
-          style={tab === 'address' ? styleState : {}}
-          to='/profile/?tab=address'
+          style={tab === 'promo' ? styleState : {}}
+          to='/profile/?tab=promo'
         >
-          <ShopOutlined /> Sổ địa chỉ
+          <TagOutlined /> Ưu đãi cho bạn
         </Link>
       </span>
       <span>
@@ -50,6 +51,14 @@ const ProfileSide = ({ tab }) => {
           to='/profile/?tab=purchased'
         >
           <DollarOutlined /> Sản phẩm đã mua
+        </Link>
+      </span>
+      <span>
+        <Link
+          style={tab === 'address' ? styleState : {}}
+          to='/profile/?tab=address'
+        >
+          <ShopOutlined /> Sổ địa chỉ
         </Link>
       </span>
     </Card>

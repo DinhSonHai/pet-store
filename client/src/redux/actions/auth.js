@@ -1,4 +1,4 @@
-import { authAPI } from '../../api';
+import { authAPI, promoAPI } from '../../api';
 import { notifySuccess, notifyErrors } from '../../utils/notify';
 import { LOGIN_SUCCESS, USER_LOADED, AUTH_ERROR } from '../types';
 // Load User
@@ -166,6 +166,16 @@ export const getFavorite = () => async (dispatch) => {
 export const getPurchased = () => async (dispatch) => {
   try {
     const res = await authAPI.get_purchased();
+    return res.data;
+  } catch (err) {
+    notifyErrors(err);
+  }
+};
+
+// Get promos
+export const getPromos = () => async (dispatch) => {
+  try {
+    const res = await promoAPI.get_all();
     return res.data;
   } catch (err) {
     notifyErrors(err);

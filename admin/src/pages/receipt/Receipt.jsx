@@ -42,7 +42,7 @@ const Receipt = ({ receipts: { receipts, total }, getAllReceipts }) => {
       dataIndex: 'operation',
       render: (_, record) => {
         return (
-          <Button onClick={() => handleView(record)} type='link'>
+          <Button onClick={() => handleView(record)} type='primary'>
             Xem
           </Button>
         );

@@ -13,3 +13,4 @@ export { default as VoiceSearch } from "./voice_search";
 export { default as ShowHomeProducts } from "./show_home_products";
 export { default as BuyStep } from "./buy_step";
 export { default as SocialShare } from './social_share';
+export { default as CheckoutPromoModal } from './modal/checkout_promo'

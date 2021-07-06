@@ -1,37 +1,55 @@
 import { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
-import TypeAddForm from '../add_form';
+import PromoAddForm from '../add_form';
 import { Button, Table, Popconfirm, Space} from 'antd';
+import dayjs from 'dayjs';
 
-import { getAllTypes, removeType } from '../../../redux/actions/types';
+import { getAllPromos, removePromo } from '../../../redux/actions/promos';
 
-const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTabChange }) => {
+const PromoList = ({ promos: { promos }, getAllPromos, removePromo, tabChange }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      await getAllTypes();
+      await getAllPromos();
       setIsLoading(false);
     }
     if (tabChange === 'list' && !edit) {
       getData();
     }
-  }, [getAllTypes, tabChange, edit]);
+  }, [getAllPromos, tabChange, edit]);
   const remove = async (id) => {
     setIsLoading(true);
-    await removeType(id);
+    await removePromo(id);
     setIsLoading(false);
   };
   const columns = [
     {
-      title: 'Tên loại SP',
-      dataIndex: 'typeName',
+      title: 'Tên promo',
+      dataIndex: 'name',
     },
     {
-      title: 'Thuộc danh mục',
-      dataIndex: ['categoryId', 'categoryName'],
+      title: 'Mô tả',
+      dataIndex: 'descriptions',
+    },
+    {
+      title: 'Ngày kết thúc',
+      dataIndex: 'endDate',
+      render: (value) => <span>{value ? dayjs(value).format('HH:mm DD/MM/YYYY'): '---'}</span>,
+    },
+    {
+      title: 'Trạng thái',
+      render: (_, record) => {
+      const { endDate } = record;
+      const end = endDate && new Date(endDate);
+      const now = new Date(Date.now());
+      if (end && now.getTime() >= end.getTime()) {
+        return <span className="message-expired">Hết hạn</span>;
+      }
+      return <span className="message-valid">Còn hạn</span>;
+    },
     },
     {
       title: 'Hành động',
@@ -53,7 +71,7 @@ const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTab
               onConfirm={() => remove(record.key)}
             >
               <Button danger type='primary'>
-                Ẩn
+                Xóa
               </Button>
             </Popconfirm>
           </Space>
@@ -68,7 +86,7 @@ const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTab
           <Table
             columns={columns}
             loading={isLoading}
-            dataSource={types}
+            dataSource={promos}
             pagination={{
               responsive: true,
               showSizeChanger: false,
@@ -76,15 +94,15 @@ const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTab
           />
         </Fragment>
       ) : (
-        <TypeAddForm edit={edit} setEdit={setEdit} item={item} tabChange={tabChange} setTabChange={setTabChange}/>
+        <PromoAddForm edit={edit} setEdit={setEdit} item={item} />
       )}
     </Fragment>
   );
 };
 const mapStateToProps = (state) => ({
-  types: state.types,
+  promos: state.promos,
 });
 export default connect(mapStateToProps, {
-  getAllTypes,
-  removeType,
-})(TypeList);
+  getAllPromos,
+  removePromo,
+})(PromoList);

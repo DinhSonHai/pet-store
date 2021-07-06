@@ -5,7 +5,7 @@ import {
   approveReview,
 } from '../../../redux/actions/reviews';
 import ReviewDetail from '../detail';
-import { Button, Table, Tooltip, message } from 'antd';
+import { Button, Table, Tooltip, message, Space } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 const ReviewsProducts = ({
@@ -63,18 +63,8 @@ const ReviewsProducts = ({
       dataIndex: 'operation',
       render: (_, record) => {
         return (
-          <Fragment>
+          <Space>
             <Button
-              onClick={() =>
-                handleApproveReview(record._id, record.productId._id)
-              }
-              type='link'
-            >
-              Duyệt
-            </Button>{' '}
-            |
-            <Button
-              type='link'
               onClick={() => {
                 setData(record);
                 setView(true);
@@ -82,7 +72,15 @@ const ReviewsProducts = ({
             >
               Chi tiết
             </Button>
-          </Fragment>
+            <Button
+              onClick={() =>
+                handleApproveReview(record._id, record.productId._id)
+              }
+              type='primary'
+            >
+              Duyệt
+            </Button>
+          </Space>
         );
       },
     },

@@ -1,24 +1,25 @@
-const { validationResult } = require('express-validator');
-const nodemailer = require('nodemailer');
-const axios = require('axios');
-const moment = require('moment');
-const ObjectId = require('mongoose').Types.ObjectId;
+const { validationResult } = require("express-validator");
+const nodemailer = require("nodemailer");
+const axios = require("axios");
+const moment = require("moment");
+const ObjectId = require("mongoose").Types.ObjectId;
 
-const Order = require('../models/Order');
-const OrderDetail = require('../models/OrderDetail');
-const Product = require('../models/Product');
-const User = require('../models/User');
-const Bill = require('../models/Bill');
-const BillDetail = require('../models/BillDetail');
-const statusCode = require('../../constants/statusCode.json');
-const message = require('../../constants/message.json').order;
-const crudService = require('../../services/crud');
+const Order = require("../models/Order");
+const OrderDetail = require("../models/OrderDetail");
+const Product = require("../models/Product");
+const User = require("../models/User");
+const Bill = require("../models/Bill");
+const BillDetail = require("../models/BillDetail");
+const Promo = require("../models/Promo");
+const statusCode = require("../../constants/statusCode.json");
+const message = require("../../constants/message.json").order;
+const crudService = require("../../services/crud");
 const {
   NODEMAILER_EMAIL,
   NODEMAILER_PASSWORD,
   CLIENT_URL,
   STRIPE_SECRET,
-} = require('../../config/default.json');
+} = require("../../config/default.json");
 const stripe = require("stripe")(STRIPE_SECRET);
 
 function getData(path) {
@@ -60,7 +61,7 @@ class OrderController {
       }
       return res.status(statusCode.success).json(order);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -75,7 +76,7 @@ class OrderController {
       });
       return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -90,11 +91,11 @@ class OrderController {
           userId: new ObjectId(req.user.id),
           status: { $gt: -1, $lt: 5 },
         },
-        { createdAt: 'desc' }
+        { createdAt: "desc" }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -109,11 +110,11 @@ class OrderController {
           userId: new ObjectId(req.user.id),
           status: 5,
         },
-        { createdAt: 'desc' }
+        { createdAt: "desc" }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -128,11 +129,11 @@ class OrderController {
           userId: new ObjectId(req.user.id),
           status: -1,
         },
-        { createdAt: 'desc' }
+        { createdAt: "desc" }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // @route   GET api/orders/admin/:id
@@ -152,7 +153,7 @@ class OrderController {
       }
       return res.status(statusCode.success).json(order);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // @route   GET api/orders/detail/admin/:id
@@ -165,7 +166,7 @@ class OrderController {
       });
       return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // @route   GET api/orders/:status/admin
@@ -177,33 +178,33 @@ class OrderController {
     const to = parseInt(req.query.to);
     const status = parseInt(req.params.status) || 0;
 
-    let dayStart = moment().startOf('day');
-    let dayEnd = moment().endOf('day');
+    let dayStart = moment().startOf("day");
+    let dayEnd = moment().endOf("day");
 
     let sortQuery = {};
 
     if (sort) {
-      if (sort === 'today') {
+      if (sort === "today") {
         dayStart = new Date(dayStart).toISOString();
         dayEnd = new Date(dayEnd).toISOString();
-        sortQuery = { 'createdAt': { $gte: dayStart, $lt: dayEnd } };
+        sortQuery = { createdAt: { $gte: dayStart, $lt: dayEnd } };
       }
     }
     if (from && to) {
       dayStart = new Date(from).toISOString();
       dayEnd = new Date(to).toISOString();
-      sortQuery = { 'createdAt': { $gte: dayStart, $lt: dayEnd } };
+      sortQuery = { createdAt: { $gte: dayStart, $lt: dayEnd } };
     }
 
     try {
       const orders = await crudService.getAdvance(
         Order,
         { status, ...sortQuery },
-        { createdAt: 'desc' }
+        { createdAt: "desc" }
       );
       return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -215,7 +216,7 @@ class OrderController {
       const orders = await crudService.getAdvance(Order, {}, { createdAt: -1 });
       return res.status(statusCode.success).json(orders);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -262,11 +263,11 @@ class OrderController {
           ).ward_name;
           const address =
             moreInfo.trim() +
-            ', ' +
+            ", " +
             town_name +
-            ', ' +
+            ", " +
             ward_name +
-            ', ' +
+            ", " +
             province_name;
           const cartLength = cart.length;
           if (!cart || cartLength <= 0) {
@@ -315,13 +316,20 @@ class OrderController {
               productId: product._id,
               productName: product.productName,
               amount: cart[i].amount,
-              price: product.discountPrice ? product.discountPrice : product.price,
+              price: product.discountPrice
+                ? product.discountPrice
+                : product.price,
             });
             detail.key = detail._id;
             await detail.save();
           }
           totalMoney = getProducts.reduce(
-            (a, b) => a + (b.product.discountPrice ? b.product.discountPrice : b.product.price) * b.amount,
+            (a, b) =>
+              a +
+              (b.product.discountPrice
+                ? b.product.discountPrice
+                : b.product.price) *
+                b.amount,
             deliveryState === 0 ? 35000 : 55000
           );
           if (paymentId) {
@@ -345,7 +353,7 @@ class OrderController {
           });
           if (email) {
             const transporter = nodemailer.createTransport({
-              service: 'gmail',
+              service: "gmail",
               auth: {
                 user: NODEMAILER_EMAIL,
                 pass: NODEMAILER_PASSWORD,
@@ -358,10 +366,14 @@ class OrderController {
                   cartItem.product.productName
                 }</li><li>Số lượng: ${
                   cartItem.amount
-                }</li><li>Đơn giá mỗi sản phẩm: ${(cartItem.product.discountPrice ? cartItem.product.discountPrice : cartItem.product.price).toLocaleString(
-                  'vi-VN',
-                  { style: 'currency', currency: 'VND' }
-                )}</li></ul></li>`
+                }</li><li>Đơn giá mỗi sản phẩm: ${(cartItem.product
+                  .discountPrice
+                  ? cartItem.product.discountPrice
+                  : cartItem.product.price
+                ).toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}</li></ul></li>`
             );
 
             const content = `
@@ -369,9 +381,9 @@ class OrderController {
           <p>Tên khách hàng: ${name}</p>
           <p>Điện thoại: ${phone}</p>
           <p>Địa chỉ: ${address}</p>
-          <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
+          <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
           })}</p>
           <p>Đơn hàng của quý khách:</p>
           <ul>
@@ -384,16 +396,16 @@ class OrderController {
             const mailOptions = {
               from: NODEMAILER_EMAIL,
               to: email,
-              subject: 'Thông báo mua hàng ở Pet store',
+              subject: "Thông báo mua hàng ở Pet store",
               html: content,
             };
             transporter
               .sendMail(mailOptions)
               .then(() => {
-                console.log('Send mail success');
+                console.log("Send mail success");
               })
               .catch((err) => {
-                console.log('Send mail fail');
+                console.log("Send mail fail");
               });
           }
         })
@@ -403,7 +415,7 @@ class OrderController {
           })
         );
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -411,10 +423,19 @@ class OrderController {
   // @desc    Đặt hàng vai trò người dùng
   // @access  Private
   async authOrder(req, res) {
-    const { deliveryState, paymentState, note, cart, address, paymentId } = req.body;
+    const {
+      deliveryState,
+      paymentState,
+      note,
+      cart,
+      address,
+      paymentId,
+      promoId,
+    } = req.body;
     let totalMoney = 0;
     try {
       let user = await crudService.getById(User, req.user.id);
+      const promo = promoId && (await crudService.getById(Promo, promoId));
       if (!user) {
         return res
           .status(statusCode.notFound)
@@ -436,6 +457,17 @@ class OrderController {
           .status(statusCode.badRequest)
           .json({ errors: [{ msg: message.addressRequired }] });
       }
+      if (promoId && !promo) {
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.addressRequired.notFoundPromo }] });
+      }
+      if (promo && user.promos?.includes(promo._id)) {
+        return res
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: message.existPromoUser }] });
+      }
+
       let order = new Order({
         userId: user._id,
         name: user.name,
@@ -485,9 +517,34 @@ class OrderController {
         await detail.save();
       }
       totalMoney = getProducts.reduce(
-        (a, b) => a + (b.product.discountPrice ? b.product.discountPrice : b.product.price) * b.amount,
-        deliveryState === 0 ? 35000 : 55000
+        (a, b) =>
+          a +
+          (b.product.discountPrice
+            ? b.product.discountPrice
+            : b.product.price) *
+            b.amount,
+        0
       );
+      if (
+        promo &&
+        promo.discountCondition &&
+        promo.discountCondition > totalMoney
+      ) {
+        return res.status(statusCode.badRequest).json({
+          errors: [{ msg: message.addressRequired.invalidPromoOrder }],
+        });
+      }
+      let promoDeduction = 0;
+      if (promo) {
+        user.promos = [...user.promos, promo._id];
+        if (promo.discountType === "percent") {
+          promoDeduction = (promo.discountValue / 100) * totalMoney;
+        }
+        if (promo.discountType === "cash") {
+          promoDeduction = promo.discountValue;
+        }
+      }
+      totalMoney += (deliveryState === 0 ? 35000 : 55000) - promoDeduction;
       if (paymentId) {
         const payment = await stripe.paymentIntents.create({
           amount: totalMoney,
@@ -495,8 +552,8 @@ class OrderController {
           payment_method: paymentId,
           confirm: true,
           metadata: {
-            'order_id': order._id.toString(),
-            'user_id': user._id.toString(),
+            order_id: order._id.toString(),
+            user_id: user._id.toString(),
           },
         });
       }
@@ -511,9 +568,10 @@ class OrderController {
           message: message.orderSuccess,
         });
       });
+      await user.save();
 
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: "gmail",
         auth: {
           user: NODEMAILER_EMAIL,
           pass: NODEMAILER_PASSWORD,
@@ -526,19 +584,22 @@ class OrderController {
             cartItem.product.productName
           }</li><li>Số lượng: ${
             cartItem.amount
-          }</li><li>Đơn giá mỗi sản phẩm: ${(cartItem.product.discountPrice ? cartItem.product.discountPrice : cartItem.product.price).toLocaleString(
-            'vi-VN',
-            { style: 'currency', currency: 'VND' }
-          )}</li></ul></li>`
+          }</li><li>Đơn giá mỗi sản phẩm: ${(cartItem.product.discountPrice
+            ? cartItem.product.discountPrice
+            : cartItem.product.price
+          ).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}</li></ul></li>`
       );
       const content = `
           <h1>Bạn vừa mua hàng ở Pet store</h1>
           <p>Tên khách hàng: ${user.name}</p>
           <p>Điện thoại: ${user.phoneNumber}</p>
           <p>Địa chỉ: ${address}</p>
-          <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
+          <p>Tổng giá trị đơn hàng: ${totalMoney.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
           })}</p>
           <p>Đơn hàng của quý khách:</p>
           <ul>
@@ -552,20 +613,20 @@ class OrderController {
       const mailOptions = {
         from: NODEMAILER_EMAIL,
         to: user.email,
-        subject: 'Thông báo mua hàng ở Pet store',
+        subject: "Thông báo mua hàng ở Pet store",
         html: content,
       };
 
       transporter
         .sendMail(mailOptions)
         .then(() => {
-          console.log('Send mail success');
+          console.log("Send mail success");
         })
         .catch((err) => {
-          console.log('Send mail fail');
+          console.log("Send mail fail");
         });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -613,7 +674,7 @@ class OrderController {
           .json({ message: message.cancelSuccess });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -641,7 +702,7 @@ class OrderController {
           .json({ message: message.cancelSuccess });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -763,7 +824,9 @@ class OrderController {
             productId: detailOrders[i].productId,
             productName: detailOrders[i].productName,
             amount: detailOrders[i].amount,
-            price: detailOrders[i].discountPrice ? detailOrders[i].discountPrice : detailOrders[i].price,
+            price: detailOrders[i].discountPrice
+              ? detailOrders[i].discountPrice
+              : detailOrders[i].price,
           });
           detail.key = detail._id;
           await detail.save();
@@ -795,7 +858,7 @@ class OrderController {
           .json({ message: message.updateSuccess });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // @route   GET api/orders/invoice/:id
@@ -818,7 +881,7 @@ class OrderController {
       });
       return res.status(statusCode.success).json({ order, detail });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 }

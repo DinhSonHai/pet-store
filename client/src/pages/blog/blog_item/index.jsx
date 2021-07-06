@@ -27,7 +27,7 @@ const BlogItem = ({ match, getBlogById, blogs: { blog } }) => {
   }, [getBlogById, match.params.id]);
   return (
     <Blog>
-      {isLoading ? (
+      {isLoading || !blog ? (
         <ProductPostLoader />
       ) : (
         <div className="blog-item">

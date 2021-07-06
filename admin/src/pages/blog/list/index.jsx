@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
-import { Button, Table, Popconfirm, Tag, Pagination } from "antd";
+import { Button, Table, Popconfirm, Tag, Pagination, Space } from "antd";
 import { getAllBlogs, removeBlog } from "../../../redux/actions/blog";
 import BlogAddForm from "../add_form";
 import dayjs from "dayjs";
@@ -64,7 +64,9 @@ const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange,
       render: (value) => (
         <div>
           {value.map((item) => (
-            <Tag color={colors[Math.ceil(Math.random() * 8)]}>{item}</Tag>
+            <span key={item}>
+              <Tag color={colors[Math.ceil(Math.random() * 8)]}>{item}</Tag>
+            </span>
           ))}
         </div>
       ),
@@ -74,9 +76,9 @@ const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange,
       dataIndex: "operation",
       render: (_, record) => {
         return (
-          <Fragment>
+          <Space>
             <Button
-              type="link"
+              type="primary"
               onClick={() => {
                 setItem(record);
                 setEdit(true);
@@ -88,11 +90,11 @@ const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange,
               title="Sure to remove?"
               onConfirm={() => remove(record.key)}
             >
-              <Button danger type="link">
+              <Button danger type="primary">
                 Xóa
               </Button>
             </Popconfirm>
-          </Fragment>
+          </Space>
         );
       },
     },
@@ -107,7 +109,7 @@ const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange,
             dataSource={blogs}
             pagination={false}
           />
-            <Pagination
+          <Pagination
             onChange={handlePagination}
             disabled={isLoading}
             current={!page ? 1 : parseInt(page)}
@@ -115,7 +117,7 @@ const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange,
             pageSize={6}
             total={total}
             showSizeChanger={false}
-            style={{ textAlign: 'right', margin: '3rem 0 0 0' }}
+            style={{ textAlign: "right", margin: "3rem 0 0 0" }}
           />
         </Fragment>
       ) : (

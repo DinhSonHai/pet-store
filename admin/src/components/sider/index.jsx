@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
@@ -13,6 +13,7 @@ import {
   HighlightOutlined,
   DollarCircleOutlined,
   ContactsOutlined,
+  TagOutlined
 } from "@ant-design/icons";
 
 import "./styles.scss";
@@ -85,6 +86,9 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
         </Menu.Item>
         <Menu.Item key="discountOffer" icon={<DollarCircleOutlined />}>
           <Link to="/?tab=discountOffer">Quản lý khuyến mãi</Link>
+        </Menu.Item>
+        <Menu.Item key="promo" icon={<TagOutlined />}>
+          <Link to="/?tab=promo">Quản lý promo</Link>
         </Menu.Item>
         <Menu.Item key="contacts" icon={<ContactsOutlined />}>
           <Link to="/?tab=contacts">Quản lý contact</Link>

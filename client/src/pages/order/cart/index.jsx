@@ -11,6 +11,7 @@ const CartInfo = ({
   totalMoney,
   isProcessing,
   onFinish,
+  promo,
 }) => {
   return (
     <Card
@@ -37,10 +38,13 @@ const CartInfo = ({
             <div className="order__products--info">
               <p className="order__products--name">{item.productName}</p>
               <p className="order__products--price">
-                {parseInt(item.discountPrice || item.price).toLocaleString("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                })}
+                {parseInt(item.discountPrice || item.price).toLocaleString(
+                  "vi-VN",
+                  {
+                    style: "currency",
+                    currency: "VND",
+                  }
+                )}
                 <span
                   className="order__products--amount"
                   style={{ margin: "0 1rem" }}
@@ -61,6 +65,18 @@ const CartInfo = ({
           })}
         </span>
       </p>
+      {promo && (
+        <p className="order__fee">
+          <span>Phiếu mua hàng: </span>
+          <span>
+            -{" "}
+            {promo.discountType === 'cash' ? parseInt(promo.discountValue).toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }) : promo.discountValue + '%'}
+          </span>
+        </p>
+      )}
       <p className="order__total">
         <span>Tổng tiền: </span>
         <span id="order__total">
@@ -74,8 +90,9 @@ const CartInfo = ({
         disabled={paymentState === 1 && !cardComplete}
         loading={isProcessing}
         onClick={onFinish}
-        block 
-        type="primary">
+        block
+        type="primary"
+      >
         Đặt hàng
       </Button>
     </Card>

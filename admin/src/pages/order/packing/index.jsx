@@ -6,7 +6,7 @@ import {
 } from '../../../redux/actions/orders';
 import ViewOrder from '../view';
 import dayjs from 'dayjs';
-import { Button, Table, Tooltip } from 'antd';
+import { Button, Table, Tooltip, Space } from 'antd';
 import { CheckCircleOutlined, EyeOutlined } from '@ant-design/icons';
 const PackingOrders = ({
   tabChange,
@@ -59,19 +59,17 @@ const PackingOrders = ({
       dataIndex: 'operation',
       render: (_, record) => {
         return (
-          <Fragment>
+          <Space>
             <Button
               onClick={() => handleViewOrder(record)}
-              type='link'
               icon={<EyeOutlined />}
             />
-            |
             <Button
               onClick={() => handleUpdateOrder(record._id)}
               icon={<CheckCircleOutlined />}
-              type='link'
+              type='primary'
             />
-          </Fragment>
+          </Space>
         );
       },
     },
