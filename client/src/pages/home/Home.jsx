@@ -7,6 +7,7 @@ import CustomerReview from "./customer_review";
 import CustomerExperience from "./experience";
 import { ShowHomeProducts } from "../../components";
 import { getShowHomeProducts } from "../../redux/actions/products";
+import { NotifyMessages } from '../../components';
 import { connect } from "react-redux";
 import "./styles.scss";
 
@@ -34,6 +35,7 @@ function Home({
       <ShowHomeProducts type="newest" products={newestProducts} />
       <CustomerReview />
       <CustomerExperience />
+      <NotifyMessages />
     </section>
   );
 }

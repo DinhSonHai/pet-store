@@ -1,21 +1,22 @@
-import axios from 'axios';
-import store from '../app/store';
-import addressAPI from './addressAPI';
-import authAPI from './authAPI';
-import orderAPI from './orderAPI';
-import productAPI from './productAPI';
-import reviewAPI from './reviewAPI';
-import typeAPI from './typeAPI';
-import blogAPI from './blogAPI'
-import saleAPI from './saleAPI';
-import contactAPI from './contactAPI';
-import promoAPI from './promoAPI';
-import { LOGOUT, CLEAR_PROFILE } from '../redux/types';
+import axios from "axios";
+import store from "../app/store";
+import addressAPI from "./addressAPI";
+import authAPI from "./authAPI";
+import orderAPI from "./orderAPI";
+import productAPI from "./productAPI";
+import reviewAPI from "./reviewAPI";
+import typeAPI from "./typeAPI";
+import blogAPI from "./blogAPI";
+import saleAPI from "./saleAPI";
+import contactAPI from "./contactAPI";
+import promoAPI from "./promoAPI";
+import notificationAPI from "./notificationAPI";
+import { LOGOUT, CLEAR_PROFILE } from "../redux/types";
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: "/api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 /**
@@ -35,5 +36,17 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-export { addressAPI, authAPI, orderAPI, productAPI, reviewAPI, typeAPI, blogAPI, saleAPI, contactAPI, promoAPI };
+export {
+  addressAPI,
+  authAPI,
+  orderAPI,
+  productAPI,
+  reviewAPI,
+  typeAPI,
+  blogAPI,
+  saleAPI,
+  contactAPI,
+  promoAPI,
+  notificationAPI,
+};
 export default api;

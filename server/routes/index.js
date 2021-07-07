@@ -13,6 +13,7 @@ const blog = require('./api/blog');
 const discountOffer = require('./api/discountOffer');
 const contacts = require('./api/contacts');
 const promos = require('./api/promos');
+const notifications = require('./api/notifications');
 
 function route(app) {
   //Products route
@@ -59,6 +60,9 @@ function route(app) {
 
   // Pormo route
   app.use('/api/promos', promos);
+
+  // Notifications
+  app.use('/api/notifications', notifications)
 }
 
 module.exports = route;
