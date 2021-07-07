@@ -18,6 +18,7 @@ import {
   DiscountOffer,
   Contacts,
   Promo,
+  Notification
 } from "../../pages";
 
 import queryString from "query-string";
@@ -55,6 +56,8 @@ const Home = ({ location }) => {
         return <Contacts />;
       case "promo":
         return <Promo />;
+      case 'notifications':
+        return <Notification />
       default:
         return <DashBoard />;
     }
