@@ -15,3 +15,4 @@ export { default as BuyStep } from "./buy_step";
 export { default as SocialShare } from './social_share';
 export { default as CheckoutPromoModal } from './modal/checkout_promo';
 export { default as NotifyMessages } from './notify_messages';
+export { default as Coupon } from './coupon';

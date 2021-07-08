@@ -1,10 +1,9 @@
 import { useState, useEffect, Fragment } from "react";
-import { Card, Col, Row } from "antd";
+import { Col, Row } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getPromos } from "../../../redux/actions/auth";
-import dayjs from "dayjs";
-import { Loader } from "../../../components";
+import { Loader, Coupon } from "../../../components";
 import "./styles.scss";
 const ProfilePromo = ({ getPromos }) => {
   const [data, setData] = useState([]);
@@ -26,10 +25,10 @@ const ProfilePromo = ({ getPromos }) => {
   return (
     <Fragment>
       <h3 className="profile__title">Ưu đãi ({data.length})</h3>
-      <div className="profile__main--promo">
-        {!data || isLoading ? (
-          <Loader className={"promo-loader"} />
-        ) : (
+      {!data || isLoading ? (
+        <Loader className={"promo-loader"} />
+      ) : (
+        <div className="profile__main--promo">
           <Row
             gutter={[
               { xs: 16, sm: 16, md: 16, lg: 16 },
@@ -37,23 +36,13 @@ const ProfilePromo = ({ getPromos }) => {
             ]}
           >
             {data.map((item) => (
-              <Col key={item._id} xs={24} sm={12} md={12} lg={8}>
-                <Card bordered={false} title={item.name}>
-                  <p className="profile__main--promo-desc">
-                    {item.descriptions}
-                  </p>
-                  <p className="profile__main--promo-date">
-                    <span>Ngày hết hạn: </span>
-                    {item.endDate
-                      ? dayjs(item.endDate).format("HH:mm DD/MM/YYYY")
-                      : "---"}
-                  </p>
-                </Card>
+              <Col key={item._id} xs={24} sm={12} md={12} lg={12}>
+                <Coupon item={item} />
               </Col>
             ))}
           </Row>
-        )}
-      </div>
+        </div>
+      )}
     </Fragment>
   );
 };

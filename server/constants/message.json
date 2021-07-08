@@ -32,7 +32,8 @@
     "addressRequired": "Vui lòng cung cấp địa chỉ",
     "notFoundPromo": "Phiếu giảm giá không tồn tại",
     "invalidPromoOrder": "Đơn hàng không đạt điều kiện áp dụng!",
-    "existPromoUser": "Bạn đã sử dụng phiếu mua hàng này rồi! Vui lòng thử lại."
+    "existPromoUser": "Bạn đã sử dụng phiếu mua hàng này rồi! Vui lòng thử lại.",
+    "expiredPromo": "Khuyến mãi áp dụng đã hết hạn, vui lòng thử lại!"
   },
   "user": {
     "notFound": "Tài khoản không tồn tại",
@@ -93,5 +94,10 @@
     "invalidStartDate": "Chương trình khuyến mãi có thời gian bắt đầu không hợp lệ",
     "invalidExpireDate": "Chương trình khuyến mãi có thời gian kết thúc không hợp lệ",
     "remove": "Đã xóa chương trình khuyến mãi"
+  },
+  "promo": {
+    "alreadyInUse": "Bạn đã sử dụng mã khuyến mãi này rồi.",
+    "expiredPromo": "Mã khuyến mãi áp dụng đã hết hạn, vui lòng thử lại!",
+    "notFound": "Mã khuyến mãi không tồn tại."
   }
 }
