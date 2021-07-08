@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, Button, Popconfirm } from 'antd';
-import { connect } from 'react-redux';
+import { useState, useEffect } from "react";
+import { Row, Col, Card, Table, Button, Popconfirm } from "antd";
+import { connect } from "react-redux";
 import {
   getOrderDetailById,
   cancelOrderById,
-} from '../../../../redux/actions/order';
-import { FastBackwardOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import dayjs from 'dayjs';
-import './styles.scss';
+} from "../../../../redux/actions/order";
+import { FastBackwardOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+import "./styles.scss";
 
 const OrderView = ({
   id,
@@ -24,26 +24,26 @@ const OrderView = ({
   const [confirmLoading, setConfirmLoading] = useState(false);
   const columns = [
     {
-      title: 'Sản phẩm',
-      dataIndex: 'productName',
-      width: '65%',
+      title: "Sản phẩm",
+      dataIndex: "productName",
+      width: "65%",
       render: (value, record) => (
         <Link to={`/product/${record.productId}`}>{value}</Link>
       ),
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'amount',
+      title: "Số lượng",
+      dataIndex: "amount",
     },
     {
-      title: 'Đơn giá',
-      dataIndex: 'price',
+      title: "Đơn giá",
+      dataIndex: "price",
 
       render: (value) => (
         <span>
-          {parseInt(value).toLocaleString('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
+          {parseInt(value).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
           })}
         </span>
       ),
@@ -74,7 +74,7 @@ const OrderView = ({
     setConfirmLoading(false);
     setVisible(false);
     if (res) {
-      setView('default');
+      setView("default");
     }
   };
 
@@ -82,42 +82,49 @@ const OrderView = ({
     setVisible(false);
   };
   return (
-    <section className='view-order'>
-      <p className='view-order__id'>
-        {' '}
+    <section className="view-order">
+      <p className="view-order__id">
+        {" "}
         <span>Chi tiết đơn hàng: </span> {`#${id}`}
       </p>
-      <p className='view-order__status'>
+      <p className="view-order__status">
         <span>Trạng thái: </span>
         {order.status === 0
-          ? ' Đặt hàng thành công'
+          ? " Đặt hàng thành công"
           : order.status === 1
-          ? ' Đã xác nhận đơn hàng'
+          ? " Đã xác nhận đơn hàng"
           : order.status === 2
-          ? ' Đang lấy hàng'
+          ? " Đang lấy hàng"
           : order.status === 3
-          ? ' Đóng gói xong'
+          ? " Đóng gói xong"
           : order.status === 4
-          ? ' Đang vận chuyển'
+          ? " Đang vận chuyển"
           : order.status === 5
-          ? ' Giao hàng thành công'
-          : order.status === -1 && 'Đã hủy'}
+          ? " Giao hàng thành công"
+          : order.status === -1 && "Đã hủy"}
       </p>
-      <p className='view-order__date'>
+      <p className="view-order__date">
         <span>Ngày đặt: </span>
-        {dayjs(order.createdAt).format('HH:mm DD/MM/YYYY')}
+        {dayjs(order.createdAt).format("HH:mm DD/MM/YYYY")}
       </p>
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginBottom: '1rem',
-          justifyContent: 'flex-end',
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "1rem",
+          justifyContent: "space-between",
         }}
       >
+        <p className="view-order__total">
+          <span>Tổng tiền: </span>{" "}
+          {parseInt(order.totalMoney).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </p>
         {order.status < 2 && order.status !== -1 && (
           <Popconfirm
-            title='Hủy đơn hàng?'
+            title="Hủy đơn hàng?"
             visible={visible}
             onConfirm={handleOk}
             okButtonProps={{ loading: confirmLoading }}
@@ -131,55 +138,60 @@ const OrderView = ({
         )}
         {order.status !== -1 && (
           <Button
-            style={{ marginLeft: '1rem' }}
+            style={{ marginLeft: "1rem" }}
             onClick={() => {
               setId(order._id);
-              setView('track');
+              setView("track");
             }}
-            type='primary'
+            type="primary"
           >
             Theo dõi đơn hàng
           </Button>
         )}
       </div>
       <Row gutter={[16, 16]}>
-        <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
-          <Card bordered={false} style={{ height: '100%' }} title='Địa chỉ người nhận'>
-            <p className='view-order__name'>{order.name}</p>
-            <p className='view-order__address'>{order.address}</p>
-            <p className='view-order__phone'>{'SĐT: ' + order.phone}</p>
+        <Col style={{ wordBreak: "break-word" }} xs={24} sm={12} md={8} lg={8}>
+          <Card
+            bordered={false}
+            style={{ height: "100%" }}
+            title="Địa chỉ người nhận"
+          >
+            <p className="view-order__name">{order.name}</p>
+            <p className="view-order__address">{order.address}</p>
+            <p className="view-order__phone">{"SĐT: " + order.phone}</p>
           </Card>
         </Col>
-        <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
-          <Card bordered={false} style={{ height: '100%' }} title='Hình thức giao hàng'>
-            <p className='view-order__delivery'>
+        <Col style={{ wordBreak: "break-word" }} xs={24} sm={12} md={8} lg={8}>
+          <Card
+            bordered={false}
+            style={{ height: "100%" }}
+            title="Hình thức giao hàng"
+          >
+            <p className="view-order__delivery">
               {order.deliveryState === 0
-                ? 'Giao hàng tiêu chuẩn'
-                : 'Giao hàng nhanh'}
+                ? "Giao hàng tiêu chuẩn"
+                : "Giao hàng nhanh"}
             </p>
-            <p className='view-order__delivery--fee'>{`Phí giao hàng: ${parseInt(
+            <p className="view-order__delivery--fee">{`Phí giao hàng: ${parseInt(
               order.deliveryState === 0 ? 35000 : 55000
-            ).toLocaleString('vi-VN', {
-              style: 'currency',
-              currency: 'VND',
+            ).toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
             })}`}</p>
           </Card>
         </Col>
-        <Col style={{ wordBreak: 'break-word' }} xs={24} sm={12} md={8} lg={8}>
-          <Card bordered={false} style={{ height: '100%' }} title='Hình thức thanh toán'>
-            <p className='view-order__payment'>
-              {order.paymentState === 0 && 'Thanh toán tiền mặt khi nhận hàng'}
+        <Col style={{ wordBreak: "break-word" }} xs={24} sm={12} md={8} lg={8}>
+          <Card
+            bordered={false}
+            style={{ height: "100%" }}
+            title="Hình thức thanh toán"
+          >
+            <p className="view-order__payment">
+              {order.paymentState === 0 && "Thanh toán tiền mặt khi nhận hàng"}
             </p>
           </Card>
         </Col>
       </Row>
-      <p className='view-order__total'>
-        <span>Tổng tiền: </span>{' '}
-        {parseInt(order.totalMoney).toLocaleString('vi-VN', {
-          style: 'currency',
-          currency: 'VND',
-        })}
-      </p>
       <Table
         loading={isLoading}
         scroll={{ y: 250 }}
@@ -192,9 +204,9 @@ const OrderView = ({
       />
       <Button
         icon={<FastBackwardOutlined />}
-        type='link'
+        type="link"
         onClick={() => {
-          setView('default');
+          setView("default");
         }}
       >
         Quay lại hóa đơn của tôi

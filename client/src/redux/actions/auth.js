@@ -181,3 +181,13 @@ export const getPromos = () => async (dispatch) => {
     notifyErrors(err);
   }
 };
+
+// Get promo by name
+export const getPromoByName = (name) => async (dispatch) => {
+  try {
+    const res = await promoAPI.apply(name);
+    return res.data;
+  } catch (err) {
+    notifyErrors(err);
+  }
+};

@@ -4,6 +4,7 @@ const crudService = require("../../services/crud");
 const statusCode = require("../../constants/statusCode.json");
 const message = require("../../constants/message.json").crud;
 const userMessage = require("../../constants/message.json").user;
+const promoMessage = require("../../constants/message.json").promo;
 
 function getFormattedDataPromo(data) {
   const { discountCondition, discountValue, discountType, name } = data;
@@ -86,6 +87,46 @@ class PromoController {
       return res
         .status(statusCode.badRequest)
         .json({ errors: [{ msg: message.createFail }] });
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
+  // @route   GET api/promos/apply
+  // @desc    Get promo by name
+  // @access  Private
+  async apply(req, res, next) {
+    const { name } = req.query;
+    try {
+      const [promo, user] = await Promise.all([
+        crudService.getUnique(Promo, { name: name?.toUpperCase() }),
+        crudService.getById(User, req.user.id),
+      ]);
+      if (!promo) {
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: promoMessage.notFound }] });
+      }
+      if (!user) {
+        return res.status(statusCode.notFound).json({
+          errors: [{ msg: userMessage.notFound }],
+        });
+      }
+      const { endDate } = promo;
+      if (
+        endDate &&
+        new Date(Date.now()).getTime() >= new Date(endDate).getTime()
+      ) {
+        return res
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: promoMessage.expiredPromo }] });
+      }
+      if (user.promos?.includes(promo._id)) {
+        return res
+          .status(statusCode.badRequest)
+          .json({ errors: [{ msg: promoMessage.alreadyInUse }] });
+      }
+      return res.status(statusCode.success).json(promo);
     } catch (err) {
       return res.status(statusCode.serverError).send("Server Error");
     }

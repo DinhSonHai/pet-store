@@ -16,6 +16,11 @@ router.get("/client", auth, PromoController.getAllByClient);
 // @access  Private
 router.get("/admin", [authAdmin, checkPermission], PromoController.getAllByAdmin);
 
+// @route   GET api/promos/apply
+// @desc    Lấy promos by name
+// @access  Private
+router.get("/apply", auth, PromoController.apply);
+
 // @route   POST api/promos
 // @desc    Tạo promo
 // @access  Private

@@ -1,14 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import { Modal, Button, Card, Row, Col } from "antd";
+import { Modal, Button, Row, Col, Input } from "antd";
 import { SmileOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
-import { Loader } from "../../../components";
-import { getPromos } from "../../../redux/actions/auth";
+import { Loader, Coupon } from "../../../components";
+import { getPromos, getPromoByName } from "../../../redux/actions/auth";
 import { connect } from "react-redux";
 import { notifyActions } from "../../../utils/notify";
 import { Link } from "react-router-dom";
 import "./style.scss";
+
+const { Search } = Input;
 
 const CheckoutPromoModal = ({
   cartState,
@@ -17,10 +18,12 @@ const CheckoutPromoModal = ({
   setPromo,
   promo,
   getPromos,
+  getPromoByName,
   auth: { isAuthenticated, user },
 }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   useEffect(() => {
     let flag = true;
     async function getProducts() {
@@ -45,7 +48,12 @@ const CheckoutPromoModal = ({
   };
   const onFinish = (item) => {
     const totalMoney = cartState?.reduce((a, b) => a + b.price * b.amount, 0);
-    const { _id, discountCondition } = item;
+    const { _id, discountCondition, endDate } = item;
+    const end = endDate && new Date(endDate);
+    const now = new Date(Date.now());
+    if (end && now.getTime() >= end.getTime()) {
+      return notifyActions("error", "Mã giảm giá đã hết hạn sử dụng!");
+    }
     if (discountCondition && discountCondition > totalMoney) {
       return notifyActions("error", "Đơn hàng không đạt điều kiện áp dụng!");
     }
@@ -58,6 +66,16 @@ const CheckoutPromoModal = ({
     setPromo(item);
     setShowPromoModal(false);
   };
+  const onApply = async (value) => {
+    if (value) {
+      setIsProcessing(true);
+      const data = await getPromoByName(value);
+      setIsProcessing(false);
+      if (data) {
+        onFinish(data);
+      }
+    }
+  };
   return (
     <Modal
       bodyStyle={{ maxHeight: "700px", overflowY: "scroll" }}
@@ -68,6 +86,18 @@ const CheckoutPromoModal = ({
       footer={false}
       className="checkout-promo-modal"
     >
+      {isAuthenticated && (
+        <div style={{ marginBottom: "1.5rem" }}>
+          <Search
+            placeholder="Nhập mã giảm giá..."
+            allowClear
+            enterButton="Áp dụng"
+            size="large"
+            onSearch={onApply}
+            loading={isProcessing}
+          />
+        </div>
+      )}
       {!data || isLoading ? (
         <Loader className={"promo-loader"} />
       ) : (
@@ -86,35 +116,13 @@ const CheckoutPromoModal = ({
             ) : (
               data.map((item) => (
                 <Col key={item._id} xs={24} sm={24} md={24} lg={24}>
-                  <Card
-                    bordered={false}
-                    title={item.name}
-                    extra={
-                      promo?._id === item._id ? (
-                        <Button
-                          onClick={() => handleCancel(false)}
-                          danger
-                          type="link"
-                        >
-                          Hủy
-                        </Button>
-                      ) : (
-                        <Button onClick={() => onFinish(item)} type="link">
-                          Chọn
-                        </Button>
-                      )
-                    }
-                  >
-                    <p className="checkout-promo-modal-desc">
-                      {item.descriptions}
-                    </p>
-                    <p className="checkout-promo-modal-date">
-                      <span>Ngày hết hạn: </span>
-                      {item.endDate
-                        ? dayjs(item.endDate).format("HH:mm DD/MM/YYYY")
-                        : "---"}
-                    </p>
-                  </Card>
+                  <Coupon
+                    item={item}
+                    handleCancel={handleCancel}
+                    onFinish={onFinish}
+                    promo={promo}
+                    isModal
+                  />
                 </Col>
               ))
             )
@@ -137,4 +145,6 @@ const CheckoutPromoModal = ({
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
-export default connect(mapStateToProps, { getPromos })(CheckoutPromoModal);
+export default connect(mapStateToProps, { getPromos, getPromoByName })(
+  CheckoutPromoModal
+);

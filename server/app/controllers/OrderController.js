@@ -462,10 +462,20 @@ class OrderController {
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.addressRequired.notFoundPromo }] });
       }
-      if (promo && user.promos?.includes(promo._id)) {
-        return res
-          .status(statusCode.badRequest)
-          .json({ errors: [{ msg: message.existPromoUser }] });
+      if (promo) {
+        if (user.promos?.includes(promo._id)) {
+          return res
+            .status(statusCode.badRequest)
+            .json({ errors: [{ msg: message.existPromoUser }] });
+        }
+        const { endDate } = promo;
+        const end = endDate && new Date(endDate);
+        const now = new Date(Date.now());
+        if (end && now.getTime() >= end.getTime()) {
+          return res
+            .status(statusCode.badRequest)
+            .json({ errors: [{ msg: message.expiredPromo }] });
+        }
       }
 
       let order = new Order({
