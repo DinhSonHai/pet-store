@@ -54,7 +54,7 @@ const Profile = ({ location, history, auth: { user } }) => {
             </Select>
           </div>
           <Row gutter={[16, 16]}>
-            <Col className="profile__side" xs={0} sm={0} md={6} lg={6}>
+            <Col className="profile__side" xs={0} sm={0} md={0} lg={6}>
               <div className="profile__info">
                 <img src={user.avatar} alt="Avt" className="profile__avt" />
                 <div className="profile__info--wrap">
@@ -64,7 +64,7 @@ const Profile = ({ location, history, auth: { user } }) => {
               </div>
               <ProfileSide tab={tab} />
             </Col>
-            <Col className="profile__main" xs={24} sm={24} md={18} lg={18}>
+            <Col className="profile__main" xs={24} sm={24} md={24} lg={18}>
               {tabState === "info" ? (
                 <ProfileInfo />
               ) : tabState === "address" ? (

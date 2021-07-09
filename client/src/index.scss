@@ -71,20 +71,21 @@ body {
   margin: 0 0 1.5rem;
   display: none;
 }
-.ant-card{
+.ant-card {
   overflow: hidden;
 }
 .ant-back-top {
   bottom: 120px !important;
 }
-.ant-modal-mask, .ant-modal-wrap{
+.ant-modal-mask,
+.ant-modal-wrap {
   z-index: 1002 !important;
 }
 .ant-card-hoverable:hover {
   box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.2) !important;
-  transition: all .15s ease-in-out !important;
+  transition: all 0.15s ease-in-out !important;
 }
-.item-wrap{
+.item-wrap {
   padding: 0 1rem 1rem;
 }
 @media only screen and (max-width: 768px) {
@@ -97,11 +98,16 @@ body {
   .logo {
     margin: auto;
   }
-  .menu-responsive,
-  .profile__select {
+  .menu-responsive {
     display: block !important;
   }
   .vision__wrap.container {
     padding: 2rem 1rem 2rem !important;
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+  .profile__select {
+    display: block !important;
   }
 }

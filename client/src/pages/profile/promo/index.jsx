@@ -36,7 +36,7 @@ const ProfilePromo = ({ getPromos }) => {
             ]}
           >
             {data.map((item) => (
-              <Col key={item._id} xs={24} sm={12} md={12} lg={12}>
+              <Col key={item._id} xs={24} sm={24} md={12} lg={12}>
                 <Coupon item={item} />
               </Col>
             ))}
