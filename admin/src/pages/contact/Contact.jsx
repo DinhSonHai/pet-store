@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getAllContacts, updateContact } from "../../redux/actions/contacts";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory, Link } from "react-router-dom";
 import { Button, Table, Pagination, Breadcrumb, Tooltip } from "antd";
 import queryString from "query-string";
 import dayjs from "dayjs";
@@ -18,6 +18,16 @@ const Contact = ({
     {
       title: "Email",
       dataIndex: "email",
+      render: (value, record) => {
+        if (!record.status) {
+          return (
+            <a href={`mailto:${value}?subject=Dịch+vụ+hỗ+trợ+khách+hàng+-+PetStore.`} target="_blank" rel="noreferrer">
+              {value}
+            </a>
+          );
+        }
+        return <span>{value}</span>;
+      },
     },
     {
       title: "Tên người dùng",
