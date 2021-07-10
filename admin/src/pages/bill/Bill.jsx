@@ -1,37 +1,86 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useHistory, Link } from 'react-router-dom';
-import { Button, Table, Pagination, Breadcrumb, Tabs, Tooltip } from 'antd';
-import { PrinterOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { Button, Table, Pagination, Breadcrumb, Tooltip, DatePicker } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import moment from 'moment';
 import queryString from 'query-string';
+
 import { getAllBills } from '../../redux/actions/bills';
-const { TabPane } = Tabs;
+
+const { RangePicker } = DatePicker;
+
+const defaultPage = 1;
+const defaultPageSize = 10;
+
+const defaultPageSetting = {
+  currentPage: defaultPage,
+  pageSize: defaultPageSize,
+};
+
 const Bill = ({ bills: { bills, total }, getAllBills }) => {
   const location = useLocation();
   const history = useHistory();
-  let filter = queryString.parse(location.search).sort;
+
   let page = queryString.parse(location.search).page;
+
   const [isLoading, setIsLoading] = useState(false);
-  const [tabChange, setTabChange] = useState('list');
-  const onTabChange = (key) => {
-    setTabChange(key);
-  };
-  useEffect(() => {
-    async function getData() {
-      setIsLoading(true);
-      await getAllBills(filter, page);
-      setIsLoading(false);
+  const [{ currentPage, pageSize }, setPage] = useState(page ? { currentPage: page, pageSize: defaultPageSize } : defaultPageSetting);
+  const [from, setFrom] = useState(Date.now());
+  const [to, setTo] = useState(Date.now());
+
+  const onDateChange = (value, dateString) => {
+    if (dateString.length < 2) {
+      return;
     }
+    const startDate = Date.parse(dateString[0]);
+    const endDate = Date.parse(dateString[1]);
+
+    if (startDate === endDate) {
+      return;
+    }
+
+    setFrom(startDate);
+    setTo(endDate);
+  };
+
+  const handleTodayClick = () => {
+    let dayStart = moment().startOf('day');
+    let dayEnd = moment().endOf('day');
+
+    setFrom(dayStart.valueOf());
+    setTo(dayEnd.valueOf())
+  };
+
+  const handleReset = () => {
+    setFrom(Date.now());
+    setTo(Date.now());
+  };
+
+  const getData = useCallback(async () => {
+    setIsLoading(true);
+    if (!from || !to || from === to) {
+      await getAllBills(currentPage);
+    }
+    else {
+      await getAllBills(currentPage, from, to);
+    }
+    setIsLoading(false);
+  }, [currentPage, from, to]);
+
+  useEffect(() => {
     getData();
-  }, [getAllBills, filter, page]);
+  }, [getData]);
 
   const handlePagination = async (_page) => {
-    if (filter) {
-      return history.push(`?tab=bill&sort=${filter}&page=${_page}`);
+    setPage({ currentPage: _page, pageSize: defaultPageSize });
+    if (from && to && from !== to) {
+      return history.push(`?tab=bill&page=${_page}&from=${from}&to=${to}`);
     }
     return history.push(`?tab=bill&page=${_page}`);
   };
+
   const columns = [
     {
       title: 'Mã hóa đơn',
@@ -39,6 +88,7 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
       ellipsis: {
         showTitle: false,
       },
+      width: "30%",
       render: (value) => (
         <Tooltip placement='topLeft' title={value}>
           {value}
@@ -46,9 +96,8 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
       ),
     },
     {
-      title: 'Ngày đặt hàng',
-      dataIndex: 'orderedAt',
-      render: (value) => <span>{dayjs(value).format('HH:mm DD/MM/YYYY')}</span>,
+      title: 'Người mua',
+      dataIndex: 'name',
     },
     {
       title: 'Ngày giao',
@@ -91,34 +140,33 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
         className='bill__wrap site-layout-background'
         style={{ padding: '1.5rem', minHeight: '100vh' }}
       >
-        <Tabs onTabClick={onTabChange} defaultActiveKey={tabChange} type='card'>
-          <TabPane
-            tab={
-              <span>
-                <UnorderedListOutlined />
-                Danh sách
-              </span>
-            }
-            key='list'
-          >
-            <Table
-              columns={columns}
-              loading={isLoading}
-              dataSource={bills}
-              pagination={false}
-            />
-            <Pagination
-              onChange={handlePagination}
-              disabled={isLoading}
-              current={!page ? 1 : parseInt(page)}
-              responsive={true}
-              pageSize={10}
-              total={total}
-              showSizeChanger={false}
-              style={{ textAlign: 'right', margin: '3rem 0 0 0' }}
-            />
-          </TabPane>
-        </Tabs>
+        <div className="filter-container">
+          <RangePicker 
+            style={{ marginRight: '24px' }}
+            placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+            format="YYYY-MM-DD"
+            value={[moment(from), moment(to)]}
+            onChange={onDateChange}
+          />
+          <Button onClick={handleTodayClick} className="filter-btn">Hôm nay</Button>
+          <Button onClick={handleReset} className="filter-btn">Đặt lại</Button>
+        </div>
+        <Table
+          columns={columns}
+          loading={isLoading}
+          dataSource={bills}
+          pagination={false}
+        />
+        <Pagination
+          onChange={handlePagination}
+          disabled={isLoading}
+          current={!currentPage ? 1 : parseInt(currentPage)}
+          responsive={true}
+          pageSize={defaultPageSize}
+          total={total}
+          showSizeChanger={false}
+          style={{ textAlign: 'right', margin: '3rem 0 0 0' }}
+        />
       </div>
     </section>
   );

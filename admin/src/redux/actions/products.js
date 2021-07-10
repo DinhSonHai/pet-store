@@ -7,9 +7,9 @@ import {
 import { productAPI } from '../../api';
 import { notifyActions } from '../../utils/notify';
 // get all products
-export const getAllProducts = (filter, page) => async (dispatch) => {
+export const getAllProducts = (page, q) => async (dispatch) => {
   try {
-    const res = await productAPI.get_all(filter, page);
+    const res = await productAPI.get_all(page, q);
     dispatch({
       type: GET_ALL_PRODUCTS,
       payload: res.data,
