@@ -122,32 +122,34 @@ const OrderView = ({
             currency: "VND",
           })}
         </p>
-        {order.status < 2 && order.status !== -1 && (
-          <Popconfirm
-            title="Hủy đơn hàng?"
-            visible={visible}
-            onConfirm={handleOk}
-            okButtonProps={{ loading: confirmLoading }}
-            cancelButtonProps={{ disabled: confirmLoading }}
-            onCancel={handleCancel}
-          >
-            <Button onClick={showPopconfirm} danger>
-              Hủy đơn hàng
+        <div>
+          {order.status < 2 && order.status !== -1 && (
+            <Popconfirm
+              title="Hủy đơn hàng?"
+              visible={visible}
+              onConfirm={handleOk}
+              okButtonProps={{ loading: confirmLoading }}
+              cancelButtonProps={{ disabled: confirmLoading }}
+              onCancel={handleCancel}
+            >
+              <Button onClick={showPopconfirm} danger>
+                Hủy đơn hàng
+              </Button>
+            </Popconfirm>
+          )}
+          {order.status !== -1 && (
+            <Button
+              style={{ marginLeft: "1rem" }}
+              onClick={() => {
+                setId(order._id);
+                setView("track");
+              }}
+              type="primary"
+            >
+              Theo dõi đơn hàng
             </Button>
-          </Popconfirm>
-        )}
-        {order.status !== -1 && (
-          <Button
-            style={{ marginLeft: "1rem" }}
-            onClick={() => {
-              setId(order._id);
-              setView("track");
-            }}
-            type="primary"
-          >
-            Theo dõi đơn hàng
-          </Button>
-        )}
+          )}
+        </div>
       </div>
       <Row gutter={[16, 16]}>
         <Col style={{ wordBreak: "break-word" }} xs={24} sm={12} md={8} lg={8}>

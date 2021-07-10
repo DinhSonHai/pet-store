@@ -54,7 +54,7 @@ export const OrderProcessing = ({
                     xs={24}
                     sm={12}
                     md={8}
-                    lg={6}
+                    lg={7}
                   >
                     <p className="order-processing__title">Mã đơn hàng</p>
                     <p className="order-processing__desc">{p._id}</p>
@@ -74,7 +74,7 @@ export const OrderProcessing = ({
                       })}
                     </p>
                   </Col>
-                  <Col xs={24} sm={12} md={8} lg={6}>
+                  <Col xs={24} sm={12} md={8} lg={5}>
                     <p className="order-processing__title">Số lượng</p>
                     <p className="order-processing__desc">{`${p.amount} sản phẩm`}</p>
                   </Col>

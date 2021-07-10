@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getAllContacts, updateContact } from "../../redux/actions/contacts";
-import { useLocation, useHistory, Link } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { Button, Table, Pagination, Breadcrumb, Tooltip } from "antd";
 import queryString from "query-string";
 import dayjs from "dayjs";
