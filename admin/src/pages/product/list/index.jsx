@@ -47,7 +47,7 @@ const ProductList = ({
     setIsLoading(true);
     await getAllProducts(currentPage, searchKeyDebounced);
     setIsLoading(false);
-  }, [currentPage, searchKeyDebounced]);
+  }, [currentPage, searchKeyDebounced, tabChange, edit]);
 
   useEffect(() => {
     getData();

@@ -14,7 +14,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { connect } from 'react-redux';
 import { createProduct, editProduct } from '../../../redux/actions/products';
 import { PlusOutlined } from '@ant-design/icons';
-import api from '../../../api';
+import { typeAPI } from '../../../api';
 const { Option } = Select;
 const uploadButton = (
   <div>
@@ -58,7 +58,7 @@ const ProductAddForm = ({
 
     async function getTypes() {
       setIsProcessing(true);
-      const res = await api.get('/types');
+      const res = await typeAPI.get_all_sell();
       setTypeState(res.data);
       setIsProcessing(false);
     }
@@ -155,36 +155,6 @@ const ProductAddForm = ({
               </Option>
             ))}
           </Select>
-        </Form.Item>
-        <Form.Item initialValue={edit ? item.age : ''} label='Tuổi' name='age'>
-          <Input placeholder='Tuổi' />
-        </Form.Item>
-        <Form.Item name='gender' label='Giới tính' initialValue={0}>
-          <Select>
-            <Option value={0}>Đực</Option>
-            <Option value={1}>Cái</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          initialValue={edit ? item.color : ''}
-          label='Màu lông'
-          name='color'
-        >
-          <Input placeholder='Màu lông' />
-        </Form.Item>
-        <Form.Item
-          initialValue={edit ? item.weight : ''}
-          label='Cân nặng'
-          name='weight'
-        >
-          <Input placeholder='Cân nặng' />
-        </Form.Item>
-        <Form.Item
-          initialValue={edit ? item.origin : ''}
-          label='Nguồn gốc'
-          name='origin'
-        >
-          <Input placeholder='Nguồn gốc' />
         </Form.Item>
         <Form.Item
           style={{ width: '100%' }}
