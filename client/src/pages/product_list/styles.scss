@@ -5,20 +5,6 @@
       text-align: center;
       margin-bottom: 1.5rem;
     }
-    &__image-skeleton,
-    &__star-skeleton,
-    &__price-skeleton {
-      margin-bottom: 0.5rem;
-      .ant-skeleton-element {
-        width: 100%;
-        display: block;
-      }
-    }
-    &__image-skeleton {
-      .ant-skeleton-element .ant-skeleton-input-lg {
-        height: 220px;
-      }
-    }
   }
   &__header {
     display: flex;
@@ -70,7 +56,7 @@
   }
   .ant-card {
     height: 100%;
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
     .ant-card-body {
       height: 100%;

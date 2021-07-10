@@ -1,0 +1,23 @@
+.loading {
+    &__image-skeleton,
+    &__star-skeleton,
+    &__price-skeleton {
+        margin-bottom: 0.5rem;
+        .ant-skeleton-element .ant-skeleton-input-sm{
+            border-radius: 5px;
+        }
+        .ant-skeleton-element {
+            width: 100%;
+            display: block;
+        }
+    }
+    &__image-skeleton {
+        .ant-skeleton-element .ant-skeleton-input-lg {
+            height: 220px;
+            border-radius: 5px;
+        }
+    }
+    &__price-skeleton{
+        margin-bottom: 0;
+    }
+}

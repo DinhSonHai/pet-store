@@ -14,6 +14,9 @@
         color: var(--dark-second-color);
         text-align: center;
     }
+    .ant-card-body{
+        padding: 1rem;
+    }
     .ant-card, .ant-card-body{
         height: 100%;
     }
@@ -21,7 +24,7 @@
         color: var(--mainstream-color);
     }
     .ant-card {
-        border-radius: 5px 5px 0 0;
+        border-radius: 5px;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
     }
     &__large-skeleton,
@@ -29,12 +32,6 @@
         .ant-skeleton-element {
             width: 100%;
             display: block;
-        }
-    }
-    &__large-skeleton {
-        margin-bottom: 0.5rem;
-        .ant-skeleton-element .ant-skeleton-input-lg {
-            height: 220px;
         }
     }
 }
