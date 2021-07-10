@@ -12,27 +12,34 @@ class BillController {
   // @desc    Lấy tất cả hóa đơn
   // @access  Private
   async getAll(req, res) {
-    const { sort } = req.query;
     const from = parseInt(req.query.from);
-    const to = parseInt(req.query.to);
+    const to = parseInt(req.query.to) + 86400000;
 
-    let dayStart = moment().startOf('day');
-    let dayEnd = moment().endOf('day');
+    // let dayStart = moment().startOf('day');
+    // let dayEnd = moment().endOf('day');
 
     let sortQuery = {};
 
-    if (sort) {
-      if (sort === 'today') {
-        dayStart = new Date(dayStart).toISOString();
-        dayEnd = new Date(dayEnd).toISOString();
-        sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
-      }
-    }
     if (from && to) {
-      dayStart = new Date(from).toISOString();
-      dayEnd = new Date(to).toISOString();
+      let dayStart = new Date(from).toISOString();
+      let dayEnd = new Date(to).toISOString();
       sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
     }
+
+    // if (sort) {
+    //   if (sort === 'today') {
+    //     dayStart = new Date(dayStart).toISOString();
+    //     dayEnd = new Date(dayEnd).toISOString();
+    //     sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    //   }
+    // }
+    // else {
+    //   if (from && to) {
+    //     dayStart = new Date(from).toISOString();
+    //     dayEnd = new Date(to).toISOString();
+    //     sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    //   }
+    // }
 
     const { start, end } = pagination(req.query.page, 10);
 
