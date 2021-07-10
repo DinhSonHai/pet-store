@@ -15,9 +15,6 @@ class BillController {
     const from = parseInt(req.query.from);
     const to = parseInt(req.query.to) + 86400000;
 
-    // let dayStart = moment().startOf('day');
-    // let dayEnd = moment().endOf('day');
-
     let sortQuery = {};
 
     if (from && to) {
@@ -25,21 +22,6 @@ class BillController {
       let dayEnd = new Date(to).toISOString();
       sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
     }
-
-    // if (sort) {
-    //   if (sort === 'today') {
-    //     dayStart = new Date(dayStart).toISOString();
-    //     dayEnd = new Date(dayEnd).toISOString();
-    //     sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
-    //   }
-    // }
-    // else {
-    //   if (from && to) {
-    //     dayStart = new Date(from).toISOString();
-    //     dayEnd = new Date(to).toISOString();
-    //     sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
-    //   }
-    // }
 
     const { start, end } = pagination(req.query.page, 10);
 

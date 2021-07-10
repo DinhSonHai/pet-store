@@ -19,6 +19,9 @@ const defaultPageSetting = {
   pageSize: defaultPageSize,
 };
 
+const todayStart = moment().startOf('day');
+const todayEnd = moment().endOf('day');
+
 const Bill = ({ bills: { bills, total }, getAllBills }) => {
   const location = useLocation();
   const history = useHistory();
@@ -27,35 +30,41 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [{ currentPage, pageSize }, setPage] = useState(page ? { currentPage: page, pageSize: defaultPageSize } : defaultPageSetting);
-  const [from, setFrom] = useState(Date.now());
-  const [to, setTo] = useState(Date.now());
+  const [from, setFrom] = useState(todayStart);
+  const [to, setTo] = useState(todayStart);
+  const [isToday, setToday] = useState(false);
 
   const onDateChange = (value, dateString) => {
     if (dateString.length < 2) {
       return;
     }
+    console.log(value)
+    console.log(dateString)
     const startDate = Date.parse(dateString[0]);
     const endDate = Date.parse(dateString[1]);
 
     if (startDate === endDate) {
       return;
     }
-
+ 
+    setToday(false);
     setFrom(startDate);
     setTo(endDate);
   };
 
   const handleTodayClick = () => {
-    let dayStart = moment().startOf('day');
-    let dayEnd = moment().endOf('day');
+    let dayStart = todayStart;
+    let dayEnd = todayEnd;
 
+    setToday(true);
     setFrom(dayStart.valueOf());
     setTo(dayEnd.valueOf())
   };
 
   const handleReset = () => {
-    setFrom(Date.now());
-    setTo(Date.now());
+    setToday(false);
+    setFrom(todayStart);
+    setTo(todayStart);
   };
 
   const getData = useCallback(async () => {
@@ -144,13 +153,19 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
           <RangePicker 
             style={{ marginRight: '24px' }}
             placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
-            format="YYYY-MM-DD"
+            showTime={{ format: 'HH:mm', defaultValue: moment('00:00', 'HH:mm') }}
+            format="YYYY-MM-DD HH:mm"
             value={[moment(from), moment(to)]}
             onChange={onDateChange}
           />
           <Button onClick={handleTodayClick} className="filter-btn">Hôm nay</Button>
           <Button onClick={handleReset} className="filter-btn">Đặt lại</Button>
         </div>
+        {from && to && from !==to && (
+          <div className="filter-detail">
+            Hóa đơn {isToday ? 'hôm nay' : `từ ${moment(from).format('DD-MM-YYYY')} đến ${moment(to).format('DD-MM-YYYY')}`}
+          </div>
+        )}
         <Table
           columns={columns}
           loading={isLoading}
