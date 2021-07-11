@@ -40,3 +40,24 @@ export const login = (email, password) => async (dispatch) => {
     notifyErrors(err);
   }
 };
+
+// Send request for reset pwd
+export const forgotPassword = (email) => async (dispatch) => {
+  try {
+    const res = await authAPI.forgot_password(email);
+    notifySuccess(res.data.message);
+  } catch (err) {
+    notifyErrors(err);
+  }
+};
+
+// Send request for reset pwd
+export const resetPassword = (data) => async (dispatch) => {
+  try {
+    const res = await authAPI.reset_password(data);
+    notifySuccess(res.data.message);
+    return true;
+  } catch (err) {
+    notifyErrors(err);
+  }
+};

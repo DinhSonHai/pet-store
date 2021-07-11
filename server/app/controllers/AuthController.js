@@ -419,7 +419,7 @@ class AuthController {
           return res.status(statusCode.badRequest).json({
             errors: [
               {
-                msg: message.activeExpired,
+                msg: message.resetExpired,
               },
             ],
           });
@@ -430,7 +430,7 @@ class AuthController {
         return res.status(statusCode.badRequest).json({
           errors: [
             {
-              msg: message.activeExpired,
+              msg: message.resetUsed,
             },
           ],
         });
@@ -439,7 +439,7 @@ class AuthController {
         return res.status(statusCode.badRequest).json({
           errors: [
             {
-              msg: message.activeExpired,
+              msg: message.resetUsed,
             },
           ],
         });

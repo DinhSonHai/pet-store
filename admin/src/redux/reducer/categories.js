@@ -6,7 +6,7 @@ import {
   REMOVE_CATEGORY,
   RESTORE_CATEGORY,
   GET_ALL_CATEGORIES_REMOVED,
-} from '../types';
+} from "../types";
 
 const initialState = {
   categories: [],
@@ -34,7 +34,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         categories: state.categories.map((cat) =>
-          cat._id === payload._id ? { ...payload } : cat
+          cat._id === payload.id ? { ...cat, ...payload.data } : cat
         ),
       };
     case REMOVE_CATEGORY:

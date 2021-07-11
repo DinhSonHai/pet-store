@@ -18,3 +18,5 @@ export { default as DiscountOffer } from './discountOffer/DiscountOffer';
 export { default as Contacts } from './contact/Contact'; 
 export { default as Promo } from './promo/Promo';
 export { default as Notification } from './notification/Notification';
+export { default as Forgot } from './forgot/Forgot';
+export { default as Reset } from './reset/Reset';

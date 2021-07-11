@@ -5,9 +5,9 @@ import {
   REMOVE_CATEGORY,
   RESTORE_CATEGORY,
   GET_ALL_CATEGORIES_REMOVED,
-} from '../types';
-import { notifyActions } from '../../utils/notify';
-import { categoryAPI } from '../../api';
+} from "../types";
+import { notifyActions } from "../../utils/notify";
+import { categoryAPI } from "../../api";
 
 // get all categories
 export const getAllCategories = () => async (dispatch) => {
@@ -28,11 +28,11 @@ export const createCategory = (data) => async (dispatch) => {
       type: CREATE_CATEGORY,
       payload: res.data.data,
     });
-    notifyActions('success', res.data.message);
+    notifyActions("success", res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach((error) => notifyActions('error', error.msg));
+      errors.forEach((error) => notifyActions("error", error.msg));
     }
   }
 };
@@ -43,9 +43,9 @@ export const editCategory = (id, data) => async (dispatch) => {
     const res = await categoryAPI.update(id, data);
     dispatch({
       type: EDIT_CATEGORY,
-      payload: res.data.data,
+      payload: { id, data },
     });
-    notifyActions('success', res.data.message);
+    notifyActions("success", res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
@@ -62,11 +62,11 @@ export const removeCategory = (id) => async (dispatch) => {
       type: REMOVE_CATEGORY,
       payload: id,
     });
-    notifyActions('success', res.data.message);
+    notifyActions("success", res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach((error) => notifyActions('error', error.msg));
+      errors.forEach((error) => notifyActions("error", error.msg));
     }
   }
 };
@@ -79,11 +79,11 @@ export const restoreCategory = (id) => async (dispatch) => {
       type: RESTORE_CATEGORY,
       payload: id,
     });
-    notifyActions('success', res.data.message);
+    notifyActions("success", res.data.message);
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach((error) => notifyActions('error', error.msg));
+      errors.forEach((error) => notifyActions("error", error.msg));
     }
   }
 };

@@ -27,7 +27,7 @@ const Signin = ({ login, history }) => {
     <section className='login'>
       <div className='login__wrap site-layout-background'>
         <div className='login__content'>
-          <Card style={{ maxWidth: '600px', margin: 'auto', width: '100%' }}>
+          <Card bordered={false} style={{ maxWidth: '600px', margin: 'auto', width: '100%' }}>
             <h1 className='login__title'>Đăng nhập</h1>
             <Form
               name='normal_login'
@@ -77,7 +77,7 @@ const Signin = ({ login, history }) => {
                   <Checkbox>Ghi nhớ tôi</Checkbox>
                 </Form.Item>
 
-                <Link className='login-form-forgot' to='/forget'>
+                <Link className='login-form-forgot' to='/forgot'>
                   Quên mật khẩu?
                 </Link>
               </Form.Item>

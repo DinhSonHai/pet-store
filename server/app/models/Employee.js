@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 const EmployeeSchema = new Schema({
-  key: { type: Schema.Types.ObjectId, required: true },
+  key: { type: Schema.Types.ObjectId, default: null },
   name: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, trim: true },
   password: { type: String, required: true, trim: true },
@@ -19,7 +19,7 @@ const EmployeeSchema = new Schema({
   dateOfBirth: { type: Date, default: Date.now },
   phoneNumber: { type: String, trim: true },
   resetPasswordLink: {
-    data: String,
+    type: String,
     default: '',
   },
   role: { type: Number, default: 1 },

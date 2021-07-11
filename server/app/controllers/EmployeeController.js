@@ -1,16 +1,22 @@
-const Employee = require('../models/Employee');
-const { validationResult } = require('express-validator');
-const _ = require('lodash');
-const generateToken = require('../../helpers/generateToken');
+const Employee = require("../models/Employee");
+const { validationResult } = require("express-validator");
+const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
+const _ = require("lodash");
+const generateToken = require("../../helpers/generateToken");
 const {
   jwtSignInSecretAdmin,
+  jwtResetPasswordSecret,
   SECRET_ADMIN_SIGNUP,
-} = require('../../config/default.json');
-const hashString = require('../../helpers/hashString');
-const constants = require('../../constants');
-const statusCode = require('../../constants/statusCode.json');
-const message = require('../../constants/message.json').user;
-const crudService = require('../../services/crud');
+  NODEMAILER_EMAIL,
+  NODEMAILER_PASSWORD,
+  ADMIN_URL
+} = require("../../config/default.json");
+const hashString = require("../../helpers/hashString");
+const constants = require("../../constants");
+const statusCode = require("../../constants/statusCode.json");
+const message = require("../../constants/message.json").user;
+const crudService = require("../../services/crud");
 class EmployeeController {
   // @route   GET api/employee/user
   // @desc    Lấy dữ liệu nhân viên/admin
@@ -18,8 +24,8 @@ class EmployeeController {
   async getUserData(req, res) {
     try {
       const user = await Employee.findById(req.user.id).select([
-        '-password',
-        '-resetPasswordLink',
+        "-password",
+        "-resetPasswordLink",
       ]);
       if (!user) {
         return res.status(statusCode.notFound).json({
@@ -28,7 +34,7 @@ class EmployeeController {
       }
       return res.status(statusCode.success).json(user);
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -62,14 +68,14 @@ class EmployeeController {
             role,
           },
         };
-        const token = generateToken(payload, jwtSignInSecretAdmin, '30d');
+        const token = generateToken(payload, jwtSignInSecretAdmin, "30d");
         return res.status(statusCode.success).json({ token });
       }
       return res.status(statusCode.unauthorized).json({
         errors: [{ msg: message.invalidRole }],
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -105,7 +111,7 @@ class EmployeeController {
         .status(statusCode.badRequest)
         .json({ errors: [{ msg: message.registerFail }] });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -148,7 +154,139 @@ class EmployeeController {
           .json({ errors: [{ msg: message.registerFail }] });
       });
     } catch (err) {
+      return res.status(statusCode.serverError).send("Server error");
+    }
+  }
+
+   // @route   PUT api/employee/forgetpassword
+  // @desc    Yêu cầu reset password
+  // @access  Public
+  async forgotPassword(req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
+    }
+    const { email } = req.body;
+    try {
+      let user = await crudService.getUnique(Employee, { email });
+
+      if (!user) {
+        return res.status(statusCode.badRequest).json({
+          errors: [{ msg: message.notFound }],
+        });
+      }
+      const payload = {
+        user: {
+          id: user._id,
+        },
+      };
+      const token = generateToken(payload, jwtResetPasswordSecret, '15m');
+      await user.updateOne({
+        resetPasswordLink: token,
+      });
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: NODEMAILER_EMAIL,
+          pass: NODEMAILER_PASSWORD,
+        },
+      });
+
+      const content = `
+        <h1>Hãy nhấn vào đường dẫn này để đặt lại mật khẩu cho tài khoản của bạn</h1>
+        <p>${ADMIN_URL}/auth/resetpassword/${token}</p>
+        <hr/>
+        <p>Hãy cẩn thận, email này chứa thông tin về tài khoản của bạn</p>
+        <p>${ADMIN_URL}</p>
+      `;
+
+      const mailOptions = {
+        from: NODEMAILER_EMAIL,
+        to: email,
+        subject: 'Thông báo đặt lại mật khẩu cho tài khoản',
+        html: content,
+      };
+
+      transporter
+        .sendMail(mailOptions)
+        .then(() => {
+          return res.status(statusCode.success).json({
+            message: `Một mail đã được gửi đến email ${email}, hãy truy cập hộp thư của bạn để đặt lại mật khẩu cho tài khoản`,
+          });
+        })
+        .catch((err) => {
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: err.message }],
+          });
+        });
+    } catch (err) {
       return res.status(statusCode.serverError).send('Server error');
+    }
+  }
+
+  // @route   PUT api/employee/resetpassword
+  // @desc    Reset password
+  // @access  Public
+  async resetPassword(req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(statusCode.badRequest).json({ errors: errors.array() });
+    }
+    const { password, resetPasswordLink } = req.body;
+    try {
+      let user_id;
+      jwt.verify(resetPasswordLink, jwtResetPasswordSecret, (err, decoded) => {
+        user_id = decoded.user.id;
+        if (err) {
+          return res.status(statusCode.badRequest).json({
+            errors: [
+              {
+                msg: message.resetExpired,
+              },
+            ],
+          });
+        }
+      });
+      let user = await crudService.getById(Employee, user_id);
+      if (!user.resetPasswordLink) {
+        return res.status(statusCode.badRequest).json({
+          errors: [
+            {
+              msg: message.resetUsed,
+            },
+          ],
+        });
+      }
+      if (user.resetPasswordLink !== resetPasswordLink) {
+        return res.status(statusCode.badRequest).json({
+          errors: [
+            {
+              msg: message.resetUsed,
+            },
+          ],
+        });
+      }
+      const hashPassword = await hashString(password);
+      const updatedFields = {
+        password: hashPassword,
+        resetPasswordLink: "",
+      };
+
+      user = _.extend(user, updatedFields);
+
+      user.save((err, result) => {
+        if (err) {
+          return res.status(statusCode.badRequest).json({
+            errors: [{ msg: message.resetPasswordFail }],
+          });
+        }
+        return res.status(statusCode.success).json({
+          message: message.resetPasswordSuccess,
+        });
+      });
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 }

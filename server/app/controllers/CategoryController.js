@@ -78,7 +78,7 @@ class CategoryController {
       if (status) {
         return res
           .status(statusCode.success)
-          .json({ data, message: message.updateSuccess });
+          .json({ message: message.updateSuccess });
       }
       return res
         .status(statusCode.badRequest)

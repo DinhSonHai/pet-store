@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const ObjectId = require('mongoose').Types.ObjectId;
+const _ = require("lodash");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 class CrudService {
   getAll(schema, payload = {}) {
@@ -103,7 +103,13 @@ class CrudService {
       });
     }
   }
-  getAdvanceWithLimit(schema, filterValues = {}, sortValues = {}, populate = {}, limit = 5) {
+  getAdvanceWithLimit(
+    schema,
+    filterValues = {},
+    sortValues = {},
+    populate = {},
+    limit = 5
+  ) {
     // let data = await schema.aggregate([
     //   { $match: { ...filterValues } },
     //   { $sort: { ...sortValues } },
@@ -164,15 +170,23 @@ class CrudService {
       });
     });
   }
-  remove(shema, id) {
+  remove(shema, id, isDelete = false) {
     return new Promise((resolve, reject) => {
-      shema.deleteOne({ _id: id }, (err, _) => {
-        if (!err) {
-          resolve(true);
-        } else {
-          reject(false);
-        }
-      });
+      isDelete
+        ? shema.deleteOne({ _id: id }, (err, _) => {
+            if (!err) {
+              resolve(true);
+            } else {
+              reject(false);
+            }
+          })
+        : shema.delete({ _id: id }, (err, _) => {
+            if (!err) {
+              resolve(true);
+            } else {
+              reject(false);
+            }
+          });
     });
   }
   restore(schema, id) {

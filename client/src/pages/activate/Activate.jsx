@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { Button, Card, Form } from 'antd';
+import { useHistory } from 'react-router-dom';
 import { activate } from '../../redux/actions/auth';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -9,6 +10,7 @@ import jwt from 'jsonwebtoken';
 import './styles.scss';
 
 const Activate = ({ match, activate }) => {
+  const history = useHistory();
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -24,8 +26,11 @@ const Activate = ({ match, activate }) => {
   const { name, token } = formData;
   const onFinish = async () => {
     setIsProcessing(true);
-    await activate({ token });
+    const res = await activate({ token });
     setIsProcessing(false);
+    if(res){
+      history.push('/signin');
+    }
   };
   return (
     <section className='activate'>

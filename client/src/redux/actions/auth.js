@@ -29,6 +29,7 @@ export const activate = (token) => async (dispatch) => {
   try {
     const res = await authAPI.activate(token);
     notifySuccess(res.data.message);
+    return true;
   } catch (err) {
     notifyErrors(err);
   }
@@ -93,6 +94,7 @@ export const resetPassword = (data) => async (dispatch) => {
   try {
     const res = await authAPI.reset_password(data);
     notifySuccess(res.data.message);
+    return true;
   } catch (err) {
     notifyErrors(err);
   }
