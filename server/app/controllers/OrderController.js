@@ -716,7 +716,6 @@ class OrderController {
         note,
         userId,
         createdAt,
-        transportedAt,
       } = order;
       // -1: Hủy đơn hàng
       // 0: Đặt hàng thành công
@@ -768,6 +767,8 @@ class OrderController {
         order.status = 4;
         order.transportedAt = new Date().toISOString();
       } else if (status === 4) {
+        order.status = 5;
+        order.deliveriedAt = new Date().toISOString();
         const bill = new Bill({
           orderId: order._id,
           userId,
@@ -778,7 +779,7 @@ class OrderController {
           totalMoney,
           note,
           orderedAt: createdAt,
-          deliveriedAt: transportedAt,
+          deliveriedAt: order.deliveriedAt,
         });
         bill.key = bill._id;
         const detailOrders = await crudService.getAll(OrderDetail, {
@@ -820,8 +821,6 @@ class OrderController {
           await detail.save();
         }
         await bill.save();
-        order.status = 5;
-        order.deliveriedAt = new Date().toISOString();
       } else {
         return res.status(statusCode.badRequest).json({
           errors: [

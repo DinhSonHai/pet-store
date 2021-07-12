@@ -9,7 +9,6 @@ import {
   Col,
   Card,
   Button,
-  message,
   Pagination,
   Rate,
   Tooltip,
@@ -21,6 +20,7 @@ import { addItem } from "../../utils/cart";
 import { Loader } from "../../components";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
+import { notifyActions } from "../../utils/notify";
 import "./styles.scss";
 const { Option } = Select;
 
@@ -53,9 +53,12 @@ const SearchList = ({
   };
   const handleAddToCart = (item) => {
     if (item) {
+      if(!item.status){
+        return notifyActions("error", "Sản phẩm đã hết hàng");
+      }
       const check = addItem(item);
       if (check) {
-        return message.success("Đã thêm sản phẩm vào giỏ hàng");
+        notifyActions("success", "Đã thêm sản phẩm vào giỏ hàng");
       }
     }
   };

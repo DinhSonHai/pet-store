@@ -54,6 +54,9 @@ const ProductDetails = ({
   }, [data]);
   const handleAddToCart = (item) => {
     if (item) {
+      if(!item.status){
+        return notifyActions("error", "Sản phẩm đã hết hàng");
+      }
       const check = addItem(item);
       if (check) {
         notifyActions("success", "Đã thêm sản phẩm vào giỏ hàng");

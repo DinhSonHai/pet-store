@@ -1,10 +1,10 @@
-const { validationResult } = require('express-validator');
-const _ = require('lodash');
-const jwt = require('jsonwebtoken');
-const { OAuth2Client } = require('google-auth-library');
-const shortid = require('shortid');
-const nodemailer = require('nodemailer');
-const axios = require('axios');
+const { validationResult } = require("express-validator");
+const _ = require("lodash");
+const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require("google-auth-library");
+const shortid = require("shortid");
+const nodemailer = require("nodemailer");
+const axios = require("axios");
 const {
   jwtSignUpSecret,
   jwtSignInSecret,
@@ -13,16 +13,17 @@ const {
   NODEMAILER_EMAIL,
   NODEMAILER_PASSWORD,
   CLIENT_URL,
-} = require('../../config/default.json');
+} = require("../../config/default.json");
 const client = new OAuth2Client(GOOGLE_CLIENT);
-const hashString = require('../../helpers/hashString');
-const statusCode = require('../../constants/statusCode.json');
-const message = require('../../constants/message.json').user;
-const crudService = require('../../services/crud');
-const generateToken = require('../../helpers/generateToken');
+const hashString = require("../../helpers/hashString");
+const statusCode = require("../../constants/statusCode.json");
+const message = require("../../constants/message.json").user;
+const crudService = require("../../services/crud");
+const pagination = require("../../helpers/pagination");
+const generateToken = require("../../helpers/generateToken");
 
-const User = require('../models/User');
-const Product = require('../models/Product');
+const User = require("../models/User");
+const Product = require("../models/Product");
 
 function getData(path) {
   return new Promise((resolve, reject) => {
@@ -43,8 +44,8 @@ class AuthController {
   async getUserData(req, res) {
     try {
       const user = await User.findById(req.user.id).select([
-        '-password',
-        '-resetPasswordLink',
+        "-password",
+        "-resetPasswordLink",
       ]);
       if (!user) {
         return res.status(statusCode.notFound).json({
@@ -53,7 +54,7 @@ class AuthController {
       }
       return res.json(user);
     } catch (error) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -66,14 +67,8 @@ class AuthController {
       return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
 
-    const {
-      name,
-      email,
-      password,
-      gender,
-      dateOfBirth,
-      phoneNumber,
-    } = req.body;
+    const { name, email, password, gender, dateOfBirth, phoneNumber } =
+      req.body;
 
     try {
       let user = await crudService.getUnique(User, { email });
@@ -92,9 +87,9 @@ class AuthController {
           phoneNumber,
         },
       };
-      const token = generateToken(payload, jwtSignUpSecret, '1d');
+      const token = generateToken(payload, jwtSignUpSecret, "1d");
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: "gmail",
         auth: {
           user: NODEMAILER_EMAIL,
           pass: NODEMAILER_PASSWORD,
@@ -110,7 +105,7 @@ class AuthController {
       const mailOptions = {
         from: NODEMAILER_EMAIL,
         to: email,
-        subject: 'Thông báo kích hoạt tài khoản',
+        subject: "Thông báo kích hoạt tài khoản",
         html: content,
       };
       transporter
@@ -126,7 +121,7 @@ class AuthController {
           });
         });
     } catch (error) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -137,14 +132,8 @@ class AuthController {
     const { token } = req.body;
     try {
       const decoded = jwt.verify(token, jwtSignUpSecret);
-      const {
-        name,
-        email,
-        password,
-        gender,
-        dateOfBirth,
-        phoneNumber,
-      } = decoded.user;
+      const { name, email, password, gender, dateOfBirth, phoneNumber } =
+        decoded.user;
       let user = await crudService.getUnique(User, { email });
       if (user) {
         return res
@@ -212,10 +201,10 @@ class AuthController {
           role: user.role,
         },
       };
-      const token = generateToken(payload, jwtSignInSecret, '7d');
+      const token = generateToken(payload, jwtSignInSecret, "7d");
       return res.status(statusCode.success).json({ token });
     } catch (error) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -243,7 +232,7 @@ class AuthController {
             role: user.role,
           },
         };
-        const token = generateToken(payload, jwtSignInSecret, '7d');
+        const token = generateToken(payload, jwtSignInSecret, "7d");
         return res.status(statusCode.success).json({ token });
       }
       const hashedPassword = await hashString(shortid.generate());
@@ -265,11 +254,11 @@ class AuthController {
             role: userData.role,
           },
         };
-        const token = generateToken(payload, jwtSignInSecret, '7d');
+        const token = generateToken(payload, jwtSignInSecret, "7d");
         return res.status(statusCode.success).json({ token });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
   // @route   POST api/auth/googlelogin
@@ -295,7 +284,7 @@ class AuthController {
                   role: user.role,
                 },
               };
-              const token = generateToken(payload, jwtSignInSecret, '7d');
+              const token = generateToken(payload, jwtSignInSecret, "7d");
               return res.status(statusCode.success).json({ token });
             }
             const hashedPassword = await hashString(shortid.generate());
@@ -317,7 +306,7 @@ class AuthController {
                   role: userData.role,
                 },
               };
-              const token = generateToken(payload, jwtSignInSecret, '7d');
+              const token = generateToken(payload, jwtSignInSecret, "7d");
               return res.status(statusCode.success).json({ token });
             });
           } else {
@@ -331,7 +320,7 @@ class AuthController {
           }
         });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -357,13 +346,13 @@ class AuthController {
           id: user._id,
         },
       };
-      const token = generateToken(payload, jwtResetPasswordSecret, '15m');
+      const token = generateToken(payload, jwtResetPasswordSecret, "15m");
       await user.updateOne({
         resetPasswordLink: token,
       });
 
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: "gmail",
         auth: {
           user: NODEMAILER_EMAIL,
           pass: NODEMAILER_PASSWORD,
@@ -381,7 +370,7 @@ class AuthController {
       const mailOptions = {
         from: NODEMAILER_EMAIL,
         to: email,
-        subject: 'Thông báo đặt lại mật khẩu cho tài khoản',
+        subject: "Thông báo đặt lại mật khẩu cho tài khoản",
         html: content,
       };
 
@@ -398,7 +387,7 @@ class AuthController {
           });
         });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
 
@@ -447,7 +436,7 @@ class AuthController {
       const hashPassword = await hashString(password);
       const updatedFields = {
         password: hashPassword,
-        resetPasswordLink: '',
+        resetPasswordLink: "",
       };
 
       user = _.extend(user, updatedFields);
@@ -463,7 +452,7 @@ class AuthController {
         });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server error');
+      return res.status(statusCode.serverError).send("Server error");
     }
   }
   // @route   PUT api/auth/update_user
@@ -474,15 +463,8 @@ class AuthController {
     if (!errors.isEmpty()) {
       return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
-    const {
-      name,
-      password,
-      phone,
-      password_old,
-      avatar,
-      gender,
-      dateOfBirth,
-    } = req.body;
+    const { name, password, phone, password_old, avatar, gender, dateOfBirth } =
+      req.body;
     try {
       let user = await crudService.getById(User, req.user.id);
       if (!user) {
@@ -513,8 +495,7 @@ class AuthController {
           return res.status(statusCode.badRequest).json({
             errors: [
               {
-                msg:
-                  'Độ dài của mật khẩu phải nằm trong khoảng từ 6 đến 32 ký tự',
+                msg: "Độ dài của mật khẩu phải nằm trong khoảng từ 6 đến 32 ký tự",
               },
             ],
           });
@@ -522,7 +503,7 @@ class AuthController {
         if (!/\d/.test(password)) {
           return res
             .status(statusCode.badRequest)
-            .json({ errors: [{ msg: 'Mật khẩu phải bao gồm số' }] });
+            .json({ errors: [{ msg: "Mật khẩu phải bao gồm số" }] });
         }
         const hashedPassword = await hashString(password);
         user.password = hashedPassword;
@@ -547,7 +528,7 @@ class AuthController {
           .json({ message: message.updateSuccess });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -559,13 +540,8 @@ class AuthController {
     if (!errors.isEmpty()) {
       return res.status(statusCode.badRequest).json({ errors: errors.array() });
     }
-    const {
-      provinceState,
-      wardState,
-      townState,
-      moreInfo,
-      isDefault,
-    } = req.body;
+    const { provinceState, wardState, townState, moreInfo, isDefault } =
+      req.body;
     try {
       let user = await crudService.getById(User, req.user.id);
       if (!user) {
@@ -592,11 +568,11 @@ class AuthController {
           ).ward_name;
           let address =
             moreInfo.trim() +
-            ', ' +
+            ", " +
             town_name +
-            ', ' +
+            ", " +
             ward_name +
-            ', ' +
+            ", " +
             province_name;
           if (isDefault) {
             const mapedAddress = user.address.map((item) => {
@@ -651,7 +627,7 @@ class AuthController {
           })
         );
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -672,7 +648,7 @@ class AuthController {
       );
       if (!findedAdress) {
         return res.status(statusCode.notFound).json({
-          errors: [{ msg: 'Địa chỉ không tồn tại!' }],
+          errors: [{ msg: "Địa chỉ không tồn tại!" }],
         });
       }
       let removedAddress = user.address.filter(
@@ -688,7 +664,7 @@ class AuthController {
         return res.json({ message: message.updateSuccess });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 
@@ -722,7 +698,7 @@ class AuthController {
       });
       if (!findedAdress) {
         return res.status(statusCode.notFound).json({
-          errors: [{ msg: 'Địa chỉ không tồn tại!' }],
+          errors: [{ msg: "Địa chỉ không tồn tại!" }],
         });
       }
 
@@ -745,11 +721,11 @@ class AuthController {
           ).ward_name;
           let address =
             moreInfo.trim() +
-            ', ' +
+            ", " +
             town_name +
-            ', ' +
+            ", " +
             ward_name +
-            ', ' +
+            ", " +
             province_name;
           let upadateAddress;
           if (findedAdress.isDefault) {
@@ -797,7 +773,7 @@ class AuthController {
           })
         );
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // @route   PUT api/auth/favorite
@@ -813,7 +789,7 @@ class AuthController {
       if (!product) {
         return res
           .status(statusCode.notFound)
-          .json({ errors: [{ msg: 'Sản phẩm không tồn tại!' }] });
+          .json({ errors: [{ msg: "Sản phẩm không tồn tại!" }] });
       }
       if (!user) {
         return res
@@ -838,7 +814,7 @@ class AuthController {
         return res.status(statusCode.success).json({ check: isHave });
       });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // @route   GET api/auth/favorite
@@ -863,10 +839,10 @@ class AuthController {
           if (!product) {
             product = {
               _id: user.favoriteProducts[i],
-              productName: 'Sản phẩm không tồn tại!',
+              productName: "Sản phẩm không tồn tại!",
               price: 0,
               image:
-                'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg',
+                "https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg",
               starRatings: 0,
             };
           }
@@ -882,11 +858,15 @@ class AuthController {
             ...getFavoriteProducts,
           ];
         }
-        return res.status(statusCode.success).json(getFavoriteProducts);
+        const { start, end } = pagination(req.query.page, 5);
+        return res.status(statusCode.success).json({
+          data: getFavoriteProducts.slice(start, end),
+          total: getFavoriteProducts.length,
+        });
       }
-      return res.status(statusCode.success).json(getFavoriteProducts);
+      return res.status(statusCode.success).json({ data: [], total: 0 });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
   // @route   GET api/auth/purchased
@@ -911,10 +891,10 @@ class AuthController {
           if (!product) {
             product = {
               _id: user.purchasedProducts[i],
-              productName: 'Sản phẩm không tồn tại!',
+              productName: "Sản phẩm không tồn tại!",
               price: 0,
               image:
-                'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg',
+                "https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg",
               starRatings: 0,
             };
           }
@@ -930,11 +910,15 @@ class AuthController {
             ...getPurchasedProducts,
           ];
         }
-        return res.status(statusCode.success).json(getPurchasedProducts);
+        const { start, end } = pagination(req.query.page, 5);
+        return res.status(statusCode.success).json({
+          data: getPurchasedProducts.slice(start, end),
+          total: getPurchasedProducts.length,
+        });
       }
-      return res.status(statusCode.success).json(getPurchasedProducts);
+      return res.status(statusCode.success).json({ data: [], total: 0 });
     } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
+      return res.status(statusCode.serverError).send("Server Error");
     }
   }
 }

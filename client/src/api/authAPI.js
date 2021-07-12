@@ -37,11 +37,11 @@ const authAPI = {
   action_favorite: async (productId) => {
     return await api.put(`${source}/favorite`, { productId });
   },
-  get_favorite: async () => {
-    return await api.get(`${source}/favorite`);
+  get_favorite: async (page) => {
+    return await api.get(`${source}/favorite/?page=${page}`);
   },
-  get_purchased: async () => {
-    return await api.get(`${source}/purchased`);
+  get_purchased: async (page) => {
+    return await api.get(`${source}/purchased/?page=${page}`);
   },
   activate: async (token) => {
     return await api.post(`${source}/activate`, token);

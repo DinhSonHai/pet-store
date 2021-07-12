@@ -155,9 +155,9 @@ export const updateFavorite = (productId) => async (dispatch) => {
 };
 
 // Get favorite products
-export const getFavorite = () => async (dispatch) => {
+export const getFavorite = (page) => async (dispatch) => {
   try {
-    const res = await authAPI.get_favorite();
+    const res = await authAPI.get_favorite(page);
     return res.data;
   } catch (err) {
     notifyErrors(err);
@@ -165,9 +165,9 @@ export const getFavorite = () => async (dispatch) => {
 };
 
 // Get favorite products
-export const getPurchased = () => async (dispatch) => {
+export const getPurchased = (page) => async (dispatch) => {
   try {
-    const res = await authAPI.get_purchased();
+    const res = await authAPI.get_purchased(page);
     return res.data;
   } catch (err) {
     notifyErrors(err);
