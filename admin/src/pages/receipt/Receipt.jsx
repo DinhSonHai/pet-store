@@ -1,20 +1,26 @@
 import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { getAllReceipts } from '../../redux/actions/receipts';
-import { useLocation, useHistory } from 'react-router-dom';
-import { Button, Table, Pagination, Breadcrumb, Tooltip } from 'antd';
-import { ReceiptModal } from '../../components';
 import queryString from 'query-string';
 import dayjs from 'dayjs';
+import { Button, Table, Pagination, Breadcrumb, Tooltip } from 'antd';
+import { useLocation, useHistory } from 'react-router-dom';
+
+import { getAllReceipts } from '../../redux/actions/receipts';
+import { ReceiptModal } from '../../components';
+
 const Receipt = ({ receipts: { receipts, total }, getAllReceipts }) => {
   const location = useLocation();
   const history = useHistory();
+
   let filter = queryString.parse(location.search).sort;
   let page = queryString.parse(location.search).page;
+
   const [isLoading, setIsLoading] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
   const [view, setView] = useState(false);
   const [receiptId, setReceiptId] = useState(null);
   const [item, setItem] = useState(null);
+
   const columns = [
     {
       title: 'Mã phiếu nhập',
@@ -49,6 +55,7 @@ const Receipt = ({ receipts: { receipts, total }, getAllReceipts }) => {
       },
     },
   ];
+
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
@@ -57,17 +64,20 @@ const Receipt = ({ receipts: { receipts, total }, getAllReceipts }) => {
     }
     getData();
   }, [getAllReceipts, filter, page]);
+
   const handleView = (record) => {
     setReceiptId(record.key);
     setItem(record);
     setView(true);
   };
+
   const handlePagination = async (_page) => {
     if (filter) {
       return history.push(`?tab=receipt&sort=${filter}&page=${_page}`);
     }
     return history.push(`?tab=receipt&page=${_page}`);
   };
+
   return (
     <section className='receipt_page'>
       <Breadcrumb style={{ margin: '1rem 2rem' }}>
@@ -77,6 +87,16 @@ const Receipt = ({ receipts: { receipts, total }, getAllReceipts }) => {
         className='receipt__wrap site-layout-background'
         style={{ padding: '1.5rem', minHeight: '100vh' }}
       >
+        <Button
+          type="primary"
+          style={{ marginBottom: '24px' }}
+          onClick={() => setOpenAddModal(true)}
+        >
+          Thêm phiếu nhập
+        </Button>
+        {openAddModal && (
+          <ReceiptModal visible={openAddModal} setVisible={setOpenAddModal} />
+        )}
         {view && (
           <ReceiptModal item={item} receiptId={receiptId} setView={setView} />
         )}
@@ -86,7 +106,6 @@ const Receipt = ({ receipts: { receipts, total }, getAllReceipts }) => {
           dataSource={receipts}
           pagination={false}
         />
-
         <Pagination
           onChange={handlePagination}
           disabled={isLoading}

@@ -28,11 +28,12 @@ export const createReceipt = (data, note) => async (dispatch) => {
   try {
     const res = await receiptAPI.create(data, note);
     notifyActions('success', res.data.message);
+    return true;
   } catch (err) {
     const errors = err.response.data.errors;
-
     if (errors) {
       errors.forEach((error) => notifyActions('error', error.msg));
     }
+    return false;
   }
 };

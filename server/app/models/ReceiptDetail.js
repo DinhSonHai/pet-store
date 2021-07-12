@@ -8,7 +8,6 @@ const ReceiptDetailSchema = new Schema({
   productId: { type: Schema.Types.ObjectId, ref: 'product' },
   productName: { type: String, trim: true },
   quantity: { type: Number },
-  price: { type: Number },
 });
 
 module.exports = mongoose.model('receiptDetail', ReceiptDetailSchema);

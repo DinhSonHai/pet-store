@@ -64,7 +64,6 @@ class ReceiptController {
             .json({ errors: [{ msg: message.notFound }] });
         }
         let newQuantity = product.quantity + parseInt(data[i].quantityImport);
-        product.price = parseInt(data[i].price);
         if (newQuantity >= 0) {
           product.quantity = newQuantity;
         } else {
@@ -81,7 +80,6 @@ class ReceiptController {
           productId: data[i].key,
           productName: data[i].productName,
           quantity: parseInt(data[i].quantityImport),
-          price: parseInt(data[i].price),
         });
         detail.key = detail._id;
         await product.save();
