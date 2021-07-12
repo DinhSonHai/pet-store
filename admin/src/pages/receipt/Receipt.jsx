@@ -63,7 +63,7 @@ const Receipt = ({ receipts: { receipts, total }, getAllReceipts }) => {
       setIsLoading(false);
     }
     getData();
-  }, [getAllReceipts, filter, page]);
+  }, [getAllReceipts, filter, page, openAddModal]);
 
   const handleView = (record) => {
     setReceiptId(record.key);

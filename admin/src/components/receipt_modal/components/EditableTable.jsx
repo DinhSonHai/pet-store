@@ -5,7 +5,7 @@ import EditableRow from './EditableRow';
 import EditableCell from './EditableCell';
 // import '../../styles.scss';
 
-const EditableTable = ({ dataSource, setDataSource, setAmount }) => {
+const EditableTable = ({ dataSource, setDataSource, setAmount, receiptId }) => {
   const components = {
     body: {
       row: EditableRow,
@@ -51,6 +51,26 @@ const EditableTable = ({ dataSource, setDataSource, setAmount }) => {
     },
   ];
 
+  const viewColumns = [
+    {
+      title: 'Tên sản phẩm',
+      dataIndex: 'productName',
+    },
+    {
+      title: 'Số lượng nhập',
+      dataIndex: 'quantity',
+      render: (value) => (
+        <span
+          style={{
+            color: value >= 0 ? 'var( --success-color)' : 'var(--danger-color)',
+          }}
+        >
+          {value}
+        </span>
+      ),
+    },
+  ];
+
   const editableColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
@@ -92,7 +112,7 @@ const EditableTable = ({ dataSource, setDataSource, setAmount }) => {
       rowClassName={() => 'editable-row'}
       bordered
       dataSource={dataSource}
-      columns={editableColumns}
+      columns={receiptId ? viewColumns : editableColumns}
     />
   );
 }
