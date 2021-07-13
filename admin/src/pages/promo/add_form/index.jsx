@@ -110,9 +110,7 @@ const PromoAddForm = ({
         </Form.Item>
 
         <Form.Item
-          initialValue={
-            edit ? item.discountValue : discountType === "percent" ? 1 : 1000
-          }
+          initialValue={edit ? item.discountValue : 0}
           label="Giá trị giảm"
           name="discountValue"
           rules={[
@@ -151,7 +149,13 @@ const PromoAddForm = ({
         </Space>
         {isHaveCondition && (
           <Form.Item
-            initialValue={edit ? item.discountCondition : 1000}
+            initialValue={
+              !edit
+                ? 1000
+                : edit && item.discountCondition < 1000
+                ? 1000
+                : item.discountCondition
+            }
             name="discountCondition"
             rules={[
               {
