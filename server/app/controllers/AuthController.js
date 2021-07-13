@@ -847,6 +847,7 @@ class AuthController {
             };
           }
           getFavoriteProducts = [
+            ...getFavoriteProducts,
             {
               _id: product._id,
               productName: product.productName,
@@ -855,7 +856,6 @@ class AuthController {
               image: product.images[0],
               starRatings: product.starRatings,
             },
-            ...getFavoriteProducts,
           ];
         }
         const { start, end } = pagination(req.query.page, 5);
@@ -899,6 +899,7 @@ class AuthController {
             };
           }
           getPurchasedProducts = [
+            ...getPurchasedProducts,
             {
               _id: product._id,
               productName: product.productName,
@@ -907,7 +908,6 @@ class AuthController {
               image: product.images[0],
               starRatings: product.starRatings,
             },
-            ...getPurchasedProducts,
           ];
         }
         const { start, end } = pagination(req.query.page, 5);

@@ -28,7 +28,7 @@ const OrderView = ({
       dataIndex: "productName",
       width: "65%",
       render: (value, record) => (
-        <Link to={`/product/${record.productId}`}>{value}</Link>
+        <Link to={`/product/${record.productName}/${record.productId}`}>{value}</Link>
       ),
     },
     {
