@@ -67,7 +67,7 @@ export const loginGoogle = (idToken) => async (dispatch) => {
 // Login with facebook account
 export const loginFacebook = (userID, accessToken) => async (dispatch) => {
   try {
-    const res = await authAPI.login_facebook({ userID, accessToken });
+    const res = await authAPI.login_facebook(userID, accessToken);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,

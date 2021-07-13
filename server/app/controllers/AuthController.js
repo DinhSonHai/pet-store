@@ -213,7 +213,7 @@ class AuthController {
   // @access  Public
   async facebookLogin(req, res) {
     const { userID, accessToken } = req.body;
-    const URL = `https://graph.facebook.com/v9.0/${userID}/?fields=id,name,email,picture&access_token=${accessToken}`;
+    const URL = `https://graph.facebook.com/v11.0/${userID}/?fields=id,name,email,picture&access_token=${accessToken}`;
     if (!userID || !accessToken) {
       return;
     }
