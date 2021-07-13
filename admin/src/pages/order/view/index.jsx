@@ -180,8 +180,8 @@ export const ViewOrder = ({
           >
             <Card style={{ height: "100%" }} title="Hình thức thanh toán">
               <p className="view-order__payment">
-                {order.paymentState === 0 &&
-                  "Thanh toán tiền mặt khi nhận hàng"}
+                {order.paymentState === 0 ?
+                  "Thanh toán tiền mặt khi nhận hàng" : "Thanh toán online (đã thanh toán)"}
               </p>
             </Card>
           </Col>

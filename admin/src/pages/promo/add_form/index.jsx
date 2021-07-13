@@ -13,6 +13,7 @@ import {
 import { connect } from "react-redux";
 import { createPromo, editPromo } from "../../../redux/actions/promos";
 import moment from "moment";
+import { notifyActions } from "../../../utils/notify";
 const PromoAddForm = ({
   createPromo,
   editPromo,
@@ -38,15 +39,26 @@ const PromoAddForm = ({
   }, [item]);
 
   const onFinish = async (values) => {
-    const { enDate, ...data } = values;
-    data.endDate = enDate ? new Date(enDate) : null;
+    const { enDate, discountCondition, discountValue } = values;
+    // validate
+    if (discountType === "percent" && discountValue <= 0) {
+      return notifyActions("error", "Giá trị giảm ít nhất 1% trở lên");
+    }
+    if (discountType === "cash" && discountValue < 1000) {
+      return notifyActions("error", "Giá trị giảm ít nhất 1.000 vnđ trở lên");
+    }
+    if (isHaveCondition && discountCondition < 1000) {
+      return notifyActions("error", "Điều kiện giảm ít nhất 1.000 vnđ trở lên");
+    }
+    values.endDate = enDate ? new Date(enDate) : null;
+    values.discountCondition = isHaveCondition ? discountCondition : 0;
     setIsProcessing(true);
     if (edit) {
-      await editPromo(item._id, data);
+      await editPromo(item._id, values);
       setIsProcessing(false);
       setEdit(false);
     } else {
-      await createPromo(data);
+      await createPromo(values);
       setIsProcessing(false);
       setTabChange("list");
     }
@@ -98,7 +110,9 @@ const PromoAddForm = ({
         </Form.Item>
 
         <Form.Item
-          initialValue={edit && item.discountValue}
+          initialValue={
+            edit ? item.discountValue : discountType === "percent" ? 1 : 1000
+          }
           label="Giá trị giảm"
           name="discountValue"
           rules={[
@@ -111,7 +125,7 @@ const PromoAddForm = ({
           <InputNumber
             size="large"
             style={{ width: "100%" }}
-            min={0}
+            min={discountType === "percent" ? 1 : 1000}
             max={discountType === "percent" ? 100 : Number.MAX_SAFE_INTEGER}
             placeholder={
               discountType === "percent" ? "Phần trăm giảm" : "Tiền giảm"
@@ -137,7 +151,7 @@ const PromoAddForm = ({
         </Space>
         {isHaveCondition && (
           <Form.Item
-            initialValue={edit && item.discountCondition}
+            initialValue={edit ? item.discountCondition : 1000}
             name="discountCondition"
             rules={[
               {
@@ -149,7 +163,7 @@ const PromoAddForm = ({
             <InputNumber
               size="large"
               style={{ width: "100%" }}
-              min={0}
+              min={1000}
               max={Number.MAX_SAFE_INTEGER}
               placeholder="Áp dụng cho các đơn từ...$"
             />
