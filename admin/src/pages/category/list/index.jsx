@@ -58,21 +58,25 @@ const CategoryList = ({
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const isEditing = (record) => record.key === editingKey;
+
+  const getData = async () => {
+    setIsLoading(true);
+    await getAllCategories();
+    setIsLoading(false);
+  }
+
   useEffect(() => {
-    async function getData() {
-      setIsLoading(true);
-      await getAllCategories();
-      setIsLoading(false);
-    }
     if (tabChange === 'list') {
       getData();
     }
-  }, [getAllCategories, tabChange]);
+  }, [getAllCategories, tabChange, visible]);
+
   const remove = async (id) => {
     setIsLoading(true);
     await removeCategory(id);
     setIsLoading(false);
   };
+
   const edit = (record) => {
     form.setFieldsValue({
       categoryName: '',
@@ -80,16 +84,20 @@ const CategoryList = ({
     });
     setEditingKey(record.key);
   };
+
   const cancel = () => {
     setEditingKey('');
   };
+
   const save = async (key) => {
     const row = await form.validateFields();
     setIsLoading(true);
     await editCategory(key, { ...row });
     setIsLoading(false);
     setEditingKey('');
+    getData();
   };
+
   const columns = [
     {
       title: 'Tên danh mục',
@@ -125,19 +133,20 @@ const CategoryList = ({
             >
               Sửa
             </Button>
-            <Popconfirm
+            {/* <Popconfirm
               title='Sure to remove?'
               onConfirm={() => remove(record.key)}
             >
               <Button danger type='primary'>
                 Ẩn
               </Button>
-            </Popconfirm>
+            </Popconfirm> */}
           </Space>
         );
       },
     },
   ];
+
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
@@ -153,6 +162,7 @@ const CategoryList = ({
       }),
     };
   });
+
   return (
     <Fragment>
       <Button
@@ -189,9 +199,11 @@ const CategoryList = ({
     </Fragment>
   );
 };
+
 const mapStateToProps = (state) => ({
   categories: state.categories,
 });
+
 export default connect(mapStateToProps, {
   getAllCategories,
   editCategory,

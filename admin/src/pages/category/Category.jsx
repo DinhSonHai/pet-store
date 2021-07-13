@@ -32,7 +32,7 @@ const Category = () => {
           >
             <CategoryList tabChange={tabChange} />
           </TabPane>
-          <TabPane
+          {/* <TabPane
             tab={
               <span>
                 <DeleteOutlined />
@@ -42,7 +42,7 @@ const Category = () => {
             key='removed'
           >
             <CategoryRemoved tabChange={tabChange} />
-          </TabPane>
+          </TabPane> */}
         </Tabs>
       </div>
     </section>
