@@ -8,14 +8,17 @@ const { Countdown } = Statistic;
 
 const Sales = ({ sales: { salesProducts }, getAllSalesProducts }) => {
   const [loading, setLoading] = useState(true);
+
+  const getData = async () => {
+    setLoading(true);
+    await getAllSalesProducts();
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function getData() {
-      setLoading(true);
-      await getAllSalesProducts();
-      setLoading(false);
-    }
     getData();
-  }, [getAllSalesProducts]);
+  }, []);
+
   return (
     <section className="products">
       <div className="container">
@@ -32,9 +35,13 @@ const Sales = ({ sales: { salesProducts }, getAllSalesProducts }) => {
             >
               {salesProducts.title}
             </h1>
-            <div style={{ textAlign: "center" }}>
-              <Countdown format="DD ngày HH giờ mm phút ss giây" title="Khuyến mãi còn:" value={salesProducts.to} />
-            </div>
+            {salesProducts.length <= 0 ? (
+              <p style={{ textAlign: 'center' }}>Không có chương trình khuyến mãi nào.</p>
+            ) : (
+              <div style={{ textAlign: "center" }}>
+                <Countdown format="DD ngày HH giờ mm phút ss giây" title="Khuyến mãi còn:" value={salesProducts.to} onFinish={() => getData()}/>
+              </div>
+            )}
             <Divider />
             <Row
               gutter={[

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Layout } from "antd";
 
-import { SiderComponent } from "../../components";
+import queryString from "query-string";
 import {
   Category,
   Footer,
@@ -21,15 +21,19 @@ import {
   Notification
 } from "../../pages";
 
-import queryString from "query-string";
+import { SiderComponent } from "../../components";
+
 const { Content } = Layout;
 
 const Home = ({ location }) => {
   let tab = queryString.parse(location.search).tab || "dashboard";
+
   const [tabState, setTabState] = useState(tab);
+
   useEffect(() => {
     setTabState(tab);
   }, [tab]);
+
   function page() {
     switch (tabState) {
       case "category":

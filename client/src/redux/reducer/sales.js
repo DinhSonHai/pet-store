@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { GET_ALL_SALES_PRODUCTS } from '../types';
+import { GET_ALL_SALES_PRODUCTS, REMOVE_SALES_PRODUCTS } from '../types';
 
 const initialState = {
   salesProducts: [],
@@ -12,6 +12,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         salesProducts: payload,
+      };
+    case REMOVE_SALES_PRODUCTS:
+      return {
+        ...state,
+        salesProducts: [],
       };
     default:
       return state;

@@ -1,8 +1,8 @@
-import { GET_ALL_SALES_PRODUCTS } from '../types';
+import { GET_ALL_SALES_PRODUCTS, REMOVE_SALES_PRODUCTS } from '../types';
 import { saleAPI } from '../../api';
 import { notifyErrors } from '../../utils/notify';
 
-// Lấy tat ca san pham khuyen mai
+// Lấy tất cả sản phẩm khuyến mãi
 export const getAllSalesProducts = () => async (dispatch) => {
   try {
     const res = await saleAPI.get_all_sales_products();
@@ -11,6 +11,8 @@ export const getAllSalesProducts = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    notifyErrors(err);
+    dispatch({
+      type: REMOVE_SALES_PRODUCTS,
+    });
   }
 };

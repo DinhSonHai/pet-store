@@ -61,7 +61,7 @@ class DiscountOfferController {
       if (!discountOffer) {
         return res
           .status(statusCode.notFound)
-          .json({ errors: [{ msg: message.crud.notFound }] });
+          .json({ errors: [{ msg: 'Không có chương trình khuyến mãi nào!' }] });
       }
       if (discountOffer.to <= Date.now()) {
         const offers = await crudService.getAll(DiscountOffer);
@@ -84,6 +84,7 @@ class DiscountOfferController {
             await offers[i].save();
           }
         }
+        return res.status(statusCode.badRequest).json({ errors: [{ msg: 'Không có chương trình khuyến mãi nào đang hoạt động.' }] });
       }
       return res.status(statusCode.success).json(discountOffer);
     } catch (error) {
