@@ -5,8 +5,12 @@ import { Button, Table, Popconfirm, Space, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 
 import { getAllNotifications, removeNotification } from '../../../redux/actions/notifications';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
 
 const NotificationList = ({ notifications: { notifications }, getAllNotifications, removeNotification, tabChange }) => {
+  const { role } = useCheckRole();
+
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
@@ -27,7 +31,7 @@ const NotificationList = ({ notifications: { notifications }, getAllNotification
   };
   const columns = [
     {
-      title: 'Title',
+      title: 'Tiêu đề',
       dataIndex: 'title',
     },
     {
@@ -76,7 +80,7 @@ const NotificationList = ({ notifications: { notifications }, getAllNotification
               Sửa
             </Button>
             <Popconfirm
-              title='Sure to remove?'
+              title='Bạn có muốn xóa?'
               onConfirm={() => remove(record.key)}
             >
               <Button danger type='primary'>
@@ -88,6 +92,11 @@ const NotificationList = ({ notifications: { notifications }, getAllNotification
       },
     },
   ];
+
+  if (role !== ADMIN) {
+    columns.splice(-1, 1);
+  }
+
   return (
     <Fragment>
       {!edit ? (

@@ -77,7 +77,7 @@ const NotificationAddForm = ({
   return (
     <Fragment>
       <h3 style={{ textAlign: "right" }}>
-        {edit ? "Sửa promo" : "Thêm promo"}
+        {edit ? "Sửa promotion" : "Thêm promotion"}
       </h3>
       <Form form={form} size="large" layout="vertical" onFinish={onFinish}>
         <Form.Item

@@ -14,7 +14,7 @@ router.get("/client", auth, PromoController.getAllByClient);
 // @route   GET api/promos/admin
 // @desc    Lấy tất cả promos phia admin
 // @access  Private
-router.get("/admin", [authAdmin, checkPermission], PromoController.getAllByAdmin);
+router.get("/admin", authAdmin, PromoController.getAllByAdmin);
 
 // @route   GET api/promos/apply
 // @desc    Lấy promos by name

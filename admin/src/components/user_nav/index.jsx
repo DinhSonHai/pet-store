@@ -17,12 +17,6 @@ export default ({ user }) => {
           </li>
           <div className='navbar__separate'></div>
           <li>
-            <Link className='navbar__user--action-link-item' to='/?tab=info'>
-              Tài khoản
-            </Link>
-          </li>
-          <div className='navbar__separate'></div>
-          <li>
             <Link className='navbar__user--action-link-item' to='/signout'>
               Đăng xuất
             </Link>

@@ -16,6 +16,9 @@ const BlogSearch = () => {
           if (value) {
             return history.push(`/blogs/?q=${value}`);
           }
+          else {
+            return history.push(`/blogs`);
+          }
         }}
         size="large"
       />

@@ -7,6 +7,8 @@ import {
   getRemovedProducts,
   restoreProduct,
 } from '../../../redux/actions/products';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
 
 const ProductList = ({
   products: { products_removed, total_removed },
@@ -14,6 +16,8 @@ const ProductList = ({
   restoreProduct,
   tabChange,
 }) => {
+  const { role } = useCheckRole();
+
   const location = useLocation();
   const history = useHistory();
   let page = queryString.parse(location.search).page;
@@ -66,6 +70,11 @@ const ProductList = ({
       },
     },
   ];
+
+  if (role !== ADMIN) {
+    columns.splice(-1, 1);
+  }
+
   return (
     <Fragment>
       <Table

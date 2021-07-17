@@ -49,7 +49,7 @@
     "invalidToken": "Token không hợp lệ",
     "noToken": "Không có Token, quyền bị từ chối",
     "tokenExpired": "Token đã hết hạn",
-    "invalidRole": "Yêu cầu bị khóa",
+    "invalidRole": "Bạn không có quyền",
     "alreadyActive": "Tài khoản đã được kích hoạt",
     "activeSuccess": "Kích hoạt tài khoản thành công",
     "activeFail": "Kích hoạt tài khoản thất bại",

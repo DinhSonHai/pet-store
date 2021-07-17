@@ -8,6 +8,8 @@ import queryString from 'query-string';
 import { getAllProducts, removeProduct } from '../../../redux/actions/products';
 import CustomInput from './components/CustomInput';
 import { useDebounceValue } from '../../../hooks';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
 
 const defaultPage = 1;
 const defaultPageSize = 10;
@@ -24,6 +26,8 @@ const ProductList = ({
   tabChange,
   setTabChange,
 }) => {
+  const { role } = useCheckRole();
+
   const location = useLocation();
   const history = useHistory();
   let page = queryString.parse(location.search).page;
@@ -68,12 +72,12 @@ const ProductList = ({
       width: '40%',
     },
     {
-      title: 'Đã bán / Số lượng',
-      render: (_,record) => (
-        <span>
-         {record.sold} / {(record.quantity+record.sold)}
-        </span>
-      ),
+      title: 'Đã bán',
+      dataIndex: 'sold',
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
     },
     {
       title: 'Đơn giá',
@@ -113,10 +117,10 @@ const ProductList = ({
                 setEdit(true);
               }}
             >
-              Sửa
+              Sửa
             </Button>
             <Popconfirm
-              title='Sure to remove?'
+              title='Bạn có muốn ẩn?'
               onConfirm={() => remove(record.key)}
             >
               <Button danger type='primary'>
@@ -128,6 +132,10 @@ const ProductList = ({
       },
     },
   ];
+
+  if (role !== ADMIN) {
+    columns.splice(-1, 1);
+  }
 
   return (
     <Fragment>

@@ -8,15 +8,15 @@ const authAdmin = require('../../app/middlewares/authAdmin');
 // @route   GET api/types
 // @desc    Lấy tất cả loại sản phẩm
 // @access  Public
-router.get('/', TypeController.getAll);
+router.get('/', authAdmin, TypeController.getAll);
 
 // @route   GET api/types/sell
 // @desc    Lấy tất cả loại sản phẩm bán ra
 // @access  Public
-router.get('/sell', TypeController.getAllTypeSell);
+router.get('/sell', authAdmin, TypeController.getAllTypeSell);
 
 // @route   GET api/types/deleted
-// @desc    Lây tất cả loại sản phẩn soft deleted
+// @desc    Lấy tất cả loại sản phẩn soft deleted
 // @access  Private
 router.get('/deleted', authAdmin, TypeController.getDeleted);
 

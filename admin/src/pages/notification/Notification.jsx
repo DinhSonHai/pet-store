@@ -6,8 +6,14 @@ import {
   UnorderedListOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+
+import useCheckRole from '../../hooks/useCheckRole';
+import { ADMIN } from '../../constants';
+
 const { TabPane } = Tabs;
-const Promo = () => {
+const Notification = () => {
+  const { role } = useCheckRole();
+
   const [tabChange, setTabChange] = useState('list');
   const onTabChange = (key) => {
     setTabChange(key);
@@ -34,20 +40,22 @@ const Promo = () => {
           >
             <NotificationList tabChange={tabChange} />
           </TabPane>
-          <TabPane
-            tab={
-              <span>
-                <PlusOutlined />
-                Thêm
-              </span>
-            }
-            key='actions'
-          >
-            <NotificationAddForm setTabChange={setTabChange} tabChange={tabChange} />
-          </TabPane>
+          {role === ADMIN && (
+            <TabPane
+              tab={
+                <span>
+                  <PlusOutlined />
+                  Thêm
+                </span>
+              }
+              key='actions'
+            >
+              <NotificationAddForm setTabChange={setTabChange} tabChange={tabChange} />
+            </TabPane>
+          )}
         </Tabs>
       </div>
     </section>
   );
 };
-export default Promo;
+export default Notification;

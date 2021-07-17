@@ -8,7 +8,7 @@ const authAdmin = require('../../app/middlewares/authAdmin');
 // @route   GET api/categories
 // @desc    Lấy tất cả danh mục
 // @access  Public
-router.get('/', CategoryController.getAll);
+router.get('/', authAdmin, CategoryController.getAll);
 
 // @route   GET api/categories/deleted
 // @desc    Lây tất cả danh mục soft deleted
@@ -18,7 +18,7 @@ router.get('/deleted', authAdmin, CategoryController.getDeleted);
 // @route   GET api/categories/:id
 // @desc    Lấy danh mục theo id
 // @access  Public
-router.get('/:id', CategoryController.getById);
+router.get('/:id', authAdmin, CategoryController.getById);
 
 // @route   POST api/categories
 // @desc    Tạo danh mục

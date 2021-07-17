@@ -24,15 +24,15 @@ router.get("/search", ProductController.search);
 // @route   GET api/products
 // @desc    Lấy tất cả sản phẩm
 // @access  Public
-router.get("/", ProductController.getAll);
+router.get("/", authAdmin, ProductController.getAll);
 
 // @route   GET api/products/newest
-// @desc    Lấy sản phẩm moi nhat
+// @desc    Lấy sản phẩm mới nhất
 // @access  Public
 router.get("/newest", ProductController.getNewestProducts);
 
 // @route   GET api/products/popular
-// @desc    Lấy sản phẩm pho bien
+// @desc    Lấy sản phẩm phổ biến
 // @access  Public
 router.get("/popular", ProductController.getPopularProducts);
 

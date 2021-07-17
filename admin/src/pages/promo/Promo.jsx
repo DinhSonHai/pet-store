@@ -6,8 +6,14 @@ import {
   UnorderedListOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+
+import useCheckRole from '../../hooks/useCheckRole';
+import { ADMIN } from '../../constants';
+
 const { TabPane } = Tabs;
 const Promo = () => {
+  const { role } = useCheckRole();
+
   const [tabChange, setTabChange] = useState('list');
   const onTabChange = (key) => {
     setTabChange(key);
@@ -27,24 +33,26 @@ const Promo = () => {
             tab={
               <span>
                 <UnorderedListOutlined />
-                Danh sách promo
+                Danh sách promotion
               </span>
             }
             key='list'
           >
             <PromoList tabChange={tabChange} />
           </TabPane>
-          <TabPane
-            tab={
-              <span>
-                <PlusOutlined />
-                Thêm
-              </span>
-            }
-            key='actions'
-          >
-            <PromoAddForm setTabChange={setTabChange} tabChange={tabChange} />
-          </TabPane>
+          {role === ADMIN && (
+            <TabPane
+              tab={
+                <span>
+                  <PlusOutlined />
+                  Thêm
+                </span>
+              }
+              key='actions'
+            >
+              <PromoAddForm setTabChange={setTabChange} tabChange={tabChange} />
+            </TabPane>
+          )}
         </Tabs>
       </div>
     </section>

@@ -14,47 +14,30 @@ const CustomerReview = () => {
         <Carousel infinite draggable autoplay>
           <div className='customer__content'>
             <img src={Customer_01} alt='Alt' className='customer__avt' />
-            <h1 className='customer__name'>Đức Đào</h1>
+            <h1 className='customer__name'>Đức Đào</h1>
             <p className='customer__text'>
-              "Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos
-              export minim fugiat minim velit minim dolor enim duis veniam ipsum
-              anim magna sunt elit fore quem dolore labore illum veniam."
+              "Từ ngày mua thức ăn cho mèo ở đây, mèo nhà mình ăn nhiều hơn hẳn. Ủng hộ shop nhiệt tình!!!"
             </p>
           </div>
           <div className='customer__content'>
             <img src={Customer_02} alt='Alt' className='customer__avt' />
-            <h1 className='customer__name'>Hải Ú Nù</h1>
+            <h1 className='customer__name'>Nhã Trúc</h1>
             <p className='customer__text'>
-              "Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos
-              export minim fugiat minim velit minim dolor enim duis veniam ipsum
-              anim magna sunt elit fore quem dolore labore illum veniam."
+              "Trang web có nhiều tin tức hay và bổ ích về thú cưng. Không biết các bạn có nhận người viết content không? Mình sẽ support hết mình."
             </p>
           </div>
           <div className='customer__content'>
             <img src={Customer_03} alt='Alt' className='customer__avt' />
-            <h1 className='customer__name'>Nam Gay</h1>
+            <h1 className='customer__name'>Trung Kiên</h1>
             <p className='customer__text'>
-              "Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos
-              export minim fugiat minim velit minim dolor enim duis veniam ipsum
-              anim magna sunt elit fore quem dolore labore illum veniam."
-            </p>
-          </div>
-          <div className='customer__content'>
-            <img src={Customer_04} alt='Alt' className='customer__avt' />
-            <h1 className='customer__name'>Kiên Bê Đê</h1>
-            <p className='customer__text'>
-              "Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos
-              export minim fugiat minim velit minim dolor enim duis veniam ipsum
-              anim magna sunt elit fore quem dolore labore illum veniam."
+              "Shop có các chương trình khuyến mãi hợp lý làm mình mua liên tục."
             </p>
           </div>
           <div className='customer__content'>
             <img src={Customer_05} alt='Alt' className='customer__avt' />
-            <h1 className='customer__name'>Hòa Mad</h1>
+            <h1 className='customer__name'>Sơn Hải</h1>
             <p className='customer__text'>
-              "Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos
-              export minim fugiat minim velit minim dolor enim duis veniam ipsum
-              anim magna sunt elit fore quem dolore labore illum veniam."
+              "Sản phẩm chất lượng tốt, shop chất lượng cao. Sẽ tiếp tục ủng hộ shop."
             </p>
           </div>
         </Carousel>

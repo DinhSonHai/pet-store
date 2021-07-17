@@ -7,8 +7,13 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 
+import useCheckRole from '../../hooks/useCheckRole';
+import { ADMIN } from '../../constants';
+
 const { TabPane } = Tabs;
 const DiscountOffer = () => {
+  const { role } = useCheckRole();
+
   const [tabChange, setTabChange] = useState('list');
   const onTabChange = (key) => {
     setTabChange(key);
@@ -35,17 +40,19 @@ const DiscountOffer = () => {
           >
             <DiscountOfferList tabChange={tabChange} setTabChange={setTabChange} />
           </TabPane>
-          <TabPane
-            tab={
-              <span>
-                <PlusOutlined />
-                Thêm khuyến mãi
-              </span>
-            }
-            key='actions'
-          >
-            <OfferAddForm tabChange={tabChange} setTabChange={setTabChange} />
-          </TabPane>
+          {role === ADMIN && (
+            <TabPane
+              tab={
+                <span>
+                  <PlusOutlined />
+                  Thêm khuyến mãi
+                </span>
+              }
+              key='actions'
+            >
+              <OfferAddForm tabChange={tabChange} setTabChange={setTabChange} />
+            </TabPane>
+          )}
         </Tabs>
       </div>
     </section>

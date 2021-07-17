@@ -10,7 +10,7 @@ const authAdmin = require("../../app/middlewares/authAdmin");
 // @access  Private
 router.get(
   "/admin",
-  [authAdmin, checkPermission],
+  authAdmin,
   NotificationController.getAllByAdmin
 );
 

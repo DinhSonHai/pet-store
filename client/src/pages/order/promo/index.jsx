@@ -10,7 +10,7 @@ const Promo = ({ cartState, promo, setPromo }) => {
       <Card
         bordered={false}
         style={{ marginBottom: "1rem" }}
-        title="Chọn promo"
+        title="Chọn promotion"
         className="checkout-promo-modal"
       >
         <Button
@@ -19,7 +19,7 @@ const Promo = ({ cartState, promo, setPromo }) => {
           icon={<PlusOutlined />}
           style={{ marginBottom: "1rem" }}
         >
-          Chọn promo
+          Chọn promotion
         </Button>
         {promo && <Coupon item={promo} setPromo={setPromo} isSelected />}
       </Card>

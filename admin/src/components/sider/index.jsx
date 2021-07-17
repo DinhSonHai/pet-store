@@ -89,7 +89,7 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
           <Link to="/?tab=discountOffer">Quản lý khuyến mãi</Link>
         </Menu.Item>
         <Menu.Item key="promo" icon={<TagOutlined />}>
-          <Link to="/?tab=promo">Quản lý promo</Link>
+          <Link to="/?tab=promo">Quản lý promotion</Link>
         </Menu.Item>
         <Menu.Item key="contacts" icon={<ContactsOutlined />}>
           <Link to="/?tab=contacts">Quản lý contact</Link>
@@ -97,11 +97,9 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
         <Menu.Item key="notifications" icon={<BellOutlined />}>
           <Link to="/?tab=notifications">Quản lý thông báo</Link>
         </Menu.Item>
-        {user && user.role === 0 && (
-          <Menu.Item key="statistical" icon={<BarChartOutlined />}>
-            <Link to="/?tab=statistical">Thống kê</Link>
-          </Menu.Item>
-        )}
+        <Menu.Item key="statistical" icon={<BarChartOutlined />}>
+          <Link to="/?tab=statistical">Thống kê</Link>
+        </Menu.Item>
       </Menu>
     </Sider>
   );

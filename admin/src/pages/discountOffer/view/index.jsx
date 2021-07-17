@@ -5,10 +5,14 @@ import dayjs from 'dayjs';
 
 import { DiscountOfferContext } from '../list';
 import { getOfferById, activateOffer, deactivateOffer } from '../../../redux/actions/offers';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
 
 import './styles.scss';
 
 function ViewDiscountOffer({ offers: { offer }, id, setView, getOfferById, activateOffer, deactivateOffer }) {
+  const { role } = useCheckRole();
+
   const [isLoading, setIsLoading] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -132,42 +136,44 @@ function ViewDiscountOffer({ offers: { offer }, id, setView, getOfferById, activ
               <span>Ngày kết thúc: </span>
               {dayjs(offer.to).format('HH:mm DD/MM/YYYY')}
             </p>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: '1rem',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {offer.isActive ? (
-                <Popconfirm
-                  title='Hủy kích hoạt?'
-                  visible={visible}
-                  onConfirm={deactivate}
-                  okButtonProps={{ loading: confirmLoading }}
-                  cancelButtonProps={{ disabled: confirmLoading }}
-                  onCancel={handleCancel}
-                >
-                  <Button onClick={showPopconfirm} danger>
-                    Hủy kích hoạt
-                  </Button>
-                </Popconfirm>
-              ) : (
-                <Popconfirm
-                  title='Kích hoạt?'
-                  visible={visible}
-                  onConfirm={activate}
-                  okButtonProps={{ loading: confirmLoading }}
-                  cancelButtonProps={{ disabled: confirmLoading }}
-                  onCancel={handleCancel}
-                >
-                  <Button onClick={showPopconfirm} type="primary">
-                    Kích hoạt
-                  </Button>
-                </Popconfirm>
-              )}
-            </div>
+            {role === ADMIN && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '1rem',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                {offer.isActive ? (
+                  <Popconfirm
+                    title='Hủy kích hoạt?'
+                    visible={visible}
+                    onConfirm={deactivate}
+                    okButtonProps={{ loading: confirmLoading }}
+                    cancelButtonProps={{ disabled: confirmLoading }}
+                    onCancel={handleCancel}
+                  >
+                    <Button onClick={showPopconfirm} danger>
+                      Hủy kích hoạt
+                    </Button>
+                  </Popconfirm>
+                ) : (
+                  <Popconfirm
+                    title='Kích hoạt?'
+                    visible={visible}
+                    onConfirm={activate}
+                    okButtonProps={{ loading: confirmLoading }}
+                    cancelButtonProps={{ disabled: confirmLoading }}
+                    onCancel={handleCancel}
+                  >
+                    <Button onClick={showPopconfirm} type="primary">
+                      Kích hoạt
+                    </Button>
+                  </Popconfirm>
+                )}
+              </div>
+            )}
             <Table
               loading={isLoading}
               scroll={{ y: 250 }}

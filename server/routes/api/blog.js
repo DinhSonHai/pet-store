@@ -28,17 +28,17 @@ router.get("/search", BlogController.search);
 // @route   POST api/blogs
 // @desc    Tạo blog
 // @access  Private
-router.post("/", [authAdmin, checkPermission], BlogController.create);
+router.post("/", authAdmin, BlogController.create);
 
 // @route   PUT api/blogs/:id
 // @desc    Sửa blog
 // @access  Private
-router.put("/:id", [authAdmin, checkPermission], BlogController.update);
+router.put("/:id", authAdmin, BlogController.update);
 
 // @route  DELETE api/blogs/:id
 // @desc    Xoa blog
 // @access  Private
-router.delete("/:id", [authAdmin, checkPermission], BlogController.remove);
+router.delete("/:id", authAdmin, BlogController.remove);
 
 // @route   GET api/blogs/:id
 // @desc    Lấy blog theo id

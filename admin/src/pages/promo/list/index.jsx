@@ -5,8 +5,12 @@ import { Button, Table, Popconfirm, Space} from 'antd';
 import dayjs from 'dayjs';
 
 import { getAllPromos, removePromo } from '../../../redux/actions/promos';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
 
 const PromoList = ({ promos: { promos }, getAllPromos, removePromo, tabChange }) => {
+  const { role } = useCheckRole();
+
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
@@ -27,7 +31,7 @@ const PromoList = ({ promos: { promos }, getAllPromos, removePromo, tabChange })
   };
   const columns = [
     {
-      title: 'Tên promo',
+      title: 'Tên promotion',
       dataIndex: 'name',
     },
     {
@@ -67,7 +71,7 @@ const PromoList = ({ promos: { promos }, getAllPromos, removePromo, tabChange })
               Sửa
             </Button>
             <Popconfirm
-              title='Sure to remove?'
+              title='Bạn có muốn xóa?'
               onConfirm={() => remove(record.key)}
             >
               <Button danger type='primary'>
@@ -79,6 +83,11 @@ const PromoList = ({ promos: { promos }, getAllPromos, removePromo, tabChange })
       },
     },
   ];
+
+  if (role !== ADMIN) {
+    columns.splice(-1, 1);
+  }
+
   return (
     <Fragment>
       {!edit ? (

@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Table, Button } from 'antd';
 import { connect } from 'react-redux';
+
 import { getRemovedTypes, restoreType } from '../../../redux/actions/types';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
+
 const TypeRemoved = ({
   types: { types_removed },
   getRemovedTypes,
   restoreType,
   tabChange,
 }) => {
+  const { role } = useCheckRole();
+
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     async function getData() {
@@ -40,6 +46,11 @@ const TypeRemoved = ({
       ),
     },
   ];
+
+  if (role !== ADMIN) {
+    columns.splice(-1, 1);
+  }
+
   return (
     <Table
       pagination={{

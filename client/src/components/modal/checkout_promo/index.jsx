@@ -79,7 +79,7 @@ const CheckoutPromoModal = ({
   return (
     <Modal
       bodyStyle={{ maxHeight: "700px", overflowY: "scroll" }}
-      title={"Thêm promo"}
+      title={"Thêm promotion"}
       visible={showPromoModal}
       onOk={onFinish}
       onCancel={() => setShowPromoModal(false)}

@@ -87,7 +87,7 @@ const BlogList = ({ blogs: { blogs, total }, getAllBlogs, removeBlog, tabChange,
               Sửa
             </Button>
             <Popconfirm
-              title="Sure to remove?"
+              title="Bạn có muốn xóa?"
               onConfirm={() => remove(record.key)}
             >
               <Button danger type="primary">

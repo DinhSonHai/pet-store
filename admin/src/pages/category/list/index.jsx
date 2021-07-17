@@ -10,6 +10,8 @@ import {
   createCategory,
 } from '../../../redux/actions/categories';
 import CategoryAddForm from '../add_form';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
 
 const EditableCell = ({
   editing,
@@ -53,6 +55,8 @@ const CategoryList = ({
   createCategory,
   tabChange,
 }) => {
+  const { role } = useCheckRole();
+
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -163,16 +167,22 @@ const CategoryList = ({
     };
   });
 
+  if (role !== ADMIN) {
+    mergedColumns.splice(-1, 1);
+  }
+
   return (
     <Fragment>
-      <Button
-        style={{ fontSize: '1rem', marginBottom: '1rem' }}
-        icon={<PlusOutlined />}
-        type='link'
-        onClick={() => setVisible(true)}
-      >
-        Thêm
-      </Button>
+      {role === ADMIN && (
+        <Button
+          style={{ fontSize: '1rem', marginBottom: '1rem' }}
+          icon={<PlusOutlined />}
+          type='link'
+          onClick={() => setVisible(true)}
+        >
+          Thêm
+        </Button>
+      )}
       <CategoryAddForm
         createCategory={createCategory}
         setVisible={setVisible}

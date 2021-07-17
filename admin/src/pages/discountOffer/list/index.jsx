@@ -9,10 +9,14 @@ import queryString from "query-string";
 import ViewDiscountOffer from '../view/index';
 import { getAllOffers, deleteOffer } from "../../../redux/actions/offers";
 import OfferAddForm from "../add_form";
+import useCheckRole from "../../../hooks/useCheckRole";
+import { ADMIN } from "../../../constants";
 
 export const DiscountOfferContext = React.createContext(null);
 
 function DiscountOfferList({ offers: { offers, total }, getAllOffers, deleteOffer, tabChange, setTabChange}) {
+  const { role } = useCheckRole();
+
   const location = useLocation();
   const history = useHistory();
   let page = queryString.parse(location.search).page;
@@ -65,22 +69,30 @@ function DiscountOfferList({ offers: { offers, total }, getAllOffers, deleteOffe
           <Space>
             <Button
               onClick={() => handleViewOrder(record)}
-            >Xem</Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                setItem(record)
-                setEdit(true);
-              }}
             >
-              Sửa
+              Xem
             </Button>
-            <Popconfirm title="Bạn có muốn xóa?" onConfirm={() => handleDeleteOffer(record._id)}>
-            <Button
-              type="primary"
-              danger
-            >Xóa</Button>
-            </Popconfirm>
+            {role === ADMIN && (
+              <>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setItem(record)
+                    setEdit(true);
+                  }}
+                >
+                  Sửa
+                </Button>
+                <Popconfirm title="Bạn có muốn xóa?" onConfirm={() => handleDeleteOffer(record._id)}>
+                  <Button
+                    type="primary"
+                    danger
+                  >
+                    Xóa
+                  </Button>
+                </Popconfirm>
+              </>
+            )}
           </Space>
         );
       },

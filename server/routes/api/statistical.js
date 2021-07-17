@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const StatisticalController = require('../../app/controllers/StatisticalController');
-const checkPermission = require('../../app/middlewares/checkPermission');
 const authAdmin = require('../../app/middlewares/authAdmin');
 
 // @route   GET api/statistical/todayrevenues
@@ -10,7 +9,7 @@ const authAdmin = require('../../app/middlewares/authAdmin');
 // @access  Admin, Private
 router.get(
   '/todayrevenues',
-  [authAdmin],
+  authAdmin,
   StatisticalController.getTodayRevenues
 );
 
@@ -19,7 +18,7 @@ router.get(
 // @access  Admin, Private
 router.get(
   '/monthlyrevenues',
-  [authAdmin],
+  authAdmin,
   StatisticalController.getMonthlyRevenues
 );
 
@@ -28,7 +27,7 @@ router.get(
 // @access  Admin, Private
 router.get(
   '/annualrevenues',
-  [authAdmin],
+  authAdmin,
   StatisticalController.getAnnualRevenues
 );
 
@@ -54,7 +53,7 @@ router.get(
 // @route   GET api/statistical/todaybills
 // @desc    Lấy số hóa đơn được bán ra trong ngày
 // @access  Admin, Private
-router.get('/todaybills', [authAdmin], StatisticalController.getTodayBills);
+router.get('/todaybills', authAdmin, StatisticalController.getTodayBills);
 
 // @route   GET api/statistical/todaysales
 // @desc    Lấy số sản phẩm được bán ra trong ngày
@@ -66,7 +65,7 @@ router.get('/todaysales', authAdmin, StatisticalController.getTodaySales);
 // @access  Private
 router.get(
   '/ordersdatachart/:year',
-  [authAdmin],
+  authAdmin,
   StatisticalController.getOrdersDataChart
 );
 
@@ -75,7 +74,7 @@ router.get(
 // @access  Private
 router.get(
   '/revenuesdatachart/:year',
-  [authAdmin],
+  authAdmin,
   StatisticalController.getRevenuesDataChart
 );
 

@@ -8,6 +8,7 @@ import { HIDE_NOTIFY_MESSAGES } from "../../redux/types";
 import "./styles.scss";
 
 const NotifyMessages = ({
+  auth,
   notifications: { isShow, message },
   getAllNotifications,
 }) => {
@@ -55,18 +56,23 @@ const NotifyMessages = ({
             Shop now
           </Button>
         </div>
-        <Divider />
-        <div className="notify-messages__extra">
-          PetStore đang có ưu đãi dành cho các khách hàng đăng ký vào sử dụng
-          dịch vụ website, hãy <Link to="signin">đăng nhập</Link> hoặc{" "}
-          <Link to="signup">đăng ký </Link>
-          để nhận ưu đãi khủng từ PetStore nhé!
-        </div>
+        {!auth.isAuthenticated && (
+          <>
+          <Divider />
+          <div className="notify-messages__extra">
+            PetStore đang có ưu đãi dành cho các khách hàng đăng ký vào sử dụng
+            dịch vụ website, hãy <Link to="signin">đăng nhập</Link> hoặc{" "}
+            <Link to="signup">đăng ký </Link>
+            để nhận ưu đãi khủng từ PetStore nhé!
+          </div>
+          </>
+        )}
       </div>
     </Modal>
   );
 };
 const mapStateToProps = (state) => ({
+  auth: state.auth,
   notifications: state.notifications,
 });
 export default connect(mapStateToProps, { getAllNotifications })(

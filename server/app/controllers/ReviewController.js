@@ -18,7 +18,9 @@ class ReviewController {
         {
           status: 0,
         },
-        {},
+        {
+          commentedAt: -1,
+        },
         { path: 'productId', select: ['productName'] }
       );
       return res.status(statusCode.success).json(reviews);

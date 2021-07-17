@@ -11,7 +11,7 @@ class ContactController {
   async getAll(req, res, next) {
     const { start, end } = pagination(req.query.page, 10);
     try {
-      const contacts = await crudService.getAdvance(Contact, {}, { createdAt: 'asc' });
+      const contacts = await crudService.getAdvance(Contact, {}, { createdAt: 'desc' });
       return res.status(statusCode.success).json({
         data: contacts.slice(start, end),
         total: contacts.length,

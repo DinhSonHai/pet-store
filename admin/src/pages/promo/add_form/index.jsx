@@ -75,21 +75,21 @@ const PromoAddForm = ({
   return (
     <Fragment>
       <h3 style={{ textAlign: "right" }}>
-        {edit ? "Sửa promo" : "Thêm promo"}
+        {edit ? "Sửa promotion" : "Thêm promotion"}
       </h3>
       <Form form={form} size="large" layout="vertical" onFinish={onFinish}>
         <Form.Item
           initialValue={edit ? item.name : ""}
-          label="Tên promo (không dấu, không khoảng cách)"
+          label="Tên promotion (không dấu, không khoảng cách)"
           name="name"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập Tên promo!",
+              message: "Vui lòng nhập Tên promotion!",
             },
           ]}
         >
-          <Input placeholder="Tên promo..." />
+          <Input placeholder="Tên promotion..." />
         </Form.Item>
 
         <Form.Item

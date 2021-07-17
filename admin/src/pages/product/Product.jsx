@@ -8,8 +8,13 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+
+import useCheckRole from '../../hooks/useCheckRole';
+import { ADMIN } from '../../constants';
+
 const { TabPane } = Tabs;
 const Product = () => {
+  const { role } = useCheckRole();
   const [tabChange, setTabChange] = useState('list');
   const onTabChange = (key) => {
     setTabChange(key);
@@ -48,17 +53,19 @@ const Product = () => {
           >
             <ProductRemoved tabChange={tabChange} />
           </TabPane>
-          <TabPane
-            tab={
-              <span>
-                <PlusOutlined />
-                Thêm
-              </span>
-            }
-            key='actions'
-          >
-            <ProductAddForm tabChange={tabChange} setTabChange={setTabChange} />
-          </TabPane>
+          {role === ADMIN && (
+            <TabPane
+              tab={
+                <span>
+                  <PlusOutlined />
+                  Thêm
+                </span>
+              }
+              key='actions'
+            >
+              <ProductAddForm tabChange={tabChange} setTabChange={setTabChange} />
+            </TabPane>
+          )}
         </Tabs>
       </div>
     </section>

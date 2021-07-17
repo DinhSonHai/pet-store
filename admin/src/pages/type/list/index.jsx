@@ -4,8 +4,12 @@ import TypeAddForm from '../add_form';
 import { Button, Table, Popconfirm, Space} from 'antd';
 
 import { getAllTypes, removeType } from '../../../redux/actions/types';
+import useCheckRole from '../../../hooks/useCheckRole';
+import { ADMIN } from '../../../constants';
 
 const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTabChange }) => {
+  const { role } = useCheckRole();
+
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [item, setItem] = useState(null);
@@ -49,7 +53,7 @@ const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTab
               Sửa
             </Button>
             <Popconfirm
-              title='Sure to remove?'
+              title='Bạn có muốn ẩn?'
               onConfirm={() => remove(record.key)}
             >
               <Button danger type='primary'>
@@ -61,6 +65,11 @@ const TypeList = ({ types: { types }, getAllTypes, removeType, tabChange, setTab
       },
     },
   ];
+
+  if (role !== ADMIN) {
+    columns.splice(-1, 1);
+  }
+
   return (
     <Fragment>
       {!edit ? (
