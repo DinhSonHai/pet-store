@@ -2,7 +2,6 @@ const Review = require('../models/Review');
 const { validationResult } = require('express-validator');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Product = require('../models/Product');
-const User = require('../models/User');
 const Employee = require('../models/Employee');
 const crudService = require('../../services/crud');
 const statusCode = require('../../constants/statusCode.json');
@@ -146,7 +145,7 @@ class ReviewController {
       const [review, product, user] = await Promise.all([
         crudService.getById(Review, req.params.reviewId),
         crudService.getById(Product, req.params.productId),
-        crudService.getById(User, req.user.id),
+        crudService.getById(Employee, req.user.id),
       ]);
       if (!review) {
         return res
