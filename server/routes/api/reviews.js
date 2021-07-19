@@ -51,10 +51,10 @@ router.post('/:id/review', [auth, validateReview], ReviewController.review);
 // @route   PUT api/reviews/:reviewId/response/:productId
 // @desc    Response on a review admin
 // @access  Private
-router.put(
-  '/:reviewId/response/:productId',
-  [authAdmin, validateCommentAdmin],
-  ReviewController.response
-);
+// router.put(
+//   '/:reviewId/response/:productId',
+//   [authAdmin, validateCommentAdmin],
+//   ReviewController.response
+// );
 
 module.exports = router;

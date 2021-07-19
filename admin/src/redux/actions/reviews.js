@@ -28,9 +28,9 @@ export const declineReview = (reviewId, productId) => async (dispatch) => {
   }
 };
 
-export const approveReview = (reviewId, productId) => async (dispatch) => {
+export const approveReview = (reviewId, productId, data = {}) => async (dispatch) => {
   try {
-    const res = await reviewAPI.approve(reviewId, productId);
+    const res = await reviewAPI.approve(reviewId, productId, data);
     dispatch({
       type: UPDATE_UNCONFIRMED_REVIEWS,
       payload: reviewId,

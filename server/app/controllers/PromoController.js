@@ -37,7 +37,7 @@ class PromoController {
   // @access  Private
   async getAllByAdmin(req, res, next) {
     try {
-      const promos = await crudService.getAll(Promo);
+      const promos = await crudService.getAdvance(Promo, {}, { 'createdAt': 'desc' });
       return res.status(statusCode.success).json(promos);
     } catch (err) {
       return res.status(statusCode.serverError).send("Server Error");

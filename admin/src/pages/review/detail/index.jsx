@@ -1,35 +1,39 @@
 import { useState } from 'react';
 import { Modal, Input, Form, Button, Checkbox, Rate } from 'antd';
 import dayjs from 'dayjs';
-import { declineReview, responseReview } from '../../../redux/actions/reviews';
 import { connect } from 'react-redux';
+
+import { declineReview, responseReview } from '../../../redux/actions/reviews';
+import { notifyActions } from '../../../utils/notify';
+
 import './styles.scss';
 const ReviewDetail = ({
   setView,
   data,
   declineReview,
   approveReview,
-  responseReview,
 }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [response, setResponse] = useState(false);
-  const onFinish = async (values) => {
-    setConfirmLoading(true);
-    await responseReview(data._id, data.productId._id, values);
-    setConfirmLoading(false);
+  const [text, setText] = useState('');
+
+  const onFinish = async () => {
+    if (response && !text) {
+      return notifyActions('error', 'Vui lòng nhập phản hồi!');
+    }
+    const { _id, productId } = data;
+    console.log(data);
+    if (_id && productId) {
+      setConfirmLoading(true);
+      await approveReview(_id, productId._id, { replyComment: text });
+      setConfirmLoading(false);
+      setView(false);
+    }
   };
   const handleRemove = async (reviewId, productId) => {
     if (reviewId && productId) {
       setConfirmLoading(true);
       await declineReview(reviewId, productId);
-      setConfirmLoading(false);
-      setView(false);
-    }
-  };
-  const handleApprove = async (reviewId, productId) => {
-    if (reviewId && productId) {
-      setConfirmLoading(true);
-      await approveReview(reviewId, productId);
       setConfirmLoading(false);
       setView(false);
     }
@@ -81,7 +85,8 @@ const ReviewDetail = ({
         <p className='review-detail__content'>
           <span>Nội dung: </span>
           <Input.TextArea
-            style={{ marginTop: '1rem' }}
+            readOnly
+            style={{ marginTop: '1rem', cursor: 'default' }}
             rows={4}
             defaultValue={data.comment}
           />
@@ -92,7 +97,7 @@ const ReviewDetail = ({
 
         {response && (
           <div className='review-detail__form'>
-            <Form size='large' layout='vertical' onFinish={onFinish}>
+            <Form id="responseForm" size='large' layout='vertical'>
               <Form.Item
                 label='Nội dung phản hồi'
                 name='replyComment'
@@ -103,23 +108,14 @@ const ReviewDetail = ({
                   },
                 ]}
               >
-                <Input.TextArea rows={4} placeholder='Nội dung phản hồi' />
-              </Form.Item>
-              <Form.Item style={{ textAlign: 'right' }}>
-                <Button
-                  type='primary'
-                  loading={confirmLoading}
-                  htmlType='submit'
-                >
-                  Phản hồi
-                </Button>
+                <Input.TextArea rows={4} placeholder='Nội dung phản hồi' onChange={(e) => setText(e.target.value)} />
               </Form.Item>
             </Form>
           </div>
         )}
         <p style={{ textAlign: 'right' }}>
           <Button
-            onClick={() => handleApprove(data._id, data.productId._id)}
+            onClick={onFinish}
             type='primary'
             style={{ marginRight: '1rem' }}
             loading={confirmLoading}

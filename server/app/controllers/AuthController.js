@@ -893,9 +893,11 @@ class AuthController {
               _id: user.purchasedProducts[i],
               productName: "Sản phẩm không tồn tại!",
               price: 0,
-              image:
-                "https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg",
+              discountPrice: 0,
+              images:
+                ["https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg"],
               starRatings: 0,
+              isNotExist: true,
             };
           }
           getPurchasedProducts = [
@@ -907,6 +909,7 @@ class AuthController {
               discountPrice: product.discountPrice,
               image: product.images[0],
               starRatings: product.starRatings,
+              isNotExist: product.isNotExist,
             },
           ];
         }

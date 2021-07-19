@@ -28,7 +28,7 @@ const ProfilePurchased = ({ getPurchased }) => {
   const handlePagination = async (_page) => {
     setPage(_page);
   };
-
+  
   return (
     <Fragment>
       <h3 className="profile__title">Sản phẩm đã mua ({data?.total})</h3>
@@ -52,7 +52,7 @@ const ProfilePurchased = ({ getPurchased }) => {
                 />
                 <div className="profile__main--wishlist-content">
                   <p className="profile__main--wishlist-name">
-                    <Link to={`/product/${item.productName}/${item._id}`}>
+                    <Link to={item.isNotExist ? '/not-exists' : `/product/${item.productName}/${item._id}`}>
                       {item.productName}
                     </Link>
                   </p>

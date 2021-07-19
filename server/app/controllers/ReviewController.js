@@ -2,6 +2,7 @@ const Review = require('../models/Review');
 const { validationResult } = require('express-validator');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Product = require('../models/Product');
+const User = require('../models/User');
 const Employee = require('../models/Employee');
 const crudService = require('../../services/crud');
 const statusCode = require('../../constants/statusCode.json');
@@ -44,7 +45,8 @@ class ReviewController {
         .populate({
           path: 'userReplyId',
           populate: { path: 'userReplyId', select: ['role'] },
-        });
+        })
+        .sort({ 'commentedAt': 'desc' });
       review.forEach((rv) => {
         rv.replyComment = rv.replyComment.filter(
           (comment) => comment.status === 1
@@ -134,67 +136,72 @@ class ReviewController {
   // @route   PUT api/reviews/:reviewId/response/:productId
   // @desc    Response on a review admin
   // @access  Private
-  async response(req, res) {
-    //Kiểm tra req.body
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(statusCode.badRequest).json({ errors: errors.array() });
-    }
-    let { replyComment } = req.body;
-    try {
-      const [review, product, user] = await Promise.all([
-        crudService.getById(Review, req.params.reviewId),
-        crudService.getById(Product, req.params.productId),
-        crudService.getById(Employee, req.user.id),
-      ]);
-      if (!review) {
-        return res
-          .status(statusCode.notFound)
-          .json({ errors: [{ msg: message.notFound }] });
-      }
-      if (!product) {
-        return res
-          .status(statusCode.notFound)
-          .json({ errors: [{ msg: message.productNotFound }] });
-      }
-      if (!user) {
-        return res
-          .status(statusCode.notFound)
-          .json({ errors: [{ msg: message.userNotFound }] });
-      }
-      const comment = {
-        adminReplyId: user._id,
-        replyComment,
-        name: user.name,
-        avatar: user.avatar,
-        status: 1,
-      };
-      review.replyComment = [comment, ...review.replyComment];
-      await review.save((err, data) => {
-        if (err) {
-          return res
-            .status(statusCode.badRequest)
-            .json({ errors: [{ msg: message.repFail }] });
-        }
-        return res.status(statusCode.success).json({
-          message: message.repSuccess,
-        });
-      });
-    } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
-    }
-  }
+  // async response(req, res) {
+  //   //Kiểm tra req.body
+  //   const errors = validationResult(req);
+  //   if (!errors.isEmpty()) {
+  //     return res.status(statusCode.badRequest).json({ errors: errors.array() });
+  //   }
+  //   let { replyComment } = req.body;
+  //   try {
+  //     const [review, product, user] = await Promise.all([
+  //       crudService.getById(Review, req.params.reviewId),
+  //       crudService.getById(Product, req.params.productId),
+  //       crudService.getById(Employee, req.user.id),
+  //     ]);
+  //     if (!review) {
+  //       return res
+  //         .status(statusCode.notFound)
+  //         .json({ errors: [{ msg: message.notFound }] });
+  //     }
+  //     if (!product) {
+  //       return res
+  //         .status(statusCode.notFound)
+  //         .json({ errors: [{ msg: message.productNotFound }] });
+  //     }
+  //     if (!user) {
+  //       return res
+  //         .status(statusCode.notFound)
+  //         .json({ errors: [{ msg: message.userNotFound }] });
+  //     }
+  //     const comment = {
+  //       adminReplyId: user._id,
+  //       replyComment,
+  //       name: user.name,
+  //       avatar: user.avatar,
+  //       status: 1,
+  //     };
+  //     review.replyComment = [comment, ...review.replyComment];
+  //     await review.save((err, data) => {
+  //       if (err) {
+  //         return res
+  //           .status(statusCode.badRequest)
+  //           .json({ errors: [{ msg: message.repFail }] });
+  //       }
+  //       return res.status(statusCode.success).json({
+  //         message: message.repSuccess,
+  //       });
+  //     });
+  //   } catch (err) {
+  //     return res.status(statusCode.serverError).send('Server Error');
+  //   }
+  // }
 
   // @route   PUT api/reviews/admin/:reviewId/:productId/approve
   // @desc    Duyệt đánh giá của người dùng
   // @access  Private
   async approveReview(req, res) {
     const { reviewId, productId } = req.params;
+
+    const { replyComment } = req.body;
+
     try {
-      const [product, review] = await Promise.all([
+      const [product, review, employee] = await Promise.all([
         crudService.getById(Product, productId),
         crudService.getById(Review, reviewId),
+        crudService.getById(Employee, req.user.id),
       ]);
+
       if (!review) {
         return res
           .status(statusCode.notFound)
@@ -205,6 +212,23 @@ class ReviewController {
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.productNotFound }] });
       }
+      if (!employee) {
+        return res
+          .status(statusCode.notFound)
+          .json({ errors: [{ msg: message.userNotFound }] });
+      }
+
+      if (replyComment) {
+        const comment = {
+          adminReplyId: employee._id,
+          replyComment,
+          name: employee.name,
+          avatar: employee.avatar,
+          status: 1,
+        };
+        review.replyComment = [comment, ...review.replyComment];
+      }
+
       let { status } = review;
       // -1: Không phê duyệt đánh giá
       // 0: Đăng đánh giá thành công

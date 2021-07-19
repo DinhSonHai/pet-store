@@ -7,12 +7,12 @@ const reviewAPI = {
   decline: async (reviewId, productId) => {
     return await api.put(`${source}/admin/${reviewId}/${productId}/decline`);
   },
-  approve: async (reviewId, productId) => {
-    return await api.put(`${source}/admin/${reviewId}/${productId}/approve`);
+  approve: async (reviewId, productId, data) => {
+    return await api.put(`${source}/admin/${reviewId}/${productId}/approve`, data);
   },
-  response: async (reviewId, productId, data) => {
-    return await api.put(`${source}/${reviewId}/response/${productId}`, data);
-  },
+  // response: async (reviewId, productId, data) => {
+  //   return await api.put(`${source}/${reviewId}/response/${productId}`, data);
+  // },
 };
 
 export default reviewAPI;
