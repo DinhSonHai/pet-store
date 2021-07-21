@@ -836,27 +836,19 @@ class AuthController {
             Product,
             user.favoriteProducts[i]
           );
-          if (!product) {
-            product = {
-              _id: user.favoriteProducts[i],
-              productName: "Sản phẩm không tồn tại!",
-              price: 0,
-              image:
-                "https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg",
-              starRatings: 0,
-            };
+          if (product) {
+            getFavoriteProducts = [
+              ...getFavoriteProducts,
+              {
+                _id: product._id,
+                productName: product.productName,
+                price: product.price,
+                discountPrice: product.discountPrice,
+                image: product.images[0],
+                starRatings: product.starRatings,
+              },
+            ];
           }
-          getFavoriteProducts = [
-            ...getFavoriteProducts,
-            {
-              _id: product._id,
-              productName: product.productName,
-              price: product.price,
-              discountPrice: product.discountPrice,
-              image: product.images[0],
-              starRatings: product.starRatings,
-            },
-          ];
         }
         const { start, end } = pagination(req.query.page, 5);
         return res.status(statusCode.success).json({
@@ -888,30 +880,19 @@ class AuthController {
             Product,
             user.purchasedProducts[i]
           );
-          if (!product) {
-            product = {
-              _id: user.purchasedProducts[i],
-              productName: "Sản phẩm không tồn tại!",
-              price: 0,
-              discountPrice: 0,
-              images:
-                ["https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg"],
-              starRatings: 0,
-              isNotExist: true,
-            };
+          if (product) {
+            getPurchasedProducts = [
+              ...getPurchasedProducts,
+              {
+                _id: product._id,
+                productName: product.productName,
+                price: product.price,
+                discountPrice: product.discountPrice,
+                image: product.images[0],
+                starRatings: product.starRatings,
+              },
+            ];
           }
-          getPurchasedProducts = [
-            ...getPurchasedProducts,
-            {
-              _id: product._id,
-              productName: product.productName,
-              price: product.price,
-              discountPrice: product.discountPrice,
-              image: product.images[0],
-              starRatings: product.starRatings,
-              isNotExist: product.isNotExist,
-            },
-          ];
         }
         const { start, end } = pagination(req.query.page, 5);
         return res.status(statusCode.success).json({
