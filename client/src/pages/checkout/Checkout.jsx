@@ -39,7 +39,10 @@ const Checkout = ({
       store.dispatch({ type: GET_GUEST_INFO, payload: guestInfo });
     }
     if (cartState && cartState.length > 0) {
-      let total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);
+      let total_value = cartState.reduce(
+        (a, b) => a + (b.discountPrice || b.price) * b.amount,
+        0
+      );
       setTotalCart(total_value);
     }
   }, []);

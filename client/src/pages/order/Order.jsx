@@ -148,7 +148,7 @@ const Order = ({
       }
     });
     if (cartState && cartState.length > 0) {
-      const total_value = cartState.reduce((a, b) => a + b.price * b.amount, 0);
+      const total_value = cartState.reduce((a, b) => a + (b.discountPrice || b.price) * b.amount, 0);
       let promoDeduction = 0;
       if (promo && isAuthenticated) {
         if (promo.discountType === "percent") {
