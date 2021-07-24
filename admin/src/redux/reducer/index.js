@@ -13,6 +13,7 @@ import offers from './offers';
 import contacts from './contacts';
 import promos from './promos';
 import notifications from './notifications';
+import customers from './customers';
 
 export default combineReducers({
   auth,
@@ -20,6 +21,7 @@ export default combineReducers({
   bills,
   categories,
   contacts,
+  customers,
   notifications,
   orders,
   products,

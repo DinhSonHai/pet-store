@@ -105,7 +105,7 @@ class CategoryController {
           .status(statusCode.notFound)
           .json({ errors: [{ msg: message.notFound }] });
       }
-      const status = await crudService.remove(Notification, req.params.id);
+      const status = await crudService.remove(Notification, req.params.id, true);
       if (status) {
         return res
           .status(statusCode.success)
