@@ -115,6 +115,9 @@ class StatisticalController {
   // @access  Admin, Private
   async getTotalBills(req, res) {
     let { time } = req.query;
+    const from = parseInt(req.query.from);
+    const to = parseInt(req.query.to);
+
     if (!time) {
       time = 'day';
     }
@@ -122,9 +125,19 @@ class StatisticalController {
     let today = moment().startOf(time);
     let tomorrow = moment(today).endOf(time);
 
+    let sortQuery = {
+      'deliveriedAt': { $gte: today.toDate(),  $lt: tomorrow.toDate() }
+    };
+
+    if (from && to) {
+      let dayStart = new Date(from).toISOString();
+      let dayEnd = new Date(to).toISOString();
+      sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    }
+
     try {
       let bill = await crudService.getAll(Bill, {
-        deliveriedAt: { $gte: today.toDate(),  $lt: tomorrow.toDate() },
+        ...sortQuery
       });
       return res.status(statusCode.success).json({ billCount: bill.length });
     } catch (err) {
@@ -137,6 +150,9 @@ class StatisticalController {
   // @access  Private
   async getTotalSales(req, res) {
     let { time } = req.query;
+    const from = parseInt(req.query.from);
+    const to = parseInt(req.query.to);
+
     if (!time) {
       time = 'day';
     }
@@ -144,9 +160,19 @@ class StatisticalController {
     let today = moment().startOf(time);
     let tomorrow = moment(today).endOf(time);
 
+    let sortQuery = {
+      'deliveriedAt': { $gte: today.toDate(),  $lt: tomorrow.toDate() }
+    };
+
+    if (from && to) {
+      let dayStart = new Date(from).toISOString();
+      let dayEnd = new Date(to).toISOString();
+      sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    }
+
     try {
       let bill = await Bill.find({
-        deliveriedAt: { $gte: today.toDate(),  $lt: tomorrow.toDate() },
+        ...sortQuery
       }).select('_id');
       let billIdList = bill.map((item) => item._id);
       let billDetail = await crudService.getAll(BillDetail, {
