@@ -29,6 +29,7 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
   const onBreakpoint = (broken) => {
     if (broken) {
       const st = {
+        overflow: 'auto',
         height: "100vh",
         position: "fixed",
         left: 0,

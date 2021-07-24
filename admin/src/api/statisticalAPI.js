@@ -20,7 +20,7 @@ const statisticalAPI = {
       getData(`${source}/annualrevenues`),
       getData(`${source}/newestorders`),
       getData(`${source}/newestreviews`),
-      getData(`${source}/newestcomments`),
+      getData(`${source}/users`),
       getData(`${source}/todaybills`),
       getData(`${source}/todaysales`),
     ]);

@@ -2,6 +2,7 @@ const Bill = require('../models/Bill');
 const BillDetail = require('../models/BillDetail');
 const Order = require('../models/Order');
 const Review = require('../models/Review');
+const User = require('../models/User');
 const _ = require('lodash');
 const crudService = require('../../services/crud');
 const statusCode = require('../../constants/statusCode.json');
@@ -97,18 +98,13 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/newestcomments
-  // @desc    Lấy số bình luận mới
+  // @route   GET api/statistical/users
+  // @desc    Lấy số lượng người dùng
   // @access  Private
-  async getNewestComments(req, res) {
+  async getUserCount(req, res) {
     try {
-      let review = await crudService.getAll(Review, { status: 1 });
-      let commentCount = review.reduce((total, current) => {
-        let comment = current.replyComment;
-        let newestComment = comment.filter((cmt) => cmt.status === 0);
-        return total + newestComment.length;
-      }, 0);
-      return res.status(statusCode.success).json({ commentCount });
+      let userCount = await User.estimatedDocumentCount();
+      return res.status(statusCode.success).json({ userCount });
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
     }

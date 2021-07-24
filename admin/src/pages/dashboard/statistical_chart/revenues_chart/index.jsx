@@ -1,8 +1,8 @@
 import { useEffect, useState, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { getRevenuesChartData } from '../../../redux/actions/statistical';
+import { getRevenuesChartData } from '../../../../redux/actions/statistical';
 import { Line } from 'react-chartjs-2';
-import { Loader } from '../../../components';
+import { Loader } from '../../../../components';
 
 import './styles.scss';
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { getOrdersChartData } from '../../../redux/actions/statistical';
-import { Loader } from '../../../components';
+import { getOrdersChartData } from '../../../../redux/actions/statistical';
+import { Loader } from '../../../../components';
 import { Bar } from 'react-chartjs-2';
 import './styles.scss';
 
