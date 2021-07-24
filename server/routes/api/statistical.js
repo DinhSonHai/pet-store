@@ -1,23 +1,19 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const StatisticalController = require('../../app/controllers/StatisticalController');
-const authAdmin = require('../../app/middlewares/authAdmin');
+const StatisticalController = require("../../app/controllers/StatisticalController");
+const authAdmin = require("../../app/middlewares/authAdmin");
 
 // @route   GET api/statistical/todayrevenues
 // @desc    Thống kê doanh thu nagfy hôm nay
 // @access  Admin, Private
-router.get(
-  '/todayrevenues',
-  authAdmin,
-  StatisticalController.getTodayRevenues
-);
+router.get("/todayrevenues", authAdmin, StatisticalController.getTodayRevenues);
 
 // @route   GET api/statistical/monthlyrevenues
 // @desc    Thống kê doanh thu theo tháng
 // @access  Admin, Private
 router.get(
-  '/monthlyrevenues',
+  "/monthlyrevenues",
   authAdmin,
   StatisticalController.getMonthlyRevenues
 );
@@ -26,7 +22,7 @@ router.get(
 // @desc    Thống kê doanh thu theo năm
 // @access  Admin, Private
 router.get(
-  '/annualrevenues',
+  "/annualrevenues",
   authAdmin,
   StatisticalController.getAnnualRevenues
 );
@@ -34,37 +30,33 @@ router.get(
 // @route   GET api/statistical/newestorders
 // @desc    Lấy số đơn hàng mới
 // @access  Private
-router.get('/newestorders', authAdmin, StatisticalController.getNewestOrders);
+router.get("/newestorders", authAdmin, StatisticalController.getNewestOrders);
 
 // @route   GET api/statistical/newestreviews
 // @desc    Lấy số đánh giá mới
 // @access  Private
-router.get('/newestreviews', authAdmin, StatisticalController.getNewestReviews);
+router.get("/newestreviews", authAdmin, StatisticalController.getNewestReviews);
 
-// @route   GET api/statistical/newestcomments
-// @desc    Lấy số bình luận mới
+// @route   GET api/statistical/users
+// @desc    Lấy số lượng người dùng
 // @access  Private
-router.get(
-  '/newestcomments',
-  authAdmin,
-  StatisticalController.getNewestComments
-);
+router.get("/users", authAdmin, StatisticalController.getUserCount);
 
 // @route   GET api/statistical/todaybills
 // @desc    Lấy số hóa đơn được bán ra trong ngày
 // @access  Admin, Private
-router.get('/todaybills', authAdmin, StatisticalController.getTodayBills);
+router.get("/todaybills", authAdmin, StatisticalController.getTodayBills);
 
 // @route   GET api/statistical/todaysales
 // @desc    Lấy số sản phẩm được bán ra trong ngày
 // @access  Private
-router.get('/todaysales', authAdmin, StatisticalController.getTodaySales);
+router.get("/todaysales", authAdmin, StatisticalController.getTodaySales);
 
 // @route   GET api/statistical/ordersdatachart/:year
 // @desc    Lấy dữ liệu số đơn được đặt theo từng tháng
 // @access  Private
 router.get(
-  '/ordersdatachart/:year',
+  "/ordersdatachart/:year",
   authAdmin,
   StatisticalController.getOrdersDataChart
 );
@@ -73,7 +65,7 @@ router.get(
 // @desc    Lấy dữ liệu doanh thu theo từng tháng
 // @access  Private
 router.get(
-  '/revenuesdatachart/:year',
+  "/revenuesdatachart/:year",
   authAdmin,
   StatisticalController.getRevenuesDataChart
 );
