@@ -13,7 +13,7 @@ class BillController {
   // @access  Private
   async getAll(req, res) {
     const from = parseInt(req.query.from);
-    const to = parseInt(req.query.to) + 86400000;
+    const to = parseInt(req.query.to);
 
     let sortQuery = {};
 

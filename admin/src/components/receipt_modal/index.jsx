@@ -121,6 +121,7 @@ const ReceiptModal = ({
     else {
       setProductList([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [receipts_detail]);
 
   return (

@@ -31,18 +31,15 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [{ currentPage, pageSize }, setPage] = useState(page ? { currentPage: page, pageSize: defaultPageSize } : defaultPageSetting);
   const [from, setFrom] = useState(todayStart);
-  const [to, setTo] = useState(todayStart);
+  const [to, setTo] = useState(todayEnd);
   const [isToday, setToday] = useState(false);
 
   const onDateChange = (value, dateString) => {
     if (dateString.length < 2) {
       return;
     }
-    console.log(value)
-    console.log(dateString)
-    const startDate = Date.parse(dateString[0]);
-    const endDate = Date.parse(dateString[1]);
-
+    const startDate = Date.parse(dateString[0] + ' 00:00:00');
+    const endDate = Date.parse(dateString[1] + ' 23:59:59');
     if (startDate === endDate) {
       return;
     }
@@ -76,6 +73,7 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
       await getAllBills(currentPage, from, to);
     }
     setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, from, to]);
 
   useEffect(() => {
@@ -153,8 +151,8 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
           <RangePicker 
             style={{ marginRight: '24px' }}
             placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
-            showTime={{ format: 'HH:mm', defaultValue: moment('00:00', 'HH:mm') }}
-            format="YYYY-MM-DD HH:mm"
+            // showTime={{ defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')]}}
+            format="YYYY-MM-DD"
             value={[moment(from), moment(to)]}
             onChange={onDateChange}
           />

@@ -22,7 +22,7 @@ const ReviewDetail = ({
       return notifyActions('error', 'Vui lòng nhập phản hồi!');
     }
     const { _id, productId } = data;
-    console.log(data);
+    // console.log(data);
     if (_id && productId) {
       setConfirmLoading(true);
       await approveReview(_id, productId._id, { replyComment: text });
