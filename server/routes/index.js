@@ -14,6 +14,7 @@ const discountOffer = require('./api/discountOffer');
 const contacts = require('./api/contacts');
 const promos = require('./api/promos');
 const notifications = require('./api/notifications');
+const customers = require('./api/customer');
 
 function route(app) {
   //Products route
@@ -62,7 +63,10 @@ function route(app) {
   app.use('/api/promos', promos);
 
   // Notifications
-  app.use('/api/notifications', notifications)
+  app.use('/api/notifications', notifications);
+
+  // Customer
+  app.use('/api/customers', customers);
 }
 
 module.exports = route;

@@ -20,3 +20,4 @@ export { default as Promo } from './promo/Promo';
 export { default as Notification } from './notification/Notification';
 export { default as Forgot } from './forgot/Forgot';
 export { default as Reset } from './reset/Reset';
+export { default as Customer } from './customer/Customer';

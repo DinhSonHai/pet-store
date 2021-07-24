@@ -18,7 +18,8 @@ import {
   DiscountOffer,
   Contacts,
   Promo,
-  Notification
+  Notification,
+  Customer
 } from "../../pages";
 
 import { SiderComponent } from "../../components";
@@ -61,7 +62,9 @@ const Home = ({ location }) => {
       case "promo":
         return <Promo />;
       case 'notifications':
-        return <Notification />
+        return <Notification />;
+      case 'customers':
+        return <Customer />
       default:
         return <DashBoard />;
     }

@@ -14,7 +14,8 @@ import {
   DollarCircleOutlined,
   ContactsOutlined,
   TagOutlined,
-  BellOutlined
+  BellOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 
 import "./styles.scss";
@@ -91,11 +92,14 @@ const SiderComponent = ({ tabState, auth: { user } }) => {
         <Menu.Item key="promo" icon={<TagOutlined />}>
           <Link to="/?tab=promo">Quản lý promotion</Link>
         </Menu.Item>
-        <Menu.Item key="contacts" icon={<ContactsOutlined />}>
-          <Link to="/?tab=contacts">Quản lý contact</Link>
-        </Menu.Item>
         <Menu.Item key="notifications" icon={<BellOutlined />}>
           <Link to="/?tab=notifications">Quản lý thông báo</Link>
+        </Menu.Item>
+        <Menu.Item key="customers" icon={<UserOutlined />}>
+          <Link to="/?tab=customers">Quản lý người dùng</Link>
+        </Menu.Item>
+        <Menu.Item key="contacts" icon={<ContactsOutlined />}>
+          <Link to="/?tab=contacts">Quản lý contact</Link>
         </Menu.Item>
         <Menu.Item key="statistical" icon={<BarChartOutlined />}>
           <Link to="/?tab=statistical">Thống kê</Link>
