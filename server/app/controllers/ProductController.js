@@ -198,6 +198,19 @@ class ProductController {
       return res.status(statusCode.serverError).send("Server Error");
     }
   }
+
+  // @route   GET api/products/lowquantity
+  // @desc    Lấy sản phẩm gần hết hàng
+  // @access  Public
+  async getLowQuantityProducts(req, res, next) {
+    try {
+      const products = await Product.find({ isShow: true, quantity: { $lt: 20 } }).sort({ quantity: "desc" });
+      return res.status(statusCode.success).json(products);
+    } catch (err) {
+      return res.status(statusCode.serverError).send("Server Error");
+    }
+  }
+
   // // @route   GET api/products/categories/:categoryId
   // // @desc    Lấy tất cả sản phẩm theo categoryId
   // // @access  Public

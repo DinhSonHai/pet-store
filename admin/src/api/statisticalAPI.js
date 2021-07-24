@@ -13,7 +13,7 @@ function getData(path) {
   });
 }
 const statisticalAPI = {
-  get_dasgboard_data: async () => {
+  get_dashboard_data: async () => {
     return await Promise.all([
       getData(`${source}/todayrevenues`),
       getData(`${source}/monthlyrevenues`),
@@ -21,8 +21,8 @@ const statisticalAPI = {
       getData(`${source}/newestorders`),
       getData(`${source}/newestreviews`),
       getData(`${source}/users`),
-      getData(`${source}/todaybills`),
-      getData(`${source}/todaysales`),
+      getData(`${source}/totalbills`),
+      getData(`${source}/totalsales`),
     ]);
   },
   get_orders_data: async (year) => {

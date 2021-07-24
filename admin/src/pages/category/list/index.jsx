@@ -73,13 +73,8 @@ const CategoryList = ({
     if (tabChange === 'list') {
       getData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getAllCategories, tabChange, visible]);
-
-  const remove = async (id) => {
-    setIsLoading(true);
-    await removeCategory(id);
-    setIsLoading(false);
-  };
 
   const edit = (record) => {
     form.setFieldsValue({

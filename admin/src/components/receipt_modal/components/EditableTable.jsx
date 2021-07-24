@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Popconfirm, Tooltip, Button } from 'antd';
+import { Table, Popconfirm, Button } from 'antd';
 
 import EditableRow from './EditableRow';
 import EditableCell from './EditableCell';

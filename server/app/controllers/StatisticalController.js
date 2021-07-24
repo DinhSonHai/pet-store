@@ -110,14 +110,34 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/todaybills
-  // @desc    Lấy số hóa đơn được bán ra trong ngày hôm nay
-  // @access  Private
-  async getTodayBills(req, res) {
-    let today = moment().startOf('day');
+  // @route   GET api/statistical/totalbills
+  // @desc    Lấy số hóa đơn được bán ra theo thời gian
+  // @access  Admin, Private
+  async getTotalBills(req, res) {
+    let { time } = req.query;
+    const from = parseInt(req.query.from);
+    const to = parseInt(req.query.to);
+
+    if (!time) {
+      time = 'day';
+    }
+
+    let today = moment().startOf(time);
+    let tomorrow = moment(today).endOf(time);
+
+    let sortQuery = {
+      'deliveriedAt': { $gte: today.toDate(),  $lt: tomorrow.toDate() }
+    };
+
+    if (from && to) {
+      let dayStart = new Date(from).toISOString();
+      let dayEnd = new Date(to).toISOString();
+      sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    }
+
     try {
       let bill = await crudService.getAll(Bill, {
-        deliveriedAt: { $gte: today.toDate() },
+        ...sortQuery
       });
       return res.status(statusCode.success).json({ billCount: bill.length });
     } catch (err) {
@@ -125,14 +145,34 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/todaysales
-  // @desc    Lấy số sản phẩm được bán ra trong ngày hôm nay
+  // @route   GET api/statistical/totalsales
+  // @desc    Lấy số sản phẩm được bán ra theo thời gian
   // @access  Private
-  async getTodaySales(req, res) {
-    let today = moment().startOf('day');
+  async getTotalSales(req, res) {
+    let { time } = req.query;
+    const from = parseInt(req.query.from);
+    const to = parseInt(req.query.to);
+
+    if (!time) {
+      time = 'day';
+    }
+
+    let today = moment().startOf(time);
+    let tomorrow = moment(today).endOf(time);
+
+    let sortQuery = {
+      'deliveriedAt': { $gte: today.toDate(),  $lt: tomorrow.toDate() }
+    };
+
+    if (from && to) {
+      let dayStart = new Date(from).toISOString();
+      let dayEnd = new Date(to).toISOString();
+      sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    }
+
     try {
       let bill = await Bill.find({
-        deliveriedAt: { $gte: today.toDate() },
+        ...sortQuery
       }).select('_id');
       let billIdList = bill.map((item) => item._id);
       let billDetail = await crudService.getAll(BillDetail, {

@@ -41,6 +41,11 @@ router.get("/popular", ProductController.getPopularProducts);
 // @access  Public
 router.get("/bestseller", ProductController.getBestSellerProducts);
 
+// @route   GET api/products/lowquantity
+// @desc    Lấy sản phẩm gần hết hàng
+// @access  Public
+router.get("/lowquantity", authAdmin, ProductController.getLowQuantityProducts);
+
 // @route   GET api/products/:id
 // @desc    Lấy sản phẩm theo id
 // @access  Public

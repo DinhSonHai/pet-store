@@ -7,7 +7,7 @@ import { statisticalAPI } from '../../api';
 
 export const getDashBoardData = () => async (dispatch) => {
   try {
-    const res = await statisticalAPI.get_dasgboard_data();
+    const res = await statisticalAPI.get_dashboard_data();
     dispatch({
       type: GET_DASHBOARD_DATA,
       payload: res,

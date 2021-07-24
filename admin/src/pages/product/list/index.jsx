@@ -45,6 +45,7 @@ const ProductList = ({
     setIsLoading(true);
     await getAllProducts(currentPage, searchKeyDebounced);
     setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, searchKeyDebounced, tabChange, edit]);
 
   useEffect(() => {

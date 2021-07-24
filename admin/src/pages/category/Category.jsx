@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
 import CategoryList from './list';
-import CategoryRemoved from './removed';
-import { UnorderedListOutlined, DeleteOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined } from '@ant-design/icons';
 const { TabPane } = Tabs;
 const Category = () => {
   const [tabChange, setTabChange] = useState('list');
