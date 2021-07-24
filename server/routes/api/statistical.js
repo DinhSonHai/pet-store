@@ -42,15 +42,15 @@ router.get("/newestreviews", authAdmin, StatisticalController.getNewestReviews);
 // @access  Private
 router.get("/users", authAdmin, StatisticalController.getUserCount);
 
-// @route   GET api/statistical/todaybills
-// @desc    Lấy số hóa đơn được bán ra trong ngày
+// @route   GET api/statistical/totalbills
+// @desc    Lấy số hóa đơn được bán ra theo thời gian
 // @access  Admin, Private
-router.get("/todaybills", authAdmin, StatisticalController.getTodayBills);
+router.get('/totalbills', authAdmin, StatisticalController.getTotalBills);
 
-// @route   GET api/statistical/todaysales
-// @desc    Lấy số sản phẩm được bán ra trong ngày
+// @route   GET api/statistical/totalsales
+// @desc    Lấy số sản phẩm được bán ra theo thời gian
 // @access  Private
-router.get("/todaysales", authAdmin, StatisticalController.getTodaySales);
+router.get('/totalsales', authAdmin, StatisticalController.getTotalSales);
 
 // @route   GET api/statistical/ordersdatachart/:year
 // @desc    Lấy dữ liệu số đơn được đặt theo từng tháng

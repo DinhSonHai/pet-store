@@ -110,14 +110,21 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/todaybills
-  // @desc    Lấy số hóa đơn được bán ra trong ngày hôm nay
-  // @access  Private
-  async getTodayBills(req, res) {
-    let today = moment().startOf('day');
+  // @route   GET api/statistical/totalbills
+  // @desc    Lấy số hóa đơn được bán ra theo thời gian
+  // @access  Admin, Private
+  async getTotalBills(req, res) {
+    let { time } = req.query;
+    if (!time) {
+      time = 'day';
+    }
+
+    let today = moment().startOf(time);
+    let tomorrow = moment(today).endOf(time);
+
     try {
       let bill = await crudService.getAll(Bill, {
-        deliveriedAt: { $gte: today.toDate() },
+        deliveriedAt: { $gte: today.toDate(),  $lt: tomorrow.toDate() },
       });
       return res.status(statusCode.success).json({ billCount: bill.length });
     } catch (err) {
@@ -125,14 +132,21 @@ class StatisticalController {
     }
   }
 
-  // @route   GET api/statistical/todaysales
-  // @desc    Lấy số sản phẩm được bán ra trong ngày hôm nay
+  // @route   GET api/statistical/totalsales
+  // @desc    Lấy số sản phẩm được bán ra theo thời gian
   // @access  Private
-  async getTodaySales(req, res) {
-    let today = moment().startOf('day');
+  async getTotalSales(req, res) {
+    let { time } = req.query;
+    if (!time) {
+      time = 'day';
+    }
+
+    let today = moment().startOf(time);
+    let tomorrow = moment(today).endOf(time);
+
     try {
       let bill = await Bill.find({
-        deliveriedAt: { $gte: today.toDate() },
+        deliveriedAt: { $gte: today.toDate(),  $lt: tomorrow.toDate() },
       }).select('_id');
       let billIdList = bill.map((item) => item._id);
       let billDetail = await crudService.getAll(BillDetail, {
