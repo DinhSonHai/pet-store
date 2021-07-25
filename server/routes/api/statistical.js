@@ -4,28 +4,10 @@ const router = express.Router();
 const StatisticalController = require("../../app/controllers/StatisticalController");
 const authAdmin = require("../../app/middlewares/authAdmin");
 
-// @route   GET api/statistical/todayrevenues
-// @desc    Thống kê doanh thu nagfy hôm nay
+// @route   GET api/statistical/totalrevenues
+// @desc    Thống kê doanh thu theo thời gian
 // @access  Admin, Private
-router.get("/todayrevenues", authAdmin, StatisticalController.getTodayRevenues);
-
-// @route   GET api/statistical/monthlyrevenues
-// @desc    Thống kê doanh thu theo tháng
-// @access  Admin, Private
-router.get(
-  "/monthlyrevenues",
-  authAdmin,
-  StatisticalController.getMonthlyRevenues
-);
-
-// @route   GET api/statistical/annualrevenues
-// @desc    Thống kê doanh thu theo năm
-// @access  Admin, Private
-router.get(
-  "/annualrevenues",
-  authAdmin,
-  StatisticalController.getAnnualRevenues
-);
+router.get("/totalrevenues", authAdmin, StatisticalController.getTotalRevenues);
 
 // @route   GET api/statistical/newestorders
 // @desc    Lấy số đơn hàng mới
@@ -43,7 +25,7 @@ router.get("/newestreviews", authAdmin, StatisticalController.getNewestReviews);
 router.get("/users", authAdmin, StatisticalController.getUserCount);
 
 // @route   GET api/statistical/totalbills
-// @desc    Lấy số hóa đơn được bán ra theo thời gian
+// @desc    Lấy số hóa đơn hoàn thành theo thời gian
 // @access  Admin, Private
 router.get('/totalbills', authAdmin, StatisticalController.getTotalBills);
 
@@ -51,6 +33,11 @@ router.get('/totalbills', authAdmin, StatisticalController.getTotalBills);
 // @desc    Lấy số sản phẩm được bán ra theo thời gian
 // @access  Private
 router.get('/totalsales', authAdmin, StatisticalController.getTotalSales);
+
+// @route   GET api/statistical/bestsellers
+// @desc    Lấy top 3 sản phẩm bán chạy theo thời gian
+// @access  Private
+router.get('/bestsellers', authAdmin, StatisticalController.getBestSellers);
 
 // @route   GET api/statistical/ordersdatachart/:year
 // @desc    Lấy dữ liệu số đơn được đặt theo từng tháng

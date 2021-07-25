@@ -3,70 +3,46 @@ const BillDetail = require('../models/BillDetail');
 const Order = require('../models/Order');
 const Review = require('../models/Review');
 const User = require('../models/User');
+const Product = require('../models/Product');
 const _ = require('lodash');
 const crudService = require('../../services/crud');
 const statusCode = require('../../constants/statusCode.json');
 const moment = require('moment');
 
 class StatisticalController {
-  // @route   GET api/statistical/todayrevenues
-  // @desc    Thống kê doanh thu trong ngày hôm nay
-  // @access  Private
-  async getTodayRevenues(req, res) {
-    let today = moment().startOf('day');
-    let tomorrow = moment(today).endOf('day');
-    try {
-      let bill = await crudService.getAll(Bill, {
-        deliveriedAt: { $gte: today.toDate(), $lt: tomorrow.toDate() },
-      });
-      let todayRevenues = bill.reduce((total, current) => {
-        return total + current.totalMoney;
-      }, 0);
-      return res.status(statusCode.success).json({ todayRevenues });
-    } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
-    }
-  }
-
-  // @route   GET api/statistical/monthlyrevenues
-  // @desc    Thống kê doanh thu theo tháng
+  // @route   GET api/statistical/totalrevenues
+  // @desc    Thống kê doanh thu theo thời gian
   // @access  Admin, Private
-  async getMonthlyRevenues(req, res) {
-    let today = moment().startOf('month');
-    let tomorrow = moment(today).endOf('month');
-    try {
-      let bill = await crudService.getAll(Bill, {
-        deliveriedAt: {
-          $gte: today.toDate(),
-          $lte: tomorrow.toDate(),
-        },
-      });
-      let monthlyRevenues = bill.reduce((total, current) => {
-        return total + current.totalMoney;
-      }, 0);
-      return res.status(statusCode.success).json({ monthlyRevenues });
-    } catch (err) {
-      return res.status(statusCode.serverError).send('Server Error');
-    }
-  }
+  async getTotalRevenues(req, res) {
+    let { time } = req.query;
+    const from = parseInt(req.query.from);
+    const to = parseInt(req.query.to);
 
-  // @route   GET api/statistical/annualrevenues
-  // @desc    Thống kê doanh thu theo năm
-  // @access  Admin, Private
-  async getAnnualRevenues(req, res) {
-    let today = moment().startOf('year');
-    let tomorrow = moment(today).endOf('year');
+    if (!time) {
+      time = 'day';
+    }
+
+    let today = moment().startOf(time);
+    let tomorrow = moment(today).endOf(time);
+
+    let sortQuery = {
+      'deliveriedAt': { $gte: today.toDate(),  $lt: tomorrow.toDate() }
+    };
+
+    if (from && to) {
+      let dayStart = new Date(from).toISOString();
+      let dayEnd = new Date(to).toISOString();
+      sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    }
+
     try {
       let bill = await crudService.getAll(Bill, {
-        deliveriedAt: {
-          $gte: today.toDate(),
-          $lte: tomorrow.toDate(),
-        },
+        ...sortQuery,
       });
-      let annualRevenues = bill.reduce((total, current) => {
+      let totalRevenues = bill.reduce((total, current) => {
         return total + current.totalMoney;
       }, 0);
-      return res.status(statusCode.success).json({ annualRevenues });
+      return res.status(statusCode.success).json({ totalRevenues });
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
     }
@@ -111,7 +87,7 @@ class StatisticalController {
   }
 
   // @route   GET api/statistical/totalbills
-  // @desc    Lấy số hóa đơn được bán ra theo thời gian
+  // @desc    Lấy số hóa đơn hoàn thành theo thời gian
   // @access  Admin, Private
   async getTotalBills(req, res) {
     let { time } = req.query;
@@ -182,6 +158,62 @@ class StatisticalController {
         return total + current.amount;
       }, 0);
       return res.status(statusCode.success).json({ productCount });
+    } catch (err) {
+      return res.status(statusCode.serverError).send('Server Error');
+    }
+  }
+
+  // @route   GET api/statistical/bestsellers
+  // @desc    Lấy top 3 sản phẩm bán chạy theo thời gian
+  // @access  Private
+  async getBestSellers(req, res) {
+    let { time } = req.query;
+    const from = parseInt(req.query.from);
+    const to = parseInt(req.query.to);
+
+    if (!time) {
+      time = 'year';
+    }
+
+    let today = moment().startOf(time);
+    let tomorrow = moment(today).endOf(time);
+
+    let sortQuery = {
+      'deliveriedAt': { $gte: today.toDate(),  $lt: tomorrow.toDate() }
+    };
+
+    if (from && to) {
+      let dayStart = new Date(from).toISOString();
+      let dayEnd = new Date(to).toISOString();
+      sortQuery = { 'deliveriedAt': { $gte: dayStart, $lt: dayEnd } };
+    }
+
+    try {
+      let bill = await Bill.find({
+        ...sortQuery
+      }).select('_id');
+      let billIdList = bill.map((item) => item._id);
+      let billDetail = await crudService.getAdvance(BillDetail, {
+        billId: { $in: billIdList }
+      }, {}, {});
+      const productIdList = billDetail.map(({ productId, amount }) => ({ _id: productId, amount }));
+      const counts = productIdList.reduce((acc, value) => {
+        if (!value || !value._id || !value.amount) {
+          return { ...acc };
+        }
+        return {
+          ...acc,
+          [value._id]: (acc[value._id] || 0) + value.amount
+        }
+      }, {});
+
+      const keysSorted = Object.keys(counts).sort(( a, b ) => counts[b] - counts[a]);
+      const newProductIdList = keysSorted.slice(0, 3);
+      let productList = await crudService.getAll(Product, {
+        _id: { $in: newProductIdList },
+      });
+      const products = productList.map(({ _id, productName, images }) => ({ _id, productName, image: images[0], sold: counts[_id] })).sort(( a, b ) => b.sold - a.sold);
+      return res.status(statusCode.success).json({ products });
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
     }

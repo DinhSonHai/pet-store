@@ -15,15 +15,19 @@ function getData(path) {
 const statisticalAPI = {
   get_dashboard_data: async () => {
     return await Promise.all([
-      getData(`${source}/todayrevenues`),
-      getData(`${source}/monthlyrevenues`),
-      getData(`${source}/annualrevenues`),
+      getData(`${source}/totalrevenues`),
       getData(`${source}/newestorders`),
       getData(`${source}/newestreviews`),
       getData(`${source}/users`),
       getData(`${source}/totalbills`),
       getData(`${source}/totalsales`),
     ]);
+  },
+  get_monthly_revenues: async () => {
+    return await api.get(`${source}/totalrevenues?time=month`);
+  },
+  get_annual_revenues: async () => {
+    return await api.get(`${source}/totalrevenues?time=year`);
   },
   get_orders_data: async (year) => {
     return await api.get(`${source}/ordersdatachart/${year}`);

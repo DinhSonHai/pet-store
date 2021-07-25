@@ -8,6 +8,7 @@ import { statisticalAPI } from '../../api';
 export const getDashBoardData = () => async (dispatch) => {
   try {
     const res = await statisticalAPI.get_dashboard_data();
+    console.log(res);
     dispatch({
       type: GET_DASHBOARD_DATA,
       payload: res,
