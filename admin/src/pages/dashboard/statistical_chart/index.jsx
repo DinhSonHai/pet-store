@@ -1,14 +1,45 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import OrdersChart from "./orders_chart";
 import RevenuesChart from "./revenues_chart";
-const StatisticalChart = ({ year }) => {
+import { connect } from "react-redux";
+import {
+  getOrdersChartData,
+  getRevenuesChartData,
+} from "../../../redux/actions/statistical";
+import { Loader } from "../../../components";
+import './styles.scss';
+const StatisticalChart = ({
+  year,
+  statistical: { ordersDataChart, revenuesDataChart },
+  getOrdersChartData,
+  getRevenuesChartData,
+}) => {
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    async function getData() {
+      setLoading(true);
+      await Promise.all([getOrdersChartData(year), getRevenuesChartData(year)]);
+      setLoading(false);
+    }
+    getData();
+  }, [year]);
   return (
-    <Fragment>
-      <div style={{ marginTop: "5rem" }}>
-        <OrdersChart year={year} />
-        <RevenuesChart year={year} />
-      </div>
-    </Fragment>
+    <div style={{ marginTop: "5rem" }}>
+      {loading ? (
+        <Loader className={"chart-loader"} />
+      ) : (
+        <Fragment>
+          <OrdersChart year={year} ordersDataChart={ordersDataChart} />
+          <RevenuesChart year={year} revenuesDataChart={revenuesDataChart} />
+        </Fragment>
+      )}
+    </div>
   );
 };
-export default StatisticalChart;
+const mapStateToProps = (state) => ({
+  statistical: state.statistical,
+});
+export default connect(mapStateToProps, {
+  getOrdersChartData,
+  getRevenuesChartData,
+})(StatisticalChart);

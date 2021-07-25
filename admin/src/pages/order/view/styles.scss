@@ -18,10 +18,8 @@
       color: var(--gray-color) !important;
     }
   }
-  .ant-card-bordered {
-    border: 1px solid var(--fourthstream-color) !important;
-  }
-  .ant-card-head {
-    border-bottom: 1px solid var(--fourthstream-color) !important;
+  .ant-card {
+    border-radius: 5px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
   }
 }

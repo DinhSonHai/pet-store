@@ -1,13 +1,20 @@
-import { useState, useEffect, Fragment, useCallback } from 'react';
-import { connect } from 'react-redux';
-import { useLocation, useHistory, Link } from 'react-router-dom';
-import { Button, Table, Pagination, Breadcrumb, Tooltip, DatePicker } from 'antd';
-import { PrinterOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
-import moment from 'moment';
-import queryString from 'query-string';
+import { useState, useEffect, Fragment, useCallback } from "react";
+import { connect } from "react-redux";
+import { useLocation, useHistory, Link } from "react-router-dom";
+import {
+  Button,
+  Table,
+  Pagination,
+  Breadcrumb,
+  Tooltip,
+  DatePicker,
+} from "antd";
+import { PrinterOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+import moment from "moment";
+import queryString from "query-string";
 
-import { getAllBills } from '../../redux/actions/bills';
+import { getAllBills } from "../../redux/actions/bills";
 
 const { RangePicker } = DatePicker;
 
@@ -19,8 +26,8 @@ const defaultPageSetting = {
   pageSize: defaultPageSize,
 };
 
-const todayStart = moment().startOf('day');
-const todayEnd = moment().endOf('day');
+const todayStart = moment().startOf("day");
+const todayEnd = moment(todayStart).endOf("day");
 
 const Bill = ({ bills: { bills, total }, getAllBills }) => {
   const location = useLocation();
@@ -29,7 +36,9 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
   let page = queryString.parse(location.search).page;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [{ currentPage, pageSize }, setPage] = useState(page ? { currentPage: page, pageSize: defaultPageSize } : defaultPageSetting);
+  const [{ currentPage, pageSize }, setPage] = useState(
+    page ? { currentPage: page, pageSize: defaultPageSize } : defaultPageSetting
+  );
   const [from, setFrom] = useState(todayStart);
   const [to, setTo] = useState(todayEnd);
   const [isToday, setToday] = useState(false);
@@ -38,12 +47,12 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
     if (dateString.length < 2) {
       return;
     }
-    const startDate = Date.parse(dateString[0] + ' 00:00:00');
-    const endDate = Date.parse(dateString[1] + ' 23:59:59');
+    const startDate = Date.parse(dateString[0] + " 00:00:00");
+    const endDate = Date.parse(dateString[1] + " 23:59:59");
     if (startDate === endDate) {
       return;
     }
- 
+
     setToday(false);
     setFrom(startDate);
     setTo(endDate);
@@ -55,7 +64,7 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
 
     setToday(true);
     setFrom(dayStart.valueOf());
-    setTo(dayEnd.valueOf())
+    setTo(dayEnd.valueOf());
   };
 
   const handleReset = () => {
@@ -68,8 +77,7 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
     setIsLoading(true);
     if (!from || !to || from === to) {
       await getAllBills(currentPage);
-    }
-    else {
+    } else {
       await getAllBills(currentPage, from, to);
     }
     setIsLoading(false);
@@ -87,50 +95,49 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
     }
     return history.push(`?tab=bill&page=${_page}`);
   };
-
   const columns = [
     {
-      title: 'Mã hóa đơn',
-      dataIndex: '_id',
+      title: "Mã hóa đơn",
+      dataIndex: "_id",
       ellipsis: {
         showTitle: false,
       },
       width: "30%",
       render: (value) => (
-        <Tooltip placement='topLeft' title={value}>
+        <Tooltip placement="topLeft" title={value}>
           {value}
         </Tooltip>
       ),
     },
     {
-      title: 'Người mua',
-      dataIndex: 'name',
+      title: "Người mua",
+      dataIndex: "name",
     },
     {
-      title: 'Ngày giao',
-      dataIndex: 'deliveriedAt',
-      render: (value) => <span>{dayjs(value).format('HH:mm DD/MM/YYYY')}</span>,
+      title: "Ngày giao",
+      dataIndex: "deliveriedAt",
+      render: (value) => <span>{dayjs(value).format("HH:mm DD/MM/YYYY")}</span>,
     },
     {
-      title: 'Tổng tiền',
-      dataIndex: 'totalMoney',
+      title: "Tổng tiền",
+      dataIndex: "totalMoney",
       render: (value) => (
         <span>
-          {parseInt(value).toLocaleString('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
+          {parseInt(value).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
           })}
         </span>
       ),
     },
     {
-      title: 'Hành động',
-      dataIndex: 'operation',
+      title: "Hành động",
+      dataIndex: "operation",
       render: (_, record) => {
         return (
           <Fragment>
-            <Link to={`/invoice/bill/${record._id}`} target='_blank'>
-              <Button type='primary' icon={<PrinterOutlined />} />
+            <Link to={`/invoice/bill/${record._id}`} target="_blank">
+              <Button type="primary" icon={<PrinterOutlined />} />
             </Link>
           </Fragment>
         );
@@ -139,31 +146,40 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
   ];
 
   return (
-    <section className='bill'>
-      <Breadcrumb style={{ margin: '1rem 2rem' }}>
+    <section className="bill">
+      <Breadcrumb style={{ margin: "1rem 2rem" }}>
         <Breadcrumb.Item>Quản lý hóa đơn</Breadcrumb.Item>
       </Breadcrumb>
       <div
-        className='bill__wrap site-layout-background'
-        style={{ padding: '1.5rem', minHeight: '100vh' }}
+        className="bill__wrap site-layout-background"
+        style={{ padding: "1.5rem", minHeight: "100vh" }}
       >
         <div className="filter-container">
-          <RangePicker 
-            style={{ marginRight: '24px' }}
+          <RangePicker
+            style={{ marginRight: "24px" }}
             placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
             // showTime={{ defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')]}}
             format="YYYY-MM-DD"
             value={[moment(from), moment(to)]}
             onChange={onDateChange}
           />
-          <Button onClick={handleTodayClick} className="filter-btn">Hôm nay</Button>
-          <Button onClick={handleReset} className="filter-btn">Đặt lại</Button>
+          <Button onClick={handleTodayClick} className="filter-btn">
+            Hôm nay
+          </Button>
+          <Button onClick={handleReset} className="filter-btn">
+            Đặt lại
+          </Button>
         </div>
-        {from && to && from !==to && (
-          <div className="filter-detail">
-            Hóa đơn {isToday ? 'hôm nay' : `từ ${moment(from).format('DD-MM-YYYY')} đến ${moment(to).format('DD-MM-YYYY')}`}
-          </div>
-        )}
+        <div className="filter-detail">
+          {isToday
+            ? `Hóa đơn hôm nay: ${moment(new Date()).format("DD-MM-YYYY")}`
+            : from &&
+              to &&
+              new Date(from).toDateString() !== new Date(to).toDateString() &&
+              `Hoá đơn từ ${moment(from).format("DD-MM-YYYY")} đến ${moment(
+                to
+              ).format("DD-MM-YYYY")}`}
+        </div>
         <Table
           columns={columns}
           loading={isLoading}
@@ -178,7 +194,7 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
           pageSize={defaultPageSize}
           total={total}
           showSizeChanger={false}
-          style={{ textAlign: 'right', margin: '3rem 0 0 0' }}
+          style={{ textAlign: "right", margin: "3rem 0 0 0" }}
         />
       </div>
     </section>

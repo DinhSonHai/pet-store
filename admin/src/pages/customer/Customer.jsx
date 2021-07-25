@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getAllCustomers } from "../../redux/actions/customers";
 import { Button, Table, Pagination, Breadcrumb, Tooltip, Input } from "antd";
-import CustomerDetails from './Details';
+import CustomerDetails from "./Details";
 import dayjs from "dayjs";
 
 const { Search } = Input;
@@ -12,6 +12,7 @@ const Customer = ({ customers: { customers, total }, getAllCustomers }) => {
   const [page, setPage] = useState(1);
   const [isShowModal, setIsShowModal] = useState(false);
   const [record, setRecord] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(0);
   const columns = [
     {
       title: "Tên người dùng",
@@ -49,28 +50,42 @@ const Customer = ({ customers: { customers, total }, getAllCustomers }) => {
       title: "Hành động",
       dataIndex: "operation",
       render: (_, record) => (
-        <Button onClick={() => {
-          setRecord(record);
-          setIsShowModal(true);
-        }} type="primary">
+        <Button
+          onClick={() => {
+            setRecord(record);
+            setIsShowModal(true);
+          }}
+          type="primary"
+        >
           Chi tiết
         </Button>
       ),
     },
   ];
-  useEffect(() => {
-    async function getData() {
+  const getData = async (q, p) => {
+    try {
       setIsLoading(true);
-      await getAllCustomers(searchState, page);
+      await getAllCustomers(q, p);
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
       setIsLoading(false);
     }
-    getData();
-  }, [getAllCustomers, searchState, page]);
+  };
+  useEffect(() => {
+    getData(searchState, page);
+  }, [getAllCustomers, page]);
   const handlePagination = (_page) => {
     setPage(_page);
   };
-  const handleSearch = (value) => {
-    setSearchState(value);
+  const handleSearch = (e) => {
+    clearTimeout(searchTimeout);
+    setSearchTimeout(
+      setTimeout(() => {
+        setSearchState(e.target.value);
+        getData(e.target.value, page);
+      }, 500)
+    );
   };
   return (
     <section className="receipt_page">
@@ -86,7 +101,7 @@ const Customer = ({ customers: { customers, total }, getAllCustomers }) => {
             placeholder="Họ tên, email, sđt..."
             size="middle"
             allowClear
-            onSearch={handleSearch}
+            onChange={handleSearch}
             enterButton
             loading={isLoading}
           />
@@ -109,7 +124,11 @@ const Customer = ({ customers: { customers, total }, getAllCustomers }) => {
           showSizeChanger={false}
           style={{ textAlign: "right", margin: "3rem 0 0 0" }}
         />
-        <CustomerDetails setIsShowModal={setIsShowModal} isShowModal={isShowModal} record={record} />
+        <CustomerDetails
+          setIsShowModal={setIsShowModal}
+          isShowModal={isShowModal}
+          record={record}
+        />
       </div>
     </section>
   );
