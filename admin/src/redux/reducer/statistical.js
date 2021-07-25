@@ -28,9 +28,9 @@ export default function (state = initialState, action) {
         ...state,
         dashboardData: {
           ...state.dashboardData,
-          todayRevenues: payload[0].todayRevenues,
-          monthlyRevenues: payload[1].monthlyRevenues,
-          annualRevenues: payload[2].annualRevenues,
+          todayRevenues: payload[0].totalRevenues,
+          monthlyRevenues: payload[1].totalRevenues,
+          annualRevenues: payload[2].totalRevenues,
           newestOrders: payload[3].orderCount,
           newestReviews: payload[4].reviewCount,
           userCount: payload[5].userCount,

@@ -16,6 +16,8 @@ const statisticalAPI = {
   get_dashboard_data: async () => {
     return await Promise.all([
       getData(`${source}/totalrevenues`),
+      getData(`${source}/totalrevenues?time=month`),
+      getData(`${source}/totalrevenues?time=year`),
       getData(`${source}/newestorders`),
       getData(`${source}/newestreviews`),
       getData(`${source}/users`),
