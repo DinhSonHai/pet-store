@@ -25,12 +25,6 @@ const statisticalAPI = {
       getData(`${source}/totalsales`),
     ]);
   },
-  get_monthly_revenues: async () => {
-    return await api.get(`${source}/totalrevenues?time=month`);
-  },
-  get_annual_revenues: async () => {
-    return await api.get(`${source}/totalrevenues?time=year`);
-  },
   get_orders_data: async (year) => {
     return await api.get(`${source}/ordersdatachart/${year}`);
   },
