@@ -112,10 +112,8 @@ class StatisticalController {
     }
 
     try {
-      let bill = await crudService.getAll(Bill, {
-        ...sortQuery
-      });
-      return res.status(statusCode.success).json({ billCount: bill.length });
+      const billCount = await Bill.countDocuments({...sortQuery});
+      return res.status(statusCode.success).json({ billCount });
     } catch (err) {
       return res.status(statusCode.serverError).send('Server Error');
     }
@@ -220,7 +218,7 @@ class StatisticalController {
   }
 
   // @route   GET api/statistical/ordersdatachart/:year
-  // @desc    Lấy dữ liệu số đơn được đặt theo tháng
+  // @desc    Lấy dữ liệu số đơn được đặt theo năm
   // @access  Private
   async getOrdersDataChart(req, res) {
     const now = new Date();
@@ -230,13 +228,13 @@ class StatisticalController {
       for (let i = 0; i < 12; i++) {
         let fromDate = new Date(year, i, 1);
         let toDate = new Date(year, i + 1, 0);
-        let order = await crudService.getAll(Order, {
+        let order = await Order.countDocuments({
           createdAt: {
             $gte: fromDate,
             $lte: toDate,
           },
-        });
-        ordersArray.push(order.length);
+        })
+        ordersArray.push(order);
       }
       return res.status(statusCode.success).json(ordersArray);
     } catch (err) {
@@ -245,7 +243,7 @@ class StatisticalController {
   }
 
   // @route   GET api/statistical/revenuesdatachart/:year
-  // @desc    Lấy dữ liệu doanh thu theo từng tháng
+  // @desc    Lấy dữ liệu doanh thu theo từng năm
   // @access  Private
   async getRevenuesDataChart(req, res) {
     const now = new Date();

@@ -24,7 +24,7 @@ const TodayRevenuesCard = ({ loading, todayRevenues }) => {
                   })
                 : '0đ'
             }
-            description={`Doanh thu ngày hôm nay - D${dayjs().date()}`}
+            description={`Doanh thu ngày hôm nay - ${dayjs().date()}`}
           />
         </Skeleton>
       </Card>

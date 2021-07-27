@@ -24,7 +24,7 @@ const MonthRevenuesCard = ({ loading, monthlyRevenues }) => {
                   })
                 : '0đ'
             }
-            description={`Doanh thu tháng này - T${dayjs().month() + 1}`}
+            description={`Doanh thu tháng này - ${dayjs().month() + 1}`}
           />
         </Skeleton>
       </Card>

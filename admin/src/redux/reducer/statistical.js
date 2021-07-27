@@ -1,9 +1,10 @@
 /* eslint-disable import/no-anonymous-default-export */
 import {
   GET_DASHBOARD_DATA,
+  GET_STATISTICAL_DATA,
   GET_CHART_ORDERS_DATA,
   GET_CHART_REVENUE_DATA,
-} from '../types';
+} from "../types";
 
 const initialState = {
   dashboardData: {
@@ -15,6 +16,12 @@ const initialState = {
     userCount: null,
     monthlyRevenues: null,
     annualRevenues: null,
+  },
+  statisticalData: {
+    totalRevenues: null,
+    totalBills: null,
+    totalSold: null,
+    bestsellers: [],
   },
   revenuesDataChart: [],
   ordersDataChart: [],
@@ -36,6 +43,17 @@ export default function (state = initialState, action) {
           userCount: payload[5].userCount,
           todayBills: payload[6].billCount,
           todaySales: payload[7].productCount,
+        },
+      };
+    case GET_STATISTICAL_DATA:
+      return {
+        ...state,
+        statisticalData: {
+          ...state.statisticalData,
+          totalRevenues: payload[0].totalRevenues,
+          totalBills: payload[1].billCount,
+          totalSold: payload[2].productCount,
+          bestsellers: payload[3].products,
         },
       };
     case GET_CHART_ORDERS_DATA:

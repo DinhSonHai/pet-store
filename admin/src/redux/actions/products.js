@@ -17,6 +17,17 @@ export const getAllProducts = (page, q) => async (dispatch) => {
   } catch (err) {}
 };
 
+// get all products
+export const getLowQuantityProducts = (page, q) => async (dispatch) => {
+  try {
+    const res = await productAPI.get_lowquantity(page, q);
+    dispatch({
+      type: GET_ALL_PRODUCTS,
+      payload: res.data,
+    });
+  } catch (err) {}
+};
+
 // create product
 export const createProduct = (data) => async (dispatch) => {
   try {

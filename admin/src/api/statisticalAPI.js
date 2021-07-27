@@ -1,5 +1,5 @@
-import api from '../api';
-const source = '/statistical';
+import api from "../api";
+const source = "/statistical";
 function getData(path) {
   return new Promise((resolve, reject) => {
     api
@@ -23,6 +23,14 @@ const statisticalAPI = {
       getData(`${source}/users`),
       getData(`${source}/totalbills`),
       getData(`${source}/totalsales`),
+    ]);
+  },
+  get_statistical_data: async (time = "", from = "", to = "") => {
+    return await Promise.all([
+      getData(`${source}/totalrevenues/?time=${time}&from=${from}&to=${to}`),
+      getData(`${source}/totalbills/?time=${time}&from=${from}&to=${to}`),
+      getData(`${source}/totalsales/?time=${time}&from=${from}&to=${to}`),
+      getData(`${source}/bestsellers/?time=${time}&from=${from}&to=${to}`),
     ]);
   },
   get_orders_data: async (year) => {

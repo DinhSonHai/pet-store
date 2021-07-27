@@ -23,7 +23,7 @@ const AnnualRevenuesCard = ({ loading, annualRevenues }) => {
                   })
                 : '0đ'
             }
-            description={`Doanh thu năm nay - Y${dayjs().year()}`}
+            description={`Doanh thu năm nay - ${dayjs().year()}`}
           />
         </Skeleton>
       </Card>
