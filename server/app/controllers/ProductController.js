@@ -201,11 +201,25 @@ class ProductController {
 
   // @route   GET api/products/lowquantity
   // @desc    Lấy sản phẩm gần hết hàng
-  // @access  Public
+  // @access  Private
   async getLowQuantityProducts(req, res, next) {
+    const q = req.query.q;
+    const search = new RegExp(q, "i");
+    const query = { productName: search };
+    const { start, end } = pagination(req.query.page, 10);
     try {
-      const products = await Product.find({ isShow: true, quantity: { $lt: 20 } }).sort({ quantity: "desc" });
-      return res.status(statusCode.success).json(products);
+      const products = await crudService.getAdvance(
+        Product,
+        { isShow: true, quantity: { $lt: 20 }, ...query },
+        { quantity: "asc" },
+        {
+          path: "typeId",
+          select: ["typeName"],
+        }
+      );
+      return res
+        .status(statusCode.success)
+        .json({ data: products.slice(start, end), total: products.length });
     } catch (err) {
       return res.status(statusCode.serverError).send("Server Error");
     }

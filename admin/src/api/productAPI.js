@@ -1,5 +1,5 @@
-import api from '../api';
-const source = '/products';
+import api from "../api";
+const source = "/products";
 const productAPI = {
   get_all: async (page, q) => {
     return await api.get(`${source}/?page=${page}&q=${q}`);
@@ -21,6 +21,9 @@ const productAPI = {
   },
   get_removed: async (page) => {
     return await api.get(`${source}/deleted/?page=${page}`);
+  },
+  get_lowquantity: async (page, q) => {
+    return await api.get(`${source}/lowquantity/?page=${page}&q=${q}`);
   },
 };
 

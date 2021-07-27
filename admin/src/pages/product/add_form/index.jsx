@@ -216,7 +216,7 @@ const ProductAddForm = ({
 
         <Form.Item label='Mô tả'>
           <CKEditor
-            data={item ? (content ? content : item.content) : content}
+            data={item ?  item.content : content}
             config={{
               ckfinder: {
                 uploadUrl: '/upload',
