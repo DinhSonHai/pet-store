@@ -40,6 +40,7 @@ const ProductAddForm = ({
   const [images, setImages] = useState([]);
   const [status, setStatus] = useState(true);
   const [isShow, setIsShow] = useState(getIsShow);
+  
   useEffect(() => {
     form.resetFields();
     if (edit) {
@@ -51,9 +52,11 @@ const ProductAddForm = ({
           response: { url: img },
         }))
       );
+      setContent(item.description);
     } else {
       setStatus(true);
       setImages([]);
+      setContent('');
     }
 
     async function getTypes() {
@@ -110,7 +113,7 @@ const ProductAddForm = ({
   function onChangeShow(e) {
     setIsShow(e.target.checked);
   }
-  
+
   return (
     <Fragment>
       <h3 style={{ textAlign: 'right' }}>
@@ -216,7 +219,7 @@ const ProductAddForm = ({
 
         <Form.Item label='Mô tả'>
           <CKEditor
-            data={item ?  item.content : content}
+            data={item ?  item.description : content}
             config={{
               ckfinder: {
                 uploadUrl: '/upload',
