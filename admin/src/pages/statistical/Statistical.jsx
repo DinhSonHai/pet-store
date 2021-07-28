@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Breadcrumb, Select } from "antd";
+import { Breadcrumb, Select, DatePicker } from "antd";
 import { getStatisticalData } from "../../redux/actions/statistical";
 import { connect } from "react-redux";
 import StatisticDashBoard from "./statistic";
@@ -9,6 +9,7 @@ import moment from "moment";
 
 import "./styles.scss";
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 const optionsSelect = [
   { title: "Ngày hôm nay", value: "day" },
   { title: "Tuần này", value: "week" },
@@ -23,12 +24,18 @@ const Statistical = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [time, setTime] = useState("day");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
   useEffect(() => {
     async function getData() {
       try {
         setIsLoading(true);
-        await getStatisticalData(time, "", "");
+        if (time === "range") {
+          await getStatisticalData("", from, to);
+        } else {
+          await getStatisticalData(time, "", "");
+        }
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -36,7 +43,7 @@ const Statistical = ({
       }
     }
     getData();
-  }, [getStatisticalData, time]);
+  }, [getStatisticalData, time, from, to]);
 
   const handleRenderTimeLabel = () => {
     switch (time) {
@@ -74,9 +81,35 @@ const Statistical = ({
             Năm: <span>{`${new Date().getFullYear()}`}</span>
           </p>
         );
+      case "range":
+        if (from && to) {
+          return (
+            <p>
+              Từ :{" "}
+              <span>{`${moment(from).format("DD/MM/YYYY")} đến ${moment(
+                to
+              ).format("DD/MM/YYYY")}`}</span>
+            </p>
+          );
+        } else {
+          return null;
+        }
       default:
         return null;
     }
+  };
+  const onDateChange = (value, dateString) => {
+    if (dateString.length < 2) {
+      return;
+    }
+    const startDate = Date.parse(dateString[0] + " 00:00:00");
+    const endDate = Date.parse(dateString[1] + " 23:59:59");
+    if (startDate === endDate) {
+      return;
+    }
+
+    setFrom(startDate);
+    setTo(endDate);
   };
   return (
     <section className="statistical">
@@ -93,7 +126,7 @@ const Statistical = ({
         <div style={{ marginRight: "1rem" }}>
           <span style={{ marginRight: "1rem" }}>Xem thống kê: </span>
           <Select
-            style={{ width: "150px" }}
+            style={{ width: "160px" }}
             defaultValue="day"
             onChange={(value) => setTime(value)}
           >
@@ -112,11 +145,18 @@ const Statistical = ({
           alignItems: "center",
         }}
       >
-        <div
-          className="statistic-time"
-        >
-          {handleRenderTimeLabel()}
-        </div>
+        <div className="statistic-time">{handleRenderTimeLabel()}</div>
+        {time === "range" && (
+          <div>
+            <RangePicker
+              style={{ marginRight: "1rem" }}
+              placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+              format="YYYY-MM-DD"
+              value={[from && moment(from), to && moment(to)]}
+              onChange={onDateChange}
+            />
+          </div>
+        )}
       </div>
       <div
         className="category__wrap site-layout-background"

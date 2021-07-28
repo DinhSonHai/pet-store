@@ -39,8 +39,8 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
   const [{ currentPage, pageSize }, setPage] = useState(
     page ? { currentPage: page, pageSize: defaultPageSize } : defaultPageSetting
   );
-  const [from, setFrom] = useState(todayStart);
-  const [to, setTo] = useState(todayEnd);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [isToday, setToday] = useState(false);
 
   const onDateChange = (value, dateString) => {
@@ -158,9 +158,8 @@ const Bill = ({ bills: { bills, total }, getAllBills }) => {
           <RangePicker
             style={{ marginRight: "24px" }}
             placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
-            // showTime={{ defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')]}}
             format="YYYY-MM-DD"
-            value={[moment(from), moment(to)]}
+            value={[from && moment(from), to && moment(to)]}
             onChange={onDateChange}
           />
           <Button onClick={handleTodayClick} className="filter-btn">
